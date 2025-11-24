@@ -56,3 +56,6 @@ wp-content/wp-cache-config.php
 *.tmp
 *.temp
 .cache/
+
+# Internal development notes
+DEVELOPMENT_NOTES.md
