@@ -47,16 +47,10 @@ WP-Forge/
 ├── packages/
 │   ├── cli/              # CLI tool (create-wp-forge, wp-forge commands)
 │   ├── core/             # PHP framework core
-│   ├── vite-plugin/      # Vite integration for WordPress
-│   ├── blocks/           # Block library
-│   ├── design-tokens/    # Design system tools
-│   └── testing/          # Testing utilities
+│   └── vite-plugin/      # Vite integration for WordPress
 ├── examples/
-│   ├── basic-theme/      # Simple starter theme
-│   ├── advanced-theme/   # Feature-rich example
-│   └── headless-theme/   # Headless WordPress example
-├── docs/                 # Documentation site
-└── templates/            # Theme templates for scaffolding
+│   └── basic-theme/      # Simple starter theme
+└── docs/                 # Documentation (coming soon)
 ```
 
 ## Development
