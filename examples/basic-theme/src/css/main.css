@@ -111,7 +111,9 @@ body {
 
 .menu-toggle {
   display: none;
-  padding: 0.5rem;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0.75rem;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -140,9 +142,13 @@ body {
 }
 
 .menu li a {
+  display: block;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
   color: var(--color-text);
   text-decoration: none;
   transition: color 0.2s;
+  line-height: 1.5;
 }
 
 .menu li a:hover {
