@@ -1,142 +1,94 @@
 # WP-Forge Basic Theme
 
-A complete example theme showcasing the WP-Forge framework.
+A clean, modern Block Theme (FSE) showcasing the WP-Forge framework. Perfect for blogs, simple business sites, and learning WP-Forge basics.
 
-## Features Demonstrated
+## Features
 
-✅ **Vite Integration**
-- Lightning-fast HMR
-- TypeScript support
-- CSS preprocessing
-- Optimized production builds
+### Block Theme (Full Site Editing)
+- Visual Site Editor with drag-and-drop
+- Edit templates and template parts in the admin
+- Global styles and design system via theme.json
+- No PHP templates needed (but still supported for custom functionality)
 
-✅ **PHP Core Framework**
-- Component-based architecture
-- Custom components (Navigation, Customizer)
-- Vite asset loading via manifest
-- Performance optimizations
+### Modern Development
+- TypeScript + Vite build system
+- Hot Module Replacement (HMR) in development
+- Custom Gutenberg blocks
+- Performance optimized
 
-✅ **Custom Gutenberg Blocks**
-- **Hero Block**: Full-width hero section with background image
-- **Feature Card**: Showcase features with icons
-- Auto-discovered and registered by Vite plugin
+### Included Templates
+- Index (blog listing)
+- Single post
+- Page  
+- Archive
+- 404 error page
 
-✅ **Modern Development**
-- PHP 8.1+ with strict types
-- TypeScript for JavaScript
-- CSS custom properties
-- Responsive design
+### Template Parts
+- Header (with site title and navigation)
+- Footer
+
+### Accessibility
+- WCAG 2.1 compliant
+- Proper ARIA labels
+- Keyboard navigation
+- Touch-friendly (48px minimum targets)
 
 ## Installation
 
-### 1. Install Dependencies
+1. Clone or download to your themes directory
+2. Install dependencies:
+   ```bash
+   composer install
+   pnpm install
+   ```
+3. Build assets:
+   ```bash
+   pnpm build
+   ```
+4. Activate in WordPress Admin
 
+## Editing the Theme
+
+### Using the Site Editor
+1. Go to **Appearance → Editor**
+2. Edit templates, template parts, and styles visually
+3. Changes save automatically
+
+### Custom Development
 ```bash
-# Install Node dependencies
-pnpm install
-
-# Install PHP dependencies
-composer install
+pnpm dev    # Start dev server with HMR
+pnpm build  # Build for production
 ```
 
-### 2. Development
-
-```bash
-# Start Vite dev server
-pnpm dev
-```
-
-Then activate the theme in WordPress admin. The Vite dev server will automatically inject HMR scripts when running locally.
-
-### 3. Production Build
-
-```bash
-# Build for production
-pnpm build
-```
-
-This generates optimized assets in the `dist/` directory.
-
-## File Structure
-
+### File Structure
 ```
 basic-theme/
+├── theme.json           # Design system, colors, typography
+├── templates/           # Block templates (HTML)
+│   ├── index.html
+│   ├── single.html
+│   ├── page.html
+│   ├── archive.html
+│   └── 404.html
+├── parts/              # Template parts (HTML)
+│   ├── header.html
+│   └── footer.html
 ├── src/
-│   ├── blocks/              # Gutenberg blocks
-│   │   ├── hero/
-│   │   └── feature-card/
-│   ├── css/                 # Stylesheets
-│   │   ├── main.css
-│   │   └── editor.css
-│   └── js/                  # JavaScript
-│       ├── main.ts
-│       └── editor.ts
-├── inc/
-│   └── Components/          # Custom PHP components
-│       ├── Navigation.php
-│       └── Customizer.php
-├── parts/                   # Template parts
-├── templates/               # Page templates
-├── functions.php            # Theme initialization
-├── vite.config.ts          # Vite configuration
-└── composer.json           # PHP dependencies
+│   ├── blocks/         # Custom blocks
+│   ├── css/            # Styles
+│   └── js/             # Scripts
+└── functions.php       # Custom PHP functionality
 ```
 
-## Custom Blocks
+## Requirements
 
-### Hero Block
+- PHP 8.1+
+- WordPress 6.0+
+- Node.js 18+
+- Composer
 
-Full-width hero section with:
-- Background image upload
-- Overlay opacity control
-- Title, description, and CTA button
-- Responsive design
+## License
 
-### Feature Card
+GPL-3.0-or-later
 
-Service/feature showcase with:
-- Custom icon (emoji or text)
-- Icon background color picker
-- Title and description
-- Hover effects
-
-## Customization
-
-### Adding New Blocks
-
-1. Create block directory in `src/blocks/`
-2. Add `block.json` with metadata
-3. Create `edit.tsx` for editor
-4. Create `render.php` for frontend
-5. Add `style.css` for styling
-
-The Vite plugin will automatically discover and register it!
-
-### Adding New Components
-
-1. Create PHP class in `inc/Components/`
-2. Implement `ComponentInterface`
-3. Add to theme initialization in `functions.php`
-
-### Styling
-
-Edit `src/css/main.css` - uses CSS custom properties for easy theming.
-
-## What Makes This Different?
-
-Unlike traditional WordPress themes:
-- ⚡ **Instant feedback** with HMR (even for PHP!)
-- 🔄 **Auto block registration** (no manual PHP code)
-- 📦 **Optimized builds** with tree-shaking and code-splitting
-- 🎯 **Type-safe** with TypeScript
-- 🏗️ **Modern architecture** with components
-
-## Learn More
-
-- [WP-Forge Documentation](https://github.com/JonImmsWordpressDev/WP-Forge)
-- [Vite Documentation](https://vitejs.dev/)
-- [WordPress Block Editor Handbook](https://developer.wordpress.org/block-editor/)
-
----
-
-Built with ⚒️ **WP-Forge**
+Built with WP-Forge by Jon Imms
