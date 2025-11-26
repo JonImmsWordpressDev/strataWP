@@ -5,6 +5,26 @@
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "type": "module",
+  "keywords": [
+    "wordpress",
+    "theme",
+    "cli",
+    "vite",
+    "typescript",
+    "wp-forge",
+    "wordpress-theme",
+    "block-editor",
+    "fse"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonImmsWordpressDev/WP-Forge.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/JonImmsWordpressDev/WP-Forge#readme",
+  "bugs": {
+    "url": "https://github.com/JonImmsWordpressDev/WP-Forge/issues"
+  },
   "bin": {
     "wp-forge": "./dist/index.js",
     "create-wp-forge": "./dist/create.js"
@@ -27,18 +47,19 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "commander": "^11.1.0",
     "chalk": "^5.3.0",
-    "ora": "^8.0.1",
-    "prompts": "^2.4.2",
+    "commander": "^11.1.0",
+    "degit": "^2.8.4",
     "execa": "^8.0.1",
     "fs-extra": "^11.2.0",
-    "degit": "^2.8.4",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2",
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/prompts": "^2.4.9",
+    "@types/validate-npm-package-name": "^4.0.2",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^1.0.4"

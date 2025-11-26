@@ -35,5 +35,11 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
     cors: true,
+    host: 'localhost',
+    hmr: {
+      host: 'localhost',
+      protocol: 'ws',
+    },
+    origin: 'http://localhost:3000',
   },
 })

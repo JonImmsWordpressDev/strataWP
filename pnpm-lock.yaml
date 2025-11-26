@@ -122,6 +122,9 @@ importers:
       '@types/prompts':
         specifier: ^2.4.9
         version: 2.4.9
+      '@types/validate-npm-package-name':
+        specifier: ^4.0.2
+        version: 4.0.2
       tsup:
         specifier: ^8.0.1
         version: 8.5.1(typescript@5.9.3)
@@ -1722,6 +1725,10 @@ packages:
       '@types/prop-types': 15.7.15
       csstype: 3.2.3
     dev: false
+
+  /@types/validate-npm-package-name@4.0.2:
+    resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
+    dev: true
 
   /@use-gesture/core@10.3.1:
     resolution: {integrity: sha512-WcINiDt8WjqBdUXye25anHiNxPc0VOrlT8F6LLkU6cycrOGUDyY/yyFmsg3k8i5OLvv25llc0QC45GhR/C8llw==}

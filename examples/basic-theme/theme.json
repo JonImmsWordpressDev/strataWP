@@ -8,13 +8,23 @@
       "palette": [
         {
           "slug": "primary",
-          "color": "#3b82f6",
+          "color": "#1d08bd",
           "name": "Primary"
         },
         {
           "slug": "secondary",
-          "color": "#8b5cf6",
+          "color": "#c429ff",
           "name": "Secondary"
+        },
+        {
+          "slug": "accent",
+          "color": "#ff1f38",
+          "name": "Accent"
+        },
+        {
+          "slug": "purple-dark",
+          "color": "#170697",
+          "name": "Purple Dark"
         },
         {
           "slug": "text",
@@ -42,7 +52,23 @@
           "name": "Background Alt"
         }
       ],
-      "gradients": [],
+      "gradients": [
+        {
+          "slug": "purple-gradient",
+          "gradient": "linear-gradient(135deg, #1d08bd 0%, #170697 100%)",
+          "name": "Purple Gradient"
+        },
+        {
+          "slug": "accent-gradient",
+          "gradient": "linear-gradient(135deg, #ff1f38 0%, #c429ff 100%)",
+          "name": "Accent Gradient"
+        },
+        {
+          "slug": "hero-gradient",
+          "gradient": "linear-gradient(180deg, #1d08bd 0%, #170697 50%, #0d0350 100%)",
+          "name": "Hero Gradient"
+        }
+      ],
       "duotone": [],
       "custom": true,
       "customGradient": true,

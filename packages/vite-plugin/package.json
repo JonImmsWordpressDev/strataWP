@@ -5,6 +5,25 @@
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "type": "module",
+  "keywords": [
+    "wordpress",
+    "vite",
+    "vite-plugin",
+    "wp-forge",
+    "wordpress-theme",
+    "hmr",
+    "block-editor",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonImmsWordpressDev/WP-Forge.git",
+    "directory": "packages/vite-plugin"
+  },
+  "homepage": "https://github.com/JonImmsWordpressDev/WP-Forge#readme",
+  "bugs": {
+    "url": "https://github.com/JonImmsWordpressDev/WP-Forge/issues"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
