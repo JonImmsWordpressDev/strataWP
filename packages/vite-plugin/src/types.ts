@@ -21,6 +21,16 @@ export interface WpForgePluginOptions {
    * Asset handling options
    */
   assets?: AssetOptions
+
+  /**
+   * Design system integration options
+   */
+  designSystem?: DesignSystemOptions
+
+  /**
+   * Performance optimization options
+   */
+  performance?: PerformanceOptions
 }
 
 /**
@@ -152,4 +162,163 @@ export interface ManifestEntry {
  */
 export interface WordPressManifest {
   [key: string]: ManifestEntry
+}
+
+/**
+ * Design System Options
+ */
+export interface DesignSystemOptions {
+  /**
+   * Enable design system integration
+   * @default false
+   */
+  enabled?: boolean
+
+  /**
+   * CSS framework to use
+   * @default 'none'
+   */
+  framework?: 'none' | 'tailwind' | 'unocss'
+
+  /**
+   * Path to framework config file
+   */
+  configPath?: string
+
+  /**
+   * Enable WordPress preset integration
+   * Maps theme.json values to framework
+   * @default true
+   */
+  wordpressPresets?: boolean
+
+  /**
+   * Custom theme configuration
+   */
+  theme?: Record<string, unknown>
+}
+
+/**
+ * Performance Options
+ */
+export interface PerformanceOptions {
+  /**
+   * Critical CSS extraction options
+   * @default true
+   */
+  criticalCSS?: boolean | CriticalCSSOptions
+
+  /**
+   * Lazy loading options
+   * @default true
+   */
+  lazyLoading?: boolean | LazyLoadingOptions
+
+  /**
+   * Asset preloading options
+   * @default true
+   */
+  preload?: boolean | PreloadOptions
+}
+
+/**
+ * Critical CSS Options
+ */
+export interface CriticalCSSOptions {
+  /**
+   * Enable critical CSS extraction
+   * @default true
+   */
+  enabled?: boolean
+
+  /**
+   * Templates to process (without .html extension)
+   * @default ['index', 'single', 'page', 'archive']
+   */
+  templates?: string[]
+
+  /**
+   * Viewport dimensions for extraction
+   * @default { width: 1300, height: 900 }
+   */
+  dimensions?: {
+    width: number
+    height: number
+  }
+
+  /**
+   * Inline critical CSS in HTML
+   * @default true
+   */
+  inline?: boolean
+
+  /**
+   * Output path for critical CSS files
+   * @default 'dist/critical'
+   */
+  output?: string
+
+  /**
+   * Minimum size in bytes to extract
+   * @default 0
+   */
+  minSize?: number
+}
+
+/**
+ * Lazy Loading Options
+ */
+export interface LazyLoadingOptions {
+  /**
+   * Enable lazy loading
+   * @default true
+   */
+  enabled?: boolean
+
+  /**
+   * Image lazy loading strategy
+   * @default 'native'
+   */
+  images?: 'native' | 'intersection-observer' | 'none'
+
+  /**
+   * Enable CSS lazy loading
+   * @default true
+   */
+  css?: boolean
+
+  /**
+   * Enable chunk lazy loading
+   * @default true
+   */
+  chunks?: boolean
+
+  /**
+   * Placeholder type for images
+   * @default 'none'
+   */
+  placeholder?: 'blur' | 'color' | 'none'
+}
+
+/**
+ * Preload Options
+ */
+export interface PreloadOptions {
+  /**
+   * Enable asset preloading
+   * @default true
+   */
+  enabled?: boolean
+
+  /**
+   * Asset types to preload
+   * @default ['fonts', 'critical-css']
+   */
+  assets?: Array<'fonts' | 'critical-css' | 'critical-js' | 'images'>
+
+  /**
+   * Preload strategy
+   * @default 'link-tag'
+   */
+  strategy?: 'link-tag' | 'http2-push'
 }

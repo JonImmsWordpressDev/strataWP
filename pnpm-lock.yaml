@@ -48,6 +48,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.7.0(vite@5.4.21)
+      '@wp-forge/cli':
+        specifier: workspace:^
+        version: link:../../packages/cli
       '@wp-forge/vite-plugin':
         specifier: workspace:*
         version: link:../../packages/vite-plugin

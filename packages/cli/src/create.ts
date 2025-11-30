@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import prompts from 'prompts'
 import chalk from 'chalk'
 import ora from 'ora'

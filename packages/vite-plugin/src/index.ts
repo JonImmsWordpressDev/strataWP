@@ -3,6 +3,8 @@ import { wpForgeBlocks } from './plugins/blocks'
 import { wpForgeManifest } from './plugins/manifest'
 import { wpForgePhpHmr } from './plugins/php-hmr'
 import { wpForgeAssets } from './plugins/assets'
+import { wpForgeDesignSystem } from './plugins/design-system'
+import { wpForgePerformance } from './plugins/performance'
 import type { WpForgePluginOptions } from './types'
 
 /**
@@ -31,15 +33,34 @@ export function wpForge(options: WpForgePluginOptions = {}): Plugin[] {
     assets = {
       publicDir: 'dist',
     },
+    designSystem = {
+      enabled: false,
+      framework: 'none',
+    },
+    performance = {
+      criticalCSS: true,
+      lazyLoading: true,
+      preload: true,
+    },
   } = options
 
-  return [
+  const plugins: Plugin[] = [
     wpForgeCore(options),
     wpForgeBlocks(blocks),
     wpForgeManifest(manifest),
     wpForgePhpHmr(phpHmr),
     wpForgeAssets(assets),
   ]
+
+  // Add design system plugin if enabled
+  if (designSystem.enabled) {
+    plugins.push(wpForgeDesignSystem(designSystem))
+  }
+
+  // Add performance plugins
+  plugins.push(...wpForgePerformance(performance))
+
+  return plugins
 }
 
 /**
@@ -111,4 +132,6 @@ function wpForgeCore(_options: WpForgePluginOptions): Plugin {
 }
 
 export * from './types'
-export { wpForgeBlocks, wpForgeManifest, wpForgePhpHmr, wpForgeAssets }
+export { wpForgeBlocks, wpForgeManifest, wpForgePhpHmr, wpForgeAssets, wpForgeDesignSystem, wpForgePerformance }
+export { wpForgeTailwindPreset } from './integrations/tailwind-preset'
+export { wpForgeUnoPreset } from './integrations/unocss-preset'

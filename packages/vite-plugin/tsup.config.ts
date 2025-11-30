@@ -5,5 +5,5 @@ export default defineConfig({
   format: ['esm'],
   dts: true,
   clean: true,
-  external: ['vite'],
+  external: ['vite', 'tailwindcss', 'autoprefixer', 'critical', '@unocss/vite', 'unocss'],
 })

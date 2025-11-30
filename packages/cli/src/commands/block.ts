@@ -6,6 +6,7 @@ import path from 'path'
 interface BlockOptions {
   type: 'static' | 'dynamic'
   category: string
+  styleFramework?: 'none' | 'tailwind' | 'unocss'
 }
 
 export async function blockCommand(name: string, options: BlockOptions) {
@@ -24,9 +25,9 @@ export async function blockCommand(name: string, options: BlockOptions) {
 
     // Generate block files
     await generateBlockConfig(blockDir, name, slug, options)
-    await generateBlockEdit(blockDir, name, slug)
-    await generateBlockRender(blockDir, name, slug, options.type)
-    await generateBlockStyles(blockDir, slug)
+    await generateBlockEdit(blockDir, name, slug, options.styleFramework || 'none')
+    await generateBlockRender(blockDir, name, slug, options.type, options.styleFramework || 'none')
+    await generateBlockStyles(blockDir, slug, options.styleFramework || 'none')
 
     spinner.succeed(chalk.green(`Block "${name}" created!`))
 
@@ -71,15 +72,26 @@ async function generateBlockConfig(
   await fs.writeJson(path.join(blockDir, 'block.json'), config, { spaces: 2 })
 }
 
-async function generateBlockEdit(blockDir: string, name: string, slug: string) {
+async function generateBlockEdit(blockDir: string, name: string, slug: string, framework: string) {
+  const useTailwind = framework === 'tailwind'
+  const useUno = framework === 'unocss'
+
+  const classes = useTailwind || useUno
+    ? 'className="p-4 bg-gray-100 rounded-lg"'
+    : ''
+
+  const headingClasses = useTailwind || useUno
+    ? 'className="text-2xl font-bold mb-2"'
+    : ''
+
   const content = `import { useBlockProps } from '@wordpress/block-editor'
 
 export default function Edit() {
-  const blockProps = useBlockProps()
+  const blockProps = useBlockProps(${useTailwind || useUno ? '{ className: \'p-4 bg-gray-100 rounded-lg\' }' : ''})
 
   return (
     <div {...blockProps}>
-      <h3>${name}</h3>
+      <h3 ${headingClasses}>${name}</h3>
       <p>Edit your block here...</p>
     </div>
   )
@@ -93,9 +105,15 @@ async function generateBlockRender(
   blockDir: string,
   name: string,
   slug: string,
-  type: 'static' | 'dynamic'
+  type: 'static' | 'dynamic',
+  framework: string
 ) {
   if (type === 'dynamic') {
+    const useTailwind = framework === 'tailwind'
+    const useUno = framework === 'unocss'
+    const classes = useTailwind || useUno ? ' class="p-4 bg-gray-100 rounded-lg"' : ''
+    const headingClasses = useTailwind || useUno ? ' class="text-2xl font-bold mb-2"' : ''
+
     const content = `<?php
 /**
  * ${name} Block Render
@@ -108,8 +126,8 @@ async function generateBlockRender(
 $block_wrapper_attributes = get_block_wrapper_attributes();
 ?>
 
-<div <?php echo $block_wrapper_attributes; ?>>
-  <h3><?php echo esc_html__( '${name}', 'wp-forge' ); ?></h3>
+<div <?php echo $block_wrapper_attributes; ?>${classes}>
+  <h3${headingClasses}><?php echo esc_html__( '${name}', 'wp-forge' ); ?></h3>
   <!-- Add your dynamic content here -->
 </div>
 `
@@ -118,11 +136,33 @@ $block_wrapper_attributes = get_block_wrapper_attributes();
   }
 }
 
-async function generateBlockStyles(blockDir: string, slug: string) {
-  const content = `.wp-block-wp-forge-${slug} {
-  /* Add your styles here */
+async function generateBlockStyles(blockDir: string, slug: string, framework: string) {
+  let content: string
+
+  if (framework === 'tailwind' || framework === 'unocss') {
+    content = `/*
+ * ${framework === 'tailwind' ? 'Tailwind CSS' : 'UnoCSS'} utilities are used inline.
+ * Add custom styles here only if needed.
+ */
+
+.wp-block-wp-forge-${slug} {
+  /* Custom styles */
 }
 `
+  } else {
+    content = `.wp-block-wp-forge-${slug} {
+  padding: 1rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+}
+
+.wp-block-wp-forge-${slug} h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+`
+  }
 
   await fs.writeFile(path.join(blockDir, 'style.css'), content)
 }
