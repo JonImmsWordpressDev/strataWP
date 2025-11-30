@@ -1,6 +1,6 @@
 {
   "name": "@wp-forge/cli",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "CLI tool for WP-Forge - create and manage WordPress themes",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",

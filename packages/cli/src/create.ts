@@ -351,6 +351,97 @@ add_action('wp_enqueue_scripts', 'load_vite_assets');
 `
 
   await fs.writeFile(path.join(themePath, 'inc/vite-assets.php'), viteAssetsPhp)
+
+  // Create essential template files
+  const indexTemplate = `<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group">
+    <!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":true}} -->
+    <div class="wp-block-query">
+        <!-- wp:post-template -->
+            <!-- wp:post-title {"isLink":true} /-->
+            <!-- wp:post-date /-->
+            <!-- wp:post-excerpt /-->
+        <!-- /wp:post-template -->
+
+        <!-- wp:query-pagination -->
+            <!-- wp:query-pagination-previous /-->
+            <!-- wp:query-pagination-numbers /-->
+            <!-- wp:query-pagination-next /-->
+        <!-- /wp:query-pagination -->
+
+        <!-- wp:query-no-results -->
+            <!-- wp:paragraph -->
+            <p>No posts found.</p>
+            <!-- /wp:paragraph -->
+        <!-- /wp:query-no-results -->
+    </div>
+    <!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->`
+
+  await fs.writeFile(path.join(themePath, 'templates/index.html'), indexTemplate)
+
+  // Create header template part
+  const headerTemplate = `<!-- wp:group {"tagName":"header","style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem"}}},"layout":{"type":"constrained"}} -->
+<header class="wp-block-group" style="padding-top:2rem;padding-bottom:2rem">
+    <!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
+    <div class="wp-block-group">
+        <!-- wp:site-title /-->
+        <!-- wp:navigation /-->
+    </div>
+    <!-- /wp:group -->
+</header>
+<!-- /wp:group -->`
+
+  await fs.writeFile(path.join(themePath, 'parts/header.html'), headerTemplate)
+
+  // Create footer template part
+  const footerTemplate = `<!-- wp:group {"tagName":"footer","style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem"}}},"layout":{"type":"constrained"}} -->
+<footer class="wp-block-group" style="padding-top:2rem;padding-bottom:2rem">
+    <!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"}} -->
+    <div class="wp-block-group">
+        <!-- wp:paragraph -->
+        <p>Built with WP-Forge</p>
+        <!-- /wp:paragraph -->
+    </div>
+    <!-- /wp:group -->
+</footer>
+<!-- /wp:group -->`
+
+  await fs.writeFile(path.join(themePath, 'parts/footer.html'), footerTemplate)
+
+  // Create single post template
+  const singleTemplate = `<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group">
+    <!-- wp:post-title /-->
+    <!-- wp:post-featured-image /-->
+    <!-- wp:post-content /-->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->`
+
+  await fs.writeFile(path.join(themePath, 'templates/single.html'), singleTemplate)
+
+  // Create page template
+  const pageTemplate = `<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group">
+    <!-- wp:post-title /-->
+    <!-- wp:post-content /-->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->`
+
+  await fs.writeFile(path.join(themePath, 'templates/page.html'), pageTemplate)
 }
 
 main().catch((error) => {

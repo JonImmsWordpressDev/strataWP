@@ -14,7 +14,7 @@ const program = new Command()
 program
   .name('wp-forge')
   .description('⚒️  A modern WordPress theme framework')
-  .version('0.2.1')
+  .version('0.2.2')
 
 // Development server
 program
