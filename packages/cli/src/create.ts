@@ -139,18 +139,24 @@ async function createBasicStructure(themePath: string, config: ThemeConfig) {
     description: config.description,
     author: config.author,
     license: 'GPL-3.0-or-later',
+    type: 'module',
     scripts: {
-      dev: 'wp-forge dev',
-      build: 'wp-forge build',
-      test: 'wp-forge test',
+      dev: 'vite',
+      build: 'vite build',
+      preview: 'vite preview',
     },
     dependencies: {
-      '@wp-forge/core': '^0.1.0',
+      '@wordpress/block-editor': '^12.19.0',
+      '@wordpress/blocks': '^12.28.0',
+      '@wordpress/components': '^27.0.0',
+      '@wordpress/element': '^5.28.0',
+      '@wordpress/i18n': '^4.51.0',
     },
     devDependencies: {
-      '@wp-forge/cli': '^0.1.0',
-      '@wp-forge/vite-plugin': '^0.1.0',
-      vite: '^5.0.0',
+      '@wp-forge/cli': '^0.2.0',
+      '@wp-forge/vite-plugin': '^0.2.0',
+      '@vitejs/plugin-react': '^4.2.1',
+      vite: '^5.0.10',
       typescript: config.typescript ? '^5.3.3' : undefined,
     },
   }
@@ -194,6 +200,83 @@ Built with [WP-Forge](https://github.com/JonImmsWordpressDev/WP-Forge)
 
   await fs.writeFile(path.join(themePath, 'README.md'), readme)
 
+  // Create vite.config.ts
+  const viteConfig = `import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { wpForge } from '@wp-forge/vite-plugin'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    wpForge({
+      blocks: {
+        dir: 'src/blocks',
+        autoRegister: true,
+        namespace: '${config.slug}',
+      },
+      ${config.cssFramework !== 'vanilla' ? `designSystem: {
+        enabled: true,
+        framework: '${config.cssFramework === 'unocss' ? 'unocss' : config.cssFramework === 'tailwind' ? 'tailwind' : 'none'}',
+        wordpressPresets: true,
+      },` : ''}
+      performance: {
+        criticalCSS: { enabled: true },
+        lazyLoading: { enabled: true },
+        preload: { enabled: true },
+      },
+      phpHmr: {
+        enabled: true,
+        watch: ['**/*.php', 'theme.json', 'templates/**/*'],
+      },
+      manifest: {
+        enabled: true,
+        wordpress: true,
+      },
+    }),
+  ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: './src/js/main.ts',
+        editor: './src/js/editor.ts',
+      },
+    },
+  },
+})`
+
+  await fs.writeFile(path.join(themePath, 'vite.config.ts'), viteConfig)
+
+  // Create functions.php
+  const functionsPhp = `<?php
+/**
+ * Theme functions
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Load Vite assets
+require_once get_template_directory() . '/inc/vite-assets.php';
+`
+
+  await fs.writeFile(path.join(themePath, 'functions.php'), functionsPhp)
+
+  // Create theme.json
+  const themeJson = {
+    $schema: 'https://schemas.wp.org/trunk/theme.json',
+    version: 2,
+    settings: {
+      appearanceTools: true,
+      layout: {
+        contentSize: '800px',
+        wideSize: '1200px',
+      },
+    },
+  }
+
+  await fs.writeJson(path.join(themePath, 'theme.json'), themeJson, { spaces: 2 })
+
   // Create basic directories
   await fs.ensureDir(path.join(themePath, 'src'))
   await fs.ensureDir(path.join(themePath, 'src/css'))
@@ -202,6 +285,72 @@ Built with [WP-Forge](https://github.com/JonImmsWordpressDev/WP-Forge)
   await fs.ensureDir(path.join(themePath, 'inc'))
   await fs.ensureDir(path.join(themePath, 'templates'))
   await fs.ensureDir(path.join(themePath, 'parts'))
+
+  // Create main.ts
+  await fs.writeFile(
+    path.join(themePath, 'src/js/main.ts'),
+    `import '../css/main.css'\n\nconsole.log('${config.name} loaded')\n`
+  )
+
+  // Create editor.ts
+  await fs.writeFile(
+    path.join(themePath, 'src/js/editor.ts'),
+    `import '../css/editor.css'\n`
+  )
+
+  // Create main.css
+  await fs.writeFile(
+    path.join(themePath, 'src/css/main.css'),
+    `/* Main stylesheet for ${config.name} */\n\nbody {\n  font-family: system-ui, sans-serif;\n}\n`
+  )
+
+  // Create editor.css
+  await fs.writeFile(
+    path.join(themePath, 'src/css/editor.css'),
+    `/* Editor stylesheet */\n`
+  )
+
+  // Create vite-assets.php helper
+  const viteAssetsPhp = `<?php
+/**
+ * Vite asset loading helper
+ */
+
+function load_vite_assets() {
+    $manifest_path = get_template_directory() . '/dist/.vite/manifest.json';
+
+    if (!file_exists($manifest_path)) {
+        return;
+    }
+
+    $manifest = json_decode(file_get_contents($manifest_path), true);
+
+    if (isset($manifest['src/js/main.ts'])) {
+        wp_enqueue_script(
+            '${config.slug}-main',
+            get_template_directory_uri() . '/dist/' . $manifest['src/js/main.ts']['file'],
+            [],
+            null,
+            true
+        );
+
+        if (isset($manifest['src/js/main.ts']['css'])) {
+            foreach ($manifest['src/js/main.ts']['css'] as $css) {
+                wp_enqueue_style(
+                    '${config.slug}-main-css',
+                    get_template_directory_uri() . '/dist/' . $css,
+                    [],
+                    null
+                );
+            }
+        }
+    }
+}
+
+add_action('wp_enqueue_scripts', 'load_vite_assets');
+`
+
+  await fs.writeFile(path.join(themePath, 'inc/vite-assets.php'), viteAssetsPhp)
 }
 
 main().catch((error) => {
