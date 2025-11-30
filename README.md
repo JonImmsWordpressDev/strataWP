@@ -10,9 +10,18 @@
 
 WP-Forge is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
-## What's New in v0.1.0
+## What's New in v0.2.0
 
-The initial release of WP-Forge is now available! Here's what's included:
+Major feature update with three high-impact additions:
+
+- **CLI Scaffolding** - Generate templates, parts, components, and blocks with `wp-forge` commands
+- **Design System Integration** - Full Tailwind CSS and UnoCSS support with WordPress preset mappings
+- **Performance Optimization** - Automatic critical CSS extraction, lazy loading, and asset preloading
+- **Enhanced Block Generation** - Blocks now support style framework integration
+- **WordPress Preset Mappings** - Use `text-wp-primary`, `p-wp-md`, `font-wp-sans` and more
+- **Auto-Generated PHP Loaders** - Performance plugins generate WordPress integration files automatically
+
+### v0.1.0 (Initial Release)
 
 - **Published npm packages** - `@wp-forge/cli` and `@wp-forge/vite-plugin` are live
 - **Block Theme (FSE) support** - Full Site Editing out of the box
@@ -70,17 +79,17 @@ While inspired by excellent frameworks like WPRig, WP-Forge goes further with mo
 - **WordPress Manifest**: Automatic asset manifest generation for WordPress
 - **Example Themes**: Learn from working examples (basic and advanced)
 - **Sitecore-Inspired Design**: Beautiful, professional design system included
+- **CLI Scaffolding**: Generate templates, parts, components, and blocks with intuitive commands
+- **Design System Integration**: Choose Tailwind CSS or UnoCSS with WordPress preset mappings
+- **Performance Optimization**: Automatic critical CSS extraction, lazy loading, and preloading
 
 ### Coming Soon
 
 - **Component Registry**: Share and reuse components across projects
 - **AI-Assisted Development**: Built-in AI tools for development (optional)
-- **Design System Integration**: Choose Tailwind, UnoCSS, or vanilla CSS
 - **Comprehensive Testing**: Unit, integration, E2E, and visual regression tests
-- **Performance Optimization**: Automatic critical CSS, lazy loading
 - **Headless-Ready**: First-class support for decoupled architectures
 - **Component Explorer**: Built-in Storybook-like component browser
-- **CLI Scaffolding**: Generate components, blocks, and templates
 
 ## Installation
 
@@ -125,9 +134,35 @@ WP-Forge/
 
 ## Features in Detail
 
+### CLI Commands
+
+Generate theme components quickly with intuitive commands:
+
+```bash
+# Create WordPress templates
+wp-forge template:new home --type=home
+wp-forge template:new about --type=page
+
+# Create template parts
+wp-forge part:new sidebar --type=sidebar --markup=php
+wp-forge part:new custom-header --type=header
+
+# Create PHP components
+wp-forge component:new Analytics --type=feature
+wp-forge component:new WooCommerce --type=integration
+
+# Create blocks with design system support
+wp-forge block:new hero --styleFramework=tailwind
+wp-forge block:new card --styleFramework=unocss
+
+# Setup design system integration
+wp-forge design-system:setup tailwind
+wp-forge design-system:setup unocss
+```
+
 ### Vite Integration
 
-WP-Forge includes a custom Vite plugin (`@wp-forge/vite-plugin`) that provides:
+WP-Forge includes a custom Vite plugin (`@wp-forge/vite-plugin`) with comprehensive features:
 
 ```typescript
 // vite.config.ts
@@ -143,11 +178,36 @@ export default defineConfig({
         autoRegister: true,
         namespace: 'my-theme',
       },
+
+      // Design System Integration (NEW in v0.2.0)
+      designSystem: {
+        enabled: true,
+        framework: 'tailwind', // or 'unocss'
+        wordpressPresets: true,
+      },
+
+      // Performance Optimization (NEW in v0.2.0)
+      performance: {
+        criticalCSS: {
+          enabled: true,
+          templates: ['index', 'single', 'page'],
+        },
+        lazyLoading: {
+          enabled: true,
+          images: 'native',
+        },
+        preload: {
+          enabled: true,
+          assets: ['fonts', 'critical-css'],
+        },
+      },
+
       // PHP Hot Module Replacement
       phpHmr: {
         enabled: true,
         watch: ['**/*.php', 'theme.json', 'templates/**/*'],
       },
+
       // WordPress-compatible manifest
       manifest: {
         enabled: true,
@@ -157,6 +217,23 @@ export default defineConfig({
   ],
 })
 ```
+
+### Design System Integration
+
+Use WordPress theme.json values directly in your utility classes:
+
+```tsx
+// Tailwind/UnoCSS classes mapped from theme.json
+<div className="text-wp-primary bg-wp-background p-wp-md">
+  <h1 className="font-wp-sans text-wp-xl">Hello WordPress!</h1>
+</div>
+```
+
+WordPress CSS variables are automatically mapped:
+- Colors: `text-wp-primary`, `bg-wp-secondary`, `border-wp-accent`
+- Spacing: `p-wp-md`, `m-wp-lg`, `gap-wp-sm`
+- Typography: `font-wp-sans`, `text-wp-lg`
+- Layout: `max-w-wp-container`, `max-w-wp-wide`
 
 ### Block Theme (FSE) Support
 
@@ -253,6 +330,6 @@ Inspired by:
 
 ---
 
-**Status**: v0.1.0 Alpha - Available for Testing
+**Status**: v0.2.0 Alpha - Now with CLI Scaffolding, Design Systems, and Performance Optimization
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
