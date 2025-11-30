@@ -1,6 +1,6 @@
 {
   "name": "@wp-forge/vite-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vite plugin for WordPress theme development with WP-Forge",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
