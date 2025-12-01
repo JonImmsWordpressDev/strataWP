@@ -1,12 +1,22 @@
-# WP-Forge
+<div align="center">
+  <img src="logo.png" alt="WP-Forge Logo" width="200" />
 
-> A modern, powerful WordPress theme framework - **forged to be better**
+  # WP-Forge
+
+  **A modern, powerful WordPress theme framework - forged to be better**
+</div>
+
+<div align="center">
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.1+-purple)](https://www.php.net/)
 [![npm version](https://img.shields.io/npm/v/@wp-forge/cli)](https://www.npmjs.com/package/@wp-forge/cli)
 [![npm version](https://img.shields.io/npm/v/@wp-forge/vite-plugin)](https://www.npmjs.com/package/@wp-forge/vite-plugin)
+
+</div>
+
+---
 
 WP-Forge is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
