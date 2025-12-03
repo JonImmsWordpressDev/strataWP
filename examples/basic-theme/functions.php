@@ -31,13 +31,21 @@ use ForgeBasic\Components\Customizer;
  */
 function forge_basic_init(): void {
     // Create theme with custom components
+    $assets = new Assets();
+
     $theme = new Theme([
         new Setup(),
-        new Assets(),
+        $assets,
         new Blocks(),
         new Performance(),
         new Navigation(),
         new Customizer(),
+    ]);
+
+    // Configure Google Fonts
+    $assets->set_google_fonts([
+        'Inter:wght@400;500;600;700',
+        'Roboto:wght@300;400;500',
     ]);
 
     // Initialize theme

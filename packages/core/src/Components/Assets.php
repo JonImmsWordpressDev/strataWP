@@ -10,7 +10,7 @@ namespace WPForge\Components;
 use WPForge\ComponentInterface;
 
 /**
- * Asset management for Vite-built assets
+ * Asset management for Vite-built assets and web fonts
  */
 class Assets implements ComponentInterface {
 	/**
@@ -19,6 +19,13 @@ class Assets implements ComponentInterface {
 	 * @var array|null
 	 */
 	protected ?array $manifest = null;
+
+	/**
+	 * Google Fonts to load
+	 *
+	 * @var array
+	 */
+	protected array $google_fonts = [];
 
 	/**
 	 * {@inheritdoc}
@@ -31,7 +38,9 @@ class Assets implements ComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
+		add_action( 'wp_head', [ $this, 'add_font_preconnect' ], 1 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_fonts' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_editor_assets' ] );
 	}
 
@@ -129,4 +138,82 @@ class Assets implements ComponentInterface {
 
 		return $this->manifest;
 	}
+
+	/**
+	 * Add preconnect hints for Google Fonts
+	 */
+	public function add_font_preconnect(): void {
+		if ( empty( $this->google_fonts ) ) {
+			return;
+		}
+
+		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+	}
+
+	/**
+	 * Enqueue Google Fonts
+	 */
+	public function enqueue_fonts(): void {
+		if ( empty( $this->google_fonts ) ) {
+			return;
+		}
+
+		$font_url = $this->build_google_fonts_url();
+
+		if ( $font_url ) {
+			wp_enqueue_style(
+				'wp-forge-fonts',
+				$font_url,
+				[],
+				null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			);
+		}
+	}
+
+	/**
+	 * Build Google Fonts URL
+	 *
+	 * @return string|false
+	 */
+	protected function build_google_fonts_url() {
+		if ( empty( $this->google_fonts ) ) {
+			return false;
+		}
+
+		$families = implode( '&family=', $this->google_fonts );
+
+		return add_query_arg(
+			[
+				'family'  => $families,
+				'display' => 'swap',
+			],
+			'https://fonts.googleapis.com/css2'
+		);
+	}
+
+	/**
+	 * Set Google Fonts to load
+	 *
+	 * @param array $fonts Array of font strings (e.g., ['Inter:wght@400;700']).
+	 * @return self
+	 */
+	public function set_google_fonts( array $fonts ): self {
+		$this->google_fonts = $fonts;
+		return $this;
+	}
+
+	/**
+	 * Add a Google Font
+	 *
+	 * @param string $font Font string (e.g., 'Inter:wght@400;700').
+	 * @return self
+	 */
+	public function add_google_font( string $font ): self {
+		if ( ! in_array( $font, $this->google_fonts, true ) ) {
+			$this->google_fonts[] = $font;
+		}
+		return $this;
+	}
 }
+
