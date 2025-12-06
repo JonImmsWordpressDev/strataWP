@@ -2,7 +2,7 @@
 /**
  * Footer template
  *
- * @package ForgeBasic
+ * @package StrataBasic
  */
 ?>
 
@@ -12,21 +12,21 @@
                 <?php
                 printf(
                     /* translators: 1: Theme name, 2: Theme author link */
-                    esc_html__( '%1$s by %2$s', 'forge-basic' ),
-                    '<a href="' . esc_url( 'https://github.com/JonImmsWordpressDev/WP-Forge' ) . '">WP-Forge</a>',
+                    esc_html__( '%1$s by %2$s', 'strata-basic' ),
+                    '<a href="' . esc_url( 'https://github.com/JonImmsWordpressDev/StrataWP' ) . '">StrataWP</a>',
                     '<a href="' . esc_url( 'https://github.com/JonImmsWordpressDev' ) . '">Jon Imms</a>'
                 );
                 ?>
             </p>
-            <p class="forge-badge">
-                ⚒️ Built with <strong>WP-Forge</strong>
+            <p class="strata-badge">
+                ⚒️ Built with <strong>StrataWP</strong>
             </p>
         </div>
 
         <?php
         if ( has_nav_menu( 'footer' ) ) :
             ?>
-            <nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer Navigation', 'forge-basic' ); ?>">
+            <nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer Navigation', 'strata-basic' ); ?>">
                 <?php
                 wp_nav_menu([
                     'theme_location' => 'footer',

@@ -5,7 +5,7 @@
  */
 
 // Use any type for Config since tailwindcss is an optional peer dependency
-export const wpForgeTailwindPreset: Partial<any> = {
+export const strataWPTailwindPreset: Partial<any> = {
   theme: {
     extend: {
       colors: {
@@ -86,4 +86,4 @@ export const wpForgeTailwindPreset: Partial<any> = {
   ],
 }
 
-export default wpForgeTailwindPreset
+export default strataWPTailwindPreset

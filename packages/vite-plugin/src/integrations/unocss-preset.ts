@@ -5,8 +5,8 @@
  */
 
 // Use any type for Preset since unocss is an optional peer dependency
-export const wpForgeUnoPreset: any = {
-  name: '@wp-forge/uno-preset',
+export const strataWPUnoPreset: any = {
+  name: '@stratawp/uno-preset',
 
   theme: {
     colors: {
@@ -100,4 +100,4 @@ export const wpForgeUnoPreset: any = {
   ],
 }
 
-export default wpForgeUnoPreset
+export default strataWPUnoPreset

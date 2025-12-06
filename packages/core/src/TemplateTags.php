@@ -2,10 +2,10 @@
 /**
  * Template Tags Class
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge;
+namespace StrataWP;
 
 use BadMethodCallException;
 

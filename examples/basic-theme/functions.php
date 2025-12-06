@@ -1,35 +1,35 @@
 <?php
 /**
- * WP-Forge Basic Theme
+ * StrataWP Basic Theme
  *
- * A demonstration of the WP-Forge framework in action.
+ * A demonstration of the StrataWP framework in action.
  *
- * @package ForgeBasic
+ * @package StrataBasic
  */
 
 // Minimum PHP version check
 if ( version_compare( PHP_VERSION, '8.1', '<' ) ) {
     wp_die(
-        esc_html__( 'This theme requires PHP 8.1 or higher.', 'forge-basic' ),
-        esc_html__( 'PHP Version Error', 'forge-basic' )
+        esc_html__( 'This theme requires PHP 8.1 or higher.', 'strata-basic' ),
+        esc_html__( 'PHP Version Error', 'strata-basic' )
     );
 }
 
 // Load Composer autoloader
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WPForge\Theme;
-use WPForge\Components\Setup;
-use WPForge\Components\Assets;
-use WPForge\Components\Blocks;
-use WPForge\Components\Performance;
-use ForgeBasic\Components\Navigation;
-use ForgeBasic\Components\Customizer;
+use StrataWP\Theme;
+use StrataWP\Components\Setup;
+use StrataWP\Components\Assets;
+use StrataWP\Components\Blocks;
+use StrataWP\Components\Performance;
+use StrataBasic\Components\Navigation;
+use StrataBasic\Components\Customizer;
 
 /**
  * Initialize the theme
  */
-function forge_basic_init(): void {
+function strata_basic_init(): void {
     // Create theme with custom components
     $assets = new Assets();
 
@@ -52,24 +52,24 @@ function forge_basic_init(): void {
     $theme->initialize();
 
     // Store in global for easy access
-    $GLOBALS['forge_basic_theme'] = $theme;
+    $GLOBALS['strata_basic_theme'] = $theme;
 }
 
-add_action( 'after_setup_theme', 'forge_basic_init', 1 );
+add_action( 'after_setup_theme', 'strata_basic_init', 1 );
 
 /**
  * Get theme instance
  *
  * @return Theme
  */
-function forge_basic(): Theme {
-    return $GLOBALS['forge_basic_theme'] ?? Theme::instance();
+function strata_basic(): Theme {
+    return $GLOBALS['strata_basic_theme'] ?? Theme::instance();
 }
 
 /**
  * Load Vite dev server in development
  */
-function forge_basic_vite_dev_server(): void {
+function strata_basic_vite_dev_server(): void {
     if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || 'local' !== WP_ENVIRONMENT_TYPE ) {
         return;
     }
@@ -97,19 +97,19 @@ function forge_basic_vite_dev_server(): void {
     }
 }
 
-add_action( 'wp_head', 'forge_basic_vite_dev_server', 1 );
+add_action( 'wp_head', 'strata_basic_vite_dev_server', 1 );
 
 /**
  * Theme activation
  */
-function forge_basic_activate(): void {
+function strata_basic_activate(): void {
     // Set default theme mods
-    if ( ! get_theme_mod( 'forge_basic_setup_complete' ) ) {
-        set_theme_mod( 'forge_basic_setup_complete', true );
+    if ( ! get_theme_mod( 'strata_basic_setup_complete' ) ) {
+        set_theme_mod( 'strata_basic_setup_complete', true );
 
         // Flush rewrite rules
         flush_rewrite_rules();
     }
 }
 
-add_action( 'after_switch_theme', 'forge_basic_activate' );
+add_action( 'after_switch_theme', 'strata_basic_activate' );

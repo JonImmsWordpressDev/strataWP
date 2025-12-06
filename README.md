@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="logo.png" alt="WP-Forge Logo" width="200" />
+  <img src="logo.png" alt="StrataWP Logo" width="200" />
 
-  # WP-Forge
+  # StrataWP
 
-  **A modern, powerful WordPress theme framework - forged to be better**
+  **A modern, powerful WordPress theme framework**
 </div>
 
 <div align="center">
@@ -11,14 +11,14 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.1+-purple)](https://www.php.net/)
-[![npm version](https://img.shields.io/npm/v/@wp-forge/cli)](https://www.npmjs.com/package/@wp-forge/cli)
-[![npm version](https://img.shields.io/npm/v/@wp-forge/vite-plugin)](https://www.npmjs.com/package/@wp-forge/vite-plugin)
+[![npm version](https://img.shields.io/npm/v/@stratawp/cli)](https://www.npmjs.com/package/@stratawp/cli)
+[![npm version](https://img.shields.io/npm/v/@stratawp/vite-plugin)](https://www.npmjs.com/package/@stratawp/vite-plugin)
 
 </div>
 
 ---
 
-WP-Forge is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
+StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
 ## What's New in v0.2.0
 
@@ -33,7 +33,7 @@ Major feature update with three high-impact additions:
 
 ### v0.1.0 (Initial Release)
 
-- **Published npm packages** - `@wp-forge/cli` and `@wp-forge/vite-plugin` are live
+- **Published npm packages** - `@stratawp/cli` and `@stratawp/vite-plugin` are live
 - **Block Theme (FSE) support** - Full Site Editing out of the box
 - **Vite integration** - Lightning-fast HMR and build times
 - **TypeScript-first** - Type safety across your entire theme
@@ -47,8 +47,8 @@ Major feature update with three high-impact additions:
 ### Create a New Theme
 
 ```bash
-# Create a new WP-Forge theme (easiest way!)
-npx create-wp-forge my-theme
+# Create a new StrataWP theme (easiest way!)
+npx create-stratawp my-theme
 
 # Navigate to your theme
 cd my-theme
@@ -61,8 +61,8 @@ npm run dev
 
 ```bash
 # Clone the repository
-git clone https://github.com/JonImmsWordpressDev/WP-Forge.git
-cd WP-Forge
+git clone https://github.com/JonImmsWordpressDev/StrataWP.git
+cd StrataWP
 
 # Install dependencies
 pnpm install
@@ -74,9 +74,9 @@ pnpm dev
 pnpm build
 ```
 
-## Why WP-Forge?
+## Why StrataWP?
 
-While inspired by excellent frameworks like WPRig, WP-Forge goes further with modern tooling and developer experience.
+While inspired by excellent frameworks like WPRig, StrataWP goes further with modern tooling and developer experience.
 
 ### Available Now
 
@@ -106,7 +106,7 @@ While inspired by excellent frameworks like WPRig, WP-Forge goes further with mo
 ### Using the CLI (Recommended)
 
 ```bash
-npx create-wp-forge my-theme
+npx create-stratawp my-theme
 ```
 
 This creates a new WordPress theme with:
@@ -120,20 +120,20 @@ This creates a new WordPress theme with:
 
 ```bash
 # Install the packages
-npm install --save-dev @wp-forge/vite-plugin
-npm install --global @wp-forge/cli
+npm install --save-dev @stratawp/vite-plugin
+npm install --global @stratawp/cli
 
 # Or with pnpm
-pnpm add -D @wp-forge/vite-plugin
-pnpm add -g @wp-forge/cli
+pnpm add -D @stratawp/vite-plugin
+pnpm add -g @stratawp/cli
 ```
 
 ## Project Structure
 
 ```
-WP-Forge/
+StrataWP/
 ├── packages/
-│   ├── cli/              # CLI tool (create-wp-forge, wp-forge commands)
+│   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
 │   └── vite-plugin/      # Vite integration for WordPress
 ├── examples/
@@ -150,38 +150,38 @@ Generate theme components quickly with intuitive commands:
 
 ```bash
 # Create WordPress templates
-wp-forge template:new home --type=home
-wp-forge template:new about --type=page
+stratawp template:new home --type=home
+stratawp template:new about --type=page
 
 # Create template parts
-wp-forge part:new sidebar --type=sidebar --markup=php
-wp-forge part:new custom-header --type=header
+stratawp part:new sidebar --type=sidebar --markup=php
+stratawp part:new custom-header --type=header
 
 # Create PHP components
-wp-forge component:new Analytics --type=feature
-wp-forge component:new WooCommerce --type=integration
+stratawp component:new Analytics --type=feature
+stratawp component:new WooCommerce --type=integration
 
 # Create blocks with design system support
-wp-forge block:new hero --styleFramework=tailwind
-wp-forge block:new card --styleFramework=unocss
+stratawp block:new hero --styleFramework=tailwind
+stratawp block:new card --styleFramework=unocss
 
 # Setup design system integration
-wp-forge design-system:setup tailwind
-wp-forge design-system:setup unocss
+stratawp design-system:setup tailwind
+stratawp design-system:setup unocss
 ```
 
 ### Vite Integration
 
-WP-Forge includes a custom Vite plugin (`@wp-forge/vite-plugin`) with comprehensive features:
+StrataWP includes a custom Vite plugin (`@stratawp/vite-plugin`) with comprehensive features:
 
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
-import { wpForge } from '@wp-forge/vite-plugin'
+import { strataWP } from '@stratawp/vite-plugin'
 
 export default defineConfig({
   plugins: [
-    wpForge({
+    strataWP({
       // Automatically discover and register blocks
       blocks: {
         dir: 'src/blocks',
@@ -315,12 +315,12 @@ Documentation is coming soon! For now:
 
 ## Contributing
 
-WP-Forge is an open-source project and contributions are welcome!
+StrataWP is an open-source project and contributions are welcome!
 
 - Check out the [CONTRIBUTING.md](./CONTRIBUTING.md) guide
-- Report bugs via [GitHub Issues](https://github.com/JonImmsWordpressDev/WP-Forge/issues)
+- Report bugs via [GitHub Issues](https://github.com/JonImmsWordpressDev/StrataWP/issues)
 - Submit pull requests for new features or fixes
-- Share your themes built with WP-Forge!
+- Share your themes built with StrataWP!
 
 ## License
 
@@ -335,8 +335,8 @@ Inspired by:
 
 ## Published Packages
 
-- [@wp-forge/cli](https://www.npmjs.com/package/@wp-forge/cli) - CLI tool for creating themes
-- [@wp-forge/vite-plugin](https://www.npmjs.com/package/@wp-forge/vite-plugin) - Vite plugin for WordPress
+- [@stratawp/cli](https://www.npmjs.com/package/@stratawp/cli) - CLI tool for creating themes
+- [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin for WordPress
 
 ---
 

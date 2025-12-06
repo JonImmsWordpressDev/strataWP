@@ -1,7 +1,7 @@
 /**
- * WP-Forge Plugin Options
+ * StrataWP Plugin Options
  */
-export interface WpForgePluginOptions {
+export interface StrataWPPluginOptions {
   /**
    * Block discovery and registration options
    */
@@ -51,7 +51,7 @@ export interface BlockOptions {
 
   /**
    * Block namespace
-   * @default 'wp-forge'
+   * @default 'stratawp'
    */
   namespace?: string
 

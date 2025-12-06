@@ -2,12 +2,12 @@
 /**
  * Performance Component
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge\Components;
+namespace StrataWP\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 
 /**
  * Performance optimizations
@@ -35,7 +35,7 @@ class Performance implements ComponentInterface {
 	public function add_resource_hints(): void {
 		// DNS prefetch for external resources
 		$hints = apply_filters(
-			'wp_forge_resource_hints',
+			'stratawp_resource_hints',
 			[
 				'//fonts.googleapis.com',
 				'//fonts.gstatic.com',
@@ -62,8 +62,8 @@ class Performance implements ComponentInterface {
 	public function add_async_defer( string $tag, string $handle, string $src ): string {
 		// Scripts to defer
 		$defer_scripts = apply_filters(
-			'wp_forge_defer_scripts',
-			[ 'wp-forge-main' ]
+			'stratawp_defer_scripts',
+			[ 'stratawp-main' ]
 		);
 
 		if ( in_array( $handle, $defer_scripts, true ) ) {
@@ -82,13 +82,13 @@ class Performance implements ComponentInterface {
 		remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
 		// Remove block library CSS (if not using WordPress blocks)
-		if ( ! apply_filters( 'wp_forge_use_block_library', true ) ) {
+		if ( ! apply_filters( 'stratawp_use_block_library', true ) ) {
 			wp_dequeue_style( 'wp-block-library' );
 			wp_dequeue_style( 'wp-block-library-theme' );
 		}
 
 		// Remove global styles (if using custom styles)
-		if ( ! apply_filters( 'wp_forge_use_global_styles', true ) ) {
+		if ( ! apply_filters( 'stratawp_use_global_styles', true ) ) {
 			wp_dequeue_style( 'global-styles' );
 		}
 	}

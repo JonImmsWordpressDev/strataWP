@@ -1,7 +1,7 @@
 /**
  * Main Theme JavaScript
  *
- * Built with WP-Forge
+ * Built with StrataWP
  */
 
 // Import styles
@@ -51,7 +51,7 @@ function init(): void {
   initMobileMenu()
   initSmoothScroll()
 
-  console.log('⚒️ WP-Forge theme loaded!')
+  console.log('⚒️ StrataWP theme loaded!')
 }
 
 // Run on DOM ready

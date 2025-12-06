@@ -2,12 +2,12 @@
 /**
  * Customizer Component
  *
- * @package ForgeBasic
+ * @package StrataBasic
  */
 
-namespace ForgeBasic\Components;
+namespace StrataBasic\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 use WP_Customize_Manager;
 
 /**
@@ -36,16 +36,16 @@ class Customizer implements ComponentInterface {
     public function register_settings( WP_Customize_Manager $wp_customize ): void {
         // Add theme section
         $wp_customize->add_section(
-            'forge_basic_theme_options',
+            'strata_basic_theme_options',
             [
-                'title'    => __( 'Theme Options', 'forge-basic' ),
+                'title'    => __( 'Theme Options', 'strata-basic' ),
                 'priority' => 30,
             ]
         );
 
         // Header text color
         $wp_customize->add_setting(
-            'forge_basic_header_color',
+            'strata_basic_header_color',
             [
                 'default'           => '#000000',
                 'sanitize_callback' => 'sanitize_hex_color',
@@ -56,17 +56,17 @@ class Customizer implements ComponentInterface {
         $wp_customize->add_control(
             new \WP_Customize_Color_Control(
                 $wp_customize,
-                'forge_basic_header_color',
+                'strata_basic_header_color',
                 [
-                    'label'   => __( 'Header Text Color', 'forge-basic' ),
-                    'section' => 'forge_basic_theme_options',
+                    'label'   => __( 'Header Text Color', 'strata-basic' ),
+                    'section' => 'strata_basic_theme_options',
                 ]
             )
         );
 
         // Show/hide tagline
         $wp_customize->add_setting(
-            'forge_basic_show_tagline',
+            'strata_basic_show_tagline',
             [
                 'default'           => true,
                 'sanitize_callback' => 'wp_validate_boolean',
@@ -74,10 +74,10 @@ class Customizer implements ComponentInterface {
         );
 
         $wp_customize->add_control(
-            'forge_basic_show_tagline',
+            'strata_basic_show_tagline',
             [
-                'label'   => __( 'Show Site Tagline', 'forge-basic' ),
-                'section' => 'forge_basic_theme_options',
+                'label'   => __( 'Show Site Tagline', 'strata-basic' ),
+                'section' => 'strata_basic_theme_options',
                 'type'    => 'checkbox',
             ]
         );

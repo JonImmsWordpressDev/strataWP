@@ -2,12 +2,12 @@
 /**
  * Setup Component
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge\Components;
+namespace StrataWP\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 
 /**
  * Theme setup and configuration
@@ -33,7 +33,7 @@ class Setup implements ComponentInterface {
 	 */
 	public function setup_theme(): void {
 		// Text domain
-		load_theme_textdomain( 'wp-forge', get_template_directory() . '/languages' );
+		load_theme_textdomain( 'stratawp', get_template_directory() . '/languages' );
 
 		// Editor styles
 		add_theme_support( 'editor-styles' );
@@ -84,6 +84,6 @@ class Setup implements ComponentInterface {
 	 * Set content width
 	 */
 	public function setup_content_width(): void {
-		$GLOBALS['content_width'] = apply_filters( 'wp_forge_content_width', 1200 );
+		$GLOBALS['content_width'] = apply_filters( 'stratawp_content_width', 1200 );
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * Main Theme Styles
  *
- * Built with WP-Forge
+ * Built with StrataWP
  */
 
 /* CSS Custom Properties */
@@ -249,7 +249,7 @@ article:last-child {
   text-decoration: none;
 }
 
-.forge-badge {
+.strata-badge {
   font-weight: 600;
   margin-top: var(--spacing-sm);
 }

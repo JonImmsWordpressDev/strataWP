@@ -2,15 +2,15 @@
 /**
  * Main Theme Class
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge;
+namespace StrataWP;
 
 use InvalidArgumentException;
 
 /**
- * Main theme class for WP-Forge
+ * Main theme class for StrataWP
  *
  * Manages theme initialization, components, and template tags.
  */
@@ -99,7 +99,7 @@ class Theme {
 		 *
 		 * @param Theme $theme Theme instance
 		 */
-		do_action( 'wp_forge_initialized', $this );
+		do_action( 'stratawp_initialized', $this );
 	}
 
 	/**

@@ -12,8 +12,8 @@ import { designSystemCommand } from './commands/design-system'
 const program = new Command()
 
 program
-  .name('wp-forge')
-  .description('⚒️  A modern WordPress theme framework')
+  .name('stratawp')
+  .description('⚡ A modern WordPress theme framework')
   .version('0.2.2')
 
 // Development server

@@ -1,6 +1,6 @@
-# WP-Forge Basic Theme
+# StrataWP Basic Theme
 
-A clean, modern Block Theme (FSE) showcasing the WP-Forge framework. Perfect for blogs, simple business sites, and learning WP-Forge basics.
+A clean, modern Block Theme (FSE) showcasing the StrataWP framework. Perfect for blogs, simple business sites, and learning StrataWP basics.
 
 ## Features
 
@@ -91,4 +91,4 @@ basic-theme/
 
 GPL-3.0-or-later
 
-Built with WP-Forge by Jon Imms
+Built with StrataWP by Jon Imms

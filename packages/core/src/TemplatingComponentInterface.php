@@ -2,10 +2,10 @@
 /**
  * Templating Component Interface
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge;
+namespace StrataWP;
 
 /**
  * Interface for components that provide template tags

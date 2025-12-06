@@ -8,7 +8,7 @@ interface DevOptions {
 }
 
 export async function devCommand(options: DevOptions) {
-  console.log(chalk.bold.cyan('⚒️  WP-Forge Development Server\n'))
+  console.log(chalk.bold.cyan('⚒️  StrataWP Development Server\n'))
 
   const spinner = ora('Starting Vite dev server...').start()
 

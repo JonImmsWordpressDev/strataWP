@@ -1,14 +1,14 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import { wpForgeBlocks } from './plugins/blocks'
-import { wpForgeManifest } from './plugins/manifest'
-import { wpForgePhpHmr } from './plugins/php-hmr'
-import { wpForgeAssets } from './plugins/assets'
-import { wpForgeDesignSystem } from './plugins/design-system'
-import { wpForgePerformance } from './plugins/performance'
-import type { WpForgePluginOptions } from './types'
+import { strataWPBlocks } from './plugins/blocks'
+import { strataWPManifest } from './plugins/manifest'
+import { strataWPPhpHmr } from './plugins/php-hmr'
+import { strataWPAssets } from './plugins/assets'
+import { strataWPDesignSystem } from './plugins/design-system'
+import { strataWPPerformance } from './plugins/performance'
+import type { StrataWPPluginOptions } from './types'
 
 /**
- * WP-Forge Vite Plugin
+ * StrataWP Vite Plugin
  *
  * Provides WordPress-specific build optimizations and development features:
  * - Block auto-discovery and registration
@@ -16,7 +16,7 @@ import type { WpForgePluginOptions } from './types'
  * - PHP file watching with HMR
  * - WordPress-compatible asset URLs
  */
-export function wpForge(options: WpForgePluginOptions = {}): Plugin[] {
+export function strataWP(options: StrataWPPluginOptions = {}): Plugin[] {
   const {
     blocks = {
       dir: 'src/blocks',
@@ -45,32 +45,32 @@ export function wpForge(options: WpForgePluginOptions = {}): Plugin[] {
   } = options
 
   const plugins: Plugin[] = [
-    wpForgeCore(options),
-    wpForgeBlocks(blocks),
-    wpForgeManifest(manifest),
-    wpForgePhpHmr(phpHmr),
-    wpForgeAssets(assets),
+    strataWPCore(options),
+    strataWPBlocks(blocks),
+    strataWPManifest(manifest),
+    strataWPPhpHmr(phpHmr),
+    strataWPAssets(assets),
   ]
 
   // Add design system plugin if enabled
   if (designSystem.enabled) {
-    plugins.push(wpForgeDesignSystem(designSystem))
+    plugins.push(strataWPDesignSystem(designSystem))
   }
 
   // Add performance plugins
-  plugins.push(...wpForgePerformance(performance))
+  plugins.push(...strataWPPerformance(performance))
 
   return plugins
 }
 
 /**
- * Core WP-Forge plugin
+ * Core StrataWP plugin
  */
-function wpForgeCore(_options: WpForgePluginOptions): Plugin {
+function strataWPCore(_options: StrataWPPluginOptions): Plugin {
   let config: ResolvedConfig
 
   return {
-    name: 'wp-forge',
+    name: 'stratawp',
 
     config() {
       return {
@@ -121,7 +121,7 @@ function wpForgeCore(_options: WpForgePluginOptions): Plugin {
       server.httpServer?.once('listening', () => {
         setTimeout(() => {
           const { logger } = config
-          logger.info('\n  ⚒️  WP-Forge Dev Server Ready!\n')
+          logger.info('\n  ⚡ StrataWP Dev Server Ready!\n')
           logger.info('  WordPress integration active')
           logger.info('  Block auto-discovery enabled')
           logger.info('  PHP HMR watching for changes\n')
@@ -132,6 +132,6 @@ function wpForgeCore(_options: WpForgePluginOptions): Plugin {
 }
 
 export * from './types'
-export { wpForgeBlocks, wpForgeManifest, wpForgePhpHmr, wpForgeAssets, wpForgeDesignSystem, wpForgePerformance }
-export { wpForgeTailwindPreset } from './integrations/tailwind-preset'
-export { wpForgeUnoPreset } from './integrations/unocss-preset'
+export { strataWPBlocks, strataWPManifest, strataWPPhpHmr, strataWPAssets, strataWPDesignSystem, strataWPPerformance }
+export { strataWPTailwindPreset } from './integrations/tailwind-preset'
+export { strataWPUnoPreset } from './integrations/unocss-preset'

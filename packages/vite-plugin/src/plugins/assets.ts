@@ -7,14 +7,14 @@ import type { AssetOptions } from '../types'
  * Ensures assets are output in WordPress-friendly structure
  * and can be properly enqueued by WordPress.
  */
-export function wpForgeAssets(options: AssetOptions = {}): Plugin {
+export function strataWPAssets(options: AssetOptions = {}): Plugin {
   const {
     publicDir = 'dist',
     baseUrl,
   } = options
 
   return {
-    name: 'wp-forge:assets',
+    name: 'stratawp:assets',
 
     config() {
       return {

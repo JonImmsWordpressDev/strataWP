@@ -9,7 +9,7 @@ import type { PhpHmrOptions } from '../types'
  * This allows developers to see changes to PHP templates and theme files
  * without manually refreshing the browser.
  */
-export function wpForgePhpHmr(options: PhpHmrOptions = {}): Plugin {
+export function strataWPPhpHmr(options: PhpHmrOptions = {}): Plugin {
   const {
     enabled = true,
     watch: patterns = ['**/*.php', 'theme.json'],
@@ -21,7 +21,7 @@ export function wpForgePhpHmr(options: PhpHmrOptions = {}): Plugin {
   let timeout: NodeJS.Timeout | null = null
 
   return {
-    name: 'wp-forge:php-hmr',
+    name: 'stratawp:php-hmr',
 
     configureServer(devServer) {
       if (!enabled) return

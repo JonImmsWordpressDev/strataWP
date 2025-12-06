@@ -8,7 +8,7 @@ import type { DesignSystemOptions } from '../types'
 import path from 'path'
 import fs from 'fs'
 
-export function wpForgeDesignSystem(options: DesignSystemOptions = {}): Plugin {
+export function strataWPDesignSystem(options: DesignSystemOptions = {}): Plugin {
   const {
     enabled = false,
     framework = 'none',
@@ -17,7 +17,7 @@ export function wpForgeDesignSystem(options: DesignSystemOptions = {}): Plugin {
 
   if (!enabled || framework === 'none') {
     return {
-      name: 'wp-forge:design-system',
+      name: 'stratawp:design-system',
       apply: () => false,
     }
   }
@@ -25,7 +25,7 @@ export function wpForgeDesignSystem(options: DesignSystemOptions = {}): Plugin {
   let config: ResolvedConfig
 
   return {
-    name: 'wp-forge:design-system',
+    name: 'stratawp:design-system',
 
     configResolved(resolvedConfig) {
       config = resolvedConfig
@@ -44,13 +44,13 @@ export function wpForgeDesignSystem(options: DesignSystemOptions = {}): Plugin {
 
       if (framework === 'tailwind' && !hasTailwindConfig) {
         console.warn(
-          '⚠️  Tailwind CSS enabled but no config file found. Run: wp-forge design-system:setup tailwind'
+          '⚠️  Tailwind CSS enabled but no config file found. Run: stratawp design-system:setup tailwind'
         )
       }
 
       if (framework === 'unocss' && !hasUnoConfig) {
         console.warn(
-          '⚠️  UnoCSS enabled but no config file found. Run: wp-forge design-system:setup unocss'
+          '⚠️  UnoCSS enabled but no config file found. Run: stratawp design-system:setup unocss'
         )
       }
 

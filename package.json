@@ -1,13 +1,13 @@
 {
-  "name": "@wp-forge/root",
+  "name": "@stratawp/root",
   "version": "0.1.0",
   "private": true,
-  "description": "A modern, powerful WordPress theme framework - forged to be better",
+  "description": "A modern, powerful WordPress theme framework",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JonImmsWordpressDev/WP-Forge.git"
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP.git"
   },
   "workspaces": [
     "packages/*",

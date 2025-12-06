@@ -80,10 +80,10 @@ async function installDependencies(framework: Framework, pm: string): Promise<vo
 
 async function createConfigFile(framework: Framework, cwd: string): Promise<void> {
   if (framework === 'tailwind') {
-    const configContent = `import { wpForgeTailwindPreset } from '@wp-forge/vite-plugin/integrations/tailwind-preset'
+    const configContent = `import { strataWPTailwindPreset } from '@stratawp/vite-plugin/integrations/tailwind-preset'
 
 export default {
-  presets: [wpForgeTailwindPreset],
+  presets: [strataWPTailwindPreset],
   theme: {
     extend: {
       // Add your custom theme extensions here
@@ -98,12 +98,12 @@ export default {
     )
   } else {
     const configContent = `import { defineConfig, presetUno } from 'unocss'
-import { wpForgeUnoPreset } from '@wp-forge/vite-plugin/integrations/unocss-preset'
+import { strataWPUnoPreset } from '@stratawp/vite-plugin/integrations/unocss-preset'
 
 export default defineConfig({
   presets: [
     presetUno(),
-    wpForgeUnoPreset,
+    strataWPUnoPreset,
   ],
   theme: {
     // Add your custom theme here
@@ -130,8 +130,8 @@ async function updateViteConfig(framework: Framework, cwd: string): Promise<void
       config = `import UnoCSS from '@unocss/vite'\n${config}`
     }
 
-    // Update wpForge options
-    if (config.includes('wpForge({')) {
+    // Update strataWP options
+    if (config.includes('strataWP({')) {
       const designSystemConfig = `
       designSystem: {
         enabled: true,
@@ -139,7 +139,7 @@ async function updateViteConfig(framework: Framework, cwd: string): Promise<void
         wordpressPresets: true,
       },`
 
-      // Insert before closing brace of wpForge options
+      // Insert before closing brace of strataWP options
       config = config.replace(/(\s+}[\s\n]*\)[\s\n]*,?[\s\n]*plugins:)/, `${designSystemConfig}$1`)
 
       // Add UnoCSS to plugins array if needed

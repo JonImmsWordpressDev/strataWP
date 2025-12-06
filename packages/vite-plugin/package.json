@@ -1,7 +1,7 @@
 {
-  "name": "@wp-forge/vite-plugin",
+  "name": "@stratawp/vite-plugin",
   "version": "0.2.0",
-  "description": "Vite plugin for WordPress theme development with WP-Forge",
+  "description": "Vite plugin for WordPress theme development with StrataWP",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -9,7 +9,7 @@
     "wordpress",
     "vite",
     "vite-plugin",
-    "wp-forge",
+    "stratawp",
     "wordpress-theme",
     "hmr",
     "block-editor",
@@ -17,12 +17,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/JonImmsWordpressDev/WP-Forge.git",
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP.git",
     "directory": "packages/vite-plugin"
   },
-  "homepage": "https://github.com/JonImmsWordpressDev/WP-Forge#readme",
+  "homepage": "https://github.com/JonImmsWordpressDev/StrataWP#readme",
   "bugs": {
-    "url": "https://github.com/JonImmsWordpressDev/WP-Forge/issues"
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP/issues"
   },
   "exports": {
     ".": {

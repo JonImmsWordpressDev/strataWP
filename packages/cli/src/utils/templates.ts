@@ -361,7 +361,7 @@ export function generateComponentClass(
 
 namespace ${namespace}\\Components;
 
-use WPForge\\ComponentInterface;
+use StrataWP\\ComponentInterface;
 
 /**
  * Class ${name}

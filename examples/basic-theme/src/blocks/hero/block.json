@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "forge-basic/hero",
+  "name": "strata-basic/hero",
   "title": "Hero Section",
   "category": "design",
   "icon": "cover-image",
@@ -14,7 +14,7 @@
   "attributes": {
     "title": {
       "type": "string",
-      "default": "Welcome to WP-Forge"
+      "default": "Welcome to StrataWP"
     },
     "description": {
       "type": "string",

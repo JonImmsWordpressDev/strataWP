@@ -10,7 +10,7 @@ import type { ManifestOptions, WordPressManifest, ManifestEntry } from '../types
  * This manifest helps WordPress properly enqueue Vite-built assets
  * with correct dependencies, versions, and URLs.
  */
-export function wpForgeManifest(options: ManifestOptions = {}): Plugin {
+export function strataWPManifest(options: ManifestOptions = {}): Plugin {
   const {
     enabled = true,
     output = 'dist/.vite/manifest.json',
@@ -20,7 +20,7 @@ export function wpForgeManifest(options: ManifestOptions = {}): Plugin {
   let rootDir: string
 
   return {
-    name: 'wp-forge:manifest',
+    name: 'stratawp:manifest',
 
     configResolved(config) {
       rootDir = config.root

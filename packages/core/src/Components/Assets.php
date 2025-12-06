@@ -2,12 +2,12 @@
 /**
  * Assets Component
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge\Components;
+namespace StrataWP\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 
 /**
  * Asset management for Vite-built assets and web fonts
@@ -56,12 +56,12 @@ class Assets implements ComponentInterface {
 
 		// Enqueue main theme script
 		if ( isset( $manifest['src/js/main.ts'] ) ) {
-			$this->enqueue_from_manifest( 'wp-forge-main', 'src/js/main.ts' );
+			$this->enqueue_from_manifest( 'stratawp-main', 'src/js/main.ts' );
 		}
 
 		// Enqueue main theme styles
 		if ( isset( $manifest['src/css/main.css'] ) ) {
-			$this->enqueue_from_manifest( 'wp-forge-styles', 'src/css/main.css', 'style' );
+			$this->enqueue_from_manifest( 'stratawp-styles', 'src/css/main.css', 'style' );
 		}
 	}
 
@@ -75,7 +75,7 @@ class Assets implements ComponentInterface {
 			return;
 		}
 
-		$this->enqueue_from_manifest( 'wp-forge-editor', 'src/css/editor.css', 'style' );
+		$this->enqueue_from_manifest( 'stratawp-editor', 'src/css/editor.css', 'style' );
 	}
 
 	/**
@@ -163,7 +163,7 @@ class Assets implements ComponentInterface {
 
 		if ( $font_url ) {
 			wp_enqueue_style(
-				'wp-forge-fonts',
+				'stratawp-fonts',
 				$font_url,
 				[],
 				null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion

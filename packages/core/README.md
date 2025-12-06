@@ -1,6 +1,6 @@
-# @wp-forge/core
+# @stratawp/core
 
-PHP framework for WP-Forge WordPress themes.
+PHP framework for StrataWP WordPress themes.
 
 ## Features
 
@@ -13,7 +13,7 @@ PHP framework for WP-Forge WordPress themes.
 ## Installation
 
 ```bash
-composer require wp-forge/core
+composer require stratawp/core
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ composer require wp-forge/core
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WPForge\Theme;
+use StrataWP\Theme;
 
 // Initialize theme
 $theme = new Theme();
@@ -45,7 +45,7 @@ function my_theme() {
 
 namespace MyTheme\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 
 class CustomFeature implements ComponentInterface {
     public function get_slug(): string {
@@ -69,7 +69,7 @@ class CustomFeature implements ComponentInterface {
 // In your template files
 
 // Get theme instance
-$theme = wp_forge();
+$theme = stratawp();
 
 // Use template tags
 $theme->template_tags()->some_method();
@@ -94,7 +94,7 @@ Implements performance optimizations:
 
 ## Architecture
 
-WP-Forge uses a component-based architecture inspired by WPRig but modernized:
+StrataWP uses a component-based architecture inspired by WPRig but modernized:
 
 ```
 Theme

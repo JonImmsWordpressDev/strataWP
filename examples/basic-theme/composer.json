@@ -1,6 +1,6 @@
 {
-  "name": "wp-forge/basic-theme",
-  "description": "Basic example theme built with WP-Forge",
+  "name": "stratawp/basic-theme",
+  "description": "Basic example theme built with StrataWP",
   "type": "wordpress-theme",
   "license": "GPL-3.0-or-later",
   "require": {
@@ -13,11 +13,11 @@
     }
   ],
   "require": {
-    "wp-forge/core": "@dev"
+    "stratawp/core": "@dev"
   },
   "autoload": {
     "psr-4": {
-      "ForgeBasic\\": "inc/"
+      "StrataBasic\\": "inc/"
     }
   }
 }

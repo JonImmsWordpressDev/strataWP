@@ -5,11 +5,11 @@
  */
 import type { Plugin } from 'vite'
 import type { PerformanceOptions } from '../types'
-import { wpForgeCriticalCSS } from './critical-css'
-import { wpForgeLazyLoading } from './lazy-loading'
-import { wpForgePreload } from './preload'
+import { strataWPCriticalCSS } from './critical-css'
+import { strataWPLazyLoading } from './lazy-loading'
+import { strataWPPreload } from './preload'
 
-export function wpForgePerformance(options: PerformanceOptions = {}): Plugin[] {
+export function strataWPPerformance(options: PerformanceOptions = {}): Plugin[] {
   const plugins: Plugin[] = []
 
   // Critical CSS
@@ -18,7 +18,7 @@ export function wpForgePerformance(options: PerformanceOptions = {}): Plugin[] {
       ? options.criticalCSS
       : { enabled: true }
 
-    plugins.push(wpForgeCriticalCSS(criticalOptions))
+    plugins.push(strataWPCriticalCSS(criticalOptions))
   }
 
   // Lazy Loading
@@ -27,7 +27,7 @@ export function wpForgePerformance(options: PerformanceOptions = {}): Plugin[] {
       ? options.lazyLoading
       : { enabled: true }
 
-    plugins.push(wpForgeLazyLoading(lazyOptions))
+    plugins.push(strataWPLazyLoading(lazyOptions))
   }
 
   // Preload
@@ -36,7 +36,7 @@ export function wpForgePerformance(options: PerformanceOptions = {}): Plugin[] {
       ? options.preload
       : { enabled: true }
 
-    plugins.push(wpForgePreload(preloadOptions))
+    plugins.push(strataWPPreload(preloadOptions))
   }
 
   return plugins

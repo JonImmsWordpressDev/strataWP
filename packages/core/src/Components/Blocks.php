@@ -2,12 +2,12 @@
 /**
  * Blocks Component
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge\Components;
+namespace StrataWP\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 
 /**
  * Block registration and management

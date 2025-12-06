@@ -8,7 +8,7 @@ import '../css/editor.css'
 
 // Register block variations, patterns, or editor customizations here
 
-console.log('⚒️ WP-Forge editor loaded!')
+console.log('⚒️ StrataWP editor loaded!')
 
 // Hot Module Replacement (HMR)
 if (import.meta.hot) {

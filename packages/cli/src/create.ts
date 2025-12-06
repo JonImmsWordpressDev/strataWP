@@ -18,7 +18,7 @@ interface ThemeConfig {
 }
 
 async function main() {
-  console.log(chalk.bold.cyan('\n⚒️  Create WP-Forge Theme\n'))
+  console.log(chalk.bold.cyan('\n⚡ Create StrataWP Theme\n'))
 
   const response = await prompts([
     {
@@ -44,7 +44,7 @@ async function main() {
       type: 'text',
       name: 'description',
       message: 'Description:',
-      initial: 'A theme built with WP-Forge',
+      initial: 'A theme built with StrataWP',
     },
     {
       type: 'text',
@@ -153,8 +153,8 @@ async function createBasicStructure(themePath: string, config: ThemeConfig) {
       '@wordpress/i18n': '^4.51.0',
     },
     devDependencies: {
-      '@wp-forge/cli': '^0.2.0',
-      '@wp-forge/vite-plugin': '^0.2.0',
+      '@stratawp/cli': '^0.2.0',
+      '@stratawp/vite-plugin': '^0.2.0',
       '@vitejs/plugin-react': '^4.2.1',
       vite: '^5.0.10',
       typescript: config.typescript ? '^5.3.3' : undefined,
@@ -173,7 +173,7 @@ Version: 1.0.0
 License: GPL-3.0-or-later
 Text Domain: ${config.slug}
 
-Built with ⚒️ WP-Forge
+Built with ⚡ StrataWP
 */`
 
   await fs.writeFile(path.join(themePath, 'style.css'), styleCSS)
@@ -195,7 +195,7 @@ pnpm dev
 pnpm build
 \`\`\`
 
-Built with [WP-Forge](https://github.com/JonImmsWordpressDev/WP-Forge)
+Built with [StrataWP](https://github.com/JonImmsWordpressDev/StrataWP)
 `
 
   await fs.writeFile(path.join(themePath, 'README.md'), readme)
@@ -203,12 +203,12 @@ Built with [WP-Forge](https://github.com/JonImmsWordpressDev/WP-Forge)
   // Create vite.config.ts
   const viteConfig = `import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { wpForge } from '@wp-forge/vite-plugin'
+import { strataWP } from '@stratawp/vite-plugin'
 
 export default defineConfig({
   plugins: [
     react(),
-    wpForge({
+    strataWP({
       blocks: {
         dir: 'src/blocks',
         autoRegister: true,
@@ -405,7 +405,7 @@ add_action('wp_enqueue_scripts', 'load_vite_assets');
     <!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"}} -->
     <div class="wp-block-group">
         <!-- wp:paragraph -->
-        <p>Built with WP-Forge</p>
+        <p>Built with StrataWP</p>
         <!-- /wp:paragraph -->
     </div>
     <!-- /wp:group -->

@@ -2,12 +2,12 @@
 /**
  * Navigation Component
  *
- * @package ForgeBasic
+ * @package StrataBasic
  */
 
-namespace ForgeBasic\Components;
+namespace StrataBasic\Components;
 
-use WPForge\ComponentInterface;
+use StrataWP\ComponentInterface;
 
 /**
  * Navigation menus and walker
@@ -32,8 +32,8 @@ class Navigation implements ComponentInterface {
      */
     public function register_menus(): void {
         register_nav_menus([
-            'primary' => __( 'Primary Menu', 'forge-basic' ),
-            'footer'  => __( 'Footer Menu', 'forge-basic' ),
+            'primary' => __( 'Primary Menu', 'strata-basic' ),
+            'footer'  => __( 'Footer Menu', 'strata-basic' ),
         ]);
     }
 }

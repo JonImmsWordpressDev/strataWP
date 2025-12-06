@@ -2,11 +2,11 @@
 /**
  * Hero Block Render
  *
- * @package ForgeBasic
+ * @package StrataBasic
  * @var array $attributes Block attributes
  */
 
-$title            = $attributes['title'] ?? 'Welcome to WP-Forge';
+$title            = $attributes['title'] ?? 'Welcome to StrataWP';
 $description      = $attributes['description'] ?? 'Build faster, better WordPress themes';
 $button_text      = $attributes['buttonText'] ?? 'Get Started';
 $button_url       = $attributes['buttonUrl'] ?? '#';
@@ -14,7 +14,7 @@ $background_image = $attributes['backgroundImage'] ?? '';
 $overlay_opacity  = $attributes['overlayOpacity'] ?? 0.5;
 
 $wrapper_attributes = get_block_wrapper_attributes([
-    'class' => 'wp-block-forge-basic-hero',
+    'class' => 'wp-block-strata-basic-hero',
     'style' => $background_image ? 'background-image: url(' . esc_url( $background_image ) . ');' : '',
 ]);
 ?>

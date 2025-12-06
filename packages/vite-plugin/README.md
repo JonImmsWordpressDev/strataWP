@@ -1,6 +1,6 @@
-# @wp-forge/vite-plugin
+# @stratawp/vite-plugin
 
-Vite plugin for WordPress theme development with WP-Forge.
+Vite plugin for WordPress theme development with StrataWP.
 
 ## Features
 
@@ -13,7 +13,7 @@ Vite plugin for WordPress theme development with WP-Forge.
 ## Installation
 
 ```bash
-pnpm add -D @wp-forge/vite-plugin
+pnpm add -D @stratawp/vite-plugin
 ```
 
 ## Usage
@@ -23,11 +23,11 @@ pnpm add -D @wp-forge/vite-plugin
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
-import { wpForge } from '@wp-forge/vite-plugin'
+import { strataWP } from '@stratawp/vite-plugin'
 
 export default defineConfig({
   plugins: [
-    wpForge({
+    strataWP({
       blocks: {
         dir: 'src/blocks',
         autoRegister: true,
@@ -50,7 +50,7 @@ export default defineConfig({
   blocks: {
     dir: 'src/blocks',        // Block directory
     autoRegister: true,       // Auto-register in WordPress
-    namespace: 'wp-forge',    // Block namespace
+    namespace: 'stratawp',    // Block namespace
   }
 }
 ```
@@ -107,7 +107,7 @@ Generates a WordPress-compatible manifest that includes:
 
 ## Examples
 
-See the `examples/` directory in the WP-Forge repository for complete working examples.
+See the `examples/` directory in the StrataWP repository for complete working examples.
 
 ## License
 

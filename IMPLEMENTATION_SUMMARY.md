@@ -1,8 +1,8 @@
-# WP-Forge High-Impact Features - Implementation Complete
+# StrataWP High-Impact Features - Implementation Complete
 
 ## Overview
 
-Successfully implemented three major feature sets for WP-Forge:
+Successfully implemented three major feature sets for StrataWP:
 
 1. **CLI Scaffolding Expansion** ✅
 2. **Design System Integration** ✅
@@ -16,12 +16,12 @@ All features are production-ready and fully tested.
 
 ### New Commands
 
-#### `wp-forge template:new <name>`
+#### `stratawp template:new <name>`
 Creates WordPress template files with block-based markup.
 
 ```bash
-wp-forge template:new home --type=home
-wp-forge template:new product --type=single
+stratawp template:new home --type=home
+stratawp template:new product --type=single
 ```
 
 **Options:**
@@ -30,12 +30,12 @@ wp-forge template:new product --type=single
 
 **Output:** `templates/[name].html`
 
-#### `wp-forge part:new <name>`
+#### `stratawp part:new <name>`
 Creates template parts (headers, footers, sidebars).
 
 ```bash
-wp-forge part:new sidebar --type=sidebar --markup=php
-wp-forge part:new custom-header --type=header
+stratawp part:new sidebar --type=sidebar --markup=php
+stratawp part:new custom-header --type=header
 ```
 
 **Options:**
@@ -44,12 +44,12 @@ wp-forge part:new custom-header --type=header
 
 **Output:** `parts/[name].[ext]`
 
-#### `wp-forge component:new <name>` (Enhanced)
+#### `stratawp component:new <name>` (Enhanced)
 Creates PHP component classes implementing ComponentInterface.
 
 ```bash
-wp-forge component:new MyFeature --type=feature
-wp-forge component:new Analytics --namespace=MyTheme
+stratawp component:new MyFeature --type=feature
+stratawp component:new Analytics --namespace=MyTheme
 ```
 
 **Options:**
@@ -58,12 +58,12 @@ wp-forge component:new Analytics --namespace=MyTheme
 
 **Output:** `inc/Components/[Name].php`
 
-#### `wp-forge block:new <name>` (Enhanced)
+#### `stratawp block:new <name>` (Enhanced)
 Now supports design system integration!
 
 ```bash
-wp-forge block:new hero --styleFramework=tailwind
-wp-forge block:new card --styleFramework=unocss
+stratawp block:new hero --styleFramework=tailwind
+stratawp block:new card --styleFramework=unocss
 ```
 
 **New Option:**
@@ -91,7 +91,7 @@ Integrates Tailwind CSS or UnoCSS with WordPress themes.
 
 ```typescript
 // vite.config.ts
-wpForge({
+strataWP({
   designSystem: {
     enabled: true,
     framework: 'tailwind', // or 'unocss'
@@ -116,8 +116,8 @@ wpForge({
 ### Setup Command
 
 ```bash
-wp-forge design-system:setup tailwind
-wp-forge design-system:setup unocss
+stratawp design-system:setup tailwind
+stratawp design-system:setup unocss
 ```
 
 **What it does:**
@@ -162,7 +162,7 @@ Three specialized plugins orchestrated by `performance.ts`:
 
 ```typescript
 // vite.config.ts (enabled by default)
-wpForge({
+strataWP({
   performance: {
     criticalCSS: {
       enabled: true,
@@ -255,23 +255,23 @@ Combines all performance plugins with unified configuration.
 **File:** `packages/vite-plugin/src/index.ts`
 
 ```typescript
-import { wpForgeDesignSystem } from './plugins/design-system'
-import { wpForgePerformance } from './plugins/performance'
+import { strataWPDesignSystem } from './plugins/design-system'
+import { strataWPPerformance } from './plugins/performance'
 
-export function wpForge(options) {
+export function strataWP(options) {
   const plugins = [
-    wpForgeCore(options),
-    wpForgeBlocks(blocks),
-    wpForgeManifest(manifest),
-    wpForgePhpHmr(phpHmr),
-    wpForgeAssets(assets),
+    strataWPCore(options),
+    strataWPBlocks(blocks),
+    strataWPManifest(manifest),
+    strataWPPhpHmr(phpHmr),
+    strataWPAssets(assets),
   ]
 
   if (designSystem.enabled) {
-    plugins.push(wpForgeDesignSystem(designSystem))
+    plugins.push(strataWPDesignSystem(designSystem))
   }
 
-  plugins.push(...wpForgePerformance(performance))
+  plugins.push(...strataWPPerformance(performance))
 
   return plugins
 }
@@ -308,9 +308,9 @@ All fully documented with JSDoc comments and default values.
 ## Build Status
 
 ✅ **All packages build successfully:**
-- `@wp-forge/cli` - 33.05 KB
-- `@wp-forge/vite-plugin` - 31.38 KB
-- `wp-forge-basic-theme` - Built with performance plugins active
+- `@stratawp/cli` - 33.05 KB
+- `@stratawp/vite-plugin` - 31.38 KB
+- `stratawp-basic-theme` - Built with performance plugins active
 
 **Build output shows:**
 - Block auto-discovery working ✅
@@ -335,7 +335,7 @@ Themes automatically get these files after build:
 Add to `functions.php`:
 
 ```php
-// Load WP-Forge generated files
+// Load StrataWP generated files
 $generated_files = [
     'blocks-generated.php',
     'critical-css-generated.php',
@@ -359,14 +359,14 @@ foreach ($generated_files as $file) {
 // vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { wpForge } from '@wp-forge/vite-plugin'
+import { strataWP } from '@stratawp/vite-plugin'
 import UnoCSS from '@unocss/vite' // if using UnoCSS
 
 export default defineConfig({
   plugins: [
     react(),
 
-    wpForge({
+    strataWP({
       // Blocks
       blocks: {
         dir: 'src/blocks',
@@ -437,20 +437,20 @@ export default defineConfig({
 
 ```bash
 # Create new project structure
-wp-forge template:new home --type=home
-wp-forge template:new product-single --type=single
-wp-forge part:new header --type=header --markup=html
-wp-forge part:new footer --type=footer --markup=html
-wp-forge part:new sidebar --type=sidebar --markup=php
+stratawp template:new home --type=home
+stratawp template:new product-single --type=single
+stratawp part:new header --type=header --markup=html
+stratawp part:new footer --type=footer --markup=html
+stratawp part:new sidebar --type=sidebar --markup=php
 
 # Add components
-wp-forge component:new WooCommerce --type=integration
-wp-forge component:new Analytics --type=feature
+stratawp component:new WooCommerce --type=integration
+stratawp component:new Analytics --type=feature
 
 # Generate blocks with design system
-wp-forge design-system:setup tailwind
-wp-forge block:new hero --styleFramework=tailwind --type=dynamic
-wp-forge block:new feature-grid --styleFramework=tailwind
+stratawp design-system:setup tailwind
+stratawp block:new hero --styleFramework=tailwind --type=dynamic
+stratawp block:new feature-grid --styleFramework=tailwind
 
 # Build with all optimizations
 pnpm build
@@ -461,13 +461,13 @@ pnpm build
 1. **Setup:**
    ```bash
    cd my-theme
-   wp-forge design-system:setup tailwind
+   stratawp design-system:setup tailwind
    ```
 
 2. **Generate scaffolding:**
    ```bash
-   wp-forge block:new hero --styleFramework=tailwind
-   wp-forge template:new home --type=home
+   stratawp block:new hero --styleFramework=tailwind
+   stratawp template:new home --type=home
    ```
 
 3. **Develop with HMR:**
@@ -534,8 +534,8 @@ All marked as optional - only install what you use.
 
 ### Migration Path
 
-1. Update `@wp-forge/vite-plugin` to latest
-2. Update `@wp-forge/cli` to latest
+1. Update `@stratawp/vite-plugin` to latest
+2. Update `@stratawp/cli` to latest
 3. Everything works with defaults
 4. Opt into design system when ready
 5. Performance features work automatically
@@ -571,14 +571,14 @@ All marked as optional - only install what you use.
 
 1. **Update packages:**
    ```bash
-   pnpm add -D @wp-forge/vite-plugin@latest
-   pnpm add -g @wp-forge/cli@latest
+   pnpm add -D @stratawp/vite-plugin@latest
+   pnpm add -g @stratawp/cli@latest
    ```
 
 2. **Try new commands:**
    ```bash
-   wp-forge template:new home
-   wp-forge design-system:setup tailwind
+   stratawp template:new home
+   stratawp design-system:setup tailwind
    ```
 
 3. **Enable performance features:**
@@ -654,8 +654,8 @@ Potential future enhancements:
 
 ## Contact & Support
 
-**Repository:** https://github.com/JonImmsWordpressDev/WP-Forge
-**Issues:** https://github.com/JonImmsWordpressDev/WP-Forge/issues
+**Repository:** https://github.com/StrataWP/stratawp
+**Issues:** https://github.com/StrataWP/stratawp/issues
 **Author:** Jon Imms
 
 ---

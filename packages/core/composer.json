@@ -1,6 +1,6 @@
 {
-  "name": "wp-forge/core",
-  "description": "Core PHP framework for WP-Forge themes",
+  "name": "stratawp/core",
+  "description": "Core PHP framework for StrataWP themes",
   "type": "library",
   "license": "GPL-3.0-or-later",
   "authors": [
@@ -19,12 +19,12 @@
   },
   "autoload": {
     "psr-4": {
-      "WPForge\\": "src/"
+      "StrataWP\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "WPForge\\Tests\\": "tests/"
+      "StrataWP\\Tests\\": "tests/"
     }
   },
   "scripts": {

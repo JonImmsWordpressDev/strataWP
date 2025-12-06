@@ -54,7 +54,7 @@ async function generateBlockConfig(
   const config = {
     $schema: 'https://schemas.wp.org/trunk/block.json',
     apiVersion: 3,
-    name: `wp-forge/${slug}`,
+    name: `stratawp/${slug}`,
     title: name,
     category: options.category,
     icon: 'smiley',
@@ -127,7 +127,7 @@ $block_wrapper_attributes = get_block_wrapper_attributes();
 ?>
 
 <div <?php echo $block_wrapper_attributes; ?>${classes}>
-  <h3${headingClasses}><?php echo esc_html__( '${name}', 'wp-forge' ); ?></h3>
+  <h3${headingClasses}><?php echo esc_html__( '${name}', 'stratawp' ); ?></h3>
   <!-- Add your dynamic content here -->
 </div>
 `
@@ -145,18 +145,18 @@ async function generateBlockStyles(blockDir: string, slug: string, framework: st
  * Add custom styles here only if needed.
  */
 
-.wp-block-wp-forge-${slug} {
+.wp-block-stratawp-${slug} {
   /* Custom styles */
 }
 `
   } else {
-    content = `.wp-block-wp-forge-${slug} {
+    content = `.wp-block-stratawp-${slug} {
   padding: 1rem;
   background-color: #f3f4f6;
   border-radius: 0.5rem;
 }
 
-.wp-block-wp-forge-${slug} h3 {
+.wp-block-stratawp-${slug} h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;

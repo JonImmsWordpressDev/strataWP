@@ -1,7 +1,7 @@
 {
-  "name": "@wp-forge/cli",
+  "name": "@stratawp/cli",
   "version": "0.2.2",
-  "description": "CLI tool for WP-Forge - create and manage WordPress themes",
+  "description": "CLI tool for StrataWP - create and manage WordPress themes",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -11,23 +11,23 @@
     "cli",
     "vite",
     "typescript",
-    "wp-forge",
+    "stratawp",
     "wordpress-theme",
     "block-editor",
     "fse"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/JonImmsWordpressDev/WP-Forge.git",
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/JonImmsWordpressDev/WP-Forge#readme",
+  "homepage": "https://github.com/JonImmsWordpressDev/StrataWP#readme",
   "bugs": {
-    "url": "https://github.com/JonImmsWordpressDev/WP-Forge/issues"
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP/issues"
   },
   "bin": {
-    "wp-forge": "./dist/index.js",
-    "create-wp-forge": "./dist/create.js"
+    "stratawp": "./dist/index.js",
+    "create-stratawp": "./dist/create.js"
   },
   "exports": {
     ".": {

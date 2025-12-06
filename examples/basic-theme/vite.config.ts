@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { wpForge } from '@wp-forge/vite-plugin'
+import { strataWP } from '@stratawp/vite-plugin'
 
 export default defineConfig({
   plugins: [
     react(),
-    wpForge({
+    strataWP({
       blocks: {
         dir: 'src/blocks',
         autoRegister: true,

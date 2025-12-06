@@ -2,10 +2,10 @@
 /**
  * Component Interface
  *
- * @package WPForge
+ * @package StrataWP
  */
 
-namespace WPForge;
+namespace StrataWP;
 
 /**
  * Interface for theme components

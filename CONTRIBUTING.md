@@ -1,6 +1,6 @@
-# Contributing to WP-Forge
+# Contributing to StrataWP
 
-Thank you for your interest in contributing to WP-Forge! 🎉
+Thank you for your interest in contributing to StrataWP!
 
 ## Getting Started
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to WP-Forge! 🎉
 
 ```bash
 # Clone the repository
-git clone https://github.com/JonImmsWordpressDev/WP-Forge.git
-cd WP-Forge
+git clone https://github.com/StrataWP/stratawp.git
+cd stratawp
 
 # Install dependencies
 pnpm install
@@ -28,7 +28,7 @@ pnpm dev
 ## Project Structure
 
 ```
-WP-Forge/
+StrataWP/
 ├── packages/
 │   ├── cli/          # CLI tool
 │   ├── core/         # PHP framework
@@ -77,7 +77,7 @@ pnpm test
 pnpm test --watch
 
 # Run tests for specific package
-pnpm --filter @wp-forge/cli test
+pnpm --filter @stratawp/cli test
 ```
 
 ### Code Style
@@ -141,4 +141,4 @@ By contributing, you agree that your contributions will be licensed under GPL-3.
 
 ---
 
-**Thank you for contributing to WP-Forge!** ⚒️
+**Thank you for contributing to StrataWP!**

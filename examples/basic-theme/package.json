@@ -1,7 +1,7 @@
 {
-  "name": "wp-forge-basic-theme",
+  "name": "stratawp-basic-theme",
   "version": "1.0.0",
-  "description": "Basic example theme built with WP-Forge",
+  "description": "Basic example theme built with StrataWP",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
     "vite": "^5.0.10",
-    "@wp-forge/vite-plugin": "workspace:*",
+    "@stratawp/vite-plugin": "workspace:*",
     "typescript": "^5.3.3"
   }
 }
