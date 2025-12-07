@@ -23,6 +23,7 @@ use StrataWP\Components\Setup;
 use StrataWP\Components\Assets;
 use StrataWP\Components\Blocks;
 use StrataWP\Components\Performance;
+use StrataWP\Components\Fonts;
 use StrataBasic\Components\Navigation;
 use StrataBasic\Components\Customizer;
 
@@ -31,21 +32,14 @@ use StrataBasic\Components\Customizer;
  */
 function strata_basic_init(): void {
     // Create theme with custom components
-    $assets = new Assets();
-
     $theme = new Theme([
         new Setup(),
-        $assets,
+        new Assets(),
         new Blocks(),
         new Performance(),
+        new Fonts(),
         new Navigation(),
         new Customizer(),
-    ]);
-
-    // Configure Google Fonts
-    $assets->set_google_fonts([
-        'Inter:wght@400;500;600;700',
-        'Roboto:wght@300;400;500',
     ]);
 
     // Initialize theme

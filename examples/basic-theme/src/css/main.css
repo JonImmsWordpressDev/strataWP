@@ -16,8 +16,12 @@
   --color-bg: #ffffff;
   --color-bg-alt: #f9fafb;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  /* Font variables - These are injected by the Font component with fallback values */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-size-base: 16px;
+  --line-height-base: 1.6;
 
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
@@ -41,9 +45,9 @@
 
 body {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
   color: var(--color-text);
   background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
@@ -93,6 +97,7 @@ body {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 700;
+  font-family: var(--font-heading);
 }
 
 .site-title a {
@@ -186,6 +191,7 @@ article:last-child {
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
+  font-family: var(--font-heading);
 }
 
 .entry-title a {
