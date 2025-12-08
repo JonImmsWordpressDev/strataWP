@@ -1,0 +1,39 @@
+/**
+ * CSS Custom Properties & Variables
+ *
+ * These are fallback values. The Font component will inject
+ * the selected Google Fonts via inline styles in wp_head.
+ */
+
+:root {
+  // Colors
+  --color-primary: #1d08bd;
+  --color-secondary: #c429ff;
+  --color-accent: #ff1f38;
+  --color-purple-dark: #170697;
+  --color-text: #111827;
+  --color-text-light: #6b7280;
+  --color-border: #e5e7eb;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f9fafb;
+
+  // Typography
+  // Font variables are injected by the Fonts component via PHP
+  // Fallback values are set here in case the component isn't loaded
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  // Spacing
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  // Border Radius
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+
+  // Container
+  --container-width: 1200px;
+}

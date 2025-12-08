@@ -18,9 +18,10 @@
     "@wordpress/i18n": "^4.51.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.10",
     "@stratawp/vite-plugin": "workspace:*",
-    "typescript": "^5.3.3"
+    "@vitejs/plugin-react": "^4.2.1",
+    "sass": "^1.94.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
   }
 }

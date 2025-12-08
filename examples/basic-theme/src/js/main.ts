@@ -5,7 +5,7 @@
  */
 
 // Import styles
-import '../css/main.css'
+import '../scss/main.scss'
 
 /**
  * Mobile menu toggle

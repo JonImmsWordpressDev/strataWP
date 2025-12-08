@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f4ffa8ff84a82f7686c0e759723f648c",
+    "content-hash": "e890a092640eb3bca80abdb15aae6adc",
     "packages": [
         {
-            "name": "wp-forge/core",
+            "name": "stratawp/core",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "../../packages/core",
-                "reference": "63aad57ccf64b790ac9f4ba4a141dc5b3a705935"
+                "reference": "e24352e52b63c7419172f77d98d7bb15a8e155cf"
             },
             "require": {
                 "php": ">=8.1"
@@ -25,12 +25,12 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "WPForge\\": "src/"
+                    "StrataWP\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "WPForge\\Tests\\": "tests/"
+                    "StrataWP\\Tests\\": "tests/"
                 }
             },
             "scripts": {
@@ -53,7 +53,7 @@
                     "email": "jon@example.com"
                 }
             ],
-            "description": "Core PHP framework for WP-Forge themes",
+            "description": "Core PHP framework for StrataWP themes",
             "transport-options": {
                 "relative": true
             }
@@ -63,7 +63,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "wp-forge/core": 20
+        "stratawp/core": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

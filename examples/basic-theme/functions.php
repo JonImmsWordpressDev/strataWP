@@ -68,27 +68,18 @@ function strata_basic_vite_dev_server(): void {
         return;
     }
 
-    // Check if Vite dev server is running
+    // In local development, always inject Vite client
+    // Browser will connect to localhost:3000
     $vite_server = 'http://localhost:3000';
-    $response    = wp_remote_get( $vite_server, [ 'timeout' => 1 ] );
 
-    if ( ! is_wp_error( $response ) ) {
-        // Inject Vite client
-        add_action(
-            'wp_head',
-            function () use ( $vite_server ) {
-                echo sprintf(
-                    '<script type="module" src="%s/@vite/client"></script>',
-                    esc_url( $vite_server )
-                );
-                echo sprintf(
-                    '<script type="module" src="%s/src/js/main.ts"></script>',
-                    esc_url( $vite_server )
-                );
-            },
-            1
-        );
-    }
+    echo sprintf(
+        '<script type="module" src="%s/@vite/client"></script>',
+        esc_url( $vite_server )
+    );
+    echo sprintf(
+        '<script type="module" src="%s/src/js/main.ts"></script>',
+        esc_url( $vite_server )
+    );
 }
 
 add_action( 'wp_head', 'strata_basic_vite_dev_server', 1 );

@@ -1,0 +1,68 @@
+/**
+ * Footer Styles
+ */
+
+.site-footer {
+  margin-top: auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  background-color: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.site-info {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+
+  p {
+    margin: 0.5rem 0;
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+
+    &:hover {
+      color: var(--color-primary);
+      transform: translateX(4px);
+    }
+  }
+}
+
+.strata-badge {
+  font-weight: 600;
+  margin-top: var(--spacing-sm);
+}
+
+// Footer list styles
+.site-footer .is-style-no-bullets {
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Social links hover effects
+.wp-block-social-links a {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: scale(1.15) rotate(-5deg);
+    color: var(--color-primary) !important;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  // Stack footer columns on mobile
+  .site-footer .wp-block-columns {
+    flex-direction: column;
+  }
+}
