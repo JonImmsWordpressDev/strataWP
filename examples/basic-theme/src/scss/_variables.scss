@@ -6,23 +6,30 @@
  */
 
 :root {
-  // Colors
-  --color-primary: #1d08bd;
-  --color-secondary: #c429ff;
-  --color-accent: #ff1f38;
-  --color-purple-dark: #170697;
-  --color-text: #111827;
-  --color-text-light: #6b7280;
-  --color-border: #e5e7eb;
-  --color-bg: #ffffff;
-  --color-bg-alt: #f9fafb;
+  // Frost Design System Colors
+  // Note: WordPress automatically generates CSS variables from theme.json:
+  // --wp--preset--color--base, --wp--preset--color--contrast, etc.
+  // These are simplified fallbacks for backwards compatibility
+
+  --color-base: #ffffff;        // Background (Frost: base)
+  --color-contrast: #000000;    // Text (Frost: contrast)
+  --color-primary: #0000ff;     // Brand color (Frost: primary)
+  --color-secondary: #000099;   // Accent (Frost: secondary)
+  --color-neutral: #eeeeee;     // Borders/subtle backgrounds (Frost: neutral)
+
+  // Legacy aliases (map to Frost colors)
+  --color-text: var(--color-contrast);
+  --color-bg: var(--color-base);
+  --color-bg-alt: var(--color-neutral);
 
   // Typography
   // Font variables are injected by the Fonts component via PHP
-  // Fallback values are set here in case the component isn't loaded
+  // WordPress also generates: --wp--preset--font-family--system-font
   --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
   // Spacing
+  // WordPress generates from theme.json: --wp--preset--spacing--x-small, etc.
+  // These are fallbacks for custom usage
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 1.5rem;
@@ -34,6 +41,7 @@
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
 
-  // Container
-  --container-width: 1200px;
+  // Container (matches theme.json layout settings)
+  --container-width: 640px;     // contentSize from theme.json
+  --container-wide: 1200px;     // wideSize from theme.json
 }
