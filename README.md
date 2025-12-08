@@ -60,19 +60,29 @@ npm run dev
 ### Or Clone and Explore
 
 ```bash
-# Clone the repository
+# Clone the repository (OUTSIDE your WordPress themes directory)
 git clone https://github.com/JonImmsWordpressDev/StrataWP.git
 cd StrataWP
 
 # Install dependencies
 pnpm install
 
-# Start all example themes in dev mode
+# Create a symlink to use the basic theme in WordPress
+# Replace /path/to/wordpress with your WordPress installation path
+ln -s "$(pwd)/examples/basic-theme" /path/to/wordpress/wp-content/themes/stratawp-basic
+
+# Start the dev server
+cd examples/basic-theme
 pnpm dev
 
 # Build for production
 pnpm build
 ```
+
+**Recommended Setup:**
+- Clone the repository outside `wp-content/themes/`
+- Create a symlink from the theme to your WordPress installation
+- This keeps your development files separate from WordPress
 
 ## Why StrataWP?
 
