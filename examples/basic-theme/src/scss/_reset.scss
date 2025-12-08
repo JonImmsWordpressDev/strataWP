@@ -12,6 +12,40 @@ html {
   scroll-behavior: smooth;
 }
 
+// Transitions for interactive elements
+a,
+button,
+input:focus,
+input[type="button"],
+input[type="submit"],
+textarea:focus,
+.wp-element-button {
+  transition: all 0.2s ease-in-out;
+}
+
+// Link underline styling
+a,
+a:focus,
+a:hover,
+a:not(.wp-element-button) {
+  text-decoration-thickness: 1px;
+}
+
+// Strong/bold elements
+b,
+strong,
+th {
+  font-weight: var(--wp--custom--font-weight--medium);
+}
+
+// Mark/highlight styling
+mark {
+  background: linear-gradient(90deg, var(--wp--preset--color--primary) 0%, var(--wp--preset--color--primary) 100%);
+  background-position: 0 85%;
+  background-repeat: repeat-x;
+  background-size: 100% 15%;
+}
+
 body {
   margin: 0;
   font-family: var(--font-body);
