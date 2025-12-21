@@ -223,6 +223,8 @@ This release adds two new fully-featured example themes showcasing advanced Word
 
 ## Quick Start
 
+**New to StrataWP?** Check out our comprehensive [Getting Started Guide](./GETTING_STARTED.md) for a step-by-step tutorial!
+
 ### Create a New Theme
 
 ```bash
@@ -233,8 +235,10 @@ npx create-stratawp my-theme
 cd my-theme
 
 # Start developing with hot reload
-npm run dev
+pnpm run dev
 ```
+
+**Quick Reference:** See our [Cheat Sheet](./CHEAT_SHEET.md) for all CLI commands and common patterns.
 
 ### Or Clone and Explore
 
