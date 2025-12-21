@@ -8,6 +8,12 @@ import { testCommand } from './commands/test'
 import { templateCommand } from './commands/template'
 import { partCommand } from './commands/part'
 import { designSystemCommand } from './commands/design-system'
+import {
+  setupCommand,
+  generateCommand,
+  reviewCommand,
+  documentCommand,
+} from '@stratawp/ai'
 
 const program = new Command()
 
@@ -88,22 +94,35 @@ program
     console.log(chalk.dim('Coming soon!'))
   })
 
-// AI-powered commands (optional)
+// AI-powered commands
 program
-  .command('ai:block <description>')
-  .description('Generate block from description using AI')
-  .action((description: string) => {
-    console.log(chalk.magenta('🤖 AI Block Generator'))
-    console.log(chalk.dim(`Description: ${description}`))
-    console.log(chalk.yellow('⚠️  Coming soon!'))
+  .command('ai:setup')
+  .description('Configure AI providers and API keys')
+  .action(setupCommand)
+
+program
+  .command('ai:generate <type>')
+  .description('Generate code with AI (block|component|pattern)')
+  .option('-o, --output <path>', 'Output file path')
+  .action((type: string, options: any) => {
+    generateCommand({ type: type as 'block' | 'component' | 'pattern', ...options })
   })
 
 program
-  .command('ai:optimize')
-  .description('AI-powered performance optimization')
-  .action(() => {
-    console.log(chalk.magenta('🤖 AI Optimizer'))
-    console.log(chalk.yellow('⚠️  Coming soon!'))
+  .command('ai:review <file>')
+  .description('Review code for best practices and security')
+  .option('-f, --focus <focus>', 'Focus area (security|performance|best-practices|all)', 'all')
+  .action((file: string, options: any) => {
+    reviewCommand({ file, ...options })
+  })
+
+program
+  .command('ai:document <file>')
+  .description('Generate documentation for code')
+  .option('-o, --output <path>', 'Output file path')
+  .option('-f, --format <format>', 'Documentation format (markdown|phpdoc|jsdoc)')
+  .action((file: string, options: any) => {
+    documentCommand({ file, ...options })
   })
 
 program.parse()

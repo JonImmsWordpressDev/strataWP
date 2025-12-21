@@ -20,6 +20,27 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
+## What's New in v0.4.0
+
+**AI-Assisted Development is Here!**
+
+This release introduces comprehensive AI integration to accelerate your WordPress theme development:
+
+### AI-Powered Development Tools
+- **Code Generation**: Generate Gutenberg blocks, theme components, and block patterns from natural language descriptions
+- **Code Review**: AI-powered analysis for security vulnerabilities, performance issues, and best practices
+- **Documentation**: Automatically create comprehensive Markdown, PHPDoc, or JSDoc documentation
+- **Multi-Provider Support**: Choose between OpenAI GPT-4 or Anthropic Claude 3.5 Sonnet
+- **Flexible Configuration**: Configure via `.env` files or centralized config
+
+**New Commands:**
+```bash
+stratawp ai:setup        # Interactive AI provider configuration
+stratawp ai:generate     # Generate blocks, components, patterns
+stratawp ai:review       # Security, performance, best practices review
+stratawp ai:document     # Generate comprehensive documentation
+```
+
 ## What's New in v0.3.0
 
 **Three Complete Production-Ready Themes!**
@@ -116,11 +137,11 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 - **CLI Scaffolding**: Generate templates, parts, components, and blocks with intuitive commands
 - **Design System Integration**: Choose Tailwind CSS or UnoCSS with WordPress preset mappings
 - **Performance Optimization**: Automatic critical CSS extraction, lazy loading, and preloading
+- **AI-Assisted Development**: OpenAI GPT-4 and Anthropic Claude integration for code generation, review, and documentation
 
 ### Coming Soon
 
 - **Component Registry**: Share and reuse components across projects
-- **AI-Assisted Development**: Built-in AI tools for development (optional)
 - **Comprehensive Testing**: Unit, integration, E2E, and visual regression tests
 - **Headless-Ready**: First-class support for decoupled architectures
 - **Component Explorer**: Built-in Storybook-like component browser
@@ -157,6 +178,7 @@ pnpm add -g @stratawp/cli
 ```
 StrataWP/
 ├── packages/
+│   ├── ai/               # AI-assisted development tools (OpenAI, Anthropic)
 │   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
 │   └── vite-plugin/      # Vite integration for WordPress
@@ -232,7 +254,100 @@ stratawp block:new card --styleFramework=unocss
 # Setup design system integration
 stratawp design-system:setup tailwind
 stratawp design-system:setup unocss
+
+# AI-assisted development (requires API key)
+stratawp ai:setup                                    # Configure AI provider
+stratawp ai:generate block                          # Generate blocks from descriptions
+stratawp ai:review functions.php -f security        # Review code for security issues
+stratawp ai:document src/components/Header.tsx      # Generate documentation
 ```
+
+### AI-Assisted Development
+
+StrataWP includes powerful AI tools to accelerate your development workflow. Supports both OpenAI GPT-4 and Anthropic Claude.
+
+#### Setup
+
+Configure your AI provider with the interactive setup wizard:
+
+```bash
+stratawp ai:setup
+```
+
+Or use environment variables in your `.env` file:
+
+```env
+STRATAWP_AI_PROVIDER=anthropic        # or 'openai'
+STRATAWP_AI_API_KEY=your-api-key-here
+STRATAWP_AI_MODEL=claude-3-5-sonnet-20241022  # optional
+```
+
+#### Generate Code with AI
+
+Create Gutenberg blocks, theme components, and block patterns from natural language descriptions:
+
+```bash
+# Generate a Gutenberg block
+stratawp ai:generate block
+# > Describe the block: A hero section with heading, subheading, and CTA button
+# > Block name: hero-section
+# ✓ Generated block.json, index.tsx, and save.tsx
+
+# Generate a PHP component
+stratawp ai:generate component
+# > Describe the component: Custom post type manager for portfolio items
+# > Component name: PortfolioManager
+
+# Generate a block pattern
+stratawp ai:generate pattern
+# > Describe the pattern: Three-column feature showcase with icons
+# > Pattern name: features-showcase
+```
+
+#### Code Review
+
+Get AI-powered code reviews for security, performance, and best practices:
+
+```bash
+# Review for all aspects
+stratawp ai:review inc/Components/UserAuth.php
+
+# Focus on specific areas
+stratawp ai:review functions.php --focus security
+stratawp ai:review src/blocks/shop/index.tsx --focus performance
+stratawp ai:review inc/Components/API.php --focus best-practices
+```
+
+The AI will analyze your code for:
+- **Security**: XSS, SQL injection, CSRF, input sanitization, capability checks
+- **Performance**: Database queries, caching opportunities, asset loading
+- **Best Practices**: WordPress coding standards, modern PHP/JS patterns
+
+#### Generate Documentation
+
+Automatically create comprehensive documentation from your code:
+
+```bash
+# Generate documentation (format auto-detected from file extension)
+stratawp ai:document inc/Components/Menus.php
+
+# Specify output file
+stratawp ai:document src/blocks/team/index.tsx -o docs/team-block.md
+
+# Specify format explicitly
+stratawp ai:document inc/Components/CustomPostTypes.php --format phpdoc
+```
+
+Supported formats:
+- **Markdown**: Comprehensive documentation with sections
+- **PHPDoc**: WordPress-compatible PHP documentation
+- **JSDoc**: TypeScript/JavaScript documentation
+
+**AI Provider Options:**
+- **OpenAI GPT-4**: Powerful general-purpose model ([Get API key](https://platform.openai.com/api-keys))
+- **Anthropic Claude**: Excellent for code generation ([Get API key](https://console.anthropic.com/))
+
+See the [`@stratawp/ai` package README](./packages/ai/README.md) for complete documentation.
 
 ### Vite Integration
 
@@ -401,9 +516,10 @@ Inspired by:
 
 - [@stratawp/cli](https://www.npmjs.com/package/@stratawp/cli) - CLI tool for creating themes
 - [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin for WordPress
+- [@stratawp/ai](https://www.npmjs.com/package/@stratawp/ai) - AI-assisted development tools
 
 ---
 
-**Status**: v0.3.0 - Three Production-Ready Themes with Advanced Features & WooCommerce Support
+**Status**: v0.4.0 - AI-Assisted Development with OpenAI & Anthropic
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
