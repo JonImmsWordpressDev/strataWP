@@ -1,0 +1,336 @@
+/**
+ * WooCommerce Store Styles
+ * Custom styling for e-commerce functionality
+ */
+
+/* ==================================================
+   Featured Products Block
+   ================================================== */
+.strata-featured-products {
+    .products {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    &.columns-2 .products { grid-template-columns: repeat(2, 1fr); }
+    &.columns-3 .products { grid-template-columns: repeat(3, 1fr); }
+    &.columns-4 .products { grid-template-columns: repeat(4, 1fr); }
+    &.columns-5 .products { grid-template-columns: repeat(5, 1fr); }
+    &.columns-6 .products { grid-template-columns: repeat(6, 1fr); }
+
+    .product-item {
+        position: relative;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .product-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .product-image {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .sale-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ff4444;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            z-index: 1;
+        }
+
+        &:hover img {
+            transform: scale(1.05);
+        }
+    }
+
+    .product-info {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+        line-height: 1.4;
+    }
+
+    .product-rating {
+        margin-bottom: 0.75rem;
+
+        .star-rating {
+            color: #ffc107;
+        }
+    }
+
+    .product-price {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--wp--preset--color--primary, #0000ff);
+
+        del {
+            color: #999;
+            font-weight: 400;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+    }
+
+    .product-actions {
+        padding: 0 1.5rem 1.5rem;
+
+        .button {
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+        }
+    }
+}
+
+/* ==================================================
+   Product Categories Block
+   ================================================== */
+.strata-product-categories {
+    .categories-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    &.columns-2 .categories-grid { grid-template-columns: repeat(2, 1fr); }
+    &.columns-3 .categories-grid { grid-template-columns: repeat(3, 1fr); }
+    &.columns-4 .categories-grid { grid-template-columns: repeat(4, 1fr); }
+    &.columns-5 .categories-grid { grid-template-columns: repeat(5, 1fr); }
+    &.columns-6 .categories-grid { grid-template-columns: repeat(6, 1fr); }
+
+    .category-item {
+        position: relative;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .category-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .category-image {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover img {
+            transform: scale(1.05);
+        }
+    }
+
+    .category-info {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .category-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+    }
+
+    .category-count {
+        display: block;
+        color: #666;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .category-description {
+        font-size: 0.875rem;
+        color: #666;
+        line-height: 1.5;
+        margin: 0;
+    }
+}
+
+/* ==================================================
+   WooCommerce Product Grid Enhancements
+   ================================================== */
+.woocommerce {
+    ul.products {
+        li.product {
+            .woocommerce-loop-product__link {
+                display: block;
+                position: relative;
+            }
+
+            .woocommerce-loop-product__title {
+                font-weight: 600;
+                margin: 1rem 0 0.5rem;
+            }
+
+            .price {
+                font-size: 1.125rem;
+                font-weight: 700;
+                color: var(--wp--preset--color--primary, #0000ff);
+            }
+
+            .button {
+                margin-top: 1rem;
+            }
+        }
+    }
+
+    /* Product Page Enhancements */
+    div.product {
+        .woocommerce-product-gallery {
+            margin-bottom: 2rem;
+        }
+
+        .entry-summary {
+            .product_title {
+                margin-top: 0;
+            }
+
+            .woocommerce-product-rating {
+                margin-bottom: 1.5rem;
+            }
+
+            .price {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+            }
+
+            .woocommerce-product-details__short-description {
+                margin-bottom: 2rem;
+                line-height: 1.7;
+            }
+
+            .cart {
+                margin-bottom: 2rem;
+
+                .quantity {
+                    margin-right: 1rem;
+                }
+            }
+        }
+    }
+
+    /* Cart Page */
+    table.cart {
+        .product-thumbnail img {
+            border-radius: 4px;
+        }
+
+        .product-name a {
+            font-weight: 600;
+        }
+
+        .actions .coupon {
+            input[type="text"] {
+                margin-right: 0.5rem;
+            }
+        }
+    }
+
+    /* Checkout Page */
+    form.checkout {
+        .woocommerce-checkout-review-order {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+    }
+}
+
+/* ==================================================
+   Mobile Responsive
+   ================================================== */
+@media (max-width: 1024px) {
+    .strata-featured-products,
+    .strata-product-categories {
+        &.columns-4,
+        &.columns-5,
+        &.columns-6 {
+            .products,
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .strata-featured-products,
+    .strata-product-categories {
+        .products,
+        .categories-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    .woocommerce {
+        ul.products {
+            li.product {
+                width: 100% !important;
+                margin: 0 0 2rem !important;
+            }
+        }
+
+        div.product {
+            .entry-summary {
+                .price {
+                    font-size: 1.5rem;
+                }
+            }
+        }
+    }
+}

@@ -26,6 +26,7 @@ use StrataWP\Components\Performance;
 use StrataWP\Components\Fonts;
 use StrataBasic\Components\Navigation;
 use StrataBasic\Components\Customizer;
+use StrataBasic\Components\WooCommerceIntegration;
 
 /**
  * Initialize the theme
@@ -40,6 +41,7 @@ function strata_store_init(): void {
         new Fonts(),
         new Navigation(),
         new Customizer(),
+        new WooCommerceIntegration(),
     ]);
 
     // Initialize theme
@@ -50,21 +52,6 @@ function strata_store_init(): void {
 }
 
 add_action( 'after_setup_theme', 'strata_store_init', 1 );
-
-/**
- * Add WooCommerce support
- */
-function strata_store_woocommerce_support(): void {
-    // Declare WooCommerce support
-    add_theme_support( 'woocommerce' );
-
-    // Enable WooCommerce product gallery features
-    add_theme_support( 'wc-product-gallery-zoom' );
-    add_theme_support( 'wc-product-gallery-lightbox' );
-    add_theme_support( 'wc-product-gallery-slider' );
-}
-
-add_action( 'after_setup_theme', 'strata_store_woocommerce_support' );
 
 /**
  * Get theme instance
