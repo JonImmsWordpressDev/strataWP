@@ -14,6 +14,13 @@ import {
   reviewCommand,
   documentCommand,
 } from '@stratawp/ai'
+import {
+  searchCommand,
+  installCommand,
+  infoCommand,
+  publishCommand,
+  listCommand,
+} from '@stratawp/registry'
 
 const program = new Command()
 
@@ -124,5 +131,47 @@ program
   .action((file: string, options: any) => {
     documentCommand({ file, ...options })
   })
+
+// Component Registry commands
+program
+  .command('registry:search <query>')
+  .description('Search for components in the registry')
+  .option('-t, --type <type>', 'Filter by component type (block|component|pattern|template)')
+  .option('-l, --limit <number>', 'Maximum number of results', '20')
+  .action((query: string, options: any) => {
+    searchCommand(query, {
+      type: options.type,
+      limit: parseInt(options.limit, 10),
+    })
+  })
+
+program
+  .command('registry:install <component>')
+  .description('Install a component from the registry')
+  .option('-v, --version <version>', 'Specific version to install')
+  .option('-f, --force', 'Overwrite if component already exists')
+  .option('-d, --dev', 'Install as dev dependency')
+  .option('--target-dir <dir>', 'Custom target directory')
+  .action((component: string, options: any) => {
+    installCommand(component, options)
+  })
+
+program
+  .command('registry:info <component>')
+  .description('Get detailed information about a component')
+  .action(infoCommand)
+
+program
+  .command('registry:publish')
+  .description('Publish current component to the registry')
+  .option('--tag <tag>', 'Publish with a specific tag')
+  .option('--access <access>', 'Public or restricted access', 'public')
+  .option('--dry-run', 'Test publication without actually publishing')
+  .action(publishCommand)
+
+program
+  .command('registry:list')
+  .description('List installed StrataWP components')
+  .action(listCommand)
 
 program.parse()

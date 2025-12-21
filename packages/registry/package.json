@@ -1,0 +1,55 @@
+{
+  "name": "@stratawp/registry",
+  "version": "0.1.0",
+  "description": "Component registry for sharing and discovering StrataWP components",
+  "author": "Jon Imms",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "keywords": [
+    "wordpress",
+    "registry",
+    "components",
+    "blocks",
+    "stratawp",
+    "package-manager"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP.git",
+    "directory": "packages/registry"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2",
+    "fs-extra": "^11.2.0",
+    "execa": "^8.0.1",
+    "tar": "^7.0.0",
+    "node-fetch": "^3.3.2",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9",
+    "@types/semver": "^7.5.6",
+    "@types/tar": "^6.1.11",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  }
+}

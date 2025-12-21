@@ -20,6 +20,37 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
+## What's New in v0.5.0
+
+**Component Registry is Live!**
+
+This release introduces a powerful component registry system for sharing and discovering reusable WordPress components:
+
+### Component Registry System
+- **npm-Powered Registry**: Leverage npm infrastructure for reliable component distribution
+- **Search & Discovery**: Find components by name, type, or keywords
+- **One-Command Installation**: Install blocks, components, patterns with a single command
+- **Version Management**: Semantic versioning and dependency resolution
+- **Easy Publishing**: Share your components with the StrataWP community
+- **Multiple Component Types**: Blocks, PHP components, patterns, templates, parts, integrations
+
+**New Commands:**
+```bash
+stratawp registry:search <query>     # Find components
+stratawp registry:install <package>  # Install components
+stratawp registry:info <package>     # Get component details
+stratawp registry:list               # List installed components
+stratawp registry:publish            # Publish your component
+```
+
+**Component Types Supported:**
+- Gutenberg Blocks
+- PHP Theme Components
+- Block Patterns
+- FSE Templates
+- Template Parts
+- Third-party Integrations
+
 ## What's New in v0.4.0
 
 **AI-Assisted Development is Here!**
@@ -138,10 +169,10 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 - **Design System Integration**: Choose Tailwind CSS or UnoCSS with WordPress preset mappings
 - **Performance Optimization**: Automatic critical CSS extraction, lazy loading, and preloading
 - **AI-Assisted Development**: OpenAI GPT-4 and Anthropic Claude integration for code generation, review, and documentation
+- **Component Registry**: npm-powered registry for sharing and discovering reusable components
 
 ### Coming Soon
 
-- **Component Registry**: Share and reuse components across projects
 - **Comprehensive Testing**: Unit, integration, E2E, and visual regression tests
 - **Headless-Ready**: First-class support for decoupled architectures
 - **Component Explorer**: Built-in Storybook-like component browser
@@ -181,6 +212,7 @@ StrataWP/
 │   ├── ai/               # AI-assisted development tools (OpenAI, Anthropic)
 │   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
+│   ├── registry/         # Component registry for sharing/discovering components
 │   └── vite-plugin/      # Vite integration for WordPress
 ├── examples/
 │   ├── basic-theme/      # General purpose blog/business theme with Frost design system
@@ -260,7 +292,67 @@ stratawp ai:setup                                    # Configure AI provider
 stratawp ai:generate block                          # Generate blocks from descriptions
 stratawp ai:review functions.php -f security        # Review code for security issues
 stratawp ai:document src/components/Header.tsx      # Generate documentation
+
+# Component registry
+stratawp registry:search hero                       # Search for components
+stratawp registry:install @stratawp/hero-block      # Install a component
+stratawp registry:info @stratawp/hero-block         # Get component details
+stratawp registry:list                              # List installed components
+stratawp registry:publish                           # Publish your component
 ```
+
+### Component Registry
+
+StrataWP includes a powerful component registry for sharing and discovering reusable WordPress components, powered by npm.
+
+#### Search & Install Components
+
+Discover and install components from the StrataWP community:
+
+```bash
+# Search for components
+stratawp registry:search hero
+stratawp registry:search grid --type block
+
+# Get detailed information
+stratawp registry:info @stratawp/hero-block
+
+# Install components
+stratawp registry:install @stratawp/hero-block
+stratawp registry:install @stratawp/analytics-component
+stratawp registry:install @stratawp/features-pattern
+```
+
+**Component Types Available:**
+- **Blocks**: Gutenberg blocks for the editor
+- **Components**: PHP theme components with StrataWP architecture
+- **Patterns**: Reusable block patterns
+- **Templates**: FSE templates
+- **Parts**: Template parts
+- **Integrations**: Third-party service integrations
+
+#### Publishing Your Components
+
+Share your components with the community:
+
+```bash
+# Ensure you're logged in to npm
+npm login
+
+# Publish your component
+stratawp registry:publish
+
+# Test before publishing
+stratawp registry:publish --dry-run
+```
+
+**Publishing Requirements:**
+- Package name starts with `@stratawp/`
+- Include StrataWP metadata in `package.json`
+- Follow semantic versioning
+- Include README and documentation
+
+See the [`@stratawp/registry` package README](./packages/registry/README.md) for complete documentation.
 
 ### AI-Assisted Development
 
@@ -517,9 +609,10 @@ Inspired by:
 - [@stratawp/cli](https://www.npmjs.com/package/@stratawp/cli) - CLI tool for creating themes
 - [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin for WordPress
 - [@stratawp/ai](https://www.npmjs.com/package/@stratawp/ai) - AI-assisted development tools
+- [@stratawp/registry](https://www.npmjs.com/package/@stratawp/registry) - Component registry
 
 ---
 
-**Status**: v0.4.0 - AI-Assisted Development with OpenAI & Anthropic
+**Status**: v0.5.0 - Component Registry for Sharing & Discovering Components
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
