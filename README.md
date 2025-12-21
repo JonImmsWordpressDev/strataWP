@@ -20,16 +20,32 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
-## What's New in v0.2.0
+## What's New in v0.3.0
 
-Major feature update with three high-impact additions:
+**Three Complete Production-Ready Themes!**
 
-- **CLI Scaffolding** - Generate templates, parts, components, and blocks with `wp-forge` commands
+This release adds two new fully-featured example themes showcasing advanced WordPress development:
+
+### Advanced Theme - Enterprise Features
+- **4 Custom Post Types**: Portfolio (with categories/tags), Team Members (with departments), Testimonials (with ratings), Case Studies (with industries/services)
+- **Custom Gutenberg Blocks**: Portfolio Grid and Team Members blocks with full editor controls
+- **Advanced Layouts Component**: Customizer integration, container width control, layout management
+- **Meta Boxes System**: Comprehensive custom fields for all post types with proper security
+- **5 Integrated Components**: Full component architecture demonstration
+
+### Store Theme - WooCommerce E-Commerce
+- **4 WooCommerce Templates**: Shop, Product, Cart, and Checkout pages optimized for FSE
+- **2 Product Blocks**: Featured Products and Product Categories with full customization
+- **4 E-Commerce Patterns**: Product showcases, category grids, hero sections, sale banners
+- **WooCommerce Integration**: Enhanced product displays, cart notifications, checkout customization
+- **Complete Store Styling**: Professional e-commerce CSS with hover effects and mobile optimization
+
+### v0.2.0 Features
+
+- **CLI Scaffolding** - Generate templates, parts, components, and blocks with commands
 - **Design System Integration** - Full Tailwind CSS and UnoCSS support with WordPress preset mappings
 - **Performance Optimization** - Automatic critical CSS extraction, lazy loading, and asset preloading
 - **Enhanced Block Generation** - Blocks now support style framework integration
-- **WordPress Preset Mappings** - Use `text-wp-primary`, `p-wp-md`, `font-wp-sans` and more
-- **Auto-Generated PHP Loaders** - Performance plugins generate WordPress integration files automatically
 
 ### v0.1.0 (Initial Release)
 
@@ -39,8 +55,6 @@ Major feature update with three high-impact additions:
 - **TypeScript-first** - Type safety across your entire theme
 - **Block auto-registration** - Automatic WordPress block registration
 - **PHP Hot Module Replacement** - See PHP changes instantly
-- **Example themes** - Two complete themes to learn from (basic and advanced)
-- **Modern design system** - Beautiful Sitecore-inspired design included
 
 ## Quick Start
 
@@ -97,7 +111,7 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 - **PHP Hot Reload**: See PHP template changes without page refresh
 - **Modern Tooling**: Monorepo with Turborepo and pnpm
 - **WordPress Manifest**: Automatic asset manifest generation for WordPress
-- **Example Themes**: Learn from working examples (basic and advanced)
+- **Three Example Themes**: Learn from complete, production-ready themes
 - **Sitecore-Inspired Design**: Beautiful, professional design system included
 - **CLI Scaffolding**: Generate templates, parts, components, and blocks with intuitive commands
 - **Design System Integration**: Choose Tailwind CSS or UnoCSS with WordPress preset mappings
@@ -147,10 +161,50 @@ StrataWP/
 │   ├── core/             # PHP framework core
 │   └── vite-plugin/      # Vite integration for WordPress
 ├── examples/
-│   ├── basic-theme/      # Simple starter theme (Block Theme/FSE)
-│   └── advanced-theme/   # Feature-rich theme with CPTs, WooCommerce, etc.
+│   ├── basic-theme/      # General purpose blog/business theme with Frost design system
+│   ├── advanced-theme/   # Enterprise theme with Custom Post Types, advanced layouts, meta boxes
+│   └── store-theme/      # WooCommerce e-commerce theme with product blocks and patterns
 └── docs/                 # Documentation (coming soon)
 ```
+
+## Example Themes
+
+### Basic Theme - General Purpose
+Perfect for blogs, portfolios, and business sites.
+
+**Features:**
+- Frost design system with 52+ professional patterns
+- Custom typography control with Google Fonts
+- 9 templates (home, blog, single, page, archive, search, 404, blank, no-title)
+- Light and dark mode pattern variants
+- Responsive design with fluid typography
+
+**Best for:** Blogs, portfolios, small business sites, content-focused websites
+
+### Advanced Theme - Enterprise Features
+Showcase of advanced WordPress development capabilities.
+
+**Features:**
+- 4 Custom Post Types: Portfolio, Team Members, Testimonials, Case Studies
+- Custom Gutenberg blocks: Portfolio Grid, Team Members
+- Advanced Layouts component with Customizer integration
+- Complete Meta Boxes system with custom fields
+- Helper methods for complex queries and displays
+
+**Best for:** Corporate sites, agencies, portfolios, membership sites, complex content structures
+
+### Store Theme - E-Commerce
+Full-featured WooCommerce theme ready for online stores.
+
+**Features:**
+- 4 WooCommerce templates (shop, product, cart, checkout)
+- Featured Products & Product Categories blocks
+- 4 e-commerce patterns (showcases, hero, banners, categories)
+- WooCommerce integration component
+- Professional store styling with animations
+- Mobile-optimized shopping experience
+
+**Best for:** Online stores, product catalogs, digital downloads, subscription services
 
 ## Features in Detail
 
@@ -350,6 +404,6 @@ Inspired by:
 
 ---
 
-**Status**: v0.2.0 Alpha - Now with CLI Scaffolding, Design Systems, and Performance Optimization
+**Status**: v0.3.0 - Three Production-Ready Themes with Advanced Features & WooCommerce Support
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
