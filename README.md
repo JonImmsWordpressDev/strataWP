@@ -20,6 +20,57 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
+## What's New in v0.8.0
+
+**Headless WordPress Support is Here!**
+
+This release introduces comprehensive support for headless WordPress architectures, enabling you to build decoupled applications with React, Next.js, and other modern frameworks:
+
+### Headless WordPress Features
+- **TypeScript-First REST API Client**: Fully-typed WordPress REST API client with complete type definitions
+- **Authentication Support**: Basic Auth, JWT, Application Passwords, and OAuth
+- **React Hooks**: SWR-powered hooks for data fetching (usePosts, usePages, useCategories)
+- **Next.js Integration**: Static generation, ISR, preview mode, and on-demand revalidation
+- **SEO Utilities**: Generate metadata for posts and pages with Open Graph and Twitter Cards
+- **Image Optimization**: Responsive images, srcset generation, and Next.js Image integration
+- **Preview Mode**: Full support for previewing draft content
+- **Revalidation**: Tag-based and path-based on-demand revalidation
+
+**New Package:**
+```bash
+pnpm add @stratawp/headless
+```
+
+**Quick Start:**
+```typescript
+import { WordPressClient } from '@stratawp/headless'
+import { usePosts } from '@stratawp/headless/react'
+import { getAllPosts } from '@stratawp/headless/next'
+
+// Create client
+const client = new WordPressClient({
+  baseUrl: 'https://your-wordpress-site.com',
+})
+
+// Fetch posts
+const { data } = await client.getPosts()
+
+// React hook
+const { data, isLoading } = usePosts({ client })
+
+// Next.js static generation
+const posts = await getAllPosts(client)
+```
+
+**Features:**
+- Complete WordPress REST API types (WPPost, WPPage, WPCategory, WPTag, WPMedia)
+- SWR-based React hooks with automatic revalidation
+- Next.js App Router support with generateStaticParams
+- Preview mode with secret verification
+- SEO metadata generation for posts and pages
+- Responsive image utilities with srcset
+- Authentication helpers for secure API access
+
 ## What's New in v0.7.0
 
 **Component Explorer is Here!**
@@ -234,10 +285,7 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 - **Component Registry**: npm-powered registry for sharing and discovering reusable components
 - **Comprehensive Testing**: Unit testing with Vitest, E2E testing with Playwright, WordPress mocks, and coverage reporting
 - **Component Explorer**: Interactive Storybook-like component browser with auto-discovery and live preview
-
-### Coming Soon
-
-- **Headless-Ready**: First-class support for decoupled architectures
+- **Headless WordPress**: REST API client, React hooks, Next.js integration, and SEO utilities for decoupled architectures
 
 ## Installation
 
@@ -275,6 +323,7 @@ StrataWP/
 │   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
 │   ├── explorer/         # Interactive component browser (Storybook-like)
+│   ├── headless/         # Headless WordPress utilities (REST API, React hooks, Next.js)
 │   ├── registry/         # Component registry for sharing/discovering components
 │   ├── testing/          # Comprehensive testing utilities (Vitest, Playwright)
 │   └── vite-plugin/      # Vite integration for WordPress
@@ -532,6 +581,153 @@ export function Button({ variant = 'primary' }) {
 6. **Copy Code**: View source and copy snippets
 
 See the [`@stratawp/explorer` package README](./packages/explorer/README.md) for complete documentation.
+
+### Headless WordPress
+
+StrataWP provides comprehensive support for headless WordPress architectures, enabling you to build decoupled applications with React, Next.js, and other modern frameworks.
+
+#### Quick Start
+
+```bash
+pnpm add @stratawp/headless
+```
+
+**Basic Usage:**
+```typescript
+import { WordPressClient } from '@stratawp/headless'
+
+const client = new WordPressClient({
+  baseUrl: 'https://your-wordpress-site.com',
+  auth: {
+    type: 'application-password',
+    username: 'admin',
+    password: 'xxxx xxxx xxxx xxxx',
+  },
+})
+
+// Fetch posts
+const { data: posts } = await client.getPosts({ per_page: 10, _embed: true })
+
+// Fetch single post
+const post = await client.getPostBySlug('hello-world')
+```
+
+#### React Hooks
+
+```tsx
+import { usePosts, usePost } from '@stratawp/headless/react'
+
+function BlogIndex() {
+  const { data, isLoading } = usePosts({
+    client,
+    params: { per_page: 10, _embed: true },
+  })
+
+  return (
+    <div>
+      {data?.data.map((post) => (
+        <article key={post.id}>
+          <h2>{post.title.rendered}</h2>
+        </article>
+      ))}
+    </div>
+  )
+}
+
+function BlogPost({ slug }: { slug: string }) {
+  const { data: post } = usePost({ client, slug })
+
+  return <article>{post?.title.rendered}</article>
+}
+```
+
+#### Next.js Integration
+
+```tsx
+// app/blog/page.tsx
+import { getAllPosts } from '@stratawp/headless/next'
+
+export const revalidate = 60 // ISR
+
+export default async function BlogPage() {
+  const posts = await getAllPosts(client)
+
+  return (
+    <div>
+      {posts.map((post) => (
+        <article key={post.id}>{post.title.rendered}</article>
+      ))}
+    </div>
+  )
+}
+```
+
+```tsx
+// app/blog/[slug]/page.tsx
+import { generatePostParams } from '@stratawp/headless/next'
+
+export async function generateStaticParams() {
+  return await generatePostParams(client)
+}
+
+export default async function PostPage({ params }: { params: { slug: string } }) {
+  const post = await client.getPostBySlug(params.slug)
+  return <article>{post?.title.rendered}</article>
+}
+```
+
+#### SEO & Images
+
+```tsx
+import {
+  generatePostSEO,
+  getImageSrcSet,
+  getNextImageProps,
+} from '@stratawp/headless'
+import type { Metadata } from 'next'
+import Image from 'next/image'
+
+// Generate metadata
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const post = await client.getPostBySlug(params.slug, { _embed: true })
+  const featuredMedia = post?._embedded?.['wp:featuredmedia']?.[0]
+
+  const seo = generatePostSEO(
+    post,
+    'https://your-site.com',
+    'Your Site',
+    featuredMedia
+  )
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: seo.openGraph,
+  }
+}
+
+// Responsive images
+function FeaturedImage({ media }) {
+  const imageProps = getNextImageProps(media, {
+    width: 1200,
+    height: 630,
+  })
+
+  return <Image {...imageProps} />
+}
+```
+
+**Features:**
+- **REST API Client**: Complete WordPress REST API with TypeScript types
+- **Authentication**: Basic, JWT, Application Passwords, OAuth
+- **React Hooks**: SWR-powered hooks (usePosts, usePages, useCategories)
+- **Next.js Utilities**: Static generation, ISR, preview mode, revalidation
+- **SEO Utilities**: Metadata generation for posts and pages
+- **Image Optimization**: Responsive images and Next.js Image support
+- **Preview Mode**: Draft content preview with secret verification
+- **TypeScript Types**: Complete type definitions for all WordPress entities
+
+See the [`@stratawp/headless` package README](./packages/headless/README.md) for complete documentation.
 
 ### AI-Assisted Development
 
