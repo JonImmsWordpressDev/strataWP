@@ -20,6 +20,38 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
+## What's New in v0.7.0
+
+**Component Explorer is Here!**
+
+This release introduces an interactive component browser and documentation tool, similar to Storybook but specifically designed for WordPress Block Themes:
+
+### Component Explorer
+- **Auto-Discovery**: Automatically discovers all blocks, components, patterns, templates, and template parts
+- **Live Preview**: Interactive preview with viewport testing (Mobile, Tablet, Desktop)
+- **Hot Reload**: Real-time updates when you modify components via WebSocket
+- **Attribute Controls**: Test and manipulate block attributes in real-time
+- **Source Code Viewer**: View component source code directly in the browser
+- **Component Filtering**: Search and filter by type, name, or tags
+- **Multiple Component Types**: Full support for blocks, React components, patterns, templates, and parts
+
+**New Commands:**
+```bash
+stratawp explorer            # Launch component explorer
+stratawp storybook           # Alias for explorer
+stratawp explorer --port 4000  # Custom port
+```
+
+**Features:**
+- Vite-powered dev server with Express backend
+- React-based UI with responsive design
+- WebSocket real-time updates
+- REST API for component data
+- Automatic component metadata extraction
+- File watching with hot-reload
+- Viewport testing for responsive design
+- Comprehensive component documentation
+
 ## What's New in v0.6.0
 
 **Comprehensive Testing is Here!**
@@ -201,11 +233,11 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 - **AI-Assisted Development**: OpenAI GPT-4 and Anthropic Claude integration for code generation, review, and documentation
 - **Component Registry**: npm-powered registry for sharing and discovering reusable components
 - **Comprehensive Testing**: Unit testing with Vitest, E2E testing with Playwright, WordPress mocks, and coverage reporting
+- **Component Explorer**: Interactive Storybook-like component browser with auto-discovery and live preview
 
 ### Coming Soon
 
 - **Headless-Ready**: First-class support for decoupled architectures
-- **Component Explorer**: Built-in Storybook-like component browser
 
 ## Installation
 
@@ -242,6 +274,7 @@ StrataWP/
 │   ├── ai/               # AI-assisted development tools (OpenAI, Anthropic)
 │   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
+│   ├── explorer/         # Interactive component browser (Storybook-like)
 │   ├── registry/         # Component registry for sharing/discovering components
 │   ├── testing/          # Comprehensive testing utilities (Vitest, Playwright)
 │   └── vite-plugin/      # Vite integration for WordPress
@@ -330,6 +363,11 @@ stratawp registry:install @stratawp/hero-block      # Install a component
 stratawp registry:info @stratawp/hero-block         # Get component details
 stratawp registry:list                              # List installed components
 stratawp registry:publish                           # Publish your component
+
+# Component explorer
+stratawp explorer                                   # Launch interactive component browser
+stratawp storybook                                  # Alias for explorer
+stratawp explorer --port 4000                       # Custom port
 ```
 
 ### Component Registry
@@ -384,6 +422,116 @@ stratawp registry:publish --dry-run
 - Include README and documentation
 
 See the [`@stratawp/registry` package README](./packages/registry/README.md) for complete documentation.
+
+### Component Explorer
+
+StrataWP includes an interactive component browser for exploring and documenting your theme components, similar to Storybook but specifically designed for WordPress.
+
+#### Launch the Explorer
+
+Start the component explorer from your theme directory:
+
+```bash
+# Launch explorer
+stratawp explorer
+
+# Or use the storybook alias
+stratawp storybook
+
+# Custom port
+stratawp explorer --port 4000
+
+# Don't open browser automatically
+stratawp explorer --no-open
+```
+
+The explorer automatically:
+- Discovers all blocks, components, patterns, templates, and parts
+- Starts a dev server (default: `http://localhost:3000`)
+- Opens your browser
+- Watches for file changes and hot-reloads
+
+#### Features
+
+**Auto-Discovery:**
+- **Blocks**: Reads `block.json` from `src/blocks/`
+- **React Components**: Finds `.tsx` files in `src/components/`
+- **Patterns**: Discovers `.php` files in `patterns/`
+- **Templates**: Lists `.html` files in `templates/`
+- **Template Parts**: Lists `.html` files in `parts/`
+
+**Live Preview:**
+- Interactive component rendering
+- Viewport testing (Mobile, Tablet, Desktop, Full)
+- Real-time attribute editing for blocks
+- Responsive design testing
+
+**Component Details:**
+- **Info Tab**: Component metadata, attributes, and file path
+- **Source Tab**: View component source code
+- **Examples Tab**: Pre-configured usage examples
+
+**Real-Time Updates:**
+- WebSocket connection for instant updates
+- Hot-reload when files change
+- No manual refresh needed
+
+#### Component Metadata
+
+**For Blocks (block.json):**
+```json
+{
+  "name": "my-theme/hero",
+  "title": "Hero Section",
+  "description": "Full-width hero with CTA",
+  "category": "design",
+  "keywords": ["hero", "banner", "cta"],
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "example": {
+    "attributes": {
+      "heading": "Welcome to My Site"
+    }
+  }
+}
+```
+
+**For React Components (JSDoc):**
+```tsx
+/**
+ * @title Button Component
+ * @description A reusable button component
+ */
+export function Button({ variant = 'primary' }) {
+  return <button className={`btn-${variant}`}>Click Me</button>
+}
+```
+
+**For Patterns (PHP Comments):**
+```php
+<?php
+/**
+ * Title: Hero Banner
+ * Description: Full-width hero section
+ * Categories: featured, call-to-action
+ */
+?>
+```
+
+#### Development Workflow
+
+1. **Launch Explorer**: `stratawp explorer`
+2. **Browse Components**: View all components in the sidebar
+3. **Test Interactively**: Change viewports, edit attributes
+4. **Modify Code**: Edit component files
+5. **See Updates**: Explorer hot-reloads automatically
+6. **Copy Code**: View source and copy snippets
+
+See the [`@stratawp/explorer` package README](./packages/explorer/README.md) for complete documentation.
 
 ### AI-Assisted Development
 

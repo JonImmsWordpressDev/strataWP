@@ -1,5 +1,4 @@
 import { Command } from 'commander'
-import chalk from 'chalk'
 import { devCommand } from './commands/dev'
 import { buildCommand } from './commands/build'
 import { blockCommand } from './commands/block'
@@ -21,6 +20,7 @@ import {
   publishCommand,
   listCommand,
 } from '@stratawp/registry'
+import { startCommand as explorerStartCommand } from '@stratawp/explorer'
 
 const program = new Command()
 
@@ -94,11 +94,32 @@ program
 
 // Component explorer
 program
+  .command('explorer')
+  .description('Launch interactive component explorer')
+  .option('-p, --port <port>', 'Port number', '3000')
+  .option('-h, --host <host>', 'Host address', 'localhost')
+  .option('--no-open', 'Do not open browser automatically')
+  .action((options: any) => {
+    explorerStartCommand({
+      port: options.port ? parseInt(options.port, 10) : 3000,
+      host: options.host,
+      open: options.open !== false,
+    })
+  })
+
+// Storybook alias
+program
   .command('storybook')
-  .description('Launch component explorer')
-  .action(() => {
-    console.log(chalk.cyan('🎭 Launching component explorer...'))
-    console.log(chalk.dim('Coming soon!'))
+  .description('Alias for explorer command')
+  .option('-p, --port <port>', 'Port number', '3000')
+  .option('-h, --host <host>', 'Host address', 'localhost')
+  .option('--no-open', 'Do not open browser automatically')
+  .action((options: any) => {
+    explorerStartCommand({
+      port: options.port ? parseInt(options.port, 10) : 3000,
+      host: options.host,
+      open: options.open !== false,
+    })
   })
 
 // AI-powered commands

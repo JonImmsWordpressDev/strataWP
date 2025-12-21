@@ -1,0 +1,135 @@
+.component-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.viewport-selector {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.viewport-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  background: white;
+  border-radius: var(--border-radius);
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.viewport-btn:hover {
+  background: var(--color-surface);
+}
+
+.viewport-btn.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.preview-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  background: white;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: var(--color-surface);
+}
+
+.preview-container {
+  flex: 1;
+  overflow: auto;
+  padding: var(--spacing-lg);
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.preview-frame {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: white;
+  transition: all 0.3s;
+  min-height: 200px;
+}
+
+.block-preview,
+.component-preview-content,
+.pattern-preview,
+.template-preview {
+  padding: var(--spacing-lg);
+}
+
+.preview-placeholder {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin: var(--spacing-md) 0;
+}
+
+.attributes-preview {
+  margin-top: var(--spacing-md);
+  font-size: 0.85rem;
+}
+
+.attributes-panel {
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.attributes-panel h4 {
+  margin-bottom: var(--spacing-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.attribute-control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.attribute-control label {
+  flex: 0 0 120px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.attribute-control input {
+  flex: 1;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+}
+
+.attribute-control input[type="checkbox"] {
+  flex: 0;
+  width: 20px;
+  height: 20px;
+}

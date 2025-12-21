@@ -1,0 +1,119 @@
+.component-list {
+  padding: var(--spacing-md);
+}
+
+.component-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.group-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.5px;
+}
+
+.component-items {
+  list-style: none;
+}
+
+.component-item {
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.component-item:hover {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+
+.component-item.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.component-item.active .component-type-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.component-item.active .component-description,
+.component-item.active .tag {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.component-item-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.component-type-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.component-type-badge.block {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.component-type-badge.component {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.component-type-badge.pattern {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.component-type-badge.template {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.component-type-badge.part {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.component-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.component-description {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
+}
+
+.component-tags {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-sm);
+}
+
+.tag {
+  font-size: 0.75rem;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
