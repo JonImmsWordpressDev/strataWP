@@ -1,0 +1,73 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "e890a092640eb3bca80abdb15aae6adc",
+    "packages": [
+        {
+            "name": "stratawp/core",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/core",
+                "reference": "e24352e52b63c7419172f77d98d7bb15a8e155cf"
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^10.0",
+                "squizlabs/php_codesniffer": "^3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StrataWP\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "StrataWP\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "phpcs": [
+                    "phpcs"
+                ],
+                "phpstan": [
+                    "phpstan analyze"
+                ]
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Imms",
+                    "email": "jon@example.com"
+                }
+            ],
+            "description": "Core PHP framework for StrataWP themes",
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "stratawp/core": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}

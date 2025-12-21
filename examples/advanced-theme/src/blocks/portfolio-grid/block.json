@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "strata-advanced/portfolio-grid",
+  "version": "1.0.0",
+  "title": "Portfolio Grid",
+  "category": "layout",
+  "icon": "portfolio",
+  "description": "Display portfolio items in a grid layout",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 9
+    },
+    "category": {
+      "type": "string",
+      "default": ""
+    },
+    "orderBy": {
+      "type": "string",
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
+    }
+  },
+  "textdomain": "strata-advanced",
+  "editorScript": "file:./index.tsx",
+  "render": "file:./render.php"
+}
