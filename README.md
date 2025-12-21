@@ -20,6 +20,36 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
+## What's New in v0.6.0
+
+**Comprehensive Testing is Here!**
+
+This release introduces a complete testing solution for WordPress themes with unit, integration, and E2E testing capabilities:
+
+### Testing Infrastructure
+- **Vitest Integration**: Fast unit and integration tests with WordPress mocks
+- **Playwright E2E**: Full user workflow testing with browser automation
+- **WordPress Mocks**: Complete mocks for WordPress JavaScript APIs (@wordpress/blocks, @wordpress/data, etc.)
+- **Custom Matchers**: WordPress-specific test assertions (toHaveBlockClass, toBeRegisteredBlock)
+- **Test Utilities**: Block testing helpers, component rendering, attribute testing
+- **Coverage Reporting**: Built-in code coverage with thresholds (80% lines, 80% functions)
+- **CI/CD Ready**: Pre-configured for GitHub Actions
+
+**Testing Commands:**
+```bash
+pnpm test              # Run unit tests
+pnpm test:coverage     # Run with coverage
+pnpm test:e2e          # Run E2E tests
+```
+
+**Features:**
+- Mock WordPress APIs (blocks, data, i18n, components, block-editor)
+- Block testing utilities (renderBlockEdit, renderBlockSave, testBlockRegistration)
+- Playwright helpers (wpLogin, openBlockEditor, insertBlock, publishPost)
+- Custom matchers for WordPress-specific assertions
+- Example tests for reference
+- Comprehensive documentation
+
 ## What's New in v0.5.0
 
 **Component Registry is Live!**
@@ -170,10 +200,10 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 - **Performance Optimization**: Automatic critical CSS extraction, lazy loading, and preloading
 - **AI-Assisted Development**: OpenAI GPT-4 and Anthropic Claude integration for code generation, review, and documentation
 - **Component Registry**: npm-powered registry for sharing and discovering reusable components
+- **Comprehensive Testing**: Unit testing with Vitest, E2E testing with Playwright, WordPress mocks, and coverage reporting
 
 ### Coming Soon
 
-- **Comprehensive Testing**: Unit, integration, E2E, and visual regression tests
 - **Headless-Ready**: First-class support for decoupled architectures
 - **Component Explorer**: Built-in Storybook-like component browser
 
@@ -213,6 +243,7 @@ StrataWP/
 │   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
 │   ├── registry/         # Component registry for sharing/discovering components
+│   ├── testing/          # Comprehensive testing utilities (Vitest, Playwright)
 │   └── vite-plugin/      # Vite integration for WordPress
 ├── examples/
 │   ├── basic-theme/      # General purpose blog/business theme with Frost design system
@@ -610,9 +641,10 @@ Inspired by:
 - [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin for WordPress
 - [@stratawp/ai](https://www.npmjs.com/package/@stratawp/ai) - AI-assisted development tools
 - [@stratawp/registry](https://www.npmjs.com/package/@stratawp/registry) - Component registry
+- [@stratawp/testing](https://www.npmjs.com/package/@stratawp/testing) - Testing utilities
 
 ---
 
-**Status**: v0.5.0 - Component Registry for Sharing & Discovering Components
+**Status**: v0.6.0 - Comprehensive Testing with Vitest & Playwright
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
