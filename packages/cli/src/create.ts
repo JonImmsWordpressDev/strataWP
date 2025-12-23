@@ -147,9 +147,9 @@ async function createTheme(config: ThemeConfig) {
       // @ts-ignore - degit doesn't have TypeScript types
       const degit = (await import('degit')).default
       const templateMap = {
-        basic: 'JonImmsWordpressDev/StrataWP/examples/basic-theme',
-        advanced: 'JonImmsWordpressDev/StrataWP/examples/advanced-theme',
-        store: 'JonImmsWordpressDev/StrataWP/examples/store-theme',
+        basic: 'JonImmsWordpressDev/StrataWP/examples/basic-theme#main',
+        advanced: 'JonImmsWordpressDev/StrataWP/examples/advanced-theme#main',
+        store: 'JonImmsWordpressDev/StrataWP/examples/store-theme#main',
       }
 
       const emitter = degit(templateMap[config.template], {
