@@ -12,6 +12,7 @@ interface ThemeConfig {
   slug: string
   description: string
   author: string
+  template: 'basic' | 'advanced' | 'store' | 'minimal'
   cssFramework: 'vanilla' | 'tailwind' | 'unocss' | 'panda'
   typescript: boolean
   testing: boolean
@@ -51,6 +52,34 @@ async function main() {
       type: 'text',
       name: 'author',
       message: 'Author name:',
+    },
+    {
+      type: 'select',
+      name: 'template',
+      message: 'Choose a starting template:',
+      choices: [
+        {
+          title: 'Basic Theme (Recommended)',
+          description: 'Simple starter with essential blocks and clean structure',
+          value: 'basic'
+        },
+        {
+          title: 'Advanced Theme',
+          description: 'Portfolio features, team members, advanced blocks',
+          value: 'advanced'
+        },
+        {
+          title: 'Store Theme',
+          description: 'WooCommerce ready with product features',
+          value: 'store'
+        },
+        {
+          title: 'Minimal',
+          description: 'Start from scratch with minimal setup',
+          value: 'minimal'
+        },
+      ],
+      initial: 0,
     },
     {
       type: 'select',
@@ -106,13 +135,33 @@ async function createTheme(config: ThemeConfig) {
       process.exit(1)
     }
 
-    // Create directory
-    await fs.ensureDir(themePath)
-    spinner.text = 'Copying template files...'
+    if (config.template === 'minimal') {
+      // Create minimal structure from scratch
+      await fs.ensureDir(themePath)
+      spinner.text = 'Creating basic structure...'
+      await createBasicStructure(themePath, config)
+    } else {
+      // Use degit to clone example theme from GitHub
+      spinner.text = `Downloading ${config.template} theme template...`
 
-    // TODO: Copy template files based on config
-    // For now, create basic structure
-    await createBasicStructure(themePath, config)
+      // @ts-ignore - degit doesn't have TypeScript types
+      const degit = (await import('degit')).default
+      const templateMap = {
+        basic: 'JonImmsWordpressDev/StrataWP/examples/basic-theme',
+        advanced: 'JonImmsWordpressDev/StrataWP/examples/advanced-theme',
+        store: 'JonImmsWordpressDev/StrataWP/examples/store-theme',
+      }
+
+      const emitter = degit(templateMap[config.template], {
+        cache: false,
+        force: true,
+      })
+
+      await emitter.clone(themePath)
+
+      spinner.text = 'Customizing theme...'
+      await customizeTheme(themePath, config)
+    }
 
     spinner.text = 'Installing dependencies...'
 
@@ -132,6 +181,50 @@ async function createTheme(config: ThemeConfig) {
     spinner.fail('Failed to create theme')
     console.error(error)
     process.exit(1)
+  }
+}
+
+async function customizeTheme(themePath: string, config: ThemeConfig) {
+  // Update style.css with user's theme info
+  const styleCssPath = path.join(themePath, 'style.css')
+  if (await fs.pathExists(styleCssPath)) {
+    let styleContent = await fs.readFile(styleCssPath, 'utf-8')
+
+    // Replace theme metadata
+    styleContent = styleContent
+      .replace(/Theme Name:.*$/m, `Theme Name: ${config.name}`)
+      .replace(/Description:.*$/m, `Description: ${config.description}`)
+      .replace(/Author:.*$/m, `Author: ${config.author}`)
+      .replace(/Text Domain:.*$/m, `Text Domain: ${config.slug}`)
+
+    await fs.writeFile(styleCssPath, styleContent)
+  }
+
+  // Update package.json with user's info
+  const packageJsonPath = path.join(themePath, 'package.json')
+  if (await fs.pathExists(packageJsonPath)) {
+    const packageJson = await fs.readJson(packageJsonPath)
+    packageJson.name = config.slug
+    packageJson.description = config.description
+    packageJson.author = config.author
+    await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 })
+  }
+
+  // Update README.md
+  const readmePath = path.join(themePath, 'README.md')
+  if (await fs.pathExists(readmePath)) {
+    let readmeContent = await fs.readFile(readmePath, 'utf-8')
+    // Replace the first heading with the new theme name
+    readmeContent = readmeContent.replace(/^#\s+.*$/m, `# ${config.name}`)
+    await fs.writeFile(readmePath, readmeContent)
+  }
+
+  // Update vite.config.ts namespace if it exists
+  const viteConfigPath = path.join(themePath, 'vite.config.ts')
+  if (await fs.pathExists(viteConfigPath)) {
+    let viteConfig = await fs.readFile(viteConfigPath, 'utf-8')
+    viteConfig = viteConfig.replace(/namespace:\s*['"][\w-]+['"]/, `namespace: '${config.slug}'`)
+    await fs.writeFile(viteConfigPath, viteConfig)
   }
 }
 

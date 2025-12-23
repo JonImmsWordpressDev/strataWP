@@ -92,6 +92,11 @@ The fastest and easiest way to get started:
 
    The CLI will guide you through:
    - **Theme name and details** - Name, description, author
+   - **🎨 Template selection** - Choose your starting point:
+     - **Basic Theme** - Recommended for beginners, includes essential blocks
+     - **Advanced Theme** - Portfolio grids, team members, advanced features
+     - **Store Theme** - WooCommerce ready with product blocks
+     - **Minimal** - Start from scratch
    - **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
    - **TypeScript** - Enable/disable
    - **Testing** - Optional setup
@@ -284,11 +289,14 @@ Let's create your first StrataWP theme from scratch!
    - **Theme name**: "My First Theme"
    - **Description**: Your theme description
    - **Author**: Your name
+   - **Template**: Choose **"Basic Theme"** (recommended for beginners)
    - **CSS Framework**: Choose "vanilla" for now (you can try others later)
    - **TypeScript**: Yes (recommended)
    - **Testing**: No (for now)
    - **AI**: No (for now)
    - **Link to WordPress**: Yes (it will show you detected sites to choose from)
+
+   The CLI will download the Basic Theme from GitHub and customize it with your details!
 
 3. **Navigate to your theme**:
    ```bash

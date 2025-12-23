@@ -10,16 +10,21 @@ npx create-stratawp my-theme
 
 **The CLI does everything:**
 1. ✅ Interactive setup wizard
-2. ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
-3. ✅ TypeScript configuration
-4. ✅ Optional testing and AI tools
-5. ✨ **Automatically detects and links to WordPress!**
+2. 🎨 **Template selection** - Choose from example themes:
+   - **Basic Theme** - Essential blocks and clean structure
+   - **Advanced Theme** - Portfolio, team members
+   - **Store Theme** - WooCommerce ready
+   - **Minimal** - Start from scratch
+3. ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
+4. ✅ TypeScript configuration
+5. ✅ Optional testing and AI tools
+6. ✨ **Automatically detects and links to WordPress!**
 
-**Auto-detection:**
-- 🔍 Scans Local by Flywheel sites
-- 🔍 Scans MAMP installations
-- 🔍 Just select your site from the list
-- 🔗 Symlink created automatically!
+**What happens automatically:**
+- 📦 Downloads selected theme from GitHub
+- ✏️ Customizes with your name and details
+- 🔍 Scans Local by Flywheel & MAMP sites
+- 🔗 Creates symlink automatically!
 
 **Then start developing:**
 ```bash

@@ -236,16 +236,20 @@ npx create-stratawp my-theme
 
 The CLI will guide you through:
 1. **Theme configuration** - Name, description, author
-2. **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
-3. **Optional features** - TypeScript, testing, AI tools
-4. **WordPress linking** - ✨ **Automatically detects and links to your WordPress installation!**
+2. **🎨 Template selection** - Choose from example themes or start from scratch:
+   - **Basic Theme** - Simple starter with essential blocks (recommended)
+   - **Advanced Theme** - Portfolio features, team members, advanced blocks
+   - **Store Theme** - WooCommerce ready with product features
+   - **Minimal** - Start from scratch with minimal setup
+3. **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
+4. **Optional features** - TypeScript, testing, AI tools
+5. **WordPress linking** - ✨ **Automatically detects and links to your WordPress installation!**
 
-The CLI automatically detects:
-- 🔍 Local by Flywheel sites
-- 🔍 MAMP installations
-- 🔍 Other common WordPress setups
-
-Just select your site from the list and the theme is instantly linked - no manual symlink commands needed!
+The CLI automatically:
+- 📦 **Downloads** the selected example theme from GitHub
+- ✏️ **Customizes** it with your theme name and details
+- 🔍 **Detects** Local by Flywheel and MAMP sites
+- 🔗 **Links** your theme automatically - no manual commands needed!
 
 Then start developing:
 ```bash
@@ -329,13 +333,18 @@ This creates a new WordPress theme with:
 
 The interactive CLI guides you through:
 1. **Theme configuration** - Name, description, author
-2. **CSS framework** - vanilla, Tailwind, UnoCSS, or Panda
-3. **TypeScript** - Enable/disable with full configuration
-4. **Testing** - Optional Vitest and Playwright setup
-5. **AI features** - Optional AI-powered code generation
-6. **WordPress linking** - Automatically detects Local by Flywheel, MAMP, and other installations
+2. **Template selection** - Choose from production-ready example themes:
+   - 🎨 **Basic Theme** - Clean starter with essential blocks
+   - 🚀 **Advanced Theme** - Portfolio, team members, advanced features
+   - 🛍️ **Store Theme** - WooCommerce integration, product blocks
+   - 📝 **Minimal** - Bare-bones starter
+3. **CSS framework** - vanilla, Tailwind, UnoCSS, or Panda
+4. **TypeScript** - Enable/disable with full configuration
+5. **Testing** - Optional Vitest and Playwright setup
+6. **AI features** - Optional AI-powered code generation
+7. **WordPress linking** - Automatically detects Local by Flywheel, MAMP, and other installations
 
-No more manual symlink commands - just select your WordPress site from the list and you're ready to go!
+The CLI downloads your chosen example theme from GitHub, customizes it with your details, and links it to WordPress automatically!
 
 ```bash
 cd my-theme
