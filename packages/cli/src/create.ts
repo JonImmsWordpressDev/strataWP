@@ -210,6 +210,14 @@ async function customizeTheme(themePath: string, config: ThemeConfig) {
     packageJson.name = config.slug
     packageJson.description = config.description
     packageJson.author = config.author
+
+    // Replace workspace dependencies with npm versions
+    if (packageJson.devDependencies) {
+      if (packageJson.devDependencies['@stratawp/vite-plugin'] === 'workspace:*') {
+        packageJson.devDependencies['@stratawp/vite-plugin'] = '^0.2.0'
+      }
+    }
+
     await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 })
   }
 

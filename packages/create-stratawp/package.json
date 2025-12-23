@@ -1,6 +1,6 @@
 {
   "name": "create-stratawp",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Create StrataWP WordPress themes with one command",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
@@ -33,6 +33,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@stratawp/cli": "^0.5.0"
+    "@stratawp/cli": "^0.5.1"
   }
 }
