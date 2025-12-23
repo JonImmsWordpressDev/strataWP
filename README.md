@@ -231,21 +231,29 @@ The fastest way to get started:
 
 ```bash
 # Run this command from ANYWHERE on your system (NOT in WordPress directory)
-# This will create a new theme directory wherever you run it
 npx create-stratawp my-theme
-
-# Navigate to your new theme
-cd my-theme
-
-# Link it to your WordPress installation
-# Replace /path/to/wordpress with your actual WordPress path
-ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
-
-# Start developing with hot reload
-pnpm run dev
 ```
 
-That's it! Your theme is now running with hot-reload. Open your WordPress site and activate the theme.
+The CLI will guide you through:
+1. **Theme configuration** - Name, description, author
+2. **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
+3. **Optional features** - TypeScript, testing, AI tools
+4. **WordPress linking** - ✨ **Automatically detects and links to your WordPress installation!**
+
+The CLI automatically detects:
+- 🔍 Local by Flywheel sites
+- 🔍 MAMP installations
+- 🔍 Other common WordPress setups
+
+Just select your site from the list and the theme is instantly linked - no manual symlink commands needed!
+
+Then start developing:
+```bash
+cd my-theme
+pnpm dev
+```
+
+Your theme is now running with hot-reload. Open your WordPress site and activate the theme!
 
 **Quick Reference:** See our [Cheat Sheet](./CHEAT_SHEET.md) for all CLI commands and common patterns.
 
@@ -309,11 +317,6 @@ The easiest way to create a new StrataWP theme:
 ```bash
 # Run from anywhere OUTSIDE your WordPress directory
 npx create-stratawp my-theme
-
-# Then link it to WordPress
-cd my-theme
-ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
-pnpm dev
 ```
 
 This creates a new WordPress theme with:
@@ -322,12 +325,22 @@ This creates a new WordPress theme with:
 - ✅ Block Theme (FSE) structure
 - ✅ Example blocks and components
 - ✅ Hot Module Replacement ready
+- ✨ **Automatic WordPress detection and linking!**
 
-The CLI will guide you through:
-- Choosing a CSS framework (vanilla, Tailwind, UnoCSS, Panda)
-- TypeScript configuration
-- Testing setup (optional)
-- AI assistance (optional)
+The interactive CLI guides you through:
+1. **Theme configuration** - Name, description, author
+2. **CSS framework** - vanilla, Tailwind, UnoCSS, or Panda
+3. **TypeScript** - Enable/disable with full configuration
+4. **Testing** - Optional Vitest and Playwright setup
+5. **AI features** - Optional AI-powered code generation
+6. **WordPress linking** - Automatically detects Local by Flywheel, MAMP, and other installations
+
+No more manual symlink commands - just select your WordPress site from the list and you're ready to go!
+
+```bash
+cd my-theme
+pnpm dev
+```
 
 ### Manual Installation
 

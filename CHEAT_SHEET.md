@@ -6,29 +6,37 @@
 # Create a new theme (run from anywhere OUTSIDE WordPress directory!)
 cd ~/Projects
 npx create-stratawp my-theme
+```
+
+**The CLI does everything:**
+1. ✅ Interactive setup wizard
+2. ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
+3. ✅ TypeScript configuration
+4. ✅ Optional testing and AI tools
+5. ✨ **Automatically detects and links to WordPress!**
+
+**Auto-detection:**
+- 🔍 Scans Local by Flywheel sites
+- 🔍 Scans MAMP installations
+- 🔍 Just select your site from the list
+- 🔗 Symlink created automatically!
+
+**Then start developing:**
+```bash
 cd my-theme
+pnpm dev  # Keep terminal open!
+```
 
-# Link to WordPress (replace path with yours)
-# Local by Flywheel:
-ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-theme
-
-# MAMP:
-# ln -s "$(pwd)" /Applications/MAMP/htdocs/mysite/wp-content/themes/my-theme
-
-# Start development (keep terminal open!)
-pnpm dev
-
-# Build for production
+**Build for production:**
+```bash
 pnpm build
 ```
 
-**What you get:**
-- ✅ Interactive setup wizard
-- ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
-- ✅ TypeScript configured
-- ✅ Vite dev server with HMR
-- ✅ Example blocks and components
-- ✅ Optional testing and AI tools
+**Manual linking (if needed):**
+```bash
+# Only if you skipped auto-linking
+ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-theme
+```
 
 ## CLI Commands
 

@@ -4,6 +4,7 @@ import ora from 'ora'
 import { execa } from 'execa'
 import fs from 'fs-extra'
 import path from 'path'
+import os from 'os'
 import validatePackageName from 'validate-npm-package-name'
 
 interface ThemeConfig {
@@ -120,6 +121,9 @@ async function createTheme(config: ThemeConfig) {
 
     spinner.succeed(chalk.green('Theme created successfully!'))
 
+    // Offer to link to WordPress
+    await offerWordPressLinking(themePath, config.slug)
+
     console.log(chalk.cyan('\n📦 Next steps:\n'))
     console.log(`  cd ${config.slug}`)
     console.log('  pnpm dev')
@@ -129,6 +133,125 @@ async function createTheme(config: ThemeConfig) {
     console.error(error)
     process.exit(1)
   }
+}
+
+async function offerWordPressLinking(themePath: string, slug: string) {
+  console.log()
+  const { shouldLink } = await prompts({
+    type: 'confirm',
+    name: 'shouldLink',
+    message: 'Would you like to link this theme to a WordPress installation?',
+    initial: true,
+  })
+
+  if (!shouldLink) {
+    return
+  }
+
+  const wordpressSites = await detectWordPressSites()
+
+  if (wordpressSites.length === 0) {
+    console.log(chalk.yellow('\n⚠️  No WordPress installations detected automatically.'))
+    console.log(chalk.dim('You can manually create a symlink later:\n'))
+    console.log(chalk.dim(`  ln -s "${themePath}" /path/to/wordpress/wp-content/themes/${slug}\n`))
+    return
+  }
+
+  const { selectedSite } = await prompts({
+    type: 'select',
+    name: 'selectedSite',
+    message: 'Select WordPress installation:',
+    choices: wordpressSites.map((site) => ({
+      title: `${site.name} (${site.type})`,
+      description: site.path,
+      value: site,
+    })),
+  })
+
+  if (!selectedSite) {
+    return
+  }
+
+  try {
+    const targetPath = path.join(selectedSite.path, 'wp-content', 'themes', slug)
+
+    // Check if target already exists
+    if (await fs.pathExists(targetPath)) {
+      console.log(chalk.yellow(`\n⚠️  Theme already exists at ${targetPath}`))
+      return
+    }
+
+    // Create symlink
+    await fs.ensureSymlink(themePath, targetPath)
+    console.log(chalk.green(`\n✓ Linked theme to ${selectedSite.name}`))
+    console.log(chalk.dim(`  ${targetPath}`))
+  } catch (error) {
+    console.log(chalk.red('\n✖ Failed to create symlink'))
+    console.log(chalk.dim('You can manually create it:\n'))
+    console.log(chalk.dim(`  ln -s "${themePath}" ${path.join(selectedSite.path, 'wp-content', 'themes', slug)}\n`))
+  }
+}
+
+interface WordPressSite {
+  name: string
+  path: string
+  type: 'Local by Flywheel' | 'MAMP' | 'Custom'
+}
+
+async function detectWordPressSites(): Promise<WordPressSite[]> {
+  const sites: WordPressSite[] = []
+  const homeDir = os.homedir()
+
+  // Detect Local by Flywheel sites
+  const localSitesPath = path.join(homeDir, 'Local Sites')
+  if (await fs.pathExists(localSitesPath)) {
+    try {
+      const localDirs = await fs.readdir(localSitesPath)
+      for (const dir of localDirs) {
+        const sitePath = path.join(localSitesPath, dir, 'app', 'public')
+        const wpConfigPath = path.join(sitePath, 'wp-config.php')
+        if (await fs.pathExists(wpConfigPath)) {
+          sites.push({
+            name: dir,
+            path: sitePath,
+            type: 'Local by Flywheel',
+          })
+        }
+      }
+    } catch (error) {
+      // Ignore errors
+    }
+  }
+
+  // Detect MAMP sites (macOS)
+  if (process.platform === 'darwin') {
+    const mampPath = '/Applications/MAMP/htdocs'
+    if (await fs.pathExists(mampPath)) {
+      try {
+        const mampDirs = await fs.readdir(mampPath)
+        for (const dir of mampDirs) {
+          const sitePath = path.join(mampPath, dir)
+          const wpConfigPath = path.join(sitePath, 'wp-config.php')
+          if (await fs.pathExists(wpConfigPath)) {
+            sites.push({
+              name: dir,
+              path: sitePath,
+              type: 'MAMP',
+            })
+          }
+        }
+      } catch (error) {
+        // Ignore errors
+      }
+    }
+  }
+
+  // Could add more detection methods here:
+  // - XAMPP
+  // - Docker containers
+  // - Custom paths from config file
+
+  return sites
 }
 
 async function createBasicStructure(themePath: string, config: ThemeConfig) {

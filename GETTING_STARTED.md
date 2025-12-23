@@ -91,27 +91,33 @@ The fastest and easiest way to get started:
    ```
 
    The CLI will guide you through:
-   - Theme name and details
-   - CSS framework choice (vanilla, Tailwind, UnoCSS, or Panda)
-   - TypeScript configuration
-   - Optional features (testing, AI assistance)
+   - **Theme name and details** - Name, description, author
+   - **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
+   - **TypeScript** - Enable/disable
+   - **Testing** - Optional setup
+   - **AI features** - Optional AI assistance
+   - ✨ **WordPress linking** - Automatically detects your installations!
 
-4. **Navigate to your new theme**:
+4. **Select your WordPress site** (NEW!):
+
+   The CLI will automatically detect your WordPress installations:
+   - 🔍 Scans Local by Flywheel sites (`~/Local Sites/`)
+   - 🔍 Scans MAMP installations (`/Applications/MAMP/htdocs/`)
+   - 🔍 Shows all detected WordPress sites
+
+   Just select your site from the list and the theme is automatically linked!
+
+   **If no sites are detected**, you can manually create the symlink:
+   ```bash
+   ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-awesome-theme
+   ```
+
+5. **Navigate to your theme**:
    ```bash
    cd my-awesome-theme
    ```
 
    You're now in: `~/Projects/my-awesome-theme/`
-
-5. **Link your theme to WordPress**:
-   ```bash
-   # Replace with YOUR WordPress path
-   # Example for Local by Flywheel:
-   ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-awesome-theme
-
-   # Example for MAMP:
-   # ln -s "$(pwd)" /Applications/MAMP/htdocs/mysite/wp-content/themes/my-awesome-theme
-   ```
 
 6. **Activate in WordPress**:
    - Open your WordPress site in a browser
@@ -282,6 +288,7 @@ Let's create your first StrataWP theme from scratch!
    - **TypeScript**: Yes (recommended)
    - **Testing**: No (for now)
    - **AI**: No (for now)
+   - **Link to WordPress**: Yes (it will show you detected sites to choose from)
 
 3. **Navigate to your theme**:
    ```bash
@@ -314,42 +321,30 @@ my-first-theme/
 
 ### Step 2: Activate Your Theme
 
-1. **Make sure you're in your theme directory:**
-   ```bash
-   # Check where you are
-   pwd
-   # Should show: /Users/yourname/Projects/my-first-theme
-   ```
+Your theme is already linked to WordPress (if you selected a site during creation)!
 
-2. **Link your theme to WordPress:**
-   ```bash
-   # Replace with YOUR WordPress path
-   # Example for Local by Flywheel:
-   ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-first-theme
-
-   # Example for MAMP:
-   # ln -s "$(pwd)" /Applications/MAMP/htdocs/mysite/wp-content/themes/my-first-theme
-   ```
-
-   This creates a symbolic link so WordPress can see your theme.
-
-3. **Install dependencies:**
-   ```bash
-   pnpm install
-   ```
-
-4. **Activate in WordPress:**
+1. **Activate in WordPress:**
    - Open your WordPress site in a browser
    - Go to `WordPress Admin → Appearance → Themes`
    - Find "My First Theme"
    - Click "Activate"
 
-5. **Start the development server:**
+2. **Start the development server:**
    ```bash
+   cd my-first-theme
    pnpm dev
    ```
 
    **Important:** Keep this terminal window open! The dev server must run continuously for hot-reload to work.
+
+**If you skipped linking during creation**, you can manually link it:
+```bash
+# Check where you are
+pwd  # Should show: /Users/yourname/Projects/my-first-theme
+
+# Link to WordPress
+ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-first-theme
+```
 
 ### Step 3: Make Your First Change
 

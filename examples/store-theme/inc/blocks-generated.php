@@ -14,8 +14,10 @@ namespace StrataWP\Blocks;
  * Register all blocks
  */
 function register_blocks() {
-  register_block_type( get_template_directory() . '/src/blocks/hero' );
   register_block_type( get_template_directory() . '/src/blocks/feature-card' );
+  register_block_type( get_template_directory() . '/src/blocks/featured-products' );
+  register_block_type( get_template_directory() . '/src/blocks/product-categories' );
+  register_block_type( get_template_directory() . '/src/blocks/hero' );
 }
 
 add_action( 'init', __NAMESPACE__ . '\register_blocks' );
