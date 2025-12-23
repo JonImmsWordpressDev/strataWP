@@ -2,19 +2,18 @@
 
 ## Installation & Setup
 
-> **Note:** `create-stratawp` is not yet published to npm. Use the manual method for now.
-
 ```bash
-# Current method: Copy an example theme
-cd ~/Projects  # Work OUTSIDE WordPress directory!
-cp -r StrataWP/examples/basic-theme my-theme
+# Create a new theme (run from anywhere OUTSIDE WordPress directory!)
+cd ~/Projects
+npx create-stratawp my-theme
 cd my-theme
 
-# Install dependencies
-pnpm install
-
 # Link to WordPress (replace path with yours)
-ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
+# Local by Flywheel:
+ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-theme
+
+# MAMP:
+# ln -s "$(pwd)" /Applications/MAMP/htdocs/mysite/wp-content/themes/my-theme
 
 # Start development (keep terminal open!)
 pnpm dev
@@ -23,14 +22,13 @@ pnpm dev
 pnpm build
 ```
 
-**Future method (when published):**
-```bash
-# Run from anywhere OUTSIDE WordPress
-npx create-stratawp my-theme
-cd my-theme
-ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
-pnpm dev
-```
+**What you get:**
+- ✅ Interactive setup wizard
+- ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
+- ✅ TypeScript configured
+- ✅ Vite dev server with HMR
+- ✅ Example blocks and components
+- ✅ Optional testing and AI tools
 
 ## CLI Commands
 

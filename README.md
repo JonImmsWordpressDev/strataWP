@@ -227,9 +227,8 @@ This release adds two new fully-featured example themes showcasing advanced Word
 
 ### Create a New Theme
 
-> **Note:** The `create-stratawp` CLI tool is not yet published to npm. For now, use the manual method below or copy an example theme. See the [Getting Started Guide](./GETTING_STARTED.md) for detailed instructions.
+The fastest way to get started:
 
-**Future usage (when published to npm):**
 ```bash
 # Run this command from ANYWHERE on your system (NOT in WordPress directory)
 # This will create a new theme directory wherever you run it
@@ -246,8 +245,7 @@ ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
 pnpm run dev
 ```
 
-**Current recommended method:**
-See the ["Or Clone and Explore"](#or-clone-and-explore) section below or check the [Getting Started Guide](./GETTING_STARTED.md).
+That's it! Your theme is now running with hot-reload. Open your WordPress site and activate the theme.
 
 **Quick Reference:** See our [Cheat Sheet](./CHEAT_SHEET.md) for all CLI commands and common patterns.
 
@@ -304,11 +302,10 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 
 ## Installation
 
-### Using the CLI (Future Feature)
+### Using the CLI (Recommended)
 
-> **Important:** The `create-stratawp` CLI is not yet published to npm. For now, please use the manual installation method below or copy an example theme from the repository.
+The easiest way to create a new StrataWP theme:
 
-**When available, you'll be able to run:**
 ```bash
 # Run from anywhere OUTSIDE your WordPress directory
 npx create-stratawp my-theme
@@ -319,12 +316,18 @@ ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
 pnpm dev
 ```
 
-This will create a new WordPress theme with:
-- Vite development server configured
-- TypeScript setup complete
-- Block Theme (FSE) structure
-- Example blocks and components
-- Hot Module Replacement ready
+This creates a new WordPress theme with:
+- ✅ Vite development server configured
+- ✅ TypeScript setup complete
+- ✅ Block Theme (FSE) structure
+- ✅ Example blocks and components
+- ✅ Hot Module Replacement ready
+
+The CLI will guide you through:
+- Choosing a CSS framework (vanilla, Tailwind, UnoCSS, Panda)
+- TypeScript configuration
+- Testing setup (optional)
+- AI assistance (optional)
 
 ### Manual Installation
 

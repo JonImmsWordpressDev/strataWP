@@ -70,9 +70,68 @@ Before we start, let's understand WHERE you'll be working:
 
 ## Installation
 
-### Option 1: Use Example Themes (Quick Start)
+### Option 1: Create a New Theme with CLI (Recommended)
 
-The fastest way to get started with StrataWP right now:
+The fastest and easiest way to get started:
+
+**Step-by-step instructions:**
+
+1. **Open your terminal** (Terminal on Mac, Command Prompt or PowerShell on Windows)
+
+2. **Navigate to your projects folder** (NOT your WordPress directory):
+   ```bash
+   # Create a projects folder if you don't have one
+   mkdir -p ~/Projects
+   cd ~/Projects
+   ```
+
+3. **Run create-stratawp**:
+   ```bash
+   npx create-stratawp my-awesome-theme
+   ```
+
+   The CLI will guide you through:
+   - Theme name and details
+   - CSS framework choice (vanilla, Tailwind, UnoCSS, or Panda)
+   - TypeScript configuration
+   - Optional features (testing, AI assistance)
+
+4. **Navigate to your new theme**:
+   ```bash
+   cd my-awesome-theme
+   ```
+
+   You're now in: `~/Projects/my-awesome-theme/`
+
+5. **Link your theme to WordPress**:
+   ```bash
+   # Replace with YOUR WordPress path
+   # Example for Local by Flywheel:
+   ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-awesome-theme
+
+   # Example for MAMP:
+   # ln -s "$(pwd)" /Applications/MAMP/htdocs/mysite/wp-content/themes/my-awesome-theme
+   ```
+
+6. **Activate in WordPress**:
+   - Open your WordPress site in a browser
+   - Go to `WordPress Admin → Appearance → Themes`
+   - Find your theme and click "Activate"
+
+7. **Start the development server**:
+   ```bash
+   pnpm dev
+   ```
+
+   Keep this terminal window open! The dev server needs to run continuously.
+
+**Then in WordPress:**
+- Your browser will have hot-reload at your WordPress URL!
+- Make changes to your files and see them instantly
+
+### Option 2: Use Example Themes
+
+If you want to explore the example themes that come with StrataWP:
 
 **Step-by-step instructions:**
 
@@ -129,9 +188,9 @@ The fastest way to get started with StrataWP right now:
 
 **Why symlink?** This keeps your development files separate from WordPress and makes it easier to manage and update.
 
-### Option 2: Copy and Customize an Example Theme
+### Option 3: Copy and Customize an Example Theme
 
-To create your own theme based on an example:
+To create your own theme based on an example (advanced users):
 
 **Step-by-step instructions:**
 
@@ -176,9 +235,9 @@ To create your own theme based on an example:
 
    Keep this terminal window open while developing!
 
-### Option 3: Clone and Explore All Examples
+### Option 4: Clone and Explore All Examples (For Contributors)
 
-If you want to explore the example themes:
+If you want to contribute to StrataWP or explore all examples:
 
 ```bash
 # Clone the repository (OUTSIDE your WordPress themes directory)
@@ -205,16 +264,27 @@ Let's create your first StrataWP theme from scratch!
 
 ### Step 1: Create the Theme
 
-**Important:** Make sure you've already cloned the StrataWP repository using Option 1 above!
-
 1. **Open your terminal and go to your projects folder**:
    ```bash
    cd ~/Projects
    ```
 
-2. **Copy the basic example theme**:
+2. **Create your theme with the CLI**:
    ```bash
-   cp -r StrataWP/examples/basic-theme my-first-theme
+   npx create-stratawp my-first-theme
+   ```
+
+   The CLI will ask you some questions:
+   - **Theme name**: "My First Theme"
+   - **Description**: Your theme description
+   - **Author**: Your name
+   - **CSS Framework**: Choose "vanilla" for now (you can try others later)
+   - **TypeScript**: Yes (recommended)
+   - **Testing**: No (for now)
+   - **AI**: No (for now)
+
+3. **Navigate to your theme**:
+   ```bash
    cd my-first-theme
    ```
 
@@ -379,18 +449,17 @@ pnpm explorer         # Launch component browser
 
 StrataWP makes it easy to create different types of components with CLI commands.
 
-> **Note:** The CLI commands below are currently only available when working within the cloned StrataWP repository. They are not yet published to npm. If you copied an example theme to create your own theme, you'll need to create components manually for now.
+**Using the CLI in your theme:**
 
-**To use the CLI from the StrataWP repository:**
 ```bash
-# From within the StrataWP repository
-cd /path/to/StrataWP
-pnpm build  # Build the CLI if you haven't already
+# Navigate to your theme directory
+cd ~/Projects/my-first-theme
 
-# Now you can use the CLI in any theme
-cd examples/basic-theme
+# Use stratawp commands
 npx stratawp block:new hero --type=dynamic --category=design
 ```
+
+All CLI commands work directly in themes created with `create-stratawp`.
 
 ### Create a Gutenberg Block
 
@@ -895,32 +964,30 @@ pnpm type-check
 ### Essential Commands
 
 ```bash
-# Create new theme (copy from example for now)
-cp -r StrataWP/examples/basic-theme my-theme
+# Create new theme
+npx create-stratawp my-theme
 
 # Development
 pnpm dev                    # Start dev server
 pnpm build                  # Build for production
 
-# Generate components (from within StrataWP repo only - not yet published to npm)
+# Generate components
 npx stratawp block:new <name>
 npx stratawp component:new <name>
 npx stratawp template:new <name>
 npx stratawp part:new <name>
 
-# Component Explorer (future feature)
+# Component Explorer
 npx stratawp explorer           # Launch browser
 
 # Testing
 pnpm test                   # Run tests
 pnpm test:coverage          # With coverage
 
-# Component Registry (future feature)
+# Component Registry
 npx stratawp registry:search <query>
 npx stratawp registry:install <package>
 ```
-
-> **Note:** Many CLI commands shown above are available locally within the StrataWP repository but not yet published to npm. See the "Creating Components" section for details on using them.
 
 ### File Locations
 
