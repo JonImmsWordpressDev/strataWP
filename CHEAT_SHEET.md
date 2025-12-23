@@ -2,18 +2,34 @@
 
 ## Installation & Setup
 
+> **Note:** `create-stratawp` is not yet published to npm. Use the manual method for now.
+
 ```bash
-# Create new theme
-npx create-stratawp my-theme
+# Current method: Copy an example theme
+cd ~/Projects  # Work OUTSIDE WordPress directory!
+cp -r StrataWP/examples/basic-theme my-theme
+cd my-theme
 
 # Install dependencies
 pnpm install
 
-# Start development
+# Link to WordPress (replace path with yours)
+ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
+
+# Start development (keep terminal open!)
 pnpm dev
 
 # Build for production
 pnpm build
+```
+
+**Future method (when published):**
+```bash
+# Run from anywhere OUTSIDE WordPress
+npx create-stratawp my-theme
+cd my-theme
+ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
+pnpm dev
 ```
 
 ## CLI Commands

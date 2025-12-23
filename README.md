@@ -227,16 +227,27 @@ This release adds two new fully-featured example themes showcasing advanced Word
 
 ### Create a New Theme
 
+> **Note:** The `create-stratawp` CLI tool is not yet published to npm. For now, use the manual method below or copy an example theme. See the [Getting Started Guide](./GETTING_STARTED.md) for detailed instructions.
+
+**Future usage (when published to npm):**
 ```bash
-# Create a new StrataWP theme (easiest way!)
+# Run this command from ANYWHERE on your system (NOT in WordPress directory)
+# This will create a new theme directory wherever you run it
 npx create-stratawp my-theme
 
-# Navigate to your theme
+# Navigate to your new theme
 cd my-theme
+
+# Link it to your WordPress installation
+# Replace /path/to/wordpress with your actual WordPress path
+ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
 
 # Start developing with hot reload
 pnpm run dev
 ```
+
+**Current recommended method:**
+See the ["Or Clone and Explore"](#or-clone-and-explore) section below or check the [Getting Started Guide](./GETTING_STARTED.md).
 
 **Quick Reference:** See our [Cheat Sheet](./CHEAT_SHEET.md) for all CLI commands and common patterns.
 
@@ -293,13 +304,22 @@ While inspired by excellent frameworks like WPRig, StrataWP goes further with mo
 
 ## Installation
 
-### Using the CLI (Recommended)
+### Using the CLI (Future Feature)
 
+> **Important:** The `create-stratawp` CLI is not yet published to npm. For now, please use the manual installation method below or copy an example theme from the repository.
+
+**When available, you'll be able to run:**
 ```bash
+# Run from anywhere OUTSIDE your WordPress directory
 npx create-stratawp my-theme
+
+# Then link it to WordPress
+cd my-theme
+ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
+pnpm dev
 ```
 
-This creates a new WordPress theme with:
+This will create a new WordPress theme with:
 - Vite development server configured
 - TypeScript setup complete
 - Block Theme (FSE) structure
