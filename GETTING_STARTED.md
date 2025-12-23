@@ -296,7 +296,7 @@ Let's create your first StrataWP theme from scratch!
    - **AI**: No (for now)
    - **Link to WordPress**: Yes (it will show you detected sites to choose from)
 
-   The CLI will download the Basic Theme from GitHub and customize it with your details!
+   The CLI will copy the Basic Theme from bundled templates and customize it with your details!
 
 3. **Navigate to your theme**:
    ```bash

@@ -246,7 +246,7 @@ The CLI will guide you through:
 5. **WordPress linking** - ✨ **Automatically detects and links to your WordPress installation!**
 
 The CLI automatically:
-- 📦 **Downloads** the selected example theme from GitHub
+- 📦 **Copies** the selected example theme from bundled templates
 - ✏️ **Customizes** it with your theme name and details
 - 🔍 **Detects** Local by Flywheel and MAMP sites
 - 🔗 **Links** your theme automatically - no manual commands needed!
@@ -344,7 +344,7 @@ The interactive CLI guides you through:
 6. **AI features** - Optional AI-powered code generation
 7. **WordPress linking** - Automatically detects Local by Flywheel, MAMP, and other installations
 
-The CLI downloads your chosen example theme from GitHub, customizes it with your details, and links it to WordPress automatically!
+The CLI copies your chosen example theme from bundled templates, customizes it with your details, and links it to WordPress automatically!
 
 ```bash
 cd my-theme

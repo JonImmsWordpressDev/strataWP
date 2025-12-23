@@ -21,7 +21,7 @@ npx create-stratawp my-theme
 6. ✨ **Automatically detects and links to WordPress!**
 
 **What happens automatically:**
-- 📦 Downloads selected theme from GitHub
+- 📦 Copies selected theme from bundled templates
 - ✏️ Customizes with your name and details
 - 🔍 Scans Local by Flywheel & MAMP sites
 - 🔗 Creates symlink automatically!
