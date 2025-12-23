@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "forge-basic/feature-card",
+  "title": "Feature Card",
+  "category": "widgets",
+  "icon": "star-filled",
+  "description": "A card to showcase features or services",
+  "keywords": ["feature", "card", "service"],
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Feature Title"
+    },
+    "description": {
+      "type": "string",
+      "default": "Feature description goes here"
+    },
+    "icon": {
+      "type": "string",
+      "default": "⚡"
+    },
+    "iconBackgroundColor": {
+      "type": "string",
+      "default": "#3b82f6"
+    }
+  },
+  "editorScript": "file:./edit.tsx",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}

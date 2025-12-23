@@ -1,0 +1,27 @@
+{
+  "name": "stratawp-store-theme",
+  "version": "1.0.0",
+  "description": "WooCommerce-optimized store theme built with StrataWP",
+  "author": "Jon Imms",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^12.19.0",
+    "@wordpress/blocks": "^12.28.0",
+    "@wordpress/components": "^27.0.0",
+    "@wordpress/element": "^5.28.0",
+    "@wordpress/i18n": "^4.51.0"
+  },
+  "devDependencies": {
+    "@stratawp/vite-plugin": "workspace:*",
+    "@vitejs/plugin-react": "^4.2.1",
+    "sass": "^1.94.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  }
+}

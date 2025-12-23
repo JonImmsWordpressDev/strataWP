@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "strata-advanced/team-members",
+  "version": "1.0.0",
+  "title": "Team Members",
+  "category": "widgets",
+  "icon": "groups",
+  "description": "Display team members in a grid layout",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "columns": {
+      "type": "number",
+      "default": 4
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": -1
+    },
+    "department": {
+      "type": "string",
+      "default": ""
+    },
+    "showBio": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "textdomain": "strata-advanced",
+  "editorScript": "file:./index.tsx",
+  "render": "file:./render.php"
+}

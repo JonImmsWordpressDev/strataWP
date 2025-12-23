@@ -1,0 +1,89 @@
+/**
+ * Utility Classes & Components
+ *
+ * Sitecore-inspired enhancements
+ */
+
+// Button & CTA Styles
+.wp-block-button__link {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(29, 8, 189, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Card hover effects
+.wp-block-group:hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+// Gradient text effect
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Shadow utilities
+.is-style-shadow-light {
+  box-shadow: var(--wp--preset--shadow--light);
+}
+
+.is-style-shadow-solid {
+  box-shadow: var(--wp--preset--shadow--solid);
+}
+
+// Code block styling
+*:not(.wp-block-code) > code {
+  background-color: var(--wp--preset--color--neutral);
+  font-size: var(--wp--preset--font-size--small);
+  padding: 5px 8px;
+}
+
+// Responsive utility adjustments
+@media (max-width: 768px) {
+  :root {
+    --spacing-lg: 1rem;
+    --spacing-xl: 2rem;
+  }
+}
+
+// Mobile utilities
+@media only screen and (max-width: 600px) {
+  .is-style-hidden-mobile {
+    display: none !important;
+  }
+}
+
+// Column reverse on mobile
+@media only screen and (max-width: 782px) {
+  .is-style-columns-reverse {
+    flex-direction: column-reverse;
+  }
+}

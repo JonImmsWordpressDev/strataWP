@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "strata-store/product-categories",
+  "version": "1.0.0",
+  "title": "Product Categories",
+  "category": "woocommerce",
+  "icon": "category",
+  "description": "Display product categories in a grid layout",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "columns": {
+      "type": "number",
+      "default": 4
+    },
+    "limit": {
+      "type": "number",
+      "default": 8
+    },
+    "showCount": {
+      "type": "boolean",
+      "default": true
+    },
+    "showEmpty": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "strata-store",
+  "editorScript": "file:./index.tsx",
+  "render": "file:./render.php"
+}

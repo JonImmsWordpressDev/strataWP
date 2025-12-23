@@ -1,0 +1,30 @@
+/**
+ * Main Theme Styles
+ *
+ * Built with StrataWP
+ * Structure inspired by wp-rig
+ */
+
+// Variables & CSS Custom Properties
+@import 'variables';
+
+// Base & Reset
+@import 'reset';
+
+// Typography
+@import 'typography';
+
+// Forms
+@import 'forms';
+
+// Layout Components
+@import 'header';
+@import 'navigation';
+@import 'content';
+@import 'footer';
+
+// WooCommerce Styles
+@import 'woocommerce';
+
+// Utilities & Enhancements
+@import 'utilities';

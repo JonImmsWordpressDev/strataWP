@@ -5,6 +5,8 @@ import { execa } from 'execa'
 import fs from 'fs-extra'
 import path from 'path'
 import os from 'os'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 import validatePackageName from 'validate-npm-package-name'
 
 interface ThemeConfig {
@@ -141,23 +143,24 @@ async function createTheme(config: ThemeConfig) {
       spinner.text = 'Creating basic structure...'
       await createBasicStructure(themePath, config)
     } else {
-      // Use degit to clone example theme from GitHub
-      spinner.text = `Downloading ${config.template} theme template...`
+      // Copy example theme from bundled templates
+      spinner.text = `Setting up ${config.template} theme template...`
 
-      // @ts-ignore - degit doesn't have TypeScript types
-      const degit = (await import('degit')).default
+      // Get the templates directory path
+      const __filename = fileURLToPath(import.meta.url)
+      const __dirname = dirname(__filename)
+      const templatesDir = path.join(__dirname, '..', 'templates')
+
       const templateMap = {
-        basic: 'JonImmsWordpressDev/StrataWP/examples/basic-theme#main',
-        advanced: 'JonImmsWordpressDev/StrataWP/examples/advanced-theme#main',
-        store: 'JonImmsWordpressDev/StrataWP/examples/store-theme#main',
+        basic: 'basic-theme',
+        advanced: 'advanced-theme',
+        store: 'store-theme',
       }
 
-      const emitter = degit(templateMap[config.template], {
-        cache: false,
-        force: true,
-      })
+      const templatePath = path.join(templatesDir, templateMap[config.template])
 
-      await emitter.clone(themePath)
+      // Copy template to destination
+      await fs.copy(templatePath, themePath)
 
       spinner.text = 'Customizing theme...'
       await customizeTheme(themePath, config)

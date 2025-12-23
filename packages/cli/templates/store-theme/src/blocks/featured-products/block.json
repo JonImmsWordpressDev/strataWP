@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "strata-store/featured-products",
+  "version": "1.0.0",
+  "title": "Featured Products",
+  "category": "woocommerce",
+  "icon": "star-filled",
+  "description": "Display featured products from your store",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "columns": {
+      "type": "number",
+      "default": 4
+    },
+    "limit": {
+      "type": "number",
+      "default": 8
+    },
+    "orderBy": {
+      "type": "string",
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
+    }
+  },
+  "textdomain": "strata-store",
+  "editorScript": "file:./index.tsx",
+  "render": "file:./render.php"
+}
