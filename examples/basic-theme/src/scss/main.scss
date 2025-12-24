@@ -6,22 +6,22 @@
  */
 
 // Variables & CSS Custom Properties
-@import 'variables';
+@use 'variables' as *;
 
 // Base & Reset
-@import 'reset';
+@use 'reset' as *;
 
 // Typography
-@import 'typography';
+@use 'typography' as *;
 
 // Forms
-@import 'forms';
+@use 'forms' as *;
 
 // Layout Components
-@import 'header';
-@import 'navigation';
-@import 'content';
-@import 'footer';
+@use 'header' as *;
+@use 'navigation' as *;
+@use 'content' as *;
+@use 'footer' as *;
 
 // Utilities & Enhancements
-@import 'utilities';
+@use 'utilities' as *;

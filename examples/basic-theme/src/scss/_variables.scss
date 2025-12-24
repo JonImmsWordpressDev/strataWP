@@ -23,8 +23,10 @@
   --color-bg-alt: var(--color-neutral);
 
   // Typography
-  // Font variables are injected by the Fonts component via PHP
+  // Font variables - using WordPress system font as default
   // WordPress also generates: --wp--preset--font-family--system-font
+  --font-heading: var(--wp--preset--font-family--system-font);
+  --font-body: var(--wp--preset--font-family--system-font);
   --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
   // Spacing
