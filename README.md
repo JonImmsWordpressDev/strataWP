@@ -468,6 +468,64 @@ stratawp storybook                                  # Alias for explorer
 stratawp explorer --port 4000                       # Custom port
 ```
 
+### Typography & Google Fonts
+
+StrataWP includes a powerful typography management system with access to **all 1400+ Google Fonts** directly from the WordPress dashboard.
+
+#### Features
+
+- **Complete Google Fonts Library**: Access every Google Font via API integration
+- **Searchable Font Selector**: Find fonts quickly with Select2-powered dropdowns
+- **Live Font Preview**: See exactly how fonts look before applying them
+- **Custom Font Weights**: Select specific weights to optimize performance
+- **Curated Font Pairings**: 8 professionally designed heading/body combinations
+- **Automatic CSS Variables**: Fonts injected as `--font-heading` and `--font-body`
+- **24-Hour Caching**: Fast performance with transient-based font list caching
+- **Fallback Support**: Graceful degradation if API is unavailable
+
+#### How to Use
+
+1. **Navigate to Typography Settings**
+   - Go to `Settings` → `StrataWP Typography` in WordPress admin
+
+2. **Choose Your Mode**
+   - **Recommended Pairings**: Select from 8 curated font combinations
+   - **Custom Fonts**: Choose any Google Font with full control
+
+3. **Custom Font Selection**
+   ```
+   - Search from 1400+ Google Fonts
+   - Select heading font (h1-h6)
+   - Select body font (paragraphs)
+   - Choose font weights (100-900)
+   - Preview fonts in real-time
+   ```
+
+4. **Automatic Integration**
+   - Fonts are automatically loaded on the frontend
+   - CSS variables are injected in `<head>`
+   - Use in your theme: `var(--font-heading)` and `var(--font-body)`
+
+#### API Configuration (Optional)
+
+For higher rate limits, add a Google Fonts API key:
+
+```php
+// In your theme's functions.php or wp-config.php
+add_filter('stratawp_google_fonts_api_key', function() {
+    return 'YOUR_GOOGLE_FONTS_API_KEY';
+});
+```
+
+Get your free API key: https://developers.google.com/fonts/docs/developer_api
+
+#### Performance Optimization
+
+- Font list cached for 24 hours using WordPress transients
+- Only selected fonts and weights are loaded on frontend
+- Fonts served via Google's optimized CDN
+- `font-display: swap` for optimal loading experience
+
 ### Component Registry
 
 StrataWP includes a powerful component registry for sharing and discovering reusable WordPress components, powered by npm.

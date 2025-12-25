@@ -172,50 +172,105 @@ class Fonts implements ComponentInterface
     }
 
     /**
-     * Get list of popular Google Fonts
+     * Fetch all Google Fonts from API
+     *
+     * @return array
+     */
+    private function fetch_google_fonts_from_api(): array
+    {
+        // Check cache first (24 hour cache)
+        $cached_fonts = get_transient('stratawp_google_fonts_list');
+        if (false !== $cached_fonts && is_array($cached_fonts)) {
+            return $cached_fonts;
+        }
+
+        // Google Fonts API endpoint
+        $api_key = apply_filters('stratawp_google_fonts_api_key', '');
+
+        // Fetch from API
+        $api_url = 'https://www.googleapis.com/webfonts/v1/webfonts';
+        if (!empty($api_key)) {
+            $api_url .= '?key=' . $api_key . '&sort=popularity';
+        } else {
+            $api_url .= '?sort=popularity';
+        }
+
+        $response = wp_remote_get($api_url, [
+            'timeout' => 10,
+            'sslverify' => true,
+        ]);
+
+        if (is_wp_error($response)) {
+            // Fallback to curated list if API fails
+            return $this->get_fallback_fonts();
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
+        if (empty($data['items'])) {
+            return $this->get_fallback_fonts();
+        }
+
+        $fonts = [];
+        foreach ($data['items'] as $font) {
+            $fonts[$font['family']] = [
+                'category' => $font['category'] ?? 'sans-serif',
+                'variants' => $font['variants'] ?? ['regular'],
+                'subsets' => $font['subsets'] ?? ['latin'],
+            ];
+        }
+
+        // Cache for 24 hours
+        set_transient('stratawp_google_fonts_list', $fonts, DAY_IN_SECONDS);
+
+        return $fonts;
+    }
+
+    /**
+     * Get list of available Google Fonts
      *
      * @return array
      */
     private function get_available_fonts(): array
     {
+        $all_fonts = $this->fetch_google_fonts_from_api();
+
+        // Convert to simple family => category format for backward compatibility
+        $simple_fonts = [];
+        foreach ($all_fonts as $family => $data) {
+            $simple_fonts[$family] = $data['category'];
+        }
+
+        return $simple_fonts;
+    }
+
+    /**
+     * Get fallback font list (used when API is unavailable)
+     *
+     * @return array
+     */
+    private function get_fallback_fonts(): array
+    {
         return [
             // Sans-serif fonts
-            'Inter' => 'sans-serif',
-            'Roboto' => 'sans-serif',
-            'Open Sans' => 'sans-serif',
-            'Lato' => 'sans-serif',
-            'Montserrat' => 'sans-serif',
-            'Poppins' => 'sans-serif',
-            'Raleway' => 'sans-serif',
-            'Work Sans' => 'sans-serif',
-            'Nunito' => 'sans-serif',
-            'DM Sans' => 'sans-serif',
-            'Manrope' => 'sans-serif',
-            'Space Grotesk' => 'sans-serif',
-            'Plus Jakarta Sans' => 'sans-serif',
-            'Outfit' => 'sans-serif',
-            'Karla' => 'sans-serif',
-            'Archivo' => 'sans-serif',
+            'Inter' => ['category' => 'sans-serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Roboto' => ['category' => 'sans-serif', 'variants' => ['regular', '500', '700'], 'subsets' => ['latin']],
+            'Open Sans' => ['category' => 'sans-serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Lato' => ['category' => 'sans-serif', 'variants' => ['regular', '700'], 'subsets' => ['latin']],
+            'Montserrat' => ['category' => 'sans-serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Poppins' => ['category' => 'sans-serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Raleway' => ['category' => 'sans-serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Work Sans' => ['category' => 'sans-serif', 'variants' => ['regular', '600'], 'subsets' => ['latin']],
+            'Nunito' => ['category' => 'sans-serif', 'variants' => ['regular', '700'], 'subsets' => ['latin']],
+            'DM Sans' => ['category' => 'sans-serif', 'variants' => ['regular', '700'], 'subsets' => ['latin']],
 
             // Serif fonts
-            'Playfair Display' => 'serif',
-            'Merriweather' => 'serif',
-            'Libre Baskerville' => 'serif',
-            'Cormorant Garamond' => 'serif',
-            'Lora' => 'serif',
-            'Crimson Text' => 'serif',
-            'EB Garamond' => 'serif',
-            'Spectral' => 'serif',
-            'Source Serif Pro' => 'serif',
-            'Bitter' => 'serif',
-            'Fraunces' => 'serif',
-
-            // Display fonts
-            'Bebas Neue' => 'sans-serif',
-            'Righteous' => 'sans-serif',
-            'Oswald' => 'sans-serif',
-            'Anton' => 'sans-serif',
-            'Abril Fatface' => 'serif',
+            'Playfair Display' => ['category' => 'serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Merriweather' => ['category' => 'serif', 'variants' => ['regular', '700'], 'subsets' => ['latin']],
+            'Libre Baskerville' => ['category' => 'serif', 'variants' => ['regular', '700'], 'subsets' => ['latin']],
+            'Lora' => ['category' => 'serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
+            'Crimson Text' => ['category' => 'serif', 'variants' => ['regular', '600', '700'], 'subsets' => ['latin']],
         ];
     }
 
@@ -421,14 +476,14 @@ class Fonts implements ComponentInterface
                                 <label for="stratawp_custom_heading_font"><?php _e('Heading Font', 'stratawp'); ?></label>
                             </th>
                             <td>
-                                <select name="stratawp_custom_heading_font" id="stratawp_custom_heading_font" class="regular-text">
+                                <select name="stratawp_custom_heading_font" id="stratawp_custom_heading_font" class="stratawp-font-select">
                                     <?php foreach ($available_fonts as $font => $category): ?>
                                         <option value="<?php echo esc_attr($font); ?>" <?php selected($custom_heading_font, $font); ?>>
                                             <?php echo esc_html($font); ?> (<?php echo esc_html($category); ?>)
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="description"><?php _e('Font family for headings (h1-h6)', 'stratawp'); ?></p>
+                                <p class="description"><?php _e('Font family for headings (h1-h6)', 'stratawp'); ?> - <?php echo count($available_fonts); ?> fonts available</p>
 
                                 <fieldset style="margin-top: 10px;">
                                     <legend><?php _e('Font Weights:', 'stratawp'); ?></legend>
@@ -452,14 +507,14 @@ class Fonts implements ComponentInterface
                                 <label for="stratawp_custom_body_font"><?php _e('Body Font', 'stratawp'); ?></label>
                             </th>
                             <td>
-                                <select name="stratawp_custom_body_font" id="stratawp_custom_body_font" class="regular-text">
+                                <select name="stratawp_custom_body_font" id="stratawp_custom_body_font" class="stratawp-font-select">
                                     <?php foreach ($available_fonts as $font => $category): ?>
                                         <option value="<?php echo esc_attr($font); ?>" <?php selected($custom_body_font, $font); ?>>
                                             <?php echo esc_html($font); ?> (<?php echo esc_html($category); ?>)
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="description"><?php _e('Font family for body text and paragraphs', 'stratawp'); ?></p>
+                                <p class="description"><?php _e('Font family for body text and paragraphs', 'stratawp'); ?> - <?php echo count($available_fonts); ?> fonts available</p>
 
                                 <fieldset style="margin-top: 10px;">
                                     <legend><?php _e('Font Weights:', 'stratawp'); ?></legend>
@@ -570,48 +625,60 @@ class Fonts implements ComponentInterface
             return;
         }
 
-        // Load ALL available fonts for preview (both pairings and custom selection)
-        $all_fonts = [];
+        // Enqueue Select2 for searchable dropdowns
+        wp_enqueue_style(
+            'select2',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+            [],
+            '4.1.0'
+        );
 
-        // Add fonts from pairings
+        wp_enqueue_script(
+            'select2',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+            ['jquery'],
+            '4.1.0',
+            true
+        );
+
+        // Load fonts from pairings for preview
+        $preview_fonts = [];
         foreach ($this->font_pairings as $pairing) {
             if (!isset($pairing['heading']['system'])) {
                 $heading_family = $pairing['heading']['family'];
                 $heading_weights = implode(';', $pairing['heading']['weights']);
-                $all_fonts[] = "{$heading_family}:wght@{$heading_weights}";
+                $preview_fonts[] = "{$heading_family}:wght@{$heading_weights}";
             }
             if (!isset($pairing['body']['system'])) {
                 $body_family = $pairing['body']['family'];
                 $body_weights = implode(';', $pairing['body']['weights']);
-                $all_fonts[] = "{$body_family}:wght@{$body_weights}";
+                $preview_fonts[] = "{$body_family}:wght@{$body_weights}";
             }
         }
 
-        // Add all available fonts for custom selection with common weights
-        $available_fonts = $this->get_available_fonts();
-        foreach ($available_fonts as $font => $category) {
-            // Load with common weights for preview
-            $all_fonts[] = "{$font}:wght@300;400;600;700";
-        }
+        // Load currently selected custom fonts for preview
+        $custom_heading_font = get_option('stratawp_custom_heading_font', 'Montserrat');
+        $custom_body_font = get_option('stratawp_custom_body_font', 'Open Sans');
+        $preview_fonts[] = "{$custom_heading_font}:wght@400;600;700";
+        $preview_fonts[] = "{$custom_body_font}:wght@300;400;600";
 
         // Remove duplicates
-        $all_fonts = array_unique($all_fonts);
+        $preview_fonts = array_unique($preview_fonts);
 
-        if (!empty($all_fonts)) {
+        if (!empty($preview_fonts)) {
             $fonts_url = 'https://fonts.googleapis.com/css2?family=' .
-                         implode('&family=', array_map('urlencode', $all_fonts)) .
+                         implode('&family=', array_map('urlencode', $preview_fonts)) .
                          '&display=swap';
 
             wp_enqueue_style('stratawp-google-fonts-preview', $fonts_url, [], null);
-        } else {
-            // Fallback: register empty style for inline styles
-            wp_register_style('stratawp-typography-admin', false);
-            wp_enqueue_style('stratawp-typography-admin');
         }
 
-        // Add inline styles for preview
-        $style_handle = !empty($all_fonts) ? 'stratawp-google-fonts-preview' : 'stratawp-typography-admin';
-        wp_add_inline_style($style_handle, '
+        // Register empty style for inline styles
+        wp_register_style('stratawp-typography-admin', false);
+        wp_enqueue_style('stratawp-typography-admin');
+
+        // Add inline styles for preview and UI
+        wp_add_inline_style('stratawp-typography-admin', '
             .stratawp-font-preview {
                 margin-top: 20px;
                 padding: 20px;
@@ -636,13 +703,36 @@ class Fonts implements ComponentInterface
                 background: white;
                 border-radius: 4px;
             }
+            .select2-container {
+                max-width: 500px;
+            }
+            .select2-container--default .select2-selection--single {
+                height: 38px;
+                padding: 4px;
+            }
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: 30px;
+            }
+            .stratawp-font-loading {
+                display: inline-block;
+                margin-left: 10px;
+                color: #666;
+            }
         ');
 
-        // Add JavaScript for dynamic preview
-        wp_add_inline_script('jquery', '
+        // Add JavaScript for dynamic preview and Select2
+        wp_add_inline_script('select2', '
             jQuery(document).ready(function($) {
                 var fontPairings = ' . json_encode($this->font_pairings) . ';
 
+                // Initialize Select2 on font dropdowns
+                $(".stratawp-font-select").select2({
+                    placeholder: "Select a font",
+                    allowClear: false,
+                    width: "100%"
+                });
+
+                // Pairing preview
                 $("#stratawp_font_pairing").on("change", function() {
                     var selectedPairing = $(this).val();
                     var pairing = fontPairings[selectedPairing];
@@ -657,6 +747,47 @@ class Fonts implements ComponentInterface
                             .text(pairing.body.family + " (Body Text)");
                     }
                 });
+
+                // Custom font preview with dynamic loading
+                function updateCustomPreview() {
+                    var headingFont = $("#stratawp_custom_heading_font").val();
+                    var bodyFont = $("#stratawp_custom_body_font").val();
+
+                    // Show loading indicator
+                    $("#custom-preview").append("<span class=\"stratawp-font-loading\">Loading fonts...</span>");
+
+                    // Load fonts dynamically
+                    var fontsToLoad = [];
+                    if (headingFont) fontsToLoad.push(headingFont + ":wght@400;600;700");
+                    if (bodyFont && bodyFont !== headingFont) fontsToLoad.push(bodyFont + ":wght@300;400;600");
+
+                    if (fontsToLoad.length > 0) {
+                        var fontUrl = "https://fonts.googleapis.com/css2?family=" +
+                                      fontsToLoad.map(encodeURIComponent).join("&family=") +
+                                      "&display=swap";
+
+                        // Load font stylesheet
+                        $("<link>")
+                            .attr("rel", "stylesheet")
+                            .attr("href", fontUrl)
+                            .appendTo("head")
+                            .on("load", function() {
+                                // Update preview
+                                $("#custom-preview .font-preview-heading")
+                                    .css("font-family", "\'" + headingFont + "\'")
+                                    .text(headingFont + " (Headings)");
+
+                                $("#custom-preview .font-preview-body")
+                                    .css("font-family", "\'" + bodyFont + "\'")
+                                    .text(bodyFont + " (Body Text)");
+
+                                // Remove loading indicator
+                                $(".stratawp-font-loading").remove();
+                            });
+                    }
+                }
+
+                $("#stratawp_custom_heading_font, #stratawp_custom_body_font").on("change", updateCustomPreview);
             });
         ');
     }
