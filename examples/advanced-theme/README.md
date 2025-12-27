@@ -1,6 +1,6 @@
-# StrataWP Basic Theme
+# StrataWP Advanced Theme
 
-A professional Block Theme (FSE) built on the Frost design system, showcasing the StrataWP framework with modern development tools. Perfect for blogs, business sites, and learning StrataWP.
+An advanced Block Theme (FSE) built on the Frost design system, showcasing the StrataWP framework with modern development tools and advanced features. Perfect for complex sites, agencies, and production use.
 
 ## Features
 
@@ -84,16 +84,16 @@ All patterns from Frost theme, adapted for StrataWP:
 3. **Create a symlink to your WordPress installation:**
    ```bash
    # Replace /path/to/wordpress with your actual WordPress path
-   ln -s "$(pwd)/examples/basic-theme" /path/to/wordpress/wp-content/themes/stratawp-basic
+   ln -s "$(pwd)/examples/advanced-theme" /path/to/wordpress/wp-content/themes/stratawp-advanced
    ```
 
 4. **Activate in WordPress Admin:**
    - Go to Appearance → Themes
-   - Activate "StrataWP Basic Theme"
+   - Activate "StrataWP Advanced Theme"
 
 5. **Start the development server:**
    ```bash
-   cd examples/basic-theme
+   cd examples/advanced-theme
    pnpm dev
    ```
 
@@ -105,7 +105,7 @@ If you prefer to work directly in `wp-content/themes/`:
    ```bash
    cd wp-content/themes
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git stratawp
-   cd stratawp/examples/basic-theme
+   cd stratawp/examples/advanced-theme
    ```
 
 2. Install and activate as above
@@ -127,7 +127,7 @@ pnpm build  # Build for production
 
 ### File Structure
 ```
-basic-theme/
+advanced-theme/
 ├── theme.json              # Design system v3 (Frost-based)
 ├── style.css               # Theme metadata
 ├── functions.php           # Theme setup + Vite integration
