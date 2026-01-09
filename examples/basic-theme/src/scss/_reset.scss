@@ -23,7 +23,7 @@ textarea:focus,
   transition: all 0.2s ease-in-out;
 }
 
-// Link underline styling
+// Link styling
 a,
 a:focus,
 a:hover,
@@ -40,28 +40,15 @@ th {
 
 // Mark/highlight styling
 mark {
-  background: linear-gradient(90deg, var(--wp--preset--color--primary) 0%, var(--wp--preset--color--primary) 100%);
-  background-position: 0 85%;
-  background-repeat: repeat-x;
-  background-size: 100% 15%;
+  background: var(--wp--preset--color--primary);
+  color: var(--wp--preset--color--base);
+  padding: 0 0.25em;
 }
 
 body {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
-  color: var(--color-text);
-  background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-// Focus styles for accessibility
-*:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 2px;
 }
 
 // Skip link
@@ -71,11 +58,10 @@ body {
   top: 2rem;
   z-index: 999999;
   padding: 1rem;
-  background-color: var(--color-bg);
-  color: var(--color-primary);
+  background-color: var(--wp--preset--color--base);
+  color: var(--wp--preset--color--primary);
   text-decoration: none;
-  border: 2px solid var(--color-primary);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--wp--preset--color--primary);
 
   &:focus {
     left: 1rem;

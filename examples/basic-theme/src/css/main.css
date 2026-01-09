@@ -1,5 +1,169 @@
 /**
  * Main Theme Styles
- *
+ * Neobrutalist Design System
  * Built with StrataWP
  */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+
+/* CSS Custom Properties for Brutalist Design */
+:root {
+  --brutal-border: 4px solid #000;
+  --brutal-border-thick: 8px solid #000;
+  --brutal-shadow-sm: 4px 4px 0px 0px #000;
+  --brutal-shadow: 8px 8px 0px 0px #000;
+  --brutal-shadow-lg: 12px 12px 0px 0px #000;
+  --brutal-yellow: #FACC15;
+  --brutal-green: #22C55E;
+  --brutal-red: #EF4444;
+  --brutal-blue: #3B82F6;
+  --brutal-purple: #A855F7;
+}
+
+/* Global Brutalist Styles */
+* {
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Code blocks using Fira Code */
+code, kbd, samp, pre,
+.wp-block-code,
+.wp-block-preformatted {
+  font-family: 'Fira Code', monospace !important;
+}
+
+/* Brutalist Cards */
+.wp-block-group,
+.wp-block-column,
+article,
+.card {
+  border: var(--brutal-border);
+  box-shadow: var(--brutal-shadow);
+  transition: all 0.2s ease;
+}
+
+.wp-block-group:hover,
+.card:hover,
+article:hover {
+  transform: translate(4px, 4px);
+  box-shadow: var(--brutal-shadow-lg);
+}
+
+/* Brutalist Buttons - hover effect */
+.wp-block-button__link,
+button,
+input[type="submit"],
+input[type="button"],
+.wp-element-button {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer;
+}
+
+.wp-block-button__link:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.wp-element-button:hover {
+  transform: translate(4px, 4px) !important;
+  box-shadow: 0px 0px 0px 0px #000 !important;
+}
+
+/* Button color variations */
+.wp-block-button.is-style-yellow .wp-block-button__link,
+.btn-yellow {
+  background-color: var(--brutal-yellow) !important;
+  color: #000 !important;
+}
+
+.wp-block-button.is-style-green .wp-block-button__link,
+.btn-green {
+  background-color: var(--brutal-green) !important;
+  color: #000 !important;
+}
+
+.wp-block-button.is-style-red .wp-block-button__link,
+.btn-red {
+  background-color: var(--brutal-red) !important;
+  color: #fff !important;
+}
+
+.wp-block-button.is-style-blue .wp-block-button__link,
+.btn-blue {
+  background-color: var(--brutal-blue) !important;
+  color: #fff !important;
+}
+
+.wp-block-button.is-style-purple .wp-block-button__link,
+.btn-purple {
+  background-color: var(--brutal-purple) !important;
+  color: #fff !important;
+}
+
+/* Form inputs with brutalist style */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+  border: var(--brutal-border) !important;
+  border-radius: 0 !important;
+  transition: all 0.15s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border-color: var(--brutal-green) !important;
+  box-shadow: var(--brutal-shadow-sm) !important;
+}
+
+/* Image blocks */
+.wp-block-image img {
+  border: var(--brutal-border);
+  box-shadow: var(--brutal-shadow);
+}
+
+/* Utility classes */
+.shadow-brutal {
+  box-shadow: var(--brutal-shadow) !important;
+}
+
+.shadow-brutal-sm {
+  box-shadow: var(--brutal-shadow-sm) !important;
+}
+
+.shadow-brutal-lg {
+  box-shadow: var(--brutal-shadow-lg) !important;
+}
+
+.border-brutal {
+  border: var(--brutal-border) !important;
+}
+
+.border-brutal-thick {
+  border: var(--brutal-border-thick) !important;
+}
+
+.bg-yellow {
+  background-color: var(--brutal-yellow) !important;
+}
+
+.bg-green {
+  background-color: var(--brutal-green) !important;
+}
+
+.bg-red {
+  background-color: var(--brutal-red) !important;
+}
+
+.bg-blue {
+  background-color: var(--brutal-blue) !important;
+}
+
+.bg-purple {
+  background-color: var(--brutal-purple) !important;
+}

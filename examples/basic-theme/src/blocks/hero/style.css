@@ -29,28 +29,30 @@
 
 .wp-block-forge-basic-hero .hero-title {
   font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 700;
+  font-weight: 400;
   margin: 0 0 1rem;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .wp-block-forge-basic-hero .hero-description {
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: clamp(1rem, 2vw, 1.25rem);
   margin: 0 0 2rem;
   opacity: 0.9;
+  line-height: 1.75;
 }
 
 .wp-block-forge-basic-hero .hero-button {
   display: inline-block;
-  padding: 1rem 2rem;
-  background-color: #3b82f6;
+  padding: 15px 30px;
+  background-color: #0000ff;
   color: #fff;
   text-decoration: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  border-radius: 5px;
+  font-weight: 400;
+  font-size: 16px;
   transition: background-color 0.2s;
 }
 
 .wp-block-forge-basic-hero .hero-button:hover {
-  background-color: #2563eb;
+  background-color: #000099;
 }

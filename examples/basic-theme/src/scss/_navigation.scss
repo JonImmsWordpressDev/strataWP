@@ -1,5 +1,6 @@
 /**
  * Navigation Styles
+ * Minimal Frost-inspired navigation
  */
 
 .main-navigation {
@@ -27,36 +28,14 @@
     display: block;
     min-height: 48px;
     padding: 0.75rem 1rem;
-    color: var(--color-text);
+    color: var(--wp--preset--color--contrast);
     text-decoration: none;
     transition: color 0.2s;
     line-height: 1.5;
 
     &:hover {
-      color: var(--color-primary);
+      color: var(--wp--preset--color--primary);
     }
-  }
-}
-
-// Block editor navigation enhancements
-.wp-block-navigation-item a {
-  position: relative;
-  transition: color 0.2s ease;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--color-accent), var(--color-secondary));
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-  }
-
-  &:hover::after {
-    width: 100%;
   }
 }
 
@@ -104,9 +83,5 @@
 
   .main-navigation.toggled .menu {
     display: block;
-  }
-
-  .wp-block-navigation-item a::after {
-    display: none;
   }
 }

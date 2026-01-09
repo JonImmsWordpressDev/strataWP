@@ -2,7 +2,6 @@
  * Main Theme Styles
  *
  * Built with StrataWP
- * Structure inspired by wp-rig
  */
 
 // Variables & CSS Custom Properties
@@ -13,6 +12,7 @@
 
 // Typography
 @use 'typography' as *;
+
 
 // Forms
 @use 'forms' as *;
