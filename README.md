@@ -20,6 +20,75 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
+## What's New in v1.0.0 🚀
+
+**Production Deployment is Here!**
+
+StrataWP 1.0 introduces a comprehensive deployment system that makes deploying your WordPress themes to production servers effortless. This is a major milestone - StrataWP is now production-ready!
+
+### Deployment Features
+- **One-Command Deployment**: Deploy to production with a single command
+- **Multiple Hosting Support**: SFTP, FTP, SSH/rsync (coming soon), Git (coming soon)
+- **Interactive Setup Wizard**: Configure deployment in minutes with guided prompts
+- **Smart File Filtering**: Automatically deploys only production files (excludes node_modules, src/, etc.)
+- **Change Detection**: Only uploads modified files for faster deployments
+- **Automatic Backups**: Creates backups before deployment for safe rollbacks
+- **Environment Management**: Support for multiple environments (production, staging, etc.)
+- **Secure Credentials**: Environment variable support to keep passwords out of git
+- **Database Migration**: URL replacement for local → production migrations
+- **Progress Tracking**: Real-time upload progress with detailed summaries
+
+**New Commands:**
+```bash
+stratawp deploy:setup              # Interactive deployment configuration
+stratawp deploy production         # Deploy to production
+stratawp deploy:list               # List configured environments
+stratawp deploy:test production    # Test connection without deploying
+```
+
+**Quick Deploy Example:**
+```bash
+# 1. Configure once
+pnpm stratawp deploy:setup
+
+# 2. Deploy anytime
+pnpm stratawp deploy production
+```
+
+**Deployment Options:**
+```bash
+--dry-run      # Preview what would be deployed
+--no-build     # Skip build step
+--force        # Skip confirmation prompt
+--no-backup    # Skip backup creation
+```
+
+**What Gets Deployed:**
+- ✅ `dist/` - Built JavaScript and CSS
+- ✅ `*.php` - All PHP theme files
+- ✅ `theme.json`, `style.css` - Theme configuration
+- ✅ `templates/`, `parts/`, `patterns/` - FSE templates
+- ✅ `vendor/` - PHP dependencies
+- ❌ `node_modules/`, `src/`, `.git/` - Development files excluded
+
+**Configuration:**
+- Global config: `~/.stratawp/deploy-config.json`
+- Project config: `.stratawp-deploy.json`
+- Environment variables: `.env` file support
+- `.deployignore` for custom file exclusions
+
+**Security:**
+- SFTP (encrypted) recommended over FTP
+- Environment variable substitution (`${VAR_NAME}`)
+- Credentials never committed to git
+- Connection testing before deployment
+
+**Learn More:**
+- [Deployment Documentation](./docs/deployment/getting-started.md)
+- Deploy to shared hosting (cPanel, Plesk)
+- Deploy to VPS/cloud servers (coming soon)
+- Deploy to managed WordPress hosts (coming soon)
+
 ## What's New in v0.8.0
 
 **Headless WordPress Support is Here!**

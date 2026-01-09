@@ -59,3 +59,8 @@ wp-content/wp-cache-config.php
 
 # Internal development notes
 DEVELOPMENT_NOTES.md
+
+# Deployment (StrataWP)
+.stratawp-deploy.json
+.deploy-manifest.json
+.deploy-history/

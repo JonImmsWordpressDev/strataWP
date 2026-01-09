@@ -21,13 +21,19 @@ import {
   listCommand,
 } from '@stratawp/registry'
 import { startCommand as explorerStartCommand } from '@stratawp/explorer'
+import { setupCommand as deploySetupCommand } from './commands/deploy/setup'
+import {
+  deployCommand,
+  listCommand as deployListCommand,
+  testCommand as deployTestCommand,
+} from './commands/deploy/index'
 
 const program = new Command()
 
 program
   .name('stratawp')
   .description('⚡ A modern WordPress theme framework')
-  .version('0.2.2')
+  .version('1.0.0')
 
 // Development server
 program
@@ -194,5 +200,30 @@ program
   .command('registry:list')
   .description('List installed StrataWP components')
   .action(listCommand)
+
+// Deployment commands
+program
+  .command('deploy:setup')
+  .description('Configure deployment environments')
+  .action(deploySetupCommand)
+
+program
+  .command('deploy <environment>')
+  .description('Deploy theme to specified environment')
+  .option('--no-build', 'Skip build step')
+  .option('--dry-run', 'Show what would be deployed without deploying')
+  .option('--force', 'Deploy without confirmation prompt')
+  .option('--no-backup', 'Skip creating backup')
+  .action(deployCommand)
+
+program
+  .command('deploy:list')
+  .description('List configured deployment environments')
+  .action(deployListCommand)
+
+program
+  .command('deploy:test <environment>')
+  .description('Test connection to deployment environment')
+  .action(deployTestCommand)
 
 program.parse()

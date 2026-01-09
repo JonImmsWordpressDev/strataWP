@@ -1,0 +1,70 @@
+# StrataWP Deployment Ignore File
+# Patterns here will be excluded from deployment
+# Similar to .gitignore syntax
+
+# Dependencies
+node_modules/
+
+# Source files (not needed on production)
+src/
+*.ts
+*.tsx
+!*.d.ts
+tsconfig.json
+vite.config.ts
+package.json
+pnpm-lock.yaml
+composer.json
+composer.lock
+
+# Development files
+.turbo/
+.git/
+.gitignore
+.DS_Store
+*.log
+.env*
+*.md
+README*
+CHANGELOG*
+LICENSE*
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+
+# Testing
+tests/
+__tests__/
+*.test.*
+*.spec.*
+coverage/
+.nyc_output/
+
+# Build artifacts (usually you WANT dist/ deployed)
+# Uncomment if you need to exclude specific patterns:
+# dist/**/*.map
+# dist/**/*.LICENSE.txt
+
+# Documentation
+docs/
+.storybook/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+
+# Deployment config (don't deploy your deploy config!)
+.stratawp-deploy.json
+.deploy-manifest.json
+.deploy-history/
+.deployignore
+
+# WordPress development files (if you have a local WordPress install)
+# wp-config-local.php
+# local-config.php
