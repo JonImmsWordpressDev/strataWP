@@ -207,6 +207,26 @@ When deploying from local to production, WordPress stores the site URL in the da
 
 ## Troubleshooting
 
+### Deploy Commands Not Found
+
+If you get an error like `unknown command 'deploy'`, the CLI needs to be updated:
+
+```bash
+# From the StrataWP repository root
+cd packages/cli
+
+# Build the updated CLI
+pnpm build
+
+# Install globally
+npm install -g .
+
+# Verify deploy commands are now available
+stratawp --help
+```
+
+**Why this happens:** After pulling the latest code from the repository, your globally installed `stratawp` command still points to the old build. You need to rebuild and reinstall to use new features.
+
 ### Connection Failed
 
 - Verify your host, port, and credentials

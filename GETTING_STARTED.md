@@ -865,6 +865,30 @@ pnpm type-check
 3. Hard refresh browser (Cmd/Ctrl + Shift + R)
 4. Check `dist/` directory exists
 
+#### Deploy Commands Not Found
+
+**Problem:** `unknown command 'deploy'` or other new commands missing
+
+**Solution:**
+
+If you're working with the StrataWP repository and pulled the latest changes, you need to update the globally installed CLI:
+
+```bash
+# From the StrataWP repository root
+cd packages/cli
+
+# Build the CLI
+pnpm build
+
+# Install globally (updates the stratawp command)
+npm install -g .
+
+# Verify the update
+stratawp --help
+```
+
+**Why this happens:** The `stratawp` command installed globally on your system points to a specific build. When you pull new features from the repository, you need to rebuild and reinstall the CLI to use them.
+
 ### Getting Help
 
 **Resources:**

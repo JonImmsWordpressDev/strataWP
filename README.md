@@ -1114,6 +1114,26 @@ pnpm lint
 pnpm format
 ```
 
+### Updating the CLI After Pulling Changes
+
+If you've pulled the latest changes from the repository and new CLI commands aren't showing up, you need to rebuild and reinstall the CLI globally:
+
+```bash
+# Navigate to the CLI package
+cd packages/cli
+
+# Build the CLI
+pnpm build
+
+# Install globally (updates the stratawp command)
+npm install -g .
+
+# Verify the update
+stratawp --help
+```
+
+This is necessary because the `stratawp` command installed on your system points to a specific build. When you pull new features (like deploy commands), you need to rebuild and reinstall to use them.
+
 ### Working with Example Themes
 
 ```bash

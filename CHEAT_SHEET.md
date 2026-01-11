@@ -511,6 +511,21 @@ node --version          # Should be 18+
 pnpm --version
 php --version          # Should be 8.1+
 wp --version           # WordPress CLI
+stratawp --version     # StrataWP CLI
+```
+
+### Update StrataWP CLI
+
+If new commands aren't showing up after pulling changes from the repo:
+
+```bash
+# From the StrataWP repository root
+cd packages/cli
+pnpm build
+npm install -g .
+
+# Verify the update
+stratawp --help
 ```
 
 ### Common Fixes
@@ -527,6 +542,9 @@ pnpm lint --fix
 
 # Permission errors (symlink)
 sudo ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
+
+# Deploy commands not found
+# Update the CLI (see "Update StrataWP CLI" above)
 ```
 
 ## Useful Snippets
