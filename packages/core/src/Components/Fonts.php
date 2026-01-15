@@ -2,7 +2,13 @@
 /**
  * Font Component
  *
- * Manages Google Font pairings and typography settings
+ * Manages font loading with support for Google Fonts API or self-hosted fonts.
+ *
+ * Font Loading Modes:
+ * - 'google-api': Load fonts from Google Fonts API (default)
+ * - 'self-hosted': Skip Google Fonts loading, output CSS variables only
+ *                  (use with @fontsource packages for best performance)
+ * - 'disabled': Component outputs nothing (fully manual font management)
  *
  * @package StrataWP
  */
@@ -24,6 +30,13 @@ class Fonts implements ComponentInterface
     private array $font_pairings = [];
 
     /**
+     * Font loading mode constants
+     */
+    public const MODE_GOOGLE_API = 'google-api';
+    public const MODE_SELF_HOSTED = 'self-hosted';
+    public const MODE_DISABLED = 'disabled';
+
+    /**
      * Get component slug
      *
      * @return string
@@ -34,15 +47,59 @@ class Fonts implements ComponentInterface
     }
 
     /**
+     * Get current font loading mode
+     *
+     * @return string
+     */
+    public function get_font_loading_mode(): string
+    {
+        $mode = get_option('stratawp_font_loading_mode', self::MODE_GOOGLE_API);
+
+        // Allow filter override for programmatic control
+        return apply_filters('stratawp_font_loading_mode', $mode);
+    }
+
+    /**
+     * Check if self-hosted mode is enabled
+     *
+     * @return bool
+     */
+    public function is_self_hosted(): bool
+    {
+        return $this->get_font_loading_mode() === self::MODE_SELF_HOSTED;
+    }
+
+    /**
+     * Check if component is disabled
+     *
+     * @return bool
+     */
+    public function is_disabled(): bool
+    {
+        return $this->get_font_loading_mode() === self::MODE_DISABLED;
+    }
+
+    /**
      * Initialize the component
      */
     public function initialize(): void
     {
+        // Early exit if completely disabled
+        if ($this->is_disabled()) {
+            return;
+        }
+
         $this->font_pairings = $this->get_font_pairings();
 
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_init', [$this, 'register_settings']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_google_fonts']);
+
+        // Only load Google Fonts in google-api mode
+        if (!$this->is_self_hosted()) {
+            add_action('wp_enqueue_scripts', [$this, 'enqueue_google_fonts']);
+        }
+
+        // Always output CSS variables (unless disabled)
         add_action('wp_head', [$this, 'output_font_css_variables'], 999);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
     }
@@ -313,6 +370,13 @@ class Fonts implements ComponentInterface
      */
     public function register_settings(): void
     {
+        // Font loading mode: 'google-api', 'self-hosted', or 'disabled'
+        register_setting('stratawp_typography', 'stratawp_font_loading_mode', [
+            'type' => 'string',
+            'default' => self::MODE_GOOGLE_API,
+            'sanitize_callback' => [$this, 'sanitize_font_loading_mode'],
+        ]);
+
         // Font mode: 'pairing' or 'custom'
         register_setting('stratawp_typography', 'stratawp_font_mode', [
             'type' => 'string',
@@ -379,6 +443,7 @@ class Fonts implements ComponentInterface
             return;
         }
 
+        $font_loading_mode = $this->get_font_loading_mode();
         $font_mode = get_option('stratawp_font_mode', 'pairing');
         $current_pairing = get_option('stratawp_font_pairing', 'playfair-source');
         $custom_heading_font = get_option('stratawp_custom_heading_font', 'Montserrat');
@@ -394,7 +459,7 @@ class Fonts implements ComponentInterface
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <p class="description"><?php _e('Choose how to configure your fonts: use our recommended pairings or select custom fonts.', 'stratawp'); ?></p>
+            <p class="description"><?php _e('Configure typography settings for your theme.', 'stratawp'); ?></p>
 
             <form method="post" action="options.php">
                 <?php
@@ -402,33 +467,84 @@ class Fonts implements ComponentInterface
                 do_settings_sections('stratawp_typography');
                 ?>
 
+                <!-- Font Loading Mode -->
+                <h2><?php _e('Font Loading', 'stratawp'); ?></h2>
                 <table class="form-table" role="presentation">
-                    <!-- Font Mode Selection -->
                     <tr>
                         <th scope="row">
-                            <?php _e('Font Selection Mode', 'stratawp'); ?>
+                            <?php _e('Font Loading Mode', 'stratawp'); ?>
                         </th>
                         <td>
                             <fieldset>
                                 <label>
-                                    <input type="radio" name="stratawp_font_mode" value="pairing" <?php checked($font_mode, 'pairing'); ?>>
-                                    <strong><?php _e('Recommended Pairings', 'stratawp'); ?></strong>
+                                    <input type="radio" name="stratawp_font_loading_mode" value="<?php echo esc_attr(self::MODE_GOOGLE_API); ?>" <?php checked($font_loading_mode, self::MODE_GOOGLE_API); ?>>
+                                    <strong><?php _e('Google Fonts API', 'stratawp'); ?></strong>
                                     <span class="description" style="display: block; margin-left: 25px;">
-                                        <?php _e('Choose from expertly curated font combinations', 'stratawp'); ?>
+                                        <?php _e('Load fonts from Google Fonts API (easy setup, external requests)', 'stratawp'); ?>
                                     </span>
                                 </label>
                                 <br><br>
                                 <label>
-                                    <input type="radio" name="stratawp_font_mode" value="custom" <?php checked($font_mode, 'custom'); ?>>
-                                    <strong><?php _e('Custom Fonts', 'stratawp'); ?></strong>
+                                    <input type="radio" name="stratawp_font_loading_mode" value="<?php echo esc_attr(self::MODE_SELF_HOSTED); ?>" <?php checked($font_loading_mode, self::MODE_SELF_HOSTED); ?>>
+                                    <strong><?php _e('Self-Hosted', 'stratawp'); ?></strong>
                                     <span class="description" style="display: block; margin-left: 25px;">
-                                        <?php _e('Select any Google Font with custom weights', 'stratawp'); ?>
+                                        <?php _e('Use fonts bundled with your theme (better performance, use with @fontsource)', 'stratawp'); ?>
+                                    </span>
+                                </label>
+                                <br><br>
+                                <label>
+                                    <input type="radio" name="stratawp_font_loading_mode" value="<?php echo esc_attr(self::MODE_DISABLED); ?>" <?php checked($font_loading_mode, self::MODE_DISABLED); ?>>
+                                    <strong><?php _e('Disabled', 'stratawp'); ?></strong>
+                                    <span class="description" style="display: block; margin-left: 25px;">
+                                        <?php _e('No font loading or CSS variables (fully manual font management)', 'stratawp'); ?>
                                     </span>
                                 </label>
                             </fieldset>
+                            <?php if ($font_loading_mode === self::MODE_SELF_HOSTED): ?>
+                                <div class="notice notice-info inline" style="margin-top: 15px; padding: 10px;">
+                                    <p><strong><?php _e('Self-Hosted Mode Active', 'stratawp'); ?></strong></p>
+                                    <p><?php _e('CSS variables will still be output. Install fonts via @fontsource in your theme:', 'stratawp'); ?></p>
+                                    <code style="display: block; background: #f0f0f1; padding: 10px; margin-top: 5px;">
+                                        pnpm add @fontsource/[font-name]<br>
+                                        // Then import in your SCSS/JS
+                                    </code>
+                                </div>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 </table>
+
+                <!-- Font Selection (hidden in self-hosted/disabled modes) -->
+                <div id="font-selection-section" style="display: <?php echo $font_loading_mode === self::MODE_GOOGLE_API ? 'block' : 'none'; ?>;">
+                    <h2><?php _e('Font Selection', 'stratawp'); ?></h2>
+                    <table class="form-table" role="presentation">
+                        <!-- Font Mode Selection -->
+                        <tr>
+                            <th scope="row">
+                                <?php _e('Font Selection Mode', 'stratawp'); ?>
+                            </th>
+                            <td>
+                                <fieldset>
+                                    <label>
+                                        <input type="radio" name="stratawp_font_mode" value="pairing" <?php checked($font_mode, 'pairing'); ?>>
+                                        <strong><?php _e('Recommended Pairings', 'stratawp'); ?></strong>
+                                        <span class="description" style="display: block; margin-left: 25px;">
+                                            <?php _e('Choose from expertly curated font combinations', 'stratawp'); ?>
+                                        </span>
+                                    </label>
+                                    <br><br>
+                                    <label>
+                                        <input type="radio" name="stratawp_font_mode" value="custom" <?php checked($font_mode, 'custom'); ?>>
+                                        <strong><?php _e('Custom Fonts', 'stratawp'); ?></strong>
+                                        <span class="description" style="display: block; margin-left: 25px;">
+                                            <?php _e('Select any Google Font with custom weights', 'stratawp'); ?>
+                                        </span>
+                                    </label>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
                 <!-- Recommended Pairings Section -->
                 <div id="pairing-section" style="display: <?php echo $font_mode === 'pairing' ? 'block' : 'none'; ?>;">
@@ -587,6 +703,27 @@ class Fonts implements ComponentInterface
 
         <script>
         jQuery(document).ready(function($) {
+            // Toggle sections based on font loading mode
+            $('input[name="stratawp_font_loading_mode"]').on('change', function() {
+                var mode = $(this).val();
+                if (mode === '<?php echo esc_js(self::MODE_GOOGLE_API); ?>') {
+                    $('#font-selection-section').show();
+                    // Also show the appropriate sub-section
+                    var fontMode = $('input[name="stratawp_font_mode"]:checked').val();
+                    if (fontMode === 'pairing') {
+                        $('#pairing-section').show();
+                        $('#custom-section').hide();
+                    } else {
+                        $('#pairing-section').hide();
+                        $('#custom-section').show();
+                    }
+                } else {
+                    $('#font-selection-section').hide();
+                    $('#pairing-section').hide();
+                    $('#custom-section').hide();
+                }
+            });
+
             // Toggle sections based on font mode
             $('input[name="stratawp_font_mode"]').on('change', function() {
                 if ($(this).val() === 'pairing') {
@@ -808,6 +945,18 @@ class Fonts implements ComponentInterface
             );
         }
         return $choices;
+    }
+
+    /**
+     * Sanitize font loading mode selection
+     *
+     * @param string $value Font loading mode
+     * @return string
+     */
+    public function sanitize_font_loading_mode(string $value): string
+    {
+        $valid_modes = [self::MODE_GOOGLE_API, self::MODE_SELF_HOSTED, self::MODE_DISABLED];
+        return in_array($value, $valid_modes) ? $value : self::MODE_GOOGLE_API;
     }
 
     /**
