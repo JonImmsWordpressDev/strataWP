@@ -20,7 +20,28 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
-## What's New in v1.0.0 🚀
+## What's New in v1.1.0 🚀
+
+**Deployment Improvements**
+
+This release adds the `--fresh` flag to the deploy command, solving manifest sync issues:
+
+```bash
+# Force upload all files (bypass manifest tracking)
+stratawp deploy production --fresh
+```
+
+**When to use `--fresh`:**
+- Server files are out of sync with the deployment manifest
+- Previous deployment partially failed but manifest was saved
+- You made manual changes on the server
+- "0 files deployed" when you know files have changed
+
+The `--fresh` flag ignores the local manifest and uploads all files, then saves a fresh manifest for future deployments.
+
+---
+
+## What's New in v1.0.0
 
 **Production Deployment is Here!**
 
@@ -1186,6 +1207,6 @@ Inspired by:
 
 ---
 
-**Status**: v0.6.0 - Comprehensive Testing with Vitest & Playwright
+**Status**: v1.1.0 - Production Deployment with Fresh Deploy Support
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
