@@ -213,6 +213,7 @@ program
   .option('--no-build', 'Skip build step')
   .option('--dry-run', 'Show what would be deployed without deploying')
   .option('--force', 'Deploy without confirmation prompt')
+  .option('--fresh', 'Ignore manifest and upload all files (full deploy)')
   .option('--no-backup', 'Skip creating backup')
   .action(deployCommand)
 

@@ -18,6 +18,7 @@ export interface DeployOptions {
   build?: boolean
   'dry-run'?: boolean
   force?: boolean
+  fresh?: boolean
   'no-backup'?: boolean
 }
 
@@ -95,11 +96,13 @@ export async function deployCommand(
       )
     )
 
-    // Load previous deployment for comparison
-    const previousManifest = await manifestManager.loadCurrent(environment)
+    // Load previous deployment for comparison (unless --fresh flag is used)
+    const previousManifest = options.fresh ? null : await manifestManager.loadCurrent(environment)
     let changes = { added: files, modified: [] as any[], deleted: [] as any[], unchanged: [] as any[] }
 
-    if (previousManifest) {
+    if (options.fresh) {
+      console.log(chalk.yellow('\n🔄 Fresh deploy - uploading all files'))
+    } else if (previousManifest) {
       changes = FileFilter.compareFileLists(files, previousManifest.files)
       console.log(chalk.white('\nChanges:'))
       if (changes.added.length > 0) {
