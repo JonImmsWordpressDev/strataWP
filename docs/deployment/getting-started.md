@@ -132,6 +132,9 @@ pnpm stratawp deploy production --dry-run
 # Deploy without confirmation prompt
 pnpm stratawp deploy production --force
 
+# Full deploy - upload ALL files (ignores manifest, useful when server is out of sync)
+pnpm stratawp deploy production --fresh
+
 # Deploy without creating a backup
 pnpm stratawp deploy production --no-backup
 ```
@@ -251,6 +254,24 @@ stratawp --help
 - Check your `.deployignore` file
 - Ensure files exist in your build output (`dist/`)
 - Use `--dry-run` to see what would be deployed
+
+### Manifest Out of Sync / Changed Files Not Uploading
+
+StrataWP tracks deployments using a manifest file (`~/.stratawp/deployments/{environment}.json`). If the manifest gets out of sync with what's actually on the server (e.g., a failed upload that was marked successful, or manual server changes), you may see "0 files deployed" even though files have changed.
+
+**Solution:** Use the `--fresh` flag to bypass the manifest and upload all files:
+
+```bash
+pnpm stratawp deploy production --fresh
+```
+
+This treats all files as new and uploads everything, then saves a fresh manifest.
+
+**Alternative:** Manually delete the manifest file:
+
+```bash
+rm ~/.stratawp/deployments/production.json
+```
 
 ## Next Steps
 

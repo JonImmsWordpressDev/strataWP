@@ -60,6 +60,7 @@ pnpm stratawp deploy production
 --dry-run      # Preview what would be deployed
 --no-build     # Skip build step
 --force        # Skip confirmation prompt
+--fresh        # Full deploy - upload all files (ignore manifest)
 --no-backup    # Skip backup creation
 ```
 
