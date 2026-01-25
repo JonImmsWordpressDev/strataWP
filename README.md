@@ -20,7 +20,36 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
-## What's New in v1.1.0 🚀
+## What's New in v1.2.0 🚀
+
+**Analytics Component for Internal Traffic Exclusion**
+
+This release adds a new `Analytics` component to the PHP core that helps exclude internal users from analytics tracking (e.g., GA4):
+
+```php
+// Add to your theme's component array
+new \StrataWP\Components\Analytics(),
+```
+
+**Features:**
+- **Dev Cookie Setting**: Automatically sets a `dev=true` cookie for internal users
+- **Three Exclusion Modes**:
+  - `Admins only` - Users with `manage_options` capability
+  - `All logged-in users` - Any authenticated user
+  - `Disabled` - No exclusion (default)
+- **Admin Settings Page**: Configure at Settings → StrataWP Analytics
+- **GA4 Compatible**: Works with Google Analytics 4's internal traffic filters
+- **1-Hour Cookie Expiry**: Cookie auto-refreshes on each page load
+
+**How to use with GA4:**
+1. Enable the exclusion mode in WordPress admin
+2. In GA4, go to Admin → Data Streams → Configure tag settings
+3. Under "Define internal traffic", create a rule matching the "dev" cookie
+4. Activate the internal traffic filter in Data Settings → Data Filters
+
+---
+
+## What's New in v1.1.0
 
 **Deployment Improvements**
 
@@ -1207,6 +1236,6 @@ Inspired by:
 
 ---
 
-**Status**: v1.1.0 - Production Deployment with Fresh Deploy Support
+**Status**: v1.2.0 - Analytics Component for Internal Traffic Exclusion
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)

@@ -242,6 +242,35 @@ export default function Save({ attributes }) {
 
 ## PHP Components
 
+### Analytics Component (Internal Traffic Exclusion)
+
+The Analytics component sets a `dev=true` cookie for internal users, enabling GA4 traffic exclusion:
+
+```php
+// In your theme's functions.php
+use StrataWP\Components\Analytics;
+
+$theme = new Theme([
+    // ... other components
+    new Analytics(),
+]);
+```
+
+**Settings:** Configure at Settings → StrataWP Analytics
+
+**Exclusion Modes:**
+- `Admins only` - Users with `manage_options` capability
+- `All logged-in users` - Any authenticated user
+- `Disabled` - No cookie set (default)
+
+**GA4 Setup:**
+1. Enable mode in WordPress admin
+2. GA4 → Admin → Data Streams → Configure tag settings
+3. Define internal traffic rule matching "dev" cookie
+4. Activate filter in Data Settings → Data Filters
+
+### Custom Component Template
+
 ```php
 <?php
 namespace MyTheme\Components;
