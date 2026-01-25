@@ -20,6 +20,7 @@ export interface DeployOptions {
   force?: boolean
   fresh?: boolean
   'no-backup'?: boolean
+  verbose?: boolean
 }
 
 export async function deployCommand(
@@ -48,6 +49,10 @@ export async function deployCommand(
   console.log(chalk.white(`Type: ${chalk.cyan(envConfig.type.toUpperCase())}`))
   console.log(chalk.white(`Host: ${chalk.cyan(envConfig.host)}`))
   console.log(chalk.white(`Remote: ${chalk.cyan(envConfig.remotePath)}\n`))
+
+  // Verbose mode helper
+  const verbose = options.verbose
+  const log = (msg: string) => verbose && console.log(chalk.gray(`[DEBUG] ${msg}`))
 
   // Build if needed
   const shouldBuild =
@@ -82,9 +87,16 @@ export async function deployCommand(
   try {
     const themeDir = process.cwd()
     const config = await configManager.load()
+
+    // Verbose: Show working directory and patterns
+    log(`Working directory: ${themeDir}`)
+    log(`Include patterns: ${JSON.stringify(config?.defaults.deployInclude || [])}`)
+    log(`Exclude patterns: ${JSON.stringify(config?.defaults.deployIgnore || [])}`)
+
     const filter = new FileFilter(themeDir, {
       include: config?.defaults.deployInclude,
       exclude: config?.defaults.deployIgnore,
+      verbose: options.verbose,
     })
 
     await filter.loadDeployIgnore()
@@ -95,6 +107,13 @@ export async function deployCommand(
         `Found ${files.length} files (${FileFilter.formatSize(FileFilter.calculateTotalSize(files))})`
       )
     )
+
+    // Verbose: Show all scanned files
+    if (verbose) {
+      console.log(chalk.gray('\n[DEBUG] Files to deploy:'))
+      files.forEach((f) => console.log(chalk.gray(`  - ${f.relativePath}`)))
+      console.log('')
+    }
 
     // Load previous deployment for comparison (unless --fresh flag is used)
     const previousManifest = options.fresh ? null : await manifestManager.loadCurrent(environment)

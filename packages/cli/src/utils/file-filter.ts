@@ -21,17 +21,26 @@ export interface FilterOptions {
   include?: string[]
   exclude?: string[]
   deployIgnorePath?: string
+  verbose?: boolean
 }
 
 export class FileFilter {
   private includePatterns: string[]
   private excludePatterns: string[]
   private baseDir: string
+  private verbose: boolean
 
   constructor(baseDir: string, options: FilterOptions = {}) {
     this.baseDir = baseDir
     this.includePatterns = options.include || []
     this.excludePatterns = options.exclude || []
+    this.verbose = options.verbose || false
+  }
+
+  private log(msg: string): void {
+    if (this.verbose) {
+      console.log(`[DEBUG] ${msg}`)
+    }
   }
 
   /**
@@ -100,16 +109,24 @@ export class FileFilter {
   private shouldInclude(filePath: string): boolean {
     // First check if it's excluded
     if (this.shouldExclude(filePath)) {
+      this.log(`EXCLUDED: ${filePath}`)
       return false
     }
 
     // If no include patterns, include by default
     if (this.includePatterns.length === 0) {
+      this.log(`INCLUDED (no patterns): ${filePath}`)
       return true
     }
 
     // Check against include patterns
-    return this.matchesAnyPattern(filePath, this.includePatterns)
+    const matches = this.matchesAnyPattern(filePath, this.includePatterns)
+    if (matches) {
+      this.log(`INCLUDED (matched pattern): ${filePath}`)
+    } else {
+      this.log(`SKIPPED (no pattern match): ${filePath}`)
+    }
+    return matches
   }
 
   /**
@@ -127,11 +144,16 @@ export class FileFilter {
 
     // Check always excluded paths
     if (alwaysExclude.some((pattern) => filePath.includes(pattern))) {
+      this.log(`EXCLUDED (always): ${filePath}`)
       return true
     }
 
     // Check against exclude patterns
-    return this.matchesAnyPattern(filePath, this.excludePatterns)
+    const excluded = this.matchesAnyPattern(filePath, this.excludePatterns)
+    if (excluded) {
+      this.log(`EXCLUDED (pattern match): ${filePath}`)
+    }
+    return excluded
   }
 
   /**

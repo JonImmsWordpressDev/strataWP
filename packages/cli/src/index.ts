@@ -215,6 +215,7 @@ program
   .option('--force', 'Deploy without confirmation prompt')
   .option('--fresh', 'Ignore manifest and upload all files (full deploy)')
   .option('--no-backup', 'Skip creating backup')
+  .option('--verbose', 'Show detailed debug output')
   .action(deployCommand)
 
 program
