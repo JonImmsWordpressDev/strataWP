@@ -25,6 +25,11 @@
       "types": "./dist/snapshots/index.d.ts",
       "import": "./dist/snapshots/index.js",
       "require": "./dist/snapshots/index.cjs"
+    },
+    "./diff": {
+      "types": "./dist/diff/index.d.ts",
+      "import": "./dist/diff/index.js",
+      "require": "./dist/diff/index.cjs"
     }
   },
   "scripts": {

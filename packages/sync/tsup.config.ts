@@ -5,6 +5,7 @@ export default defineConfig({
     index: 'src/index.ts',
     'database/index': 'src/database/index.ts',
     'snapshots/index': 'src/snapshots/index.ts',
+    'diff/index': 'src/diff/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,

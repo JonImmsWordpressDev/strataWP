@@ -40,7 +40,7 @@ export class UrlReplacer {
         'g'
       )
 
-      result = result.replace(regex, (match, length, value) => {
+      result = result.replace(regex, (_match, _length, value) => {
         const newValue = value.split(from).join(to)
         const newLength = Buffer.byteLength(newValue, 'utf8')
         return `s:${newLength}:"${newValue}";`
