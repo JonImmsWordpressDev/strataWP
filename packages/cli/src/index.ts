@@ -27,6 +27,11 @@ import {
   listCommand as deployListCommand,
   testCommand as deployTestCommand,
 } from './commands/deploy/index'
+import {
+  rollbackListCommand,
+  rollbackDiffCommand,
+  rollbackMarkStableCommand,
+} from './commands/rollback'
 
 const program = new Command()
 
@@ -227,5 +232,24 @@ program
   .command('deploy:test <environment>')
   .description('Test connection to deployment environment')
   .action(deployTestCommand)
+
+// Rollback commands
+program
+  .command('rollback:list')
+  .alias('rollback:ls')
+  .description('List available deployment snapshots')
+  .option('-e, --environment <env>', 'Filter by environment')
+  .option('-n, --limit <number>', 'Limit results', '10')
+  .action(rollbackListCommand)
+
+program
+  .command('rollback:diff <snapshot1> <snapshot2>')
+  .description('Compare two snapshots')
+  .action(rollbackDiffCommand)
+
+program
+  .command('rollback:mark-stable <snapshot>')
+  .description('Mark a snapshot as known-good (stable)')
+  .action(rollbackMarkStableCommand)
 
 program.parse()

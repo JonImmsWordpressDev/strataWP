@@ -180,6 +180,9 @@ importers:
       '@stratawp/registry':
         specifier: workspace:*
         version: link:../registry
+      '@stratawp/sync':
+        specifier: workspace:*
+        version: link:../sync
       basic-ftp:
         specifier: ^5.0.5
         version: 5.1.0
