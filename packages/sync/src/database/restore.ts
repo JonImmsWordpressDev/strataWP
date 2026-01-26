@@ -71,34 +71,51 @@ export class DatabaseRestorer {
   }
 
   private splitStatements(sql: string): string[] {
-    // Simple statement splitter - handles basic cases
-    // For complex cases, consider using a proper SQL parser
     const statements: string[] = []
     let current = ''
     let inString = false
     let stringChar = ''
+    let i = 0
 
-    for (let i = 0; i < sql.length; i++) {
+    while (i < sql.length) {
       const char = sql[i]
-      const prevChar = sql[i - 1]
 
-      // Track string state
-      if ((char === "'" || char === '"') && prevChar !== '\\') {
-        if (!inString) {
+      if (!inString) {
+        // Not in a string - look for string start or statement end
+        if (char === "'" || char === '"') {
           inString = true
           stringChar = char
-        } else if (char === stringChar) {
-          inString = false
+          current += char
+        } else if (char === ';') {
+          if (current.trim()) {
+            statements.push(current.trim())
+          }
+          current = ''
+        } else {
+          current += char
+        }
+      } else {
+        // Inside a string
+        if (char === stringChar) {
+          // Check for doubled quote escape (MySQL convention)
+          if (sql[i + 1] === stringChar) {
+            // Doubled quote - part of string, not terminator
+            current += char + sql[i + 1]
+            i++ // Skip next quote
+          } else {
+            // End of string
+            current += char
+            inString = false
+          }
+        } else if (char === '\\' && sql[i + 1] === stringChar) {
+          // Backslash escape (also valid in MySQL)
+          current += char + sql[i + 1]
+          i++ // Skip escaped character
+        } else {
+          current += char
         }
       }
-
-      // Statement delimiter
-      if (char === ';' && !inString) {
-        statements.push(current.trim())
-        current = ''
-      } else {
-        current += char
-      }
+      i++
     }
 
     if (current.trim()) {
