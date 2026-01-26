@@ -56,6 +56,7 @@ The CLI automatically:
 - **Three Example Themes**: Production-ready themes to start from
 - **CLI Scaffolding**: Generate templates, parts, components, and blocks
 - **Design Systems**: Tailwind CSS or UnoCSS with WordPress preset mappings
+- **Studio Admin**: Visual design tokens editor and pattern library management
 - **AI-Assisted Dev**: OpenAI GPT-4 and Anthropic Claude integration
 - **Component Registry**: npm-powered registry for sharing components
 - **Comprehensive Testing**: Vitest unit tests, Playwright E2E
@@ -76,6 +77,7 @@ StrataWP/
 │   ├── explorer/         # Interactive component browser
 │   ├── headless/         # REST API client, React hooks, Next.js
 │   ├── registry/         # Component registry
+│   ├── studio/           # Visual design system & pattern management
 │   ├── sync/             # Environment sync, snapshots, rollback
 │   ├── testing/          # Vitest and Playwright utilities
 │   └── vite-plugin/      # Vite integration for WordPress
@@ -220,6 +222,7 @@ Inspired by:
 - [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin
 - [@stratawp/ai](https://www.npmjs.com/package/@stratawp/ai) - AI tools
 - [@stratawp/registry](https://www.npmjs.com/package/@stratawp/registry) - Component registry
+- [@stratawp/studio](https://www.npmjs.com/package/@stratawp/studio) - Visual design system & pattern management
 - [@stratawp/sync](https://www.npmjs.com/package/@stratawp/sync) - Environment sync
 - [@stratawp/testing](https://www.npmjs.com/package/@stratawp/testing) - Testing utilities
 - [@stratawp/headless](https://www.npmjs.com/package/@stratawp/headless) - Headless WordPress
