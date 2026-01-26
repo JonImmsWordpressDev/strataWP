@@ -1,0 +1,34 @@
+{
+  "name": "@stratawp/studio",
+  "version": "1.0.0",
+  "description": "Visual design system and page builder for StrataWP",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "php"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^6.44.0",
+    "@wordpress/components": "^25.12.0",
+    "@wordpress/element": "^5.22.0",
+    "@wordpress/i18n": "^4.47.0",
+    "@wordpress/url": "^3.48.0"
+  },
+  "devDependencies": {
+    "@types/wordpress__components": "^23.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
