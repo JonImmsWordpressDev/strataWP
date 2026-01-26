@@ -70,6 +70,9 @@ class Studio {
     public function register_rest_routes(): void {
         $this->controllers['design_system'] = new RestApi\DesignSystemController();
         $this->controllers['design_system']->register_routes();
+
+        $this->controllers['patterns'] = new RestApi\PatternsController();
+        $this->controllers['patterns']->register_routes();
     }
 
     /**
