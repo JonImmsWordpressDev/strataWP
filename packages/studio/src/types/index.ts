@@ -3,7 +3,19 @@
  */
 
 export * from './design-tokens'
-export * from './api'
+export {
+  type ApiResponse,
+  type ApiError,
+  type PaginatedResponse,
+  type DesignSystemResponse,
+  type SaveDesignSystemRequest,
+  type Template,
+  type TemplateSlot,
+  type TemplateCondition,
+  type StarterSite,
+  type ImportStarterRequest,
+} from './api'
+export * from './patterns'
 
 // Studio configuration
 export interface StudioConfig {
