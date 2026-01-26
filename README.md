@@ -712,6 +712,11 @@ stratawp rollback:list                             # List all snapshots
 stratawp rollback:list --environment=production    # Filter by environment
 stratawp rollback:diff 1 2                         # Compare snapshots by index
 stratawp rollback:mark-stable 1                    # Mark snapshot as stable
+
+# Package updates
+stratawp update                                    # Check and apply updates interactively
+stratawp update --check                            # Check for updates without applying
+stratawp update --force                            # Apply all updates without prompts
 ```
 
 ### Typography & Google Fonts

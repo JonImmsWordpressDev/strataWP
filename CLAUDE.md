@@ -148,6 +148,7 @@ Commands in `packages/cli/src/commands/`:
 - **deploy/**: Deployment system (SFTP/FTP, setup, test, list)
 - **sync.ts**: Database sync between environments (`stratawp sync:db:pull`, `sync:db:push`)
 - **rollback.ts**: Snapshot management (`stratawp rollback:list`, `rollback:diff`, `rollback:mark-stable`)
+- **update.ts**: Package updates (`stratawp update`, `stratawp update --check`)
 
 Each command uses:
 - `prompts` for interactive CLI
@@ -207,6 +208,25 @@ Key features:
 - **Automatic Backups**: Creates backup before any database restore
 - **Pre-deploy Snapshots**: Deploy command creates snapshot before deployment
 - **Compressed Storage**: Theme as tar.gz, database as gzip SQL
+
+### Update System
+
+Located in `packages/cli/src/utils/update-checker.ts`:
+
+- Queries npm registry for latest @stratawp/* package versions
+- Caches version data in `~/.stratawp/update-cache.json` (1-hour TTL)
+- Compares versions using semver
+
+Commands:
+```bash
+stratawp update                  # Check and apply updates interactively
+stratawp update --check          # Check for updates without applying
+stratawp update --force          # Apply all updates without prompts
+```
+
+Dev server notifications:
+- Vite plugin shows update notifications when dev server starts
+- Configure via `updateNotification.enabled` option in vite.config.ts
 
 ### Block Theme (FSE) Structure
 

@@ -36,6 +36,7 @@ import {
   syncDbPullCommand,
   syncDbPushCommand,
 } from './commands/sync'
+import { updateCommand } from './commands/update'
 
 const program = new Command()
 
@@ -273,5 +274,13 @@ program
   .option('--dry-run', 'Show what would be done without doing it')
   .option('--force', 'Skip confirmation prompt')
   .action(syncDbPushCommand)
+
+// Update command
+program
+  .command('update')
+  .description('Check for and apply StrataWP package updates')
+  .option('-c, --check', 'Check for updates without applying them')
+  .option('-f, --force', 'Skip confirmation prompts')
+  .action(updateCommand)
 
 program.parse()

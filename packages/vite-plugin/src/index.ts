@@ -5,6 +5,7 @@ import { strataWPPhpHmr } from './plugins/php-hmr'
 import { strataWPAssets } from './plugins/assets'
 import { strataWPDesignSystem } from './plugins/design-system'
 import { strataWPPerformance } from './plugins/performance'
+import { checkForUpdatesAsync } from './utils/update-checker'
 import type { StrataWPPluginOptions } from './types'
 
 /**
@@ -120,11 +121,16 @@ function strataWPCore(_options: StrataWPPluginOptions): Plugin {
       // Log WordPress-specific info
       server.httpServer?.once('listening', () => {
         setTimeout(() => {
-          const { logger } = config
+          const { logger, root } = config
           logger.info('\n  ⚡ StrataWP Dev Server Ready!\n')
           logger.info('  WordPress integration active')
           logger.info('  Block auto-discovery enabled')
           logger.info('  PHP HMR watching for changes\n')
+
+          // Check for updates (non-blocking)
+          if (_options.updateNotification?.enabled !== false) {
+            checkForUpdatesAsync(logger, root)
+          }
         }, 100)
       })
     },

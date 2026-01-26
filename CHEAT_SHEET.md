@@ -166,6 +166,14 @@ stratawp rollback:diff 1 2               # Compare snapshots by index
 stratawp rollback:mark-stable 1          # Mark snapshot as stable
 ```
 
+### Package Updates
+
+```bash
+stratawp update                          # Check and apply updates interactively
+stratawp update --check                  # Check for updates without applying
+stratawp update --force                  # Apply all updates without prompts
+```
+
 ## File Structure
 
 ```
@@ -579,7 +587,17 @@ wp --version           # WordPress CLI
 stratawp --version     # StrataWP CLI
 ```
 
-### Update StrataWP CLI
+### Update StrataWP Packages
+
+Check for and apply updates to all @stratawp/* packages:
+
+```bash
+stratawp update                 # Interactive update
+stratawp update --check         # Check only, don't apply
+stratawp update --force         # Apply all updates without prompts
+```
+
+### Update StrataWP CLI (Development)
 
 If new commands aren't showing up after pulling changes from the repo:
 

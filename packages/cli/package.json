@@ -52,6 +52,7 @@
     "@stratawp/explorer": "workspace:*",
     "@stratawp/sync": "workspace:*",
     "basic-ftp": "^5.0.5",
+    "semver": "^7.5.4",
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
     "dotenv": "^16.4.5",
@@ -69,6 +70,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/prompts": "^2.4.9",
+    "@types/semver": "^7.5.8",
     "@types/validate-npm-package-name": "^4.0.2",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",

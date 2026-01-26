@@ -31,6 +31,22 @@ export interface StrataWPPluginOptions {
    * Performance optimization options
    */
   performance?: PerformanceOptions
+
+  /**
+   * Update notification options for dev server
+   */
+  updateNotification?: UpdateNotificationOptions
+}
+
+/**
+ * Update Notification Options
+ */
+export interface UpdateNotificationOptions {
+  /**
+   * Enable update notifications in dev server
+   * @default true
+   */
+  enabled?: boolean
 }
 
 /**
