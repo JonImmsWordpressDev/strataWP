@@ -89,4 +89,26 @@ describe('SnapshotManager', () => {
       expect(retrieved?.id).toBe(created.id)
     })
   })
+
+  describe('getDatabaseDump', () => {
+    it('should retrieve the database dump from a snapshot', async () => {
+      const themePath = path.join(tempDir, 'theme')
+      await fs.mkdir(themePath, { recursive: true })
+      await fs.writeFile(path.join(themePath, 'style.css'), '/* Theme */')
+
+      const databaseDump = 'CREATE TABLE wp_posts (id INT);'
+      const snapshot = await manager.createSnapshot({
+        environment: 'production',
+        themePath,
+        databaseDump,
+      })
+
+      const retrieved = await manager.getDatabaseDump(snapshot.id)
+      expect(retrieved).toBe(databaseDump)
+    })
+
+    it('should throw error for non-existent snapshot', async () => {
+      await expect(manager.getDatabaseDump('non-existent')).rejects.toThrow('Snapshot not found')
+    })
+  })
 })

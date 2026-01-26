@@ -2,8 +2,13 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import * as crypto from 'crypto'
+import * as zlib from 'zlib'
+import { promisify } from 'util'
 import tar from 'tar'
 import type { SnapshotManifest } from '../types.js'
+
+const gzip = promisify(zlib.gzip)
+const gunzip = promisify(zlib.gunzip)
 
 export interface CreateSnapshotOptions {
   environment: string
@@ -62,10 +67,6 @@ export class SnapshotManager {
 
     // Save database dump
     const dbPath = path.join(snapshotDir, 'database.sql.gz')
-    const zlib = await import('zlib')
-    const { promisify } = await import('util')
-    const gzip = promisify(zlib.gzip)
-
     const compressedDb = await gzip(Buffer.from(options.databaseDump, 'utf8'))
     await fs.writeFile(dbPath, compressedDb)
 
@@ -160,6 +161,12 @@ export class SnapshotManager {
   async extractTheme(id: string, targetPath: string): Promise<void> {
     const archivePath = path.join(this.basePath, id, 'theme.tar.gz')
 
+    try {
+      await fs.access(archivePath)
+    } catch {
+      throw new Error(`Snapshot not found: ${id}`)
+    }
+
     await tar.extract({
       file: archivePath,
       cwd: targetPath,
@@ -169,9 +176,11 @@ export class SnapshotManager {
   async getDatabaseDump(id: string): Promise<string> {
     const dbPath = path.join(this.basePath, id, 'database.sql.gz')
 
-    const zlib = await import('zlib')
-    const { promisify } = await import('util')
-    const gunzip = promisify(zlib.gunzip)
+    try {
+      await fs.access(dbPath)
+    } catch {
+      throw new Error(`Snapshot not found: ${id}`)
+    }
 
     const compressed = await fs.readFile(dbPath)
     const decompressed = await gunzip(compressed)
