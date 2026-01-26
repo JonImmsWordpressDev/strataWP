@@ -205,8 +205,9 @@ class Studio {
 
             // Listen for design updates
             window.addEventListener('message', function(event) {
-                // Validate origin matches admin
-                if (!adminOrigin.startsWith(event.origin)) {
+                // Validate origin matches admin (extract origin from full admin URL)
+                var expectedOrigin = new URL(adminOrigin).origin;
+                if (event.origin !== expectedOrigin) {
                     return;
                 }
 
