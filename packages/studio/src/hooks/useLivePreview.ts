@@ -26,12 +26,16 @@ export function useLivePreview({
   const [isReady, setIsReady] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
+  const isReadyRef = useRef(isReady)
+  isReadyRef.current = isReady
+  const loadTimeoutRef = useRef<NodeJS.Timeout>()
 
   // Listen for ready message from preview
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       // Validate origin
-      if (!previewUrl.startsWith(event.origin)) {
+      const expectedOrigin = new URL(previewUrl).origin
+      if (event.origin !== expectedOrigin) {
         return
       }
 
@@ -55,8 +59,8 @@ export function useLivePreview({
 
     const handleLoad = () => {
       // Give the preview script time to initialize
-      setTimeout(() => {
-        if (!isReady) {
+      loadTimeoutRef.current = setTimeout(() => {
+        if (!isReadyRef.current) {
           setIsLoading(false)
           // Preview might not have our script, but it's still usable
         }
@@ -74,10 +78,11 @@ export function useLivePreview({
     iframe.addEventListener('error', handleError)
 
     return () => {
+      if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current)
       iframe.removeEventListener('load', handleLoad)
       iframe.removeEventListener('error', handleError)
     }
-  }, [isReady, onError])
+  }, [onError])
 
   // Send design tokens to preview
   const updateTokens = useCallback((tokens: Record<string, string>) => {
@@ -89,8 +94,9 @@ export function useLivePreview({
       tokens,
     }
 
-    iframe.contentWindow.postMessage(message, '*')
-  }, [])
+    const origin = new URL(previewUrl).origin
+    iframe.contentWindow.postMessage(message, origin)
+  }, [previewUrl])
 
   // Navigate preview to URL
   const navigate = useCallback((url: string) => {
@@ -102,8 +108,9 @@ export function useLivePreview({
       url,
     }
 
-    iframe.contentWindow.postMessage(message, '*')
-  }, [])
+    const origin = new URL(previewUrl).origin
+    iframe.contentWindow.postMessage(message, origin)
+  }, [previewUrl])
 
   // Refresh preview
   const refresh = useCallback(() => {

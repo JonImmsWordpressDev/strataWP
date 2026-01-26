@@ -1,4 +1,4 @@
-import { useState, useCallback } from '@wordpress/element'
+import { useState, useEffect } from '@wordpress/element'
 import { Spinner } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
 import { useLivePreview } from '../../hooks/useLivePreview'
@@ -38,20 +38,12 @@ export function LivePreview({
       onReady,
     })
 
-  // Update tokens when they change
-  const handleTokenUpdate = useCallback(
-    (newTokens: Record<string, string>) => {
-      if (isReady) {
-        updateTokens(newTokens)
-      }
-    },
-    [isReady, updateTokens]
-  )
-
-  // Apply tokens on prop change
-  if (tokens && isReady) {
-    handleTokenUpdate(tokens)
-  }
+  // Apply tokens when they change
+  useEffect(() => {
+    if (tokens && isReady) {
+      updateTokens(tokens)
+    }
+  }, [tokens, isReady, updateTokens])
 
   const handlePageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const url = event.target.value
