@@ -15,7 +15,7 @@ Thank you for your interest in contributing to StrataWP!
 
 ```bash
 # Clone the repository
-git clone https://github.com/StrataWP/stratawp.git
+git clone https://github.com/JonImmsWordpressDev/strataWP.git
 cd stratawp
 
 # Install dependencies
