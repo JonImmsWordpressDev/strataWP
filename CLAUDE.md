@@ -161,8 +161,13 @@ Each command uses:
 Located in `packages/cli/src/deployers/`:
 
 - **ftp.ts**: SFTP/FTP deployment via `ssh2-sftp-client` and `basic-ftp`
-- **ssh.ts**: SSH/rsync deployment (future)
+- **ssh.ts**: SSH/rsync deployment via `node-ssh` with optional rsync acceleration
 - **git.ts**: Git-based deployment (future)
+
+Supported deployment types:
+- **SFTP**: Secure file transfer, recommended for shared hosting
+- **FTP**: Standard file transfer (less secure)
+- **SSH/rsync**: For VPS/cloud servers with SSH access, supports key-based auth and rsync for faster transfers
 
 Configuration stored in:
 - Global: `~/.stratawp/deploy-config.json`
@@ -176,6 +181,12 @@ stratawp deploy production    # Deploy to environment
 stratawp deploy:test production  # Test connection
 stratawp deploy:list          # List environments
 ```
+
+SSH-specific features:
+- Password or private key authentication (with optional passphrase)
+- rsync for efficient bulk file transfers when available
+- Remote command execution for WP-CLI post-deploy hooks
+- Server-side backup/restore operations
 
 ### Sync System
 
@@ -432,7 +443,8 @@ stratawp rollback:mark-stable 1
 - **Excluded files**: `node_modules/`, `src/`, `.git/`, development files
 - **Snapshot system**: Pre-deploy snapshots created automatically (theme files + database)
 - **Change detection**: Only modified files uploaded (incremental)
-- **Security**: SFTP preferred over FTP, supports environment variables for credentials
+- **Security**: SSH/rsync or SFTP preferred over FTP, supports environment variables for credentials
+- **SSH deployment**: Use key-based authentication for VPS/cloud servers, rsync enabled for faster transfers
 - **Rollback**: Use `rollback:list` to see snapshots, `rollback:diff` to compare
 
 ## Working with the Core Package

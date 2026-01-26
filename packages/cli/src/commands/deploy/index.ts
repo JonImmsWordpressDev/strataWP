@@ -12,6 +12,7 @@ import { DeployConfigManager } from '../../utils/deploy-config'
 import { FileFilter } from '../../utils/file-filter'
 import { ManifestManager } from '../../utils/manifest'
 import { FTPDeployer } from '../../deployers/ftp'
+import { SSHDeployer } from '../../deployers/ssh'
 import type { BaseDeployer } from '../../deployers/base'
 import { SnapshotManager, DatabaseDumper } from '@stratawp/sync'
 
@@ -320,8 +321,8 @@ function createDeployer(config: any): BaseDeployer {
     case 'ftp':
     case 'sftp':
       return new FTPDeployer(config)
-    // case 'ssh':
-    //   return new SSHDeployer(config)
+    case 'ssh':
+      return new SSHDeployer(config)
     // case 'git':
     //   return new GitDeployer(config)
     default:
