@@ -5,13 +5,11 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react()],
   build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'StrataWPStudio',
-      fileName: 'index',
-      formats: ['es'],
-    },
     rollupOptions: {
+      input: {
+        index: resolve(__dirname, 'src/index.ts'),
+        gutenberg: resolve(__dirname, 'src/gutenberg/index.ts'),
+      },
       external: [
         'react',
         'react-dom',
@@ -19,8 +17,22 @@ export default defineConfig({
         '@wordpress/components',
         '@wordpress/i18n',
         '@wordpress/api-fetch',
+        '@wordpress/data',
+        '@wordpress/blocks',
+        '@wordpress/block-editor',
+        '@wordpress/plugins',
+        '@wordpress/icons',
+        '@wordpress/notices',
       ],
       output: {
+        entryFileNames: '[name].js',
+        chunkFileNames: 'chunks/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith('.css')) {
+            return 'style.css'
+          }
+          return 'assets/[name]-[hash][extname]'
+        },
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',

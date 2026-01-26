@@ -60,6 +60,9 @@ class Studio {
         // Enqueue admin scripts
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
 
+        // Enqueue block editor scripts
+        add_action('enqueue_block_editor_assets', [$this, 'enqueue_block_editor_scripts']);
+
         // Add preview mode support
         add_action('wp_head', [$this, 'inject_preview_script']);
     }
@@ -187,6 +190,46 @@ class Studio {
             plugins_url('dist/style.css', dirname(__FILE__)),
             ['wp-components'],
             self::VERSION
+        );
+    }
+
+    /**
+     * Enqueue block editor scripts
+     *
+     * Adds "Save as Pattern" functionality to the block editor
+     */
+    public function enqueue_block_editor_scripts(): void {
+        $asset_path = dirname(__DIR__) . '/dist/gutenberg.js';
+        $asset_url = plugins_url('dist/gutenberg.js', dirname(__FILE__));
+
+        // For theme integration, check theme path
+        if (!file_exists($asset_path)) {
+            $asset_path = get_template_directory() . '/vendor/stratawp/studio/dist/gutenberg.js';
+            $asset_url = get_template_directory_uri() . '/vendor/stratawp/studio/dist/gutenberg.js';
+        }
+
+        // Only enqueue if the file exists
+        if (!file_exists($asset_path)) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'stratawp-studio-gutenberg',
+            $asset_url,
+            [
+                'wp-plugins',
+                'wp-element',
+                'wp-components',
+                'wp-data',
+                'wp-blocks',
+                'wp-block-editor',
+                'wp-i18n',
+                'wp-api-fetch',
+                'wp-notices',
+                'wp-icons',
+            ],
+            self::VERSION,
+            true
         );
     }
 
