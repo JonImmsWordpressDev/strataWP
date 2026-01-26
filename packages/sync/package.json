@@ -2,7 +2,11 @@
   "name": "@stratawp/sync",
   "version": "0.1.0",
   "description": "Environment sync, snapshots, and rollback for StrataWP",
+  "author": "Jon Imms",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

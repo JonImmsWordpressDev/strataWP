@@ -10,5 +10,6 @@ export default defineConfig({
   dts: true,
   clean: true,
   sourcemap: true,
-  external: ['better-sqlite3'],
+  splitting: false,
+  external: ['better-sqlite3', 'mysql2', 'ssh2'],
 })
