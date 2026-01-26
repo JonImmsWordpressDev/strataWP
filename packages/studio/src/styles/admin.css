@@ -1,0 +1,275 @@
+/* StrataWP Studio Admin Styles */
+
+.stratawp-studio {
+  margin: 20px 20px 20px 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.stratawp-studio__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.stratawp-studio__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.stratawp-studio__logo {
+  font-size: 24px;
+}
+
+/* Navigation */
+.stratawp-studio__nav {
+  display: flex;
+  gap: 4px;
+}
+
+.stratawp-studio__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #1e1e1e;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.stratawp-studio__nav-item:hover {
+  background-color: #f0f0f0;
+  color: #1e1e1e;
+}
+
+.stratawp-studio__nav-item.is-active {
+  background-color: #2271b1;
+  color: #fff;
+}
+
+.stratawp-studio__nav-icon {
+  font-size: 16px;
+}
+
+/* Content */
+.stratawp-studio__content {
+  padding: 24px;
+}
+
+/* Design System Page */
+.stratawp-design-system__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  gap: 16px;
+}
+
+.stratawp-design-system__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.stratawp-design-system__toolbar-right {
+  display: flex;
+  gap: 8px;
+}
+
+.stratawp-design-system__unsaved {
+  color: #d63638;
+  font-size: 13px;
+}
+
+.stratawp-design-system__layout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+  min-height: 600px;
+}
+
+/* Controls Panel */
+.stratawp-design-system__controls {
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+.stratawp-design-system__section {
+  margin-bottom: 32px;
+}
+
+.stratawp-design-system__section h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stratawp-design-system__section .description {
+  margin: 0 0 16px;
+  color: #757575;
+  font-size: 13px;
+}
+
+/* Presets */
+.stratawp-design-system__presets {
+  display: grid;
+  gap: 8px;
+}
+
+.stratawp-design-system__preset {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.stratawp-design-system__preset:hover {
+  border-color: #2271b1;
+}
+
+.stratawp-design-system__preset.is-selected {
+  border-color: #2271b1;
+  background-color: #f0f7fc;
+}
+
+.stratawp-design-system__preset-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.stratawp-design-system__preset-description {
+  color: #757575;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Colors */
+.stratawp-design-system__colors {
+  display: grid;
+  gap: 12px;
+}
+
+.stratawp-design-system__color label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stratawp-design-system__color-name {
+  flex: 1;
+  font-size: 13px;
+}
+
+.stratawp-design-system__color-input {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.stratawp-design-system__color-value {
+  font-family: monospace;
+  font-size: 12px;
+  color: #757575;
+  width: 70px;
+}
+
+/* Preview Panel */
+.stratawp-design-system__preview {
+  background: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Live Preview Component */
+.stratawp-live-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.stratawp-live-preview__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.stratawp-live-preview__page-select {
+  flex: 1;
+  max-width: 200px;
+}
+
+.stratawp-live-preview__refresh {
+  padding: 4px 8px;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.stratawp-live-preview__container {
+  flex: 1;
+  position: relative;
+  background: #fff;
+}
+
+.stratawp-live-preview__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+}
+
+.stratawp-live-preview__error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #fff;
+}
+
+.stratawp-live-preview__iframe {
+  border: none;
+  display: block;
+}
+
+/* Viewport Switcher */
+.stratawp-viewport-switcher {
+  display: flex;
+}
