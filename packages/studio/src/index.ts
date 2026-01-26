@@ -3,6 +3,9 @@
  * Visual design system and page builder for StrataWP
  */
 
+// Import styles
+import './styles/admin.css'
+
 // Export types
 export type * from './types'
 
