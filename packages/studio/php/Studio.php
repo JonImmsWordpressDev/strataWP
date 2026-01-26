@@ -49,6 +49,11 @@ class Studio {
         // Register REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // Register Pattern Post Type and Taxonomies
+        $pattern_post_type = new PostTypes\PatternPostType();
+        $pattern_post_type->initialize();
+        PostTypes\PatternPostType::register_meta();
+
         // Register admin pages
         add_action('admin_menu', [$this, 'register_admin_menu']);
 
