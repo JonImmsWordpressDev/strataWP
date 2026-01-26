@@ -1,0 +1,423 @@
+<?php
+/**
+ * Design System REST API Controller
+ *
+ * @package StrataWP\Studio
+ */
+
+namespace StrataWP\Studio\RestApi;
+
+use WP_REST_Controller;
+use WP_REST_Server;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_Error;
+use StrataWP\Studio\Services\ThemeJsonWriter;
+
+/**
+ * Design System REST API Controller
+ */
+class DesignSystemController extends WP_REST_Controller {
+    /**
+     * Namespace
+     *
+     * @var string
+     */
+    protected $namespace = 'stratawp/v1';
+
+    /**
+     * Resource name
+     *
+     * @var string
+     */
+    protected $rest_base = 'design-system';
+
+    /**
+     * Register routes
+     */
+    public function register_routes(): void {
+        // GET/POST design system
+        register_rest_route($this->namespace, '/' . $this->rest_base, [
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => [$this, 'get_design_system'],
+                'permission_callback' => [$this, 'get_permission_check'],
+            ],
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback' => [$this, 'save_design_system'],
+                'permission_callback' => [$this, 'edit_permission_check'],
+                'args' => $this->get_save_args(),
+            ],
+        ]);
+
+        // GET presets
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/presets', [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'get_presets'],
+            'permission_callback' => [$this, 'get_permission_check'],
+        ]);
+
+        // POST apply preset
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/presets/(?P<id>[a-z0-9-]+)/apply', [
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => [$this, 'apply_preset'],
+            'permission_callback' => [$this, 'edit_permission_check'],
+            'args' => [
+                'id' => [
+                    'required' => true,
+                    'type' => 'string',
+                ],
+            ],
+        ]);
+
+        // GET export
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/export', [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'export_design_system'],
+            'permission_callback' => [$this, 'get_permission_check'],
+        ]);
+
+        // POST import
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/import', [
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => [$this, 'import_design_system'],
+            'permission_callback' => [$this, 'edit_permission_check'],
+        ]);
+    }
+
+    /**
+     * Permission check for reading
+     *
+     * @return bool|WP_Error
+     */
+    public function get_permission_check() {
+        if (!current_user_can('edit_theme_options')) {
+            return new WP_Error(
+                'rest_forbidden',
+                __('You do not have permission to access this resource.', 'stratawp'),
+                ['status' => 403]
+            );
+        }
+        return true;
+    }
+
+    /**
+     * Permission check for editing
+     *
+     * @return bool|WP_Error
+     */
+    public function edit_permission_check() {
+        if (!current_user_can('edit_theme_options')) {
+            return new WP_Error(
+                'rest_forbidden',
+                __('You do not have permission to modify this resource.', 'stratawp'),
+                ['status' => 403]
+            );
+        }
+        return true;
+    }
+
+    /**
+     * Get design system
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function get_design_system(WP_REST_Request $request) {
+        $theme_json_path = get_stylesheet_directory() . '/theme.json';
+
+        if (!file_exists($theme_json_path)) {
+            return new WP_Error(
+                'theme_json_not_found',
+                __('theme.json file not found in active theme.', 'stratawp'),
+                ['status' => 404]
+            );
+        }
+
+        $theme_json = json_decode(file_get_contents($theme_json_path), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return new WP_Error(
+                'theme_json_parse_error',
+                __('Failed to parse theme.json file.', 'stratawp'),
+                ['status' => 500]
+            );
+        }
+
+        $tokens = $this->extract_tokens_from_theme_json($theme_json);
+        $active_preset = get_option('stratawp_active_preset', null);
+
+        return new WP_REST_Response([
+            'tokens' => $tokens,
+            'activePreset' => $active_preset,
+            'lastModified' => date('c', filemtime($theme_json_path)),
+        ]);
+    }
+
+    /**
+     * Save design system
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function save_design_system(WP_REST_Request $request) {
+        $tokens = $request->get_param('tokens');
+        $write_to_theme_json = $request->get_param('writeToThemeJson') ?? true;
+
+        if ($write_to_theme_json) {
+            $writer = new ThemeJsonWriter();
+            $result = $writer->write_tokens($tokens);
+
+            if (is_wp_error($result)) {
+                return $result;
+            }
+        }
+
+        // Store in options as backup
+        update_option('stratawp_design_tokens', $tokens);
+        update_option('stratawp_active_preset', null);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => [
+                'tokens' => $tokens,
+                'activePreset' => null,
+                'lastModified' => date('c'),
+            ],
+        ]);
+    }
+
+    /**
+     * Get presets
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response
+     */
+    public function get_presets(WP_REST_Request $request) {
+        $presets = $this->get_bundled_presets();
+
+        return new WP_REST_Response($presets);
+    }
+
+    /**
+     * Apply preset
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function apply_preset(WP_REST_Request $request) {
+        $preset_id = $request->get_param('id');
+        $presets = $this->get_bundled_presets();
+
+        $preset = null;
+        foreach ($presets as $p) {
+            if ($p['id'] === $preset_id) {
+                $preset = $p;
+                break;
+            }
+        }
+
+        if (!$preset) {
+            return new WP_Error(
+                'preset_not_found',
+                __('Preset not found.', 'stratawp'),
+                ['status' => 404]
+            );
+        }
+
+        // Write preset tokens to theme.json
+        $writer = new ThemeJsonWriter();
+        $result = $writer->write_tokens($preset['tokens']);
+
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        update_option('stratawp_active_preset', $preset_id);
+        update_option('stratawp_design_tokens', $preset['tokens']);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => [
+                'tokens' => $preset['tokens'],
+                'activePreset' => $preset_id,
+                'lastModified' => date('c'),
+            ],
+        ]);
+    }
+
+    /**
+     * Export design system
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function export_design_system(WP_REST_Request $request) {
+        $theme_json_path = get_stylesheet_directory() . '/theme.json';
+
+        if (!file_exists($theme_json_path)) {
+            return new WP_Error(
+                'theme_json_not_found',
+                __('theme.json file not found.', 'stratawp'),
+                ['status' => 404]
+            );
+        }
+
+        $theme_json = json_decode(file_get_contents($theme_json_path), true);
+        $tokens = $this->extract_tokens_from_theme_json($theme_json);
+
+        return new WP_REST_Response($tokens);
+    }
+
+    /**
+     * Import design system
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function import_design_system(WP_REST_Request $request) {
+        $files = $request->get_file_params();
+
+        if (empty($files['file'])) {
+            return new WP_Error(
+                'no_file',
+                __('No file uploaded.', 'stratawp'),
+                ['status' => 400]
+            );
+        }
+
+        $file = $files['file'];
+        $content = file_get_contents($file['tmp_name']);
+        $tokens = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return new WP_Error(
+                'invalid_json',
+                __('Invalid JSON file.', 'stratawp'),
+                ['status' => 400]
+            );
+        }
+
+        $writer = new ThemeJsonWriter();
+        $result = $writer->write_tokens($tokens);
+
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        update_option('stratawp_design_tokens', $tokens);
+        update_option('stratawp_active_preset', null);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => [
+                'tokens' => $tokens,
+                'activePreset' => null,
+                'lastModified' => date('c'),
+            ],
+        ]);
+    }
+
+    /**
+     * Extract tokens from theme.json
+     *
+     * @param array $theme_json Theme JSON data.
+     * @return array
+     */
+    private function extract_tokens_from_theme_json(array $theme_json): array {
+        $settings = $theme_json['settings'] ?? [];
+
+        return [
+            'colors' => [
+                'palette' => $settings['color']['palette'] ?? [],
+                'gradients' => $settings['color']['gradients'] ?? [],
+                'duotone' => $settings['color']['duotone'] ?? [],
+            ],
+            'typography' => [
+                'fontFamilies' => $settings['typography']['fontFamilies'] ?? [],
+                'fontSizes' => $settings['typography']['fontSizes'] ?? [],
+            ],
+            'spacing' => [
+                'spacingSizes' => $settings['spacing']['spacingSizes'] ?? [],
+                'units' => $settings['spacing']['units'] ?? ['px', 'em', 'rem', 'vh', 'vw', '%'],
+            ],
+            'layout' => [
+                'contentSize' => $settings['layout']['contentSize'] ?? '640px',
+                'wideSize' => $settings['layout']['wideSize'] ?? '1200px',
+            ],
+            'shadow' => [
+                'presets' => $settings['shadow']['presets'] ?? [],
+            ],
+            'custom' => $settings['custom'] ?? [],
+        ];
+    }
+
+    /**
+     * Get bundled presets
+     *
+     * @return array
+     */
+    private function get_bundled_presets(): array {
+        return [
+            [
+                'id' => 'modern-minimal',
+                'name' => 'Modern Minimal',
+                'description' => 'Clean, whitespace-heavy design with neutral tones',
+                'tokens' => [
+                    'colors' => [
+                        'palette' => [
+                            ['slug' => 'base', 'name' => 'Base', 'color' => '#ffffff'],
+                            ['slug' => 'contrast', 'name' => 'Contrast', 'color' => '#1a1a1a'],
+                            ['slug' => 'primary', 'name' => 'Primary', 'color' => '#2563eb'],
+                            ['slug' => 'secondary', 'name' => 'Secondary', 'color' => '#64748b'],
+                            ['slug' => 'neutral', 'name' => 'Neutral', 'color' => '#f1f5f9'],
+                        ],
+                    ],
+                    'layout' => [
+                        'contentSize' => '680px',
+                        'wideSize' => '1200px',
+                    ],
+                ],
+            ],
+            [
+                'id' => 'bold-editorial',
+                'name' => 'Bold Editorial',
+                'description' => 'High contrast, dramatic design',
+                'tokens' => [
+                    'colors' => [
+                        'palette' => [
+                            ['slug' => 'base', 'name' => 'Base', 'color' => '#ffffff'],
+                            ['slug' => 'contrast', 'name' => 'Contrast', 'color' => '#000000'],
+                            ['slug' => 'primary', 'name' => 'Primary', 'color' => '#dc2626'],
+                            ['slug' => 'secondary', 'name' => 'Secondary', 'color' => '#1e293b'],
+                            ['slug' => 'neutral', 'name' => 'Neutral', 'color' => '#e2e8f0'],
+                        ],
+                    ],
+                    'layout' => [
+                        'contentSize' => '720px',
+                        'wideSize' => '1280px',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Get save arguments
+     *
+     * @return array
+     */
+    private function get_save_args(): array {
+        return [
+            'tokens' => [
+                'required' => true,
+                'type' => 'object',
+            ],
+            'writeToThemeJson' => [
+                'type' => 'boolean',
+                'default' => true,
+            ],
+        ];
+    }
+}
