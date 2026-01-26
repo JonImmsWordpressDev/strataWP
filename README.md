@@ -20,7 +20,119 @@
 
 StrataWP is a next-generation WordPress theme framework that takes modern development practices to the next level. Built from the ground up with TypeScript, Vite, and cutting-edge tooling, it's designed to make WordPress theme development fast, type-safe, and enjoyable.
 
-## What's New in v1.2.0 🚀
+## What's New in v1.3.0 🚀
+
+**Production Suite - Environment Sync, Snapshots & Rollback**
+
+This release introduces a comprehensive production management toolkit for WordPress deployments:
+
+### Environment Sync
+Sync databases between environments with intelligent URL replacement:
+
+```bash
+# Pull production database to local
+stratawp sync:db:pull production
+
+# Push local database to staging
+stratawp sync:db:push staging
+```
+
+**Features:**
+- **Automatic URL Replacement**: Handles PHP serialized strings correctly (recalculates string lengths)
+- **Backup Before Restore**: Creates automatic backup before overwriting database
+- **Selective Table Sync**: Sync specific tables with `--tables` flag
+- **Production Protection**: Requires confirmation for production pushes
+
+### Deployment Snapshots
+Automatic snapshots are created before every deployment:
+
+```bash
+# List recent snapshots
+stratawp rollback:list
+
+# Compare two snapshots
+stratawp rollback:diff 1 2
+
+# Mark a snapshot as stable
+stratawp rollback:mark-stable 1
+```
+
+**Features:**
+- **Pre-Deploy Snapshots**: Automatically captures theme files and database before deployment
+- **Compressed Storage**: Theme archived as tar.gz, database as gzip SQL
+- **SHA256 Hashing**: Verify snapshot integrity
+- **Git Integration**: Stores git commit ref and branch with each snapshot
+- **Diff Engine**: Compare snapshots to see table changes and row counts
+
+### New Package: @stratawp/sync
+
+```bash
+pnpm add @stratawp/sync
+```
+
+**Programmatic API:**
+```typescript
+import {
+  DatabaseDumper,
+  DatabaseRestorer,
+  UrlReplacer,
+  SnapshotManager,
+  DiffEngine,
+} from '@stratawp/sync'
+
+// Dump database
+const dumper = new DatabaseDumper(config)
+const sql = await dumper.generateDumpSQL()
+
+// Restore with URL replacement
+const restorer = new DatabaseRestorer(config)
+await restorer.restoreFromSQL(sql, {
+  urlReplacements: [{ from: 'https://prod.com', to: 'http://local.test' }],
+})
+
+// Create and manage snapshots
+const manager = new SnapshotManager()
+await manager.createSnapshot({
+  environment: 'production',
+  themePath: '/path/to/theme',
+  databaseDump: sql,
+})
+```
+
+**Configuration:**
+
+Create `.stratawp-sync.json` in your project root:
+
+```json
+{
+  "environments": {
+    "local": {
+      "name": "local",
+      "url": "http://local.test",
+      "database": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "wordpress"
+      }
+    },
+    "production": {
+      "name": "production",
+      "url": "https://example.com",
+      "database": {
+        "host": "db.example.com",
+        "user": "user",
+        "password": "pass",
+        "database": "wp_prod"
+      }
+    }
+  }
+}
+```
+
+---
+
+## What's New in v1.2.0
 
 **Analytics Component for Internal Traffic Exclusion**
 
@@ -494,6 +606,7 @@ StrataWP/
 │   ├── explorer/         # Interactive component browser (Storybook-like)
 │   ├── headless/         # Headless WordPress utilities (REST API, React hooks, Next.js)
 │   ├── registry/         # Component registry for sharing/discovering components
+│   ├── sync/             # Environment sync, snapshots, and rollback
 │   ├── testing/          # Comprehensive testing utilities (Vitest, Playwright)
 │   └── vite-plugin/      # Vite integration for WordPress
 ├── examples/
@@ -586,6 +699,19 @@ stratawp registry:publish                           # Publish your component
 stratawp explorer                                   # Launch interactive component browser
 stratawp storybook                                  # Alias for explorer
 stratawp explorer --port 4000                       # Custom port
+
+# Database sync
+stratawp sync:db:pull production                   # Pull production DB to local
+stratawp sync:db:push staging                      # Push local DB to staging
+stratawp sync:db:pull production --tables=wp_posts,wp_postmeta  # Sync specific tables
+stratawp sync:db:pull production --no-url-replace  # Skip URL replacement
+stratawp sync:db:pull production --dry-run         # Preview without making changes
+
+# Rollback and snapshots
+stratawp rollback:list                             # List all snapshots
+stratawp rollback:list --environment=production    # Filter by environment
+stratawp rollback:diff 1 2                         # Compare snapshots by index
+stratawp rollback:mark-stable 1                    # Mark snapshot as stable
 ```
 
 ### Typography & Google Fonts
@@ -1232,10 +1358,11 @@ Inspired by:
 - [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin for WordPress
 - [@stratawp/ai](https://www.npmjs.com/package/@stratawp/ai) - AI-assisted development tools
 - [@stratawp/registry](https://www.npmjs.com/package/@stratawp/registry) - Component registry
+- [@stratawp/sync](https://www.npmjs.com/package/@stratawp/sync) - Environment sync, snapshots, and rollback
 - [@stratawp/testing](https://www.npmjs.com/package/@stratawp/testing) - Testing utilities
 
 ---
 
-**Status**: v1.2.0 - Analytics Component for Internal Traffic Exclusion
+**Status**: v1.3.0 - Production Suite with Environment Sync, Snapshots & Rollback
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
