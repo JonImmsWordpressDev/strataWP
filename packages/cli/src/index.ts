@@ -32,6 +32,10 @@ import {
   rollbackDiffCommand,
   rollbackMarkStableCommand,
 } from './commands/rollback'
+import {
+  syncDbPullCommand,
+  syncDbPushCommand,
+} from './commands/sync'
 
 const program = new Command()
 
@@ -251,5 +255,23 @@ program
   .command('rollback:mark-stable <snapshot>')
   .description('Mark a snapshot as known-good (stable)')
   .action(rollbackMarkStableCommand)
+
+// Sync commands
+program
+  .command('sync:db:pull <environment>')
+  .description('Pull database from remote environment to local')
+  .option('--tables <tables>', 'Only sync specific tables (comma-separated)')
+  .option('--no-url-replace', 'Skip URL replacement')
+  .option('--dry-run', 'Show what would be done without doing it')
+  .action(syncDbPullCommand)
+
+program
+  .command('sync:db:push <environment>')
+  .description('Push local database to remote environment')
+  .option('--tables <tables>', 'Only sync specific tables (comma-separated)')
+  .option('--no-url-replace', 'Skip URL replacement')
+  .option('--dry-run', 'Show what would be done without doing it')
+  .option('--force', 'Skip confirmation prompt')
+  .action(syncDbPushCommand)
 
 program.parse()
