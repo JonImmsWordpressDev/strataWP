@@ -179,6 +179,7 @@ class Studio {
             'previewUrl' => home_url('/?stratawp_preview=1'),
             'themeSlug' => get_stylesheet(),
             'version' => self::VERSION,
+            'adminUrl' => admin_url(),
         ]);
 
         wp_enqueue_style(
