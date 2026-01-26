@@ -193,14 +193,23 @@ class Studio {
         if (!current_user_can('edit_theme_options')) {
             return;
         }
+
+        $admin_origin = esc_js(admin_url());
         ?>
         <script id="stratawp-preview-script">
         (function() {
-            // Signal ready
-            window.parent.postMessage({ type: 'stratawp_ready' }, '*');
+            var adminOrigin = <?php echo wp_json_encode(admin_url()); ?>;
+
+            // Signal ready to parent
+            window.parent.postMessage({ type: 'stratawp_ready' }, adminOrigin);
 
             // Listen for design updates
             window.addEventListener('message', function(event) {
+                // Validate origin matches admin
+                if (!adminOrigin.startsWith(event.origin)) {
+                    return;
+                }
+
                 var data = event.data;
 
                 if (data.type === 'stratawp_design_update' && data.tokens) {

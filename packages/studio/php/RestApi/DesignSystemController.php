@@ -165,6 +165,15 @@ class DesignSystemController extends WP_REST_Controller {
         $tokens = $request->get_param('tokens');
         $write_to_theme_json = $request->get_param('writeToThemeJson') ?? true;
 
+        // Validate token structure
+        if (!$this->validate_tokens_structure($tokens)) {
+            return new WP_Error(
+                'invalid_token_structure',
+                __('Invalid token structure.', 'stratawp'),
+                ['status' => 400]
+            );
+        }
+
         if ($write_to_theme_json) {
             $writer = new ThemeJsonWriter();
             $result = $writer->write_tokens($tokens);
@@ -288,6 +297,26 @@ class DesignSystemController extends WP_REST_Controller {
         }
 
         $file = $files['file'];
+
+        // Validate file size (1MB max)
+        if ($file['size'] > 1048576) {
+            return new WP_Error(
+                'file_too_large',
+                __('File exceeds maximum size of 1MB.', 'stratawp'),
+                ['status' => 400]
+            );
+        }
+
+        // Validate file extension
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        if (strtolower($extension) !== 'json') {
+            return new WP_Error(
+                'invalid_file_type',
+                __('Only JSON files are allowed.', 'stratawp'),
+                ['status' => 400]
+            );
+        }
+
         $content = file_get_contents($file['tmp_name']);
         $tokens = json_decode($content, true);
 
@@ -295,6 +324,15 @@ class DesignSystemController extends WP_REST_Controller {
             return new WP_Error(
                 'invalid_json',
                 __('Invalid JSON file.', 'stratawp'),
+                ['status' => 400]
+            );
+        }
+
+        // Validate token structure
+        if (!$this->validate_tokens_structure($tokens)) {
+            return new WP_Error(
+                'invalid_token_structure',
+                __('Invalid token structure in JSON file.', 'stratawp'),
                 ['status' => 400]
             );
         }
@@ -419,5 +457,33 @@ class DesignSystemController extends WP_REST_Controller {
                 'default' => true,
             ],
         ];
+    }
+
+    /**
+     * Validate token structure
+     *
+     * @param array $tokens Tokens to validate.
+     * @return bool
+     */
+    private function validate_tokens_structure(array $tokens): bool {
+        $valid_keys = ['colors', 'typography', 'spacing', 'layout', 'shadow', 'custom'];
+
+        foreach (array_keys($tokens) as $key) {
+            if (!in_array($key, $valid_keys, true)) {
+                return false;
+            }
+        }
+
+        // Validate colors structure if present
+        if (isset($tokens['colors']) && !is_array($tokens['colors'])) {
+            return false;
+        }
+
+        // Validate typography structure if present
+        if (isset($tokens['typography']) && !is_array($tokens['typography'])) {
+            return false;
+        }
+
+        return true;
     }
 }
