@@ -1,14 +1,11 @@
 import { render } from '@wordpress/element'
 import { AdminLayout } from '../components/AdminLayout'
 import { DesignSystemPage } from './DesignSystem'
+import { PatternLibraryPage } from './PatternLibrary'
 
 // Placeholder components for other pages
 function BlockLibraryPage() {
   return <div>Block Library - Coming Soon</div>
-}
-
-function PatternLibraryPage() {
-  return <div>Pattern Library - Coming Soon</div>
 }
 
 function TemplateBuilderPage() {
