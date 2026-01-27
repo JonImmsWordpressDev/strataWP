@@ -159,13 +159,22 @@ class Studio {
             return;
         }
 
-        $asset_path = dirname(__DIR__) . '/dist/index.js';
-        $asset_url = plugins_url('dist/index.js', dirname(__FILE__));
+        // Determine asset paths - check if in theme or plugin context
+        $studio_dir = dirname(__DIR__);
+        $asset_path = $studio_dir . '/dist/index.js';
+        $style_path = $studio_dir . '/dist/style.css';
 
-        // For theme integration, check theme path
-        if (!file_exists($asset_path)) {
-            $asset_path = get_template_directory() . '/vendor/stratawp/studio/dist/index.js';
-            $asset_url = get_template_directory_uri() . '/vendor/stratawp/studio/dist/index.js';
+        // Detect if we're in a theme by checking the path
+        $theme_dir = get_template_directory();
+        if (strpos($studio_dir, $theme_dir) !== false) {
+            // In theme - use theme URL
+            $relative_path = str_replace($theme_dir, '', $studio_dir);
+            $asset_url = get_template_directory_uri() . $relative_path . '/dist/index.js';
+            $style_url = get_template_directory_uri() . $relative_path . '/dist/style.css';
+        } else {
+            // In plugin - use plugins_url
+            $asset_url = plugins_url('dist/index.js', dirname(__FILE__));
+            $style_url = plugins_url('dist/style.css', dirname(__FILE__));
         }
 
         wp_enqueue_script(
@@ -187,7 +196,7 @@ class Studio {
 
         wp_enqueue_style(
             'stratawp-studio',
-            plugins_url('dist/style.css', dirname(__FILE__)),
+            $style_url,
             ['wp-components'],
             self::VERSION
         );
@@ -199,18 +208,23 @@ class Studio {
      * Adds "Save as Pattern" functionality to the block editor
      */
     public function enqueue_block_editor_scripts(): void {
-        $asset_path = dirname(__DIR__) . '/dist/gutenberg.js';
-        $asset_url = plugins_url('dist/gutenberg.js', dirname(__FILE__));
-
-        // For theme integration, check theme path
-        if (!file_exists($asset_path)) {
-            $asset_path = get_template_directory() . '/vendor/stratawp/studio/dist/gutenberg.js';
-            $asset_url = get_template_directory_uri() . '/vendor/stratawp/studio/dist/gutenberg.js';
-        }
+        $studio_dir = dirname(__DIR__);
+        $asset_path = $studio_dir . '/dist/gutenberg.js';
 
         // Only enqueue if the file exists
         if (!file_exists($asset_path)) {
             return;
+        }
+
+        // Detect if we're in a theme by checking the path
+        $theme_dir = get_template_directory();
+        if (strpos($studio_dir, $theme_dir) !== false) {
+            // In theme - use theme URL
+            $relative_path = str_replace($theme_dir, '', $studio_dir);
+            $asset_url = get_template_directory_uri() . $relative_path . '/dist/gutenberg.js';
+        } else {
+            // In plugin - use plugins_url
+            $asset_url = plugins_url('dist/gutenberg.js', dirname(__FILE__));
         }
 
         wp_enqueue_script(
