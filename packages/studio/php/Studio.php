@@ -65,6 +65,25 @@ class Studio {
 
         // Add preview mode support
         add_action('wp_head', [$this, 'inject_preview_script']);
+
+        // Add type="module" to studio scripts (required for ES modules)
+        add_filter('script_loader_tag', [$this, 'add_module_type_to_scripts'], 10, 3);
+    }
+
+    /**
+     * Add type="module" to studio scripts
+     *
+     * @param string $tag    The script tag.
+     * @param string $handle The script handle.
+     * @param string $src    The script source.
+     * @return string Modified script tag.
+     */
+    public function add_module_type_to_scripts(string $tag, string $handle, string $src): string {
+        if (in_array($handle, ['stratawp-studio', 'stratawp-studio-gutenberg'], true)) {
+            // Replace the script tag to add type="module"
+            $tag = str_replace(' src=', ' type="module" src=', $tag);
+        }
+        return $tag;
     }
 
     /**

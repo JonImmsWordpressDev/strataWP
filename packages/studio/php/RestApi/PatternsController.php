@@ -260,8 +260,8 @@ class PatternsController extends WP_REST_Controller {
         }
 
         return new WP_REST_Response([
-            'patterns' => $patterns,
-            'total'    => count($patterns),
+            'items' => $patterns,
+            'total' => count($patterns),
         ]);
     }
 
@@ -339,10 +339,10 @@ class PatternsController extends WP_REST_Controller {
 
         $post = get_post($post_id);
 
-        return new WP_REST_Response(
-            $this->prepare_pattern_response($post, 'database'),
-            201
-        );
+        return new WP_REST_Response([
+            'success' => true,
+            'data'    => $this->prepare_pattern_response($post, 'database'),
+        ], 201);
     }
 
     /**
@@ -418,7 +418,10 @@ class PatternsController extends WP_REST_Controller {
 
         $post = get_post($id);
 
-        return new WP_REST_Response($this->prepare_pattern_response($post, 'database'));
+        return new WP_REST_Response([
+            'success' => true,
+            'data'    => $this->prepare_pattern_response($post, 'database'),
+        ]);
     }
 
     /**
@@ -564,10 +567,10 @@ class PatternsController extends WP_REST_Controller {
 
         $new_post = get_post($new_post_id);
 
-        return new WP_REST_Response(
-            $this->prepare_pattern_response($new_post, 'database'),
-            201
-        );
+        return new WP_REST_Response([
+            'success' => true,
+            'data'    => $this->prepare_pattern_response($new_post, 'database'),
+        ], 201);
     }
 
     /**
@@ -592,8 +595,8 @@ class PatternsController extends WP_REST_Controller {
         }
 
         return new WP_REST_Response([
-            'patterns' => $theme_patterns,
-            'total'    => count($theme_patterns),
+            'items' => $theme_patterns,
+            'total' => count($theme_patterns),
         ]);
     }
 

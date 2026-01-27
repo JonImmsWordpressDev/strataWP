@@ -26,8 +26,9 @@ export default defineConfig({
         '@wordpress/blocks',
         '@wordpress/block-editor',
         '@wordpress/plugins',
-        '@wordpress/icons',
         '@wordpress/notices',
+        // Note: @wordpress/icons is NOT external - it's bundled because
+        // WordPress doesn't provide wp.icons as a standalone global
       ],
       plugins: [
         externalGlobals({
@@ -41,8 +42,8 @@ export default defineConfig({
           '@wordpress/blocks': 'wp.blocks',
           '@wordpress/block-editor': 'wp.blockEditor',
           '@wordpress/plugins': 'wp.plugins',
-          '@wordpress/icons': 'wp.icons',
           '@wordpress/notices': 'wp.notices',
+          // Note: @wordpress/icons is NOT mapped - it's bundled
         }),
       ],
       output: {
@@ -53,6 +54,8 @@ export default defineConfig({
           }
           return 'assets/[name]-[hash][extname]'
         },
+        // Disable code splitting to keep everything in single files
+        manualChunks: undefined,
       },
     },
     outDir: 'dist',

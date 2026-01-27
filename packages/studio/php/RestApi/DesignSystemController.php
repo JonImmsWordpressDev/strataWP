@@ -235,25 +235,59 @@ class DesignSystemController extends WP_REST_Controller {
             );
         }
 
-        // Write preset tokens to theme.json
+        // Get current tokens from theme.json to merge with preset
+        $theme_json_path = get_stylesheet_directory() . '/theme.json';
+        $current_tokens = [];
+        if (file_exists($theme_json_path)) {
+            $theme_json = json_decode(file_get_contents($theme_json_path), true);
+            if ($theme_json) {
+                $current_tokens = $this->extract_tokens_from_theme_json($theme_json);
+            }
+        }
+
+        // Merge preset tokens with current tokens (preset overrides current)
+        $merged_tokens = $this->merge_tokens($current_tokens, $preset['tokens']);
+
+        // Write merged tokens to theme.json
         $writer = new ThemeJsonWriter();
-        $result = $writer->write_tokens($preset['tokens']);
+        $result = $writer->write_tokens($merged_tokens);
 
         if (is_wp_error($result)) {
             return $result;
         }
 
         update_option('stratawp_active_preset', $preset_id);
-        update_option('stratawp_design_tokens', $preset['tokens']);
+        update_option('stratawp_design_tokens', $merged_tokens);
 
         return new WP_REST_Response([
             'success' => true,
             'data' => [
-                'tokens' => $preset['tokens'],
+                'tokens' => $merged_tokens,
                 'activePreset' => $preset_id,
                 'lastModified' => date('c'),
             ],
         ]);
+    }
+
+    /**
+     * Deep merge tokens arrays
+     *
+     * @param array $current Current tokens.
+     * @param array $preset  Preset tokens to merge in.
+     * @return array Merged tokens.
+     */
+    private function merge_tokens(array $current, array $preset): array {
+        $merged = $current;
+
+        foreach ($preset as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->merge_tokens($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 
     /**

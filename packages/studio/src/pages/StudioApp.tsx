@@ -1,7 +1,56 @@
-import { render } from '@wordpress/element'
+import { render, Component } from '@wordpress/element'
+import type { ReactNode, ErrorInfo } from 'react'
+import { Notice } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 import { AdminLayout } from '../components/AdminLayout'
 import { DesignSystemPage } from './DesignSystem'
 import { PatternLibraryPage } from './PatternLibrary'
+
+// Error boundary to catch React rendering errors
+interface ErrorBoundaryState {
+  hasError: boolean
+  error: Error | null
+}
+
+interface ErrorBoundaryProps {
+  children: ReactNode
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Log error to console for debugging
+    console.error('StrataWP Studio Error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px' }}>
+          <Notice status="error" isDismissible={false}>
+            <p>
+              <strong>{__('Something went wrong.', 'stratawp')}</strong>
+            </p>
+            <p>{this.state.error?.message || __('An unexpected error occurred.', 'stratawp')}</p>
+            <p style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
+              {__('Check the browser console for more details.', 'stratawp')}
+            </p>
+          </Notice>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
 
 // Placeholder components for other pages
 function BlockLibraryPage() {
@@ -31,9 +80,13 @@ export function StudioApp() {
   const PageComponent = PAGE_COMPONENTS[currentPage] || DesignSystemPage
 
   return (
-    <AdminLayout currentPage={currentPage}>
-      <PageComponent />
-    </AdminLayout>
+    <ErrorBoundary>
+      <AdminLayout currentPage={currentPage}>
+        <ErrorBoundary>
+          <PageComponent />
+        </ErrorBoundary>
+      </AdminLayout>
+    </ErrorBoundary>
   )
 }
 
