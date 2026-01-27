@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import externalGlobals from 'rollup-plugin-external-globals'
 import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxRuntime: 'classic',
+    }),
+  ],
   build: {
     rollupOptions: {
       input: {
@@ -24,18 +29,29 @@ export default defineConfig({
         '@wordpress/icons',
         '@wordpress/notices',
       ],
+      plugins: [
+        externalGlobals({
+          'react': 'React',
+          'react-dom': 'ReactDOM',
+          '@wordpress/element': 'wp.element',
+          '@wordpress/components': 'wp.components',
+          '@wordpress/i18n': 'wp.i18n',
+          '@wordpress/api-fetch': 'wp.apiFetch',
+          '@wordpress/data': 'wp.data',
+          '@wordpress/blocks': 'wp.blocks',
+          '@wordpress/block-editor': 'wp.blockEditor',
+          '@wordpress/plugins': 'wp.plugins',
+          '@wordpress/icons': 'wp.icons',
+          '@wordpress/notices': 'wp.notices',
+        }),
+      ],
       output: {
         entryFileNames: '[name].js',
-        chunkFileNames: 'chunks/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.css')) {
             return 'style.css'
           }
           return 'assets/[name]-[hash][extname]'
-        },
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
         },
       },
     },

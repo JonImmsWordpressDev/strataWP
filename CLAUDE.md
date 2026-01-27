@@ -490,3 +490,67 @@ Published packages:
 - `@stratawp/explorer` - Component browser
 - `@stratawp/headless` - Headless WordPress utilities
 - `create-stratawp` - Theme creation CLI
+
+## Studio Package
+
+**Location**: `packages/studio/`
+
+StrataWP Studio provides a Design System editor and Pattern Library for WordPress admin.
+
+### Building Studio
+
+```bash
+pnpm build --filter @stratawp/studio
+```
+
+**Important Vite Config Notes** (vite.config.ts):
+- Uses `rollup-plugin-external-globals` to convert ESM imports to WordPress globals
+- Uses `jsxRuntime: 'classic'` (React.createElement) instead of automatic JSX runtime
+- External packages mapped to WordPress globals:
+  - `@wordpress/element` → `wp.element`
+  - `@wordpress/components` → `wp.components`
+  - `@wordpress/i18n` → `wp.i18n`
+  - `@wordpress/api-fetch` → `wp.apiFetch`
+  - etc.
+
+### Installing Studio in a Theme
+
+1. Copy `packages/studio/` to theme's `vendor/stratawp/studio/`
+
+2. Add namespace to theme's `composer.json`:
+   ```json
+   "autoload": {
+     "psr-4": {
+       "StrataWP\\Studio\\": "vendor/stratawp/studio/php/",
+       "StrataWP\\": "vendor/stratawp/core/src/"
+     }
+   }
+   ```
+
+3. Run `composer dump-autoload`
+
+4. Load in `functions.php`:
+   ```php
+   if (file_exists(__DIR__ . '/vendor/stratawp/studio/php/autoload.php')) {
+       require_once __DIR__ . '/vendor/stratawp/studio/php/autoload.php';
+       \StrataWP\Studio\Studio::instance()->initialize();
+   }
+   ```
+
+### Theme vs Plugin Context
+
+Studio auto-detects if installed in a theme or plugin:
+- **Theme**: Uses `get_template_directory_uri()` for asset URLs
+- **Plugin**: Uses `plugins_url()` for asset URLs
+
+### Troubleshooting Studio
+
+**Blank pages**:
+- Ensure `dist/` folder exists with `index.js`, `gutenberg.js`, `style.css`
+- Check browser console for JS errors
+- Verify Composer autoloader includes `StrataWP\Studio\` namespace
+
+**Class not found errors**:
+- Add `"StrataWP\\Studio\\": "vendor/stratawp/studio/php/"` to composer.json
+- Run `composer dump-autoload`
+- This must come BEFORE the general `StrataWP\\` mapping

@@ -405,7 +405,7 @@ importers:
         version: 12.35.0(react@18.3.1)
       '@wordpress/components':
         specifier: ^25.12.0
-        version: 25.16.0(@types/react@18.3.27)(react-dom@18.3.1)(react@18.3.1)(vite@5.4.21)
+        version: 25.16.0(@types/react@18.3.27)(react@18.3.1)(vite@5.4.21)
       '@wordpress/data':
         specifier: ^9.17.0
         version: 9.28.0(react@18.3.1)
@@ -423,7 +423,7 @@ importers:
         version: 4.26.0(react@18.3.1)
       '@wordpress/plugins':
         specifier: ^6.15.0
-        version: 6.26.0(@types/react@18.3.27)(react-dom@18.3.1)(react@18.3.1)
+        version: 6.26.0(@types/react@18.3.27)(react@18.3.1)
       '@wordpress/url':
         specifier: ^3.48.0
         version: 3.59.0
@@ -443,6 +443,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.7.0(vite@5.4.21)
+      rollup-plugin-external-globals:
+        specifier: ^0.13.0
+        version: 0.13.0(rollup@4.53.3)
       typescript:
         specifier: ^5.3.3
         version: 5.9.3
@@ -2936,6 +2939,21 @@ packages:
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
     dev: true
 
+  /@rollup/pluginutils@5.3.0(rollup@4.53.3):
+    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.8
+      estree-walker: 2.0.2
+      picomatch: 4.0.3
+      rollup: 4.53.3
+    dev: true
+
   /@rollup/rollup-android-arm-eabi@4.53.3:
     resolution: {integrity: sha512-mRSi+4cBjrRLoaal2PnqH82Wqyb+d3HsPUN/W+WslCXsZsyHa9ZeQQX/pQsZaVIWDkPcpV6jJ+3KLbTbgnwv8w==}
     cpu: [arm]
@@ -3959,7 +3977,7 @@ packages:
       - supports-color
     dev: false
 
-  /@wordpress/components@25.16.0(@types/react@18.3.27)(react-dom@18.3.1)(react@18.3.1)(vite@5.4.21):
+  /@wordpress/components@25.16.0(@types/react@18.3.27)(react@18.3.1)(vite@5.4.21):
     resolution: {integrity: sha512-voQuMsO5JbH+JW33TnWurwwvpSb8IQ4XU5wyVMubX4TUwadt+/2ToNJbZIDXoaJPei7vbM81Ft+pH+zGlN8CyA==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -4003,7 +4021,7 @@ packages:
       dom-scroll-into-view: 1.2.1
       downshift: 6.1.12(react@18.3.1)
       fast-deep-equal: 3.1.3
-      framer-motion: 10.18.0(react-dom@18.3.1)(react@18.3.1)
+      framer-motion: 10.18.0(react@18.3.1)
       gradient-parser: 0.1.5
       highlight-words-core: 1.2.3
       is-plain-object: 5.0.0
@@ -4012,8 +4030,7 @@ packages:
       re-resizable: 6.11.2(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
       react-colorful: 5.6.1(react-dom@18.3.1)(react@18.3.1)
-      react-dom: 18.3.1(react@18.3.1)
-      reakit: 1.3.11(react-dom@18.3.1)(react@18.3.1)
+      reakit: 1.3.11(react@18.3.1)
       remove-accents: 0.5.0
       use-lilius: 2.0.5(react-dom@18.3.1)(react@18.3.1)
       uuid: 9.0.1
@@ -4321,7 +4338,7 @@ packages:
       react: 18.3.1
     dev: false
 
-  /@wordpress/plugins@6.26.0(@types/react@18.3.27)(react-dom@18.3.1)(react@18.3.1):
+  /@wordpress/plugins@6.26.0(@types/react@18.3.27)(react@18.3.1):
     resolution: {integrity: sha512-GsV9mSlHF+Tn3BHCLR+nM+7FmyWDOcxHHSBwHUVNbghrmLM4Hy/Jvs8vcirTZivGEbQSB6EBJO7QIFRrXk0PpQ==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -4337,7 +4354,6 @@ packages:
       '@wordpress/is-shallow-equal': 4.58.0
       memize: 2.1.1
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
       - '@types/react'
@@ -5817,6 +5833,10 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
+  /estree-walker@2.0.2:
+    resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
+    dev: true
+
   /estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
     dependencies:
@@ -6081,7 +6101,7 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /framer-motion@10.18.0(react-dom@18.3.1)(react@18.3.1):
+  /framer-motion@10.18.0(react@18.3.1):
     resolution: {integrity: sha512-oGlDh1Q1XqYPksuTD/usb0I70hq95OUzmL9+6Zd+Hs4XV0oaISBa/UUMSjYiq6m8EUF32132mOJ8xVZS+I0S6w==}
     peerDependencies:
       react: ^18.0.0
@@ -6093,7 +6113,6 @@ packages:
         optional: true
     dependencies:
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
       tslib: 2.8.1
     optionalDependencies:
       '@emotion/is-prop-valid': 0.8.8
@@ -6667,6 +6686,12 @@ packages:
   /is-property@1.0.2:
     resolution: {integrity: sha512-Ks/IoX00TtClbGQr4TWXemAnktAQvYB7HzcCxDGqEZU6oCmb2INHuOoKxbtR+HFkmYWBKv/dOZtGRiAjDhj92g==}
     dev: false
+
+  /is-reference@3.0.3:
+    resolution: {integrity: sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw==}
+    dependencies:
+      '@types/estree': 1.0.8
+    dev: true
 
   /is-regex@1.2.1:
     resolution: {integrity: sha512-MjYsKHO5O7mCsmRGxWcLWheFqN9DJ/2TmngvjKXihe6efViPqc274+Fx/4fYj/r03+ESvBdTXK0V6tA3rgez1g==}
@@ -8624,39 +8649,35 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
-  /reakit-system@0.15.2(react-dom@18.3.1)(react@18.3.1):
+  /reakit-system@0.15.2(react@18.3.1):
     resolution: {integrity: sha512-TvRthEz0DmD0rcJkGamMYx+bATwnGNWJpe/lc8UV2Js8nnPvkaxrHk5fX9cVASFrWbaIyegZHCWUBfxr30bmmA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      reakit-utils: 0.15.2(react-dom@18.3.1)(react@18.3.1)
+      reakit-utils: 0.15.2(react@18.3.1)
     dev: false
 
-  /reakit-utils@0.15.2(react-dom@18.3.1)(react@18.3.1):
+  /reakit-utils@0.15.2(react@18.3.1):
     resolution: {integrity: sha512-i/RYkq+W6hvfFmXw5QW7zvfJJT/K8a4qZ0hjA79T61JAFPGt23DsfxwyBbyK91GZrJ9HMrXFVXWMovsKBc1qEQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
     dev: false
 
-  /reakit-warning@0.6.2(react-dom@18.3.1)(react@18.3.1):
+  /reakit-warning@0.6.2(react@18.3.1):
     resolution: {integrity: sha512-z/3fvuc46DJyD3nJAUOto6inz2EbSQTjvI/KBQDqxwB0y02HDyeP8IWOJxvkuAUGkWpeSx+H3QWQFSNiPcHtmw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
     dependencies:
       react: 18.3.1
-      reakit-utils: 0.15.2(react-dom@18.3.1)(react@18.3.1)
-    transitivePeerDependencies:
-      - react-dom
+      reakit-utils: 0.15.2(react@18.3.1)
     dev: false
 
-  /reakit@1.3.11(react-dom@18.3.1)(react@18.3.1):
+  /reakit@1.3.11(react@18.3.1):
     resolution: {integrity: sha512-mYxw2z0fsJNOQKAEn5FJCPTU3rcrY33YZ/HzoWqZX0G7FwySp1wkCYW79WhuYMNIUFQ8s3Baob1RtsEywmZSig==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
@@ -8665,10 +8686,9 @@ packages:
       '@popperjs/core': 2.11.8
       body-scroll-lock: 3.1.5
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      reakit-system: 0.15.2(react-dom@18.3.1)(react@18.3.1)
-      reakit-utils: 0.15.2(react-dom@18.3.1)(react@18.3.1)
-      reakit-warning: 0.6.2(react-dom@18.3.1)(react@18.3.1)
+      reakit-system: 0.15.2(react@18.3.1)
+      reakit-utils: 0.15.2(react@18.3.1)
+      reakit-warning: 0.6.2(react@18.3.1)
     dev: false
 
   /redent@3.0.0:
@@ -8767,6 +8787,18 @@ packages:
   /reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+
+  /rollup-plugin-external-globals@0.13.0(rollup@4.53.3):
+    resolution: {integrity: sha512-wBS3hmoF0OtEnA0lWsmTC6Nhnkk2zjZbfhaX2gLo8VnfNGFdGhiYKwMpIPQPrYbAw+mAYUYmoHYktAl1eZHgVw==}
+    peerDependencies:
+      rollup: ^2.25.0 || ^3.3.0 || ^4.1.4
+    dependencies:
+      '@rollup/pluginutils': 5.3.0(rollup@4.53.3)
+      estree-walker: 3.0.3
+      is-reference: 3.0.3
+      magic-string: 0.30.21
+      rollup: 4.53.3
+    dev: true
 
   /rollup@4.53.3:
     resolution: {integrity: sha512-w8GmOxZfBmKknvdXU1sdM9NHcoQejwF/4mNgj2JuEEdRaHwwF12K7e9eXn1nLZ07ad+du76mkVsyeb2rKGllsA==}
