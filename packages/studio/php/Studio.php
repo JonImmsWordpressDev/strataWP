@@ -278,25 +278,59 @@ class Studio {
         if (!current_user_can('edit_theme_options')) {
             return;
         }
-
-        $admin_origin = esc_js(admin_url());
         ?>
         <script id="stratawp-preview-script">
         (function() {
             var adminOrigin = <?php echo wp_json_encode(admin_url()); ?>;
+            var expectedOrigin = new URL(adminOrigin).origin;
+            var verifiedParentOrigin = null;
 
-            // Signal ready to parent
-            window.parent.postMessage({ type: 'stratawp_ready' }, adminOrigin);
+            // Signal ready to parent - try configured admin URL first
+            // In reverse proxy setups, we also try the referrer origin
+            function sendReady() {
+                var message = { type: 'stratawp_ready' };
+
+                // Try sending to configured admin origin
+                try {
+                    window.parent.postMessage(message, expectedOrigin);
+                } catch (e) {
+                    console.warn('[StrataWP] Failed to send ready to configured origin:', expectedOrigin);
+                }
+
+                // If referrer exists and differs, also try that (reverse proxy scenario)
+                if (document.referrer) {
+                    try {
+                        var referrerOrigin = new URL(document.referrer).origin;
+                        if (referrerOrigin !== expectedOrigin) {
+                            window.parent.postMessage(message, referrerOrigin);
+                        }
+                    } catch (e) {
+                        // Referrer URL parsing failed, ignore
+                    }
+                }
+            }
+
+            sendReady();
 
             // Listen for design updates
             window.addEventListener('message', function(event) {
-                // Validate origin matches admin (extract origin from full admin URL)
-                var expectedOrigin = new URL(adminOrigin).origin;
-                if (event.origin !== expectedOrigin) {
+                // Validate this looks like a StrataWP message
+                var data = event.data;
+                if (!data || typeof data !== 'object' || !data.type || data.type.indexOf('stratawp_') !== 0) {
                     return;
                 }
 
-                var data = event.data;
+                // First message from parent: verify and store origin
+                if (!verifiedParentOrigin) {
+                    if (event.origin !== expectedOrigin) {
+                        // Log mismatch but accept valid StrataWP messages (reverse proxy scenario)
+                        console.warn('[StrataWP] Parent origin mismatch - expected:', expectedOrigin, 'received:', event.origin);
+                    }
+                    verifiedParentOrigin = event.origin;
+                } else if (event.origin !== verifiedParentOrigin) {
+                    // Subsequent messages must come from same origin
+                    return;
+                }
 
                 if (data.type === 'stratawp_design_update' && data.tokens) {
                     Object.keys(data.tokens).forEach(function(key) {

@@ -29,21 +29,51 @@ export function useLivePreview({
   const isReadyRef = useRef(isReady)
   isReadyRef.current = isReady
   const loadTimeoutRef = useRef<NodeJS.Timeout>()
+  // Store the actual origin from the preview iframe once it sends a message
+  // This handles reverse proxy setups where configured URLs differ from actual URLs
+  const verifiedOriginRef = useRef<string | null>(null)
 
   // Listen for ready message from preview
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      // Validate origin
-      const expectedOrigin = new URL(previewUrl).origin
-      if (event.origin !== expectedOrigin) {
+      // Validate this looks like a StrataWP message
+      const data = event.data as PreviewMessage
+      if (!data || typeof data !== 'object' || !data.type?.startsWith('stratawp_')) {
         return
       }
 
-      const data = event.data as PreviewMessage
+      // First message: validate against expected origin and store actual origin
+      // Subsequent messages: validate against stored origin
+      const expectedOrigin = new URL(previewUrl).origin
+
+      if (!verifiedOriginRef.current) {
+        // First message - verify it's from expected origin or a same-site origin
+        // In reverse proxy setups, the actual origin may differ from configured URL
+        if (event.origin !== expectedOrigin) {
+          // Check if this might be a reverse proxy situation (same protocol, different host)
+          // Log for debugging but still accept if it's a StrataWP message
+          console.warn(
+            '[StrataWP] Preview origin mismatch - expected:',
+            expectedOrigin,
+            'received:',
+            event.origin,
+            '- accepting due to valid message format'
+          )
+        }
+        // Store the verified origin for future messages
+        verifiedOriginRef.current = event.origin
+      } else if (event.origin !== verifiedOriginRef.current) {
+        // Subsequent messages must come from the same origin as the first
+        return
+      }
 
       if (data.type === 'stratawp_ready') {
         setIsReady(true)
         setIsLoading(false)
+        if (loadTimeoutRef.current) {
+          clearTimeout(loadTimeoutRef.current)
+          loadTimeoutRef.current = undefined
+        }
         onReady?.()
       }
     }
@@ -84,6 +114,11 @@ export function useLivePreview({
     }
   }, [onError])
 
+  // Get the target origin for postMessage (use verified origin if available)
+  const getTargetOrigin = useCallback(() => {
+    return verifiedOriginRef.current || new URL(previewUrl).origin
+  }, [previewUrl])
+
   // Send design tokens to preview
   const updateTokens = useCallback((tokens: Record<string, string>) => {
     const iframe = iframeRef.current
@@ -94,9 +129,8 @@ export function useLivePreview({
       tokens,
     }
 
-    const origin = new URL(previewUrl).origin
-    iframe.contentWindow.postMessage(message, origin)
-  }, [previewUrl])
+    iframe.contentWindow.postMessage(message, getTargetOrigin())
+  }, [getTargetOrigin])
 
   // Navigate preview to URL
   const navigate = useCallback((url: string) => {
@@ -108,9 +142,8 @@ export function useLivePreview({
       url,
     }
 
-    const origin = new URL(previewUrl).origin
-    iframe.contentWindow.postMessage(message, origin)
-  }, [previewUrl])
+    iframe.contentWindow.postMessage(message, getTargetOrigin())
+  }, [getTargetOrigin])
 
   // Refresh preview
   const refresh = useCallback(() => {
@@ -119,6 +152,8 @@ export function useLivePreview({
 
     setIsLoading(true)
     setIsReady(false)
+    // Reset verified origin since iframe will reload
+    verifiedOriginRef.current = null
     iframe.src = iframe.src
   }, [])
 

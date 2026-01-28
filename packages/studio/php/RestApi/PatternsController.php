@@ -171,7 +171,9 @@ class PatternsController extends WP_REST_Controller {
         $per_page = $request->get_param('per_page') ?? 100;
         $page     = $request->get_param('page') ?? 1;
 
-        $patterns = [];
+        $patterns       = [];
+        $database_total = 0;
+        $theme_total    = 0;
 
         // Get database patterns unless filtering by theme source only
         if ($source !== 'theme') {
@@ -211,6 +213,7 @@ class PatternsController extends WP_REST_Controller {
             }
 
             $query = new \WP_Query($query_args);
+            $database_total = $query->found_posts;
 
             foreach ($query->posts as $post) {
                 $patterns[] = $this->prepare_pattern_response($post, 'database');
@@ -255,13 +258,21 @@ class PatternsController extends WP_REST_Controller {
                     }
                 }
 
+                $theme_total++;
                 $patterns[] = $this->prepare_theme_pattern_response($pattern);
             }
         }
 
+        // Calculate pagination metadata
+        $total       = $database_total + $theme_total;
+        $total_pages = $per_page > 0 ? (int) ceil($total / $per_page) : 1;
+
         return new WP_REST_Response([
-            'items' => $patterns,
-            'total' => count($patterns),
+            'items'       => $patterns,
+            'total'       => $total,
+            'total_pages' => $total_pages,
+            'page'        => (int) $page,
+            'per_page'    => (int) $per_page,
         ]);
     }
 
@@ -594,9 +605,14 @@ class PatternsController extends WP_REST_Controller {
             $theme_patterns[] = $this->prepare_theme_pattern_response($pattern);
         }
 
+        $total = count($theme_patterns);
+
         return new WP_REST_Response([
-            'items' => $theme_patterns,
-            'total' => count($theme_patterns),
+            'items'       => $theme_patterns,
+            'total'       => $total,
+            'total_pages' => 1,
+            'page'        => 1,
+            'per_page'    => $total,
         ]);
     }
 

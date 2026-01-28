@@ -64,6 +64,9 @@ export interface PatternFilters {
 export interface PatternsResponse {
   items: Pattern[]
   total: number
+  total_pages?: number
+  page?: number
+  per_page?: number
 }
 
 export interface PatternExportResponse {
