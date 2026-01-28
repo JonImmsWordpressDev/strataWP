@@ -2,6 +2,73 @@
 
 All notable changes to StrataWP are documented in this file.
 
+## v1.4.0 - Studio Improvements
+
+**Performance, Bug Fixes & UI/UX Enhancements**
+
+This release focuses on improving the StrataWP Studio admin experience with critical bug fixes, performance optimizations, and UI polish.
+
+### Bug Fixes
+
+**Pagination Fix**
+- Fixed incorrect total count in Pattern Library when combining database and theme patterns
+- "Load More" button now works correctly with proper pagination metadata
+- Added `total_pages`, `page`, and `per_page` to API responses
+
+**Origin Validation Fix**
+- Fixed Live Preview failing in reverse proxy and load balancer setups
+- Implemented "trust on first message" pattern for postMessage communication
+- Added debug logging when origin mismatches occur for easier troubleshooting
+
+### Performance Improvements
+
+**N+1 Query Elimination**
+- Reduced database queries from 2N+1 to ~3 queries when loading patterns
+- Uses WordPress `update_object_term_cache()` to prime term cache
+- 20 patterns now loads in ~3 queries instead of ~41
+
+**HTTP Caching**
+- Added ETag and Cache-Control headers to REST endpoints
+- Design System endpoint: 60s cache with file-based ETag
+- Presets endpoint: 1 hour cache (static content)
+- Patterns endpoint: 30s cache with content-based ETag
+- Theme patterns endpoint: 5 minute cache
+- Supports `If-None-Match` for 304 Not Modified responses
+
+### UI/UX Improvements
+
+**Loading Skeletons**
+- Replaced spinner with skeleton loading placeholders in Pattern Grid
+- Smooth shimmer animation matches actual card layout
+- Better perceived performance during pattern loading
+
+**Toast Notifications**
+- Replaced `window.alert()` with WordPress-native toast notifications
+- Shows success/error messages for pattern export, duplicate, and delete
+- Uses `@wordpress/notices` SnackbarList component
+
+**Debounced Color Inputs**
+- Added 150ms debounce to color picker inputs in Design System
+- Immediate visual feedback in the picker
+- Reduced re-renders and live preview updates while adjusting colors
+
+### Files Changed
+
+**New Components:**
+- `src/components/DebouncedColorInput/` - Debounced color input with local state
+- `src/pages/PatternLibrary/PatternCardSkeleton.tsx` - Skeleton loading component
+
+**Updated:**
+- `php/RestApi/PatternsController.php` - Pagination fix, N+1 fix, HTTP caching
+- `php/RestApi/DesignSystemController.php` - HTTP caching headers
+- `php/Studio.php` - Origin validation fix in preview script
+- `src/hooks/useLivePreview.ts` - Origin validation fix
+- `src/pages/PatternLibrary/` - Skeletons and toast notifications
+- `src/pages/DesignSystem/` - Debounced color inputs
+- `src/styles/admin.css` - Skeleton animations, toast positioning
+
+---
+
 ## v1.3.0 - Production Suite
 
 **Environment Sync, Snapshots & Rollback**

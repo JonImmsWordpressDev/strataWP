@@ -230,6 +230,6 @@ Inspired by:
 
 ---
 
-**Current Version**: v1.3.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
+**Current Version**: v1.4.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)

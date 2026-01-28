@@ -497,6 +497,16 @@ Published packages:
 
 StrataWP Studio provides a Design System editor and Pattern Library for WordPress admin.
 
+### Key Features
+
+- **Design System Editor**: Visual color/typography controls with live preview
+- **Pattern Library**: Browse, create, duplicate, export patterns
+- **HTTP Caching**: ETag + Cache-Control headers on all REST endpoints
+- **N+1 Query Prevention**: Term cache priming for efficient pattern loading
+- **Skeleton Loading**: Smooth loading placeholders in Pattern Grid
+- **Toast Notifications**: WordPress-native feedback for actions
+- **Debounced Inputs**: Smooth color picker interactions
+
 ### Building Studio
 
 ```bash
@@ -554,3 +564,15 @@ Studio auto-detects if installed in a theme or plugin:
 - Add `"StrataWP\\Studio\\": "vendor/stratawp/studio/php/"` to composer.json
 - Run `composer dump-autoload`
 - This must come BEFORE the general `StrataWP\\` mapping
+
+**Live Preview not working**:
+- Check browser console for origin mismatch warnings
+- In reverse proxy setups, Studio logs origin mismatches but still accepts valid messages
+- Ensure `home_url()` and `admin_url()` return correct URLs (check `WP_HOME`/`WP_SITEURL`)
+
+### Studio REST API Performance
+
+The Pattern Library uses optimized queries:
+- `update_object_term_cache()` primes term cache before processing patterns
+- All endpoints return HTTP caching headers (ETag, Cache-Control)
+- Conditional requests supported via `If-None-Match` header
