@@ -509,6 +509,46 @@
   padding: 4px;
 }
 
+/* Pattern Card Skeleton */
+.stratawp-pattern-card--skeleton {
+  pointer-events: none;
+}
+
+.stratawp-pattern-card__skeleton-preview {
+  height: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+.stratawp-pattern-card__skeleton-title {
+  height: 16px;
+  width: 70%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.stratawp-pattern-card__skeleton-meta {
+  height: 12px;
+  width: 40%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Modals */
 .stratawp-new-pattern-modal,
 .stratawp-delete-modal {
@@ -521,4 +561,13 @@
   justify-content: flex-end;
   gap: 8px;
   margin-top: 24px;
+}
+
+/* Toast Notifications */
+.stratawp-pattern-library__notices {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100000;
 }

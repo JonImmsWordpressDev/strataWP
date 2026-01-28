@@ -4,9 +4,10 @@
  * Responsive grid layout for displaying pattern cards with loading states and pagination.
  */
 
-import { Button, Spinner } from '@wordpress/components'
+import { Button } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
 import { PatternCard } from './PatternCard'
+import { PatternGridSkeleton } from './PatternCardSkeleton'
 import type { Pattern } from '../../types'
 
 interface PatternGridProps {
@@ -35,15 +36,9 @@ export function PatternGrid({
   onLoadMore,
   hasMore,
 }: PatternGridProps) {
-  // Loading state when no patterns loaded yet
+  // Loading state when no patterns loaded yet - show skeleton grid
   if (isLoading && patterns.length === 0) {
-    return (
-      <div className="stratawp-pattern-grid__loading">
-        {/* @ts-expect-error - WordPress components have React 18 type incompatibility */}
-        <Spinner />
-        <p>{__('Loading patterns...', 'stratawp')}</p>
-      </div>
-    )
+    return <PatternGridSkeleton count={6} />
   }
 
   // Empty state

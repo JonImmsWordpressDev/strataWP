@@ -3,6 +3,7 @@ import { Button, Spinner, Notice } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
 import { useDesignTokens } from '../../hooks/useDesignTokens'
 import { LivePreview } from '../../components/LivePreview'
+import { DebouncedColorInput } from '../../components/DebouncedColorInput'
 
 declare const stratawpStudio: {
   previewUrl: string
@@ -133,10 +134,10 @@ export function DesignSystemPage() {
                     <span className="stratawp-design-system__color-name">
                       {color.name}
                     </span>
-                    <input
-                      type="color"
+                    <DebouncedColorInput
                       value={color.color}
-                      onChange={(e) => updateColor(color.slug, e.target.value)}
+                      onChange={(value) => updateColor(color.slug, value)}
+                      delay={150}
                       className="stratawp-design-system__color-input"
                     />
                     <span className="stratawp-design-system__color-value">

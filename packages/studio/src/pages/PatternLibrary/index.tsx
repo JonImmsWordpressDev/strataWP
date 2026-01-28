@@ -5,14 +5,17 @@
  * with actions for create, edit, duplicate, export, and delete.
  */
 
-import { useState } from '@wordpress/element'
+import { useState, useCallback } from '@wordpress/element'
 import {
   Button,
   Modal,
   TextControl,
   SelectControl,
   Notice,
+  SnackbarList,
 } from '@wordpress/components'
+import { useDispatch, useSelect } from '@wordpress/data'
+import { store as noticesStore } from '@wordpress/notices'
 import { __ } from '@wordpress/i18n'
 import { plus } from '@wordpress/icons'
 import { usePatterns } from '../../hooks/usePatterns'
@@ -42,6 +45,19 @@ export function PatternLibraryPage() {
     duplicatePattern,
   } = usePatterns()
 
+  // Toast notifications
+  const { createSuccessNotice, createErrorNotice, removeNotice } = useDispatch(noticesStore)
+  const notices = useSelect(
+    (select) => select(noticesStore).getNotices(),
+    []
+  )
+  const snackbarNotices = notices.filter((notice) => notice.type === 'snackbar')
+
+  const onRemoveNotice = useCallback(
+    (id: string) => removeNotice(id),
+    [removeNotice]
+  )
+
   // Modal state
   const [isNewModalOpen, setIsNewModalOpen] = useState(false)
   const [newPatternTitle, setNewPatternTitle] = useState('')
@@ -60,16 +76,35 @@ export function PatternLibraryPage() {
   const handleDuplicate = async (pattern: Pattern) => {
     const duplicated = await duplicatePattern(pattern.id)
     if (duplicated) {
-      // Pattern is automatically added to state by the hook
+      createSuccessNotice(
+        __('Pattern duplicated successfully.', 'stratawp'),
+        { type: 'snackbar', isDismissible: true }
+      )
+    } else {
+      createErrorNotice(
+        __('Failed to duplicate pattern.', 'stratawp'),
+        { type: 'snackbar', isDismissible: true }
+      )
     }
   }
 
   const handleExport = async (pattern: Pattern) => {
     const exportPath = await exportPattern(pattern.id)
     if (exportPath) {
-      // eslint-disable-next-line no-alert
-      window.alert(
-        __('Pattern exported successfully to:', 'stratawp') + '\n' + exportPath
+      createSuccessNotice(
+        __('Pattern exported to:', 'stratawp') + ' ' + exportPath,
+        {
+          type: 'snackbar',
+          isDismissible: true,
+        }
+      )
+    } else {
+      createErrorNotice(
+        __('Failed to export pattern.', 'stratawp'),
+        {
+          type: 'snackbar',
+          isDismissible: true,
+        }
       )
     }
   }
@@ -81,9 +116,19 @@ export function PatternLibraryPage() {
   const handleDeleteConfirm = async () => {
     if (!confirmDelete) return
 
+    const patternTitle = confirmDelete.title
     const success = await deletePattern(confirmDelete.id)
     if (success) {
       setConfirmDelete(null)
+      createSuccessNotice(
+        __('Pattern deleted:', 'stratawp') + ' ' + patternTitle,
+        { type: 'snackbar', isDismissible: true }
+      )
+    } else {
+      createErrorNotice(
+        __('Failed to delete pattern.', 'stratawp'),
+        { type: 'snackbar', isDismissible: true }
+      )
     }
   }
 
@@ -250,6 +295,13 @@ export function PatternLibraryPage() {
           </div>
         </Modal>
       )}
+
+      {/* Toast Notifications */}
+      <SnackbarList
+        notices={snackbarNotices}
+        onRemove={onRemoveNotice}
+        className="stratawp-pattern-library__notices"
+      />
     </div>
   )
 }
