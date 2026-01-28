@@ -215,6 +215,13 @@ class PatternsController extends WP_REST_Controller {
             $query = new \WP_Query($query_args);
             $database_total = $query->found_posts;
 
+            // Prime the term cache to avoid N+1 queries
+            // This loads all terms for all posts in 1 query instead of 2N queries
+            $post_ids = wp_list_pluck($query->posts, 'ID');
+            if (!empty($post_ids)) {
+                update_object_term_cache($post_ids, PatternPostType::POST_TYPE);
+            }
+
             foreach ($query->posts as $post) {
                 $patterns[] = $this->prepare_pattern_response($post, 'database');
             }
@@ -267,13 +274,35 @@ class PatternsController extends WP_REST_Controller {
         $total       = $database_total + $theme_total;
         $total_pages = $per_page > 0 ? (int) ceil($total / $per_page) : 1;
 
-        return new WP_REST_Response([
+        // Generate ETag based on content hash for caching
+        $etag_data = [
+            'total'    => $total,
+            'page'     => $page,
+            'per_page' => $per_page,
+            'filters'  => [$source, $category, $tag, $search],
+            'hash'     => md5(wp_json_encode(array_column($patterns, 'id'))),
+        ];
+        $etag = '"patterns-' . md5(wp_json_encode($etag_data)) . '"';
+
+        // Check for conditional request
+        $if_none_match = $request->get_header('If-None-Match');
+        if ($if_none_match && $if_none_match === $etag) {
+            return new WP_REST_Response(null, 304);
+        }
+
+        $response = new WP_REST_Response([
             'items'       => $patterns,
             'total'       => $total,
             'total_pages' => $total_pages,
             'page'        => (int) $page,
             'per_page'    => (int) $per_page,
         ]);
+
+        // Add caching headers - short cache since patterns can be modified
+        $response->header('ETag', $etag);
+        $response->header('Cache-Control', 'private, max-age=30');
+
+        return $response;
     }
 
     /**
@@ -607,23 +636,42 @@ class PatternsController extends WP_REST_Controller {
 
         $total = count($theme_patterns);
 
-        return new WP_REST_Response([
+        // Generate ETag based on theme patterns content
+        $etag = '"theme-patterns-' . md5(wp_json_encode(array_column($theme_patterns, 'name'))) . '"';
+
+        // Check for conditional request
+        $if_none_match = $request->get_header('If-None-Match');
+        if ($if_none_match && $if_none_match === $etag) {
+            return new WP_REST_Response(null, 304);
+        }
+
+        $response = new WP_REST_Response([
             'items'       => $theme_patterns,
             'total'       => $total,
             'total_pages' => 1,
             'page'        => 1,
             'per_page'    => $total,
         ]);
+
+        // Theme patterns are file-based, cache for longer
+        $response->header('ETag', $etag);
+        $response->header('Cache-Control', 'private, max-age=300');
+
+        return $response;
     }
 
     /**
      * Prepare pattern response from WP_Post
+     *
+     * Note: For best performance when processing multiple patterns, call
+     * update_object_term_cache() before this method to prime the term cache.
      *
      * @param WP_Post $post   Post object.
      * @param string  $source Source type ('database' or 'theme').
      * @return array
      */
     private function prepare_pattern_response(WP_Post $post, string $source): array {
+        // These will use cached data if update_object_term_cache() was called
         $categories = wp_get_object_terms($post->ID, PatternPostType::TAXONOMY_CATEGORY, ['fields' => 'all']);
         $tags       = wp_get_object_terms($post->ID, PatternPostType::TAXONOMY_TAG, ['fields' => 'all']);
 

@@ -135,6 +135,15 @@ class DesignSystemController extends WP_REST_Controller {
             );
         }
 
+        $file_mtime = filemtime($theme_json_path);
+        $etag = '"' . md5($theme_json_path . $file_mtime) . '"';
+
+        // Check for conditional request (If-None-Match)
+        $if_none_match = $request->get_header('If-None-Match');
+        if ($if_none_match && $if_none_match === $etag) {
+            return new WP_REST_Response(null, 304);
+        }
+
         $theme_json = json_decode(file_get_contents($theme_json_path), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -148,11 +157,18 @@ class DesignSystemController extends WP_REST_Controller {
         $tokens = $this->extract_tokens_from_theme_json($theme_json);
         $active_preset = get_option('stratawp_active_preset', null);
 
-        return new WP_REST_Response([
+        $response = new WP_REST_Response([
             'tokens' => $tokens,
             'activePreset' => $active_preset,
-            'lastModified' => date('c', filemtime($theme_json_path)),
+            'lastModified' => date('c', $file_mtime),
         ]);
+
+        // Add caching headers
+        $response->header('ETag', $etag);
+        $response->header('Last-Modified', gmdate('D, d M Y H:i:s', $file_mtime) . ' GMT');
+        $response->header('Cache-Control', 'private, max-age=60');
+
+        return $response;
     }
 
     /**
@@ -206,7 +222,22 @@ class DesignSystemController extends WP_REST_Controller {
     public function get_presets(WP_REST_Request $request) {
         $presets = $this->get_bundled_presets();
 
-        return new WP_REST_Response($presets);
+        // Generate ETag based on preset content (static, so use version)
+        $etag = '"presets-' . md5(wp_json_encode($presets)) . '"';
+
+        // Check for conditional request
+        $if_none_match = $request->get_header('If-None-Match');
+        if ($if_none_match && $if_none_match === $etag) {
+            return new WP_REST_Response(null, 304);
+        }
+
+        $response = new WP_REST_Response($presets);
+
+        // Presets are static, cache for longer
+        $response->header('ETag', $etag);
+        $response->header('Cache-Control', 'private, max-age=3600');
+
+        return $response;
     }
 
     /**
