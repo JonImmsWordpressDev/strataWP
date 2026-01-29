@@ -44,6 +44,7 @@ The CLI automatically:
 |----------|-------------|
 | **[Getting Started Guide](./GETTING_STARTED.md)** | Step-by-step tutorial for beginners |
 | **[Cheat Sheet](./CHEAT_SHEET.md)** | Quick reference for all commands |
+| **[Studio Guide](./docs/STUDIO.md)** | Design System, Block Library & Pattern Management |
 | **[Changelog](./CHANGELOG.md)** | Version history and release notes |
 
 ## Why StrataWP?
@@ -230,6 +231,6 @@ Inspired by:
 
 ---
 
-**Current Version**: v1.4.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
+**Current Version**: v1.5.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)

@@ -2,6 +2,59 @@
 
 All notable changes to StrataWP are documented in this file.
 
+## v1.5.0 - Block Library
+
+**Block Library Showcase for StrataWP Studio**
+
+This release adds the Block Library feature to Studio, providing a comprehensive view of all registered Gutenberg blocks.
+
+### New Features
+
+**Block Library - Showcase Tab**
+
+Browse, search, and inspect all blocks registered in your WordPress installation:
+
+- **Source Detection** - Automatically identifies blocks as Theme, Core, or Plugin
+- **Smart Filtering** - Filter by source, category, or search by name/keyword
+- **Block Details Modal** - View complete block information including:
+  - Title, description, and icon
+  - Supported features (alignment, colors, typography, etc.)
+  - Block attributes and their types
+  - Parent/ancestor constraints
+  - One-click copy block name
+
+**REST API Endpoints**
+
+New endpoints with HTTP caching:
+- `GET /stratawp/v1/blocks` - List blocks with filtering
+- `GET /stratawp/v1/blocks/categories` - List block categories
+
+### Files Added
+
+**PHP:**
+- `php/RestApi/BlocksController.php` - REST API controller with HTTP caching
+
+**TypeScript:**
+- `src/types/blocks.ts` - Block type definitions
+- `src/api/blocks.ts` - REST API client
+- `src/hooks/useBlocks.ts` - React state management hook
+
+**React Components:**
+- `src/pages/BlockLibrary/index.tsx` - Main page with tab navigation
+- `src/pages/BlockLibrary/ShowcaseTab.tsx` - Showcase tab content
+- `src/pages/BlockLibrary/BlockCard.tsx` - Block card component
+- `src/pages/BlockLibrary/BlockCardSkeleton.tsx` - Loading skeleton
+- `src/pages/BlockLibrary/BlockFilters.tsx` - Filter controls
+- `src/pages/BlockLibrary/BlockGrid.tsx` - Responsive grid layout
+- `src/pages/BlockLibrary/BlockDetail.tsx` - Detail modal
+
+### Documentation
+
+- Added comprehensive `docs/STUDIO.md` documentation
+- Documents all Studio features: Design System, Block Library, Pattern Library
+
+---
+
 ## v1.4.0 - Studio Improvements
 
 **Performance, Bug Fixes & UI/UX Enhancements**
