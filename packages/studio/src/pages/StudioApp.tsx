@@ -4,6 +4,7 @@ import { Notice } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
 import { AdminLayout } from '../components/AdminLayout'
 import { DesignSystemPage } from './DesignSystem'
+import { BlockLibraryPage } from './BlockLibrary'
 import { PatternLibraryPage } from './PatternLibrary'
 
 // Error boundary to catch React rendering errors
@@ -53,10 +54,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 }
 
 // Placeholder components for other pages
-function BlockLibraryPage() {
-  return <div>Block Library - Coming Soon</div>
-}
-
 function TemplateBuilderPage() {
   return <div>Template Builder - Coming Soon</div>
 }

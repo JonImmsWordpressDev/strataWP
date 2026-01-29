@@ -16,6 +16,7 @@ export {
   type ImportStarterRequest,
 } from './api'
 export * from './patterns'
+export * from './blocks'
 
 // Studio configuration
 export interface StudioConfig {

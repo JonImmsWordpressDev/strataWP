@@ -95,6 +95,9 @@ class Studio {
 
         $this->controllers['patterns'] = new RestApi\PatternsController();
         $this->controllers['patterns']->register_routes();
+
+        $this->controllers['blocks'] = new RestApi\BlocksController();
+        $this->controllers['blocks']->register_routes();
     }
 
     /**
