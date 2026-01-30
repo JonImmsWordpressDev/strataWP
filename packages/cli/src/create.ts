@@ -218,6 +218,18 @@ async function customizeTheme(themePath: string, config: ThemeConfig) {
       }
     }
 
+    // Add StrataWP metadata for update tracking
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = dirname(__filename)
+    const cliPackageJson = await fs.readJson(
+      path.join(__dirname, '..', 'package.json')
+    )
+    packageJson.stratawp = {
+      createdWith: cliPackageJson.version,
+      template: config.template,
+      createdAt: new Date().toISOString(),
+    }
+
     await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 })
   }
 
@@ -359,6 +371,13 @@ async function detectWordPressSites(): Promise<WordPressSite[]> {
 }
 
 async function createBasicStructure(themePath: string, config: ThemeConfig) {
+  // Get CLI version for metadata
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = dirname(__filename)
+  const cliPackageJson = await fs.readJson(
+    path.join(__dirname, '..', 'package.json')
+  )
+
   // Create package.json
   const packageJson = {
     name: config.slug,
@@ -385,6 +404,11 @@ async function createBasicStructure(themePath: string, config: ThemeConfig) {
       '@vitejs/plugin-react': '^4.2.1',
       vite: '^5.0.10',
       typescript: config.typescript ? '^5.3.3' : undefined,
+    },
+    stratawp: {
+      createdWith: cliPackageJson.version,
+      template: config.template,
+      createdAt: new Date().toISOString(),
     },
   }
 

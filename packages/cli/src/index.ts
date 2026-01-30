@@ -27,6 +27,16 @@ import {
   listCommand as deployListCommand,
   testCommand as deployTestCommand,
 } from './commands/deploy/index'
+import {
+  rollbackListCommand,
+  rollbackDiffCommand,
+  rollbackMarkStableCommand,
+} from './commands/rollback'
+import {
+  syncDbPullCommand,
+  syncDbPushCommand,
+} from './commands/sync'
+import { updateCommand } from './commands/update'
 
 const program = new Command()
 
@@ -227,5 +237,50 @@ program
   .command('deploy:test <environment>')
   .description('Test connection to deployment environment')
   .action(deployTestCommand)
+
+// Rollback commands
+program
+  .command('rollback:list')
+  .alias('rollback:ls')
+  .description('List available deployment snapshots')
+  .option('-e, --environment <env>', 'Filter by environment')
+  .option('-n, --limit <number>', 'Limit results', '10')
+  .action(rollbackListCommand)
+
+program
+  .command('rollback:diff <snapshot1> <snapshot2>')
+  .description('Compare two snapshots')
+  .action(rollbackDiffCommand)
+
+program
+  .command('rollback:mark-stable <snapshot>')
+  .description('Mark a snapshot as known-good (stable)')
+  .action(rollbackMarkStableCommand)
+
+// Sync commands
+program
+  .command('sync:db:pull <environment>')
+  .description('Pull database from remote environment to local')
+  .option('--tables <tables>', 'Only sync specific tables (comma-separated)')
+  .option('--no-url-replace', 'Skip URL replacement')
+  .option('--dry-run', 'Show what would be done without doing it')
+  .action(syncDbPullCommand)
+
+program
+  .command('sync:db:push <environment>')
+  .description('Push local database to remote environment')
+  .option('--tables <tables>', 'Only sync specific tables (comma-separated)')
+  .option('--no-url-replace', 'Skip URL replacement')
+  .option('--dry-run', 'Show what would be done without doing it')
+  .option('--force', 'Skip confirmation prompt')
+  .action(syncDbPushCommand)
+
+// Update command
+program
+  .command('update')
+  .description('Check for and apply StrataWP package updates')
+  .option('-c, --check', 'Check for updates without applying them')
+  .option('-f, --force', 'Skip confirmation prompts')
+  .action(updateCommand)
 
 program.parse()

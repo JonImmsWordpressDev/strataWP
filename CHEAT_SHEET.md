@@ -133,6 +133,47 @@ stratawp explorer [options]
 stratawp storybook           # Alias for explorer
 ```
 
+### Deployment
+
+```bash
+stratawp deploy:setup                    # Interactive configuration
+stratawp deploy production               # Deploy to environment
+stratawp deploy production --dry-run     # Preview changes
+stratawp deploy production --force       # Skip confirmation
+stratawp deploy production --fresh       # Upload all files (ignore manifest)
+stratawp deploy production --no-backup   # Skip pre-deploy snapshot
+stratawp deploy:test production          # Test connection
+stratawp deploy:list                     # List environments
+```
+
+### Database Sync
+
+```bash
+stratawp sync:db:pull production         # Pull remote DB to local
+stratawp sync:db:push staging            # Push local DB to remote
+stratawp sync:db:pull production --tables=wp_posts,wp_postmeta  # Specific tables
+stratawp sync:db:pull production --no-url-replace  # Skip URL replacement
+stratawp sync:db:pull production --dry-run  # Preview without changes
+```
+
+### Rollback & Snapshots
+
+```bash
+stratawp rollback:list                   # List all snapshots
+stratawp rollback:list --environment=production  # Filter by environment
+stratawp rollback:list --limit=20        # Show more snapshots
+stratawp rollback:diff 1 2               # Compare snapshots by index
+stratawp rollback:mark-stable 1          # Mark snapshot as stable
+```
+
+### Package Updates
+
+```bash
+stratawp update                          # Check and apply updates interactively
+stratawp update --check                  # Check for updates without applying
+stratawp update --force                  # Apply all updates without prompts
+```
+
 ## File Structure
 
 ```
@@ -165,7 +206,10 @@ my-theme/
 ├── theme.json              # FSE config
 ├── package.json
 ├── tsconfig.json
-└── vite.config.ts
+├── vite.config.ts
+├── .stratawp-deploy.json   # Deployment config (optional)
+├── .stratawp-sync.json     # Sync config (optional)
+└── .stratawp-snapshots/    # Deployment snapshots (auto-generated)
 ```
 
 ## Block Development
@@ -543,7 +587,17 @@ wp --version           # WordPress CLI
 stratawp --version     # StrataWP CLI
 ```
 
-### Update StrataWP CLI
+### Update StrataWP Packages
+
+Check for and apply updates to all @stratawp/* packages:
+
+```bash
+stratawp update                 # Interactive update
+stratawp update --check         # Check only, don't apply
+stratawp update --force         # Apply all updates without prompts
+```
+
+### Update StrataWP CLI (Development)
 
 If new commands aren't showing up after pulling changes from the repo:
 

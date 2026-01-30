@@ -64,3 +64,6 @@ DEVELOPMENT_NOTES.md
 .stratawp-deploy.json
 .deploy-manifest.json
 .deploy-history/
+
+# Worktrees
+.worktrees/

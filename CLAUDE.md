@@ -76,6 +76,7 @@ pnpm dev           # Start Vite dev server on port 3000
 - **packages/ai**: AI-assisted development (OpenAI GPT-4, Anthropic Claude)
 - **packages/registry**: npm-powered component registry
 - **packages/explorer**: Interactive component browser (Storybook-like)
+- **packages/sync**: Environment sync, snapshots, and rollback
 - **packages/testing**: Vitest and Playwright testing utilities
 - **packages/headless**: REST API client, React hooks, Next.js utilities
 - **packages/create-stratawp**: Theme creation CLI (bundled templates)
@@ -145,6 +146,9 @@ Commands in `packages/cli/src/commands/`:
 - **part.ts**: Generate template parts (`stratawp part:new`)
 - **design-system.ts**: Setup Tailwind/UnoCSS (`stratawp design-system:setup`)
 - **deploy/**: Deployment system (SFTP/FTP, setup, test, list)
+- **sync.ts**: Database sync between environments (`stratawp sync:db:pull`, `sync:db:push`)
+- **rollback.ts**: Snapshot management (`stratawp rollback:list`, `rollback:diff`, `rollback:mark-stable`)
+- **update.ts**: Package updates (`stratawp update`, `stratawp update --check`)
 
 Each command uses:
 - `prompts` for interactive CLI
@@ -157,8 +161,13 @@ Each command uses:
 Located in `packages/cli/src/deployers/`:
 
 - **ftp.ts**: SFTP/FTP deployment via `ssh2-sftp-client` and `basic-ftp`
-- **ssh.ts**: SSH/rsync deployment (future)
+- **ssh.ts**: SSH/rsync deployment via `node-ssh` with optional rsync acceleration
 - **git.ts**: Git-based deployment (future)
+
+Supported deployment types:
+- **SFTP**: Secure file transfer, recommended for shared hosting
+- **FTP**: Standard file transfer (less secure)
+- **SSH/rsync**: For VPS/cloud servers with SSH access, supports key-based auth and rsync for faster transfers
 
 Configuration stored in:
 - Global: `~/.stratawp/deploy-config.json`
@@ -172,6 +181,63 @@ stratawp deploy production    # Deploy to environment
 stratawp deploy:test production  # Test connection
 stratawp deploy:list          # List environments
 ```
+
+SSH-specific features:
+- Password or private key authentication (with optional passphrase)
+- rsync for efficient bulk file transfers when available
+- Remote command execution for WP-CLI post-deploy hooks
+- Server-side backup/restore operations
+
+### Sync System
+
+Located in `packages/sync/`:
+
+- **database/dump.ts**: DatabaseDumper class - exports MySQL to SQL
+- **database/restore.ts**: DatabaseRestorer class - imports SQL with URL replacement
+- **database/url-replace.ts**: UrlReplacer - handles PHP serialized string URL replacement
+- **snapshots/manager.ts**: SnapshotManager - creates/manages deployment snapshots
+- **diff/index.ts**: DiffEngine - compares files and SQL dumps
+
+Configuration stored in:
+- Project: `.stratawp-sync.json` (environment database configs)
+- Snapshots: `.stratawp-snapshots/` directory
+
+Commands:
+```bash
+# Database sync
+stratawp sync:db:pull production    # Pull remote DB to local
+stratawp sync:db:push staging       # Push local DB to remote
+
+# Rollback commands
+stratawp rollback:list              # List all snapshots
+stratawp rollback:diff 1 2          # Compare snapshots
+stratawp rollback:mark-stable 1     # Mark snapshot as stable
+```
+
+Key features:
+- **PHP Serialized URL Replacement**: Correctly recalculates string lengths when replacing URLs
+- **Automatic Backups**: Creates backup before any database restore
+- **Pre-deploy Snapshots**: Deploy command creates snapshot before deployment
+- **Compressed Storage**: Theme as tar.gz, database as gzip SQL
+
+### Update System
+
+Located in `packages/cli/src/utils/update-checker.ts`:
+
+- Queries npm registry for latest @stratawp/* package versions
+- Caches version data in `~/.stratawp/update-cache.json` (1-hour TTL)
+- Compares versions using semver
+
+Commands:
+```bash
+stratawp update                  # Check and apply updates interactively
+stratawp update --check          # Check for updates without applying
+stratawp update --force          # Apply all updates without prompts
+```
+
+Dev server notifications:
+- Vite plugin shows update notifications when dev server starts
+- Configure via `updateNotification.enabled` option in vite.config.ts
 
 ### Block Theme (FSE) Structure
 
@@ -331,6 +397,32 @@ stratawp deploy production
 stratawp deploy production --dry-run     # Preview changes
 stratawp deploy production --no-build    # Skip build
 stratawp deploy production --force       # Skip confirmation
+stratawp deploy production --no-backup   # Skip pre-deploy snapshot
+```
+
+### Database Sync & Rollback
+
+```bash
+# Pull production database to local (with automatic URL replacement)
+stratawp sync:db:pull production
+
+# Push local database to staging
+stratawp sync:db:push staging
+
+# Sync options
+stratawp sync:db:pull production --tables=wp_posts,wp_postmeta  # Specific tables
+stratawp sync:db:pull production --no-url-replace               # Skip URL replacement
+stratawp sync:db:pull production --dry-run                      # Preview without changes
+
+# List deployment snapshots
+stratawp rollback:list
+stratawp rollback:list --environment=production
+
+# Compare snapshots
+stratawp rollback:diff 1 2              # Compare by index
+
+# Mark snapshot as stable (prevent auto-cleanup)
+stratawp rollback:mark-stable 1
 ```
 
 ## Important Files
@@ -342,14 +434,18 @@ stratawp deploy production --force       # Skip confirmation
 - **functions.php**: Theme entry point, component initialization
 - **tsconfig.json**: TypeScript configuration
 - **.gitignore**: Excludes `dist/`, `node_modules/`, `.turbo/`
+- **.stratawp-sync.json**: Environment database configurations for sync
+- **.stratawp-snapshots/**: Deployment snapshots directory
 
 ## Deployment Notes
 
 - **Production files**: Only `dist/`, PHP files, `theme.json`, `style.css`, `vendor/` are deployed
 - **Excluded files**: `node_modules/`, `src/`, `.git/`, development files
-- **Backup system**: Automatic backups created before deployment
+- **Snapshot system**: Pre-deploy snapshots created automatically (theme files + database)
 - **Change detection**: Only modified files uploaded (incremental)
-- **Security**: SFTP preferred over FTP, supports environment variables for credentials
+- **Security**: SSH/rsync or SFTP preferred over FTP, supports environment variables for credentials
+- **SSH deployment**: Use key-based authentication for VPS/cloud servers, rsync enabled for faster transfers
+- **Rollback**: Use `rollback:list` to see snapshots, `rollback:diff` to compare
 
 ## Working with the Core Package
 
@@ -389,7 +485,94 @@ Published packages:
 - `@stratawp/vite-plugin` - Vite plugin
 - `@stratawp/ai` - AI tools
 - `@stratawp/registry` - Component registry
+- `@stratawp/sync` - Environment sync, snapshots, and rollback
 - `@stratawp/testing` - Testing utilities
 - `@stratawp/explorer` - Component browser
 - `@stratawp/headless` - Headless WordPress utilities
 - `create-stratawp` - Theme creation CLI
+
+## Studio Package
+
+**Location**: `packages/studio/`
+
+StrataWP Studio provides a Design System editor and Pattern Library for WordPress admin.
+
+### Key Features
+
+- **Design System Editor**: Visual color/typography controls with live preview
+- **Pattern Library**: Browse, create, duplicate, export patterns
+- **HTTP Caching**: ETag + Cache-Control headers on all REST endpoints
+- **N+1 Query Prevention**: Term cache priming for efficient pattern loading
+- **Skeleton Loading**: Smooth loading placeholders in Pattern Grid
+- **Toast Notifications**: WordPress-native feedback for actions
+- **Debounced Inputs**: Smooth color picker interactions
+
+### Building Studio
+
+```bash
+pnpm build --filter @stratawp/studio
+```
+
+**Important Vite Config Notes** (vite.config.ts):
+- Uses `rollup-plugin-external-globals` to convert ESM imports to WordPress globals
+- Uses `jsxRuntime: 'classic'` (React.createElement) instead of automatic JSX runtime
+- External packages mapped to WordPress globals:
+  - `@wordpress/element` → `wp.element`
+  - `@wordpress/components` → `wp.components`
+  - `@wordpress/i18n` → `wp.i18n`
+  - `@wordpress/api-fetch` → `wp.apiFetch`
+  - etc.
+
+### Installing Studio in a Theme
+
+1. Copy `packages/studio/` to theme's `vendor/stratawp/studio/`
+
+2. Add namespace to theme's `composer.json`:
+   ```json
+   "autoload": {
+     "psr-4": {
+       "StrataWP\\Studio\\": "vendor/stratawp/studio/php/",
+       "StrataWP\\": "vendor/stratawp/core/src/"
+     }
+   }
+   ```
+
+3. Run `composer dump-autoload`
+
+4. Load in `functions.php`:
+   ```php
+   if (file_exists(__DIR__ . '/vendor/stratawp/studio/php/autoload.php')) {
+       require_once __DIR__ . '/vendor/stratawp/studio/php/autoload.php';
+       \StrataWP\Studio\Studio::instance()->initialize();
+   }
+   ```
+
+### Theme vs Plugin Context
+
+Studio auto-detects if installed in a theme or plugin:
+- **Theme**: Uses `get_template_directory_uri()` for asset URLs
+- **Plugin**: Uses `plugins_url()` for asset URLs
+
+### Troubleshooting Studio
+
+**Blank pages**:
+- Ensure `dist/` folder exists with `index.js`, `gutenberg.js`, `style.css`
+- Check browser console for JS errors
+- Verify Composer autoloader includes `StrataWP\Studio\` namespace
+
+**Class not found errors**:
+- Add `"StrataWP\\Studio\\": "vendor/stratawp/studio/php/"` to composer.json
+- Run `composer dump-autoload`
+- This must come BEFORE the general `StrataWP\\` mapping
+
+**Live Preview not working**:
+- Check browser console for origin mismatch warnings
+- In reverse proxy setups, Studio logs origin mismatches but still accepts valid messages
+- Ensure `home_url()` and `admin_url()` return correct URLs (check `WP_HOME`/`WP_SITEURL`)
+
+### Studio REST API Performance
+
+The Pattern Library uses optimized queries:
+- `update_object_term_cache()` primes term cache before processing patterns
+- All endpoints return HTTP caching headers (ETag, Cache-Control)
+- Conditional requests supported via `If-None-Match` header

@@ -130,7 +130,9 @@ export class FTPDeployer extends BaseDeployer {
    * Upload multiple files with concurrency control
    */
   async uploadFiles(files: FileRecord[]): Promise<void> {
-    const limit = pLimit(3) // Limit to 3 concurrent uploads
+    // FTP doesn't support concurrent operations on the same client
+    // SFTP can handle multiple concurrent uploads
+    const limit = pLimit(this.isSFTP ? 3 : 1)
     const totalFiles = files.length
     let completedFiles = 0
 

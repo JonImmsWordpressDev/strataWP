@@ -8,6 +8,7 @@ import chalk from 'chalk'
 import ora from 'ora'
 import { DeployConfigManager } from '../../utils/deploy-config'
 import { FTPDeployer } from '../../deployers/ftp'
+import { SSHDeployer } from '../../deployers/ssh'
 import type { EnvironmentConfig } from '../../utils/deploy-config'
 
 export async function setupCommand() {
@@ -74,7 +75,6 @@ export async function setupCommand() {
         title: 'SSH/rsync',
         value: 'ssh',
         description: 'For VPS/cloud servers with SSH access',
-        disabled: true, // Phase 2
       },
       {
         title: 'Git',
@@ -107,7 +107,7 @@ export async function setupCommand() {
     type: 'number',
     name: 'port',
     message: 'Port:',
-    initial: deploymentType === 'sftp' ? 22 : 21,
+    initial: deploymentType === 'sftp' || deploymentType === 'ssh' ? 22 : 21,
   })
 
   const { username } = await prompts({
@@ -122,66 +122,131 @@ export async function setupCommand() {
     return
   }
 
-  // Choose credential storage method
-  const { credentialStorage } = await prompts({
-    type: 'select',
-    name: 'credentialStorage',
-    message: 'How do you want to store credentials?',
-    choices: [
-      {
-        title: 'Environment variables (.env file)',
-        value: 'env',
-        description: 'Recommended - keeps credentials out of config file',
-      },
-      {
-        title: 'Configuration file',
-        value: 'config',
-        description: 'Stored in ~/.stratawp/deploy-config.json',
-      },
-    ],
-  })
+  // SSH-specific: Choose authentication method
+  let authMethod: 'password' | 'key' = 'password'
+  let privateKey: string | undefined
+  let passphrase: string | undefined
+  let rsyncEnabled = false
 
+  if (deploymentType === 'ssh') {
+    const { auth } = await prompts({
+      type: 'select',
+      name: 'auth',
+      message: 'Authentication method:',
+      choices: [
+        {
+          title: 'SSH Key (Recommended)',
+          value: 'key',
+          description: 'Use private key authentication',
+        },
+        {
+          title: 'Password',
+          value: 'password',
+          description: 'Use password authentication',
+        },
+      ],
+    })
+
+    authMethod = auth || 'key'
+
+    if (authMethod === 'key') {
+      const { keyPath } = await prompts({
+        type: 'text',
+        name: 'keyPath',
+        message: 'Path to private key:',
+        initial: '~/.ssh/id_rsa',
+      })
+      privateKey = keyPath
+
+      const { hasPassphrase } = await prompts({
+        type: 'confirm',
+        name: 'hasPassphrase',
+        message: 'Does your key have a passphrase?',
+        initial: false,
+      })
+
+      if (hasPassphrase) {
+        const { phrase } = await prompts({
+          type: 'password',
+          name: 'phrase',
+          message: 'Key passphrase:',
+        })
+        passphrase = phrase
+      }
+    }
+
+    // Rsync option for SSH
+    const { useRsync } = await prompts({
+      type: 'confirm',
+      name: 'useRsync',
+      message: 'Use rsync for file transfers? (faster for large deployments)',
+      initial: true,
+    })
+    rsyncEnabled = useRsync
+  }
+
+  // Choose credential storage method (for FTP/SFTP or SSH with password)
   let password: string | undefined
   let passwordEnvVar: string | undefined
 
-  if (credentialStorage === 'env') {
-    const envVarName = `STRATAWP_DEPLOY_${environmentName.toUpperCase()}_PASSWORD`
-    passwordEnvVar = `\${${envVarName}}`
-
-    console.log(
-      chalk.yellow(
-        `\n📝 Add this to your .env file:\n${envVarName}=your_password_here\n`
-      )
-    )
-
-    const { skipPassword } = await prompts({
-      type: 'confirm',
-      name: 'skipPassword',
-      message: 'Skip password entry for now?',
-      initial: true,
+  if (deploymentType !== 'ssh' || authMethod === 'password') {
+    const { credentialStorage } = await prompts({
+      type: 'select',
+      name: 'credentialStorage',
+      message: 'How do you want to store credentials?',
+      choices: [
+        {
+          title: 'Environment variables (.env file)',
+          value: 'env',
+          description: 'Recommended - keeps credentials out of config file',
+        },
+        {
+          title: 'Configuration file',
+          value: 'config',
+          description: 'Stored in ~/.stratawp/deploy-config.json',
+        },
+      ],
     })
 
-    if (!skipPassword) {
+    if (credentialStorage === 'env') {
+      const envVarName = `STRATAWP_DEPLOY_${environmentName.toUpperCase()}_PASSWORD`
+      passwordEnvVar = `\${${envVarName}}`
+
+      console.log(
+        chalk.yellow(
+          `\n📝 Add this to your .env file:\n${envVarName}=your_password_here\n`
+        )
+      )
+
+      const { skipPassword } = await prompts({
+        type: 'confirm',
+        name: 'skipPassword',
+        message: 'Skip password entry for now?',
+        initial: true,
+      })
+
+      if (!skipPassword) {
+        const { pwd } = await prompts({
+          type: 'password',
+          name: 'pwd',
+          message: 'Password (or press Enter to use env var):',
+        })
+        password = pwd
+      }
+    } else {
       const { pwd } = await prompts({
         type: 'password',
         name: 'pwd',
-        message: 'Password (or press Enter to use env var):',
+        message: 'Password:',
+        validate: (value) => (value.length > 0 ? true : 'Password is required'),
       })
+
+      if (!pwd) {
+        console.log(chalk.red('\n✖ Setup cancelled\n'))
+        return
+      }
       password = pwd
     }
-  } else {
-    const { pwd } = await prompts({
-      type: 'password',
-      name: 'pwd',
-      message: 'Password:',
-      validate: (value) => (value.length > 0 ? true : 'Password is required'),
-    })
-
-    if (!pwd) {
-      console.log(chalk.red('\n✖ Setup cancelled\n'))
-      return
-    }
-    password = pwd
   }
 
   const { remotePath } = await prompts({
@@ -244,9 +309,23 @@ export async function setupCommand() {
     port,
     username,
     password: passwordEnvVar || password,
+    privateKey,
     remotePath,
     buildBefore,
     database: databaseConfig,
+  }
+
+  // Add SSH-specific config
+  if (deploymentType === 'ssh') {
+    if (passphrase) {
+      ;(envConfig as any).passphrase = passphrase
+    }
+    if (rsyncEnabled) {
+      envConfig.rsync = {
+        enabled: true,
+        deleteOrphaned: false,
+      }
+    }
   }
 
   // Test connection
@@ -254,7 +333,9 @@ export async function setupCommand() {
   const spinner = ora('Connecting to server').start()
 
   try {
-    const deployer = new FTPDeployer(envConfig)
+    const deployer = deploymentType === 'ssh'
+      ? new SSHDeployer(envConfig)
+      : new FTPDeployer(envConfig)
     const testResult = await deployer.testConnection()
 
     if (testResult) {
