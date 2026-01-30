@@ -268,8 +268,6 @@ STRATAWP_DEPLOY_STAGING_URL=https://staging.example.com
         'vite.config.ts',
         'package.json',
         'pnpm-lock.yaml',
-        'composer.json',
-        'composer.lock',
         '.DS_Store',
         '.idea/',
         '.vscode/',
