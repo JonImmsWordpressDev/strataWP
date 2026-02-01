@@ -45,6 +45,8 @@ The CLI automatically:
 | **[Getting Started Guide](./GETTING_STARTED.md)** | Step-by-step tutorial for beginners |
 | **[Cheat Sheet](./CHEAT_SHEET.md)** | Quick reference for all commands |
 | **[Studio Guide](./docs/STUDIO.md)** | Design System, Block Library & Pattern Management |
+| **[Deployment Guide](./docs/deployment/getting-started.md)** | Basic deployment with SFTP/FTP/SSH |
+| **[Advanced Deployment](./docs/deployment/ADVANCED-DEPLOYMENT.md)** | SSH keys, FSE template sync, plugin deployment |
 | **[Changelog](./CHANGELOG.md)** | Version history and release notes |
 
 ## Why StrataWP?
