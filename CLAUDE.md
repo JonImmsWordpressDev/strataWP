@@ -576,3 +576,61 @@ The Pattern Library uses optimized queries:
 - `update_object_term_cache()` primes term cache before processing patterns
 - All endpoints return HTTP caching headers (ETag, Cache-Control)
 - Conditional requests supported via `If-None-Match` header
+
+## WordPress Agent Skills
+
+StrataWP includes WordPress-specific Claude skills from the official [WordPress/agent-skills](https://github.com/WordPress/agent-skills/) repository. These skills provide structured workflows and best practices for WordPress development.
+
+### Available Skills
+
+Located in `.claude/skills/`:
+
+| Skill | Description |
+|-------|-------------|
+| **wordpress-router** | Routes to correct workflow based on repo type (plugin/theme/block theme/full site) |
+| **wp-project-triage** | Deterministic repo inspection - classifies project type, tooling, tests, versions |
+| **wp-block-development** | Gutenberg blocks: apiVersion 3, deprecations, InnerBlocks, block.json |
+| **wp-block-themes** | FSE themes: theme.json, templates, parts, patterns, style variations |
+| **wp-interactivity-api** | Interactive blocks: data-wp-* directives, stores, hydration, viewScriptModule |
+| **wp-rest-api** | REST endpoints: register_rest_route, controllers, schema, authentication |
+| **wp-performance** | Backend profiling: WP-CLI doctor/profile, Query Monitor, object cache, DB queries |
+| **wp-plugin-development** | Plugin architecture, hooks, Settings API, activation/deactivation, security |
+| **wp-wpcli-and-ops** | WP-CLI operations: search-replace, db export/import, multisite, automation |
+| **wp-phpstan** | Static analysis: phpstan.neon, baselines, WordPress-specific typing |
+
+### Using Skills
+
+Skills are automatically loaded when working in the StrataWP repo. Each skill includes:
+
+- **SKILL.md**: Main instructions, procedures, and guardrails
+- **references/**: Detailed documentation for specific topics
+- **scripts/**: Deterministic inspection scripts (Node.js)
+
+### Skill Workflow
+
+1. **Triage first**: Run `wp-project-triage` to classify the repo
+2. **Route to domain**: Use `wordpress-router` to pick the right workflow
+3. **Follow procedures**: Each skill has step-by-step procedures with verification
+4. **Check references**: Detailed docs in `references/` folders
+
+### Example: Creating a New Block
+
+```bash
+# 1. Triage the project (detects block theme, tooling, etc.)
+node .claude/skills/wp-project-triage/scripts/detect_wp_project.mjs
+
+# 2. Follow wp-block-development skill procedures
+# - Use apiVersion 3
+# - Implement render.php for dynamic blocks
+# - Add deprecations when changing attributes
+
+# 3. Run verification (tests, lint)
+pnpm test && pnpm lint
+```
+
+### Skills Target
+
+All skills target **WordPress 6.9+** with **PHP 7.2.24+** and assume:
+- Filesystem-based agent with bash + node
+- Some workflows require WP-CLI
+- Vite/@wordpress/scripts for builds
