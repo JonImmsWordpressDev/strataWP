@@ -35,6 +35,8 @@ import {
 import {
   syncDbPullCommand,
   syncDbPushCommand,
+  syncUploadsPullCommand,
+  syncUploadsPushCommand,
 } from './commands/sync'
 import { updateCommand } from './commands/update'
 
@@ -274,6 +276,21 @@ program
   .option('--dry-run', 'Show what would be done without doing it')
   .option('--force', 'Skip confirmation prompt')
   .action(syncDbPushCommand)
+
+program
+  .command('sync:uploads:pull <environment>')
+  .description('Pull uploads folder from remote environment to local')
+  .option('--dry-run', 'Show what would be done without doing it')
+  .option('--delete', 'Remove local files not on remote')
+  .action(syncUploadsPullCommand)
+
+program
+  .command('sync:uploads:push <environment>')
+  .description('Push uploads folder from local to remote environment')
+  .option('--dry-run', 'Show what would be done without doing it')
+  .option('--delete', 'Remove remote files not on local')
+  .option('--force', 'Skip confirmation prompt')
+  .action(syncUploadsPushCommand)
 
 // Update command
 program

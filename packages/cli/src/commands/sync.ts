@@ -2,7 +2,7 @@
 import chalk from 'chalk'
 import ora from 'ora'
 import prompts from 'prompts'
-import { DatabaseDumper, SSHDatabaseDumper, DatabaseRestorer, UrlReplacer } from '@stratawp/sync'
+import { DatabaseDumper, SSHDatabaseDumper, DatabaseRestorer, UrlReplacer, SSHUploadsSyncer } from '@stratawp/sync'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
@@ -24,6 +24,8 @@ interface EnvironmentConfig {
   ssh?: SSHConfig
   wpPath?: string // WordPress path on remote server (required when using SSH)
   wpCliPath?: string // Optional custom WP-CLI path
+  uploadsPath?: string // Relative path to uploads from wpPath (default: wp-content/uploads)
+  localUploadsPath?: string // Local uploads path (default: ./wp-content/uploads)
   database: {
     host: string
     port?: number
@@ -258,6 +260,215 @@ export async function syncDbPushCommand(environment: string, options: {
     spinner.fail('Push failed')
     console.error(chalk.red(error instanceof Error ? error.message : String(error)))
   }
+}
+
+export async function syncUploadsPullCommand(environment: string, options: {
+  dryRun?: boolean
+  delete?: boolean
+}) {
+  const config = await loadSyncConfig()
+
+  if (!config) {
+    console.log(chalk.red('No sync configuration found.'))
+    console.log(chalk.dim('Create a .stratawp-sync.json file in your project root.'))
+    return
+  }
+
+  const remoteEnv = config.environments[environment]
+  const localEnv = config.environments['local']
+
+  if (!remoteEnv) {
+    console.log(chalk.red(`Environment "${environment}" not found in config.`))
+    console.log(chalk.dim(`Available environments: ${Object.keys(config.environments).join(', ')}`))
+    return
+  }
+
+  if (!remoteEnv.ssh) {
+    console.log(chalk.red('Uploads sync requires SSH configuration.'))
+    console.log(chalk.dim('Add "ssh" config to your environment in .stratawp-sync.json'))
+    return
+  }
+
+  if (!remoteEnv.wpPath) {
+    console.log(chalk.red('Uploads sync requires wpPath to be configured.'))
+    console.log(chalk.dim('Add "wpPath": "/path/to/wordpress" to your environment config'))
+    return
+  }
+
+  // Determine paths
+  const remoteUploadsPath = remoteEnv.uploadsPath
+    ? path.posix.join(remoteEnv.wpPath, remoteEnv.uploadsPath)
+    : path.posix.join(remoteEnv.wpPath, 'wp-content/uploads')
+
+  const localUploadsPath = localEnv?.localUploadsPath
+    || remoteEnv.localUploadsPath
+    || path.join(process.cwd(), 'wp-content/uploads')
+
+  console.log(chalk.cyan('\n📦 Sync Uploads\n'))
+  console.log(chalk.white(`Remote: ${remoteEnv.ssh.user}@${remoteEnv.ssh.host}:${remoteUploadsPath}`))
+  console.log(chalk.white(`Local:  ${localUploadsPath}`))
+
+  if (options.dryRun) {
+    console.log(chalk.yellow('\n[DRY RUN] No files will be transferred\n'))
+  }
+
+  if (options.delete) {
+    console.log(chalk.yellow('Note: --delete enabled. Local files not on remote will be removed.\n'))
+  }
+
+  // Get passphrase if needed
+  let passphrase = remoteEnv.ssh.passphrase || process.env.STRATAWP_SSH_PASSPHRASE
+
+  if (remoteEnv.ssh.key && !passphrase) {
+    const response = await prompts({
+      type: 'password',
+      name: 'passphrase',
+      message: 'SSH key passphrase (or set STRATAWP_SSH_PASSPHRASE env var):',
+    })
+    passphrase = response.passphrase
+  }
+
+  const spinner = ora('Syncing uploads...').start()
+
+  try {
+    const syncer = new SSHUploadsSyncer({
+      ssh: {
+        host: remoteEnv.ssh.host,
+        port: remoteEnv.ssh.port || 22,
+        username: remoteEnv.ssh.user,
+        privateKey: remoteEnv.ssh.key,
+        passphrase,
+      },
+      remoteUploadsPath,
+      localUploadsPath,
+    })
+
+    const result = await syncer.pull({
+      dryRun: options.dryRun,
+      delete: options.delete,
+    })
+
+    if (result.success) {
+      if (options.dryRun) {
+        spinner.succeed('Dry run complete')
+      } else {
+        spinner.succeed(`Uploads synced from ${environment}`)
+        console.log(chalk.dim(`  Files: ${result.filesTransferred}`))
+        console.log(chalk.dim(`  Size: ${formatBytes(result.bytesTransferred)}`))
+      }
+    } else {
+      spinner.fail('Sync failed')
+      for (const error of result.errors) {
+        console.log(chalk.red(`  ${error}`))
+      }
+    }
+  } catch (error) {
+    spinner.fail('Sync failed')
+    console.error(chalk.red(error instanceof Error ? error.message : String(error)))
+  }
+}
+
+export async function syncUploadsPushCommand(environment: string, options: {
+  dryRun?: boolean
+  delete?: boolean
+  force?: boolean
+}) {
+  const config = await loadSyncConfig()
+
+  if (!config) {
+    console.log(chalk.red('No sync configuration found.'))
+    return
+  }
+
+  const remoteEnv = config.environments[environment]
+  const localEnv = config.environments['local']
+
+  if (!remoteEnv || !remoteEnv.ssh || !remoteEnv.wpPath) {
+    console.log(chalk.red('Environment not properly configured for uploads sync.'))
+    return
+  }
+
+  if (environment === 'production' && !options.force) {
+    console.log(chalk.bold.red('\n⚠️  WARNING: Pushing uploads to production!'))
+
+    const { confirmed } = await prompts({
+      type: 'confirm',
+      name: 'confirmed',
+      message: 'Are you sure you want to upload files to production?',
+      initial: false,
+    })
+
+    if (!confirmed) {
+      console.log(chalk.yellow('Cancelled.'))
+      return
+    }
+  }
+
+  // Determine paths
+  const remoteUploadsPath = remoteEnv.uploadsPath
+    ? path.posix.join(remoteEnv.wpPath, remoteEnv.uploadsPath)
+    : path.posix.join(remoteEnv.wpPath, 'wp-content/uploads')
+
+  const localUploadsPath = localEnv?.localUploadsPath
+    || remoteEnv.localUploadsPath
+    || path.join(process.cwd(), 'wp-content/uploads')
+
+  console.log(chalk.cyan('\n📤 Push Uploads\n'))
+  console.log(chalk.white(`Local:  ${localUploadsPath}`))
+  console.log(chalk.white(`Remote: ${remoteEnv.ssh.user}@${remoteEnv.ssh.host}:${remoteUploadsPath}`))
+
+  // Get passphrase if needed
+  let passphrase = remoteEnv.ssh.passphrase || process.env.STRATAWP_SSH_PASSPHRASE
+
+  if (remoteEnv.ssh.key && !passphrase) {
+    const response = await prompts({
+      type: 'password',
+      name: 'passphrase',
+      message: 'SSH key passphrase:',
+    })
+    passphrase = response.passphrase
+  }
+
+  const spinner = ora('Pushing uploads...').start()
+
+  try {
+    const syncer = new SSHUploadsSyncer({
+      ssh: {
+        host: remoteEnv.ssh.host,
+        port: remoteEnv.ssh.port || 22,
+        username: remoteEnv.ssh.user,
+        privateKey: remoteEnv.ssh.key,
+        passphrase,
+      },
+      remoteUploadsPath,
+      localUploadsPath,
+    })
+
+    const result = await syncer.push({
+      dryRun: options.dryRun,
+      delete: options.delete,
+    })
+
+    if (result.success) {
+      spinner.succeed(`Uploads pushed to ${environment}`)
+    } else {
+      spinner.fail('Push failed')
+      for (const error of result.errors) {
+        console.log(chalk.red(`  ${error}`))
+      }
+    }
+  } catch (error) {
+    spinner.fail('Push failed')
+    console.error(chalk.red(error instanceof Error ? error.message : String(error)))
+  }
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 async function loadSyncConfig(): Promise<SyncConfig | null> {

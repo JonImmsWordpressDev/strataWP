@@ -401,6 +401,14 @@ pnpm stratawp sync:db:pull production --dry-run
 
 # Push local to staging (use with caution!)
 pnpm stratawp sync:db:push staging
+
+# Sync uploads (media files)
+pnpm stratawp sync:uploads:pull production
+pnpm stratawp sync:uploads:pull production --dry-run
+pnpm stratawp sync:uploads:pull production --delete
+
+# Full environment sync
+pnpm stratawp sync:db:pull production && pnpm stratawp sync:uploads:pull production
 ```
 
 **Configuration (`.stratawp-sync.json`):**

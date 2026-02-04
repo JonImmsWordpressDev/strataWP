@@ -254,6 +254,30 @@ When syncing, URLs are automatically replaced:
 
 This handles PHP serialized strings correctly (recalculates string lengths).
 
+### Uploads Sync (Media Files)
+
+Pull the uploads folder from production (images, PDFs, etc.):
+
+```bash
+# Pull uploads from production
+pnpm stratawp sync:uploads:pull production
+
+# Preview what would be downloaded
+pnpm stratawp sync:uploads:pull production --dry-run
+
+# Also remove local files that don't exist on production
+pnpm stratawp sync:uploads:pull production --delete
+```
+
+Uses rsync over SSH for efficient incremental sync (only transfers changed files).
+
+**Full Environment Sync:**
+```bash
+# Pull everything from production
+pnpm stratawp sync:db:pull production
+pnpm stratawp sync:uploads:pull production
+```
+
 ## Deployment Workflow
 
 1. **Develop locally** - Work on your theme with hot reload

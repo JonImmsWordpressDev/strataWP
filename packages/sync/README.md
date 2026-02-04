@@ -35,6 +35,23 @@ stratawp sync:db:push staging
 --force                         # Skip confirmation for production
 ```
 
+### Uploads Sync (Media Files)
+
+```bash
+# Pull uploads from remote to local
+stratawp sync:uploads:pull production
+
+# Push uploads from local to remote
+stratawp sync:uploads:push staging
+
+# Options
+--dry-run                       # Preview without making changes
+--delete                        # Remove files that don't exist on source
+--force                         # Skip confirmation for production (push only)
+```
+
+Uses rsync over SSH for efficient incremental sync (only transfers changed files).
+
 ### Rollback Commands
 
 ```bash
@@ -169,6 +186,43 @@ await dumper.dumpToFile('/path/to/dump.sql')
 // Test connection and WP-CLI availability
 const result = await dumper.testConnection()
 console.log(result.success, result.message)
+```
+
+### SSHUploadsSyncer
+
+Sync WordPress uploads folder via rsync over SSH:
+
+```typescript
+import { SSHUploadsSyncer } from '@stratawp/sync'
+
+const syncer = new SSHUploadsSyncer({
+  ssh: {
+    host: 'ssh.example.com',
+    port: 22,
+    username: 'deploy',
+    privateKey: '~/.ssh/id_rsa',
+    passphrase: process.env.SSH_PASSPHRASE,
+  },
+  remoteUploadsPath: '/var/www/html/wp-content/uploads',
+  localUploadsPath: './wp-content/uploads',
+})
+
+// Pull uploads from remote to local
+const result = await syncer.pull()
+console.log(`Transferred ${result.filesTransferred} files`)
+
+// Pull with options
+const result = await syncer.pull({
+  dryRun: true,  // Preview only
+  delete: true,  // Remove local files not on remote
+  exclude: ['*.tmp', 'cache/*'],
+})
+
+// Push uploads from local to remote
+const result = await syncer.push()
+
+// Check if rsync is available
+const available = await syncer.checkRsyncAvailable()
 ```
 
 ### DatabaseDumper (Direct MySQL)
