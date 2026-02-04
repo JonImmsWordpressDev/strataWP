@@ -184,22 +184,75 @@ Overrides global configuration for project-specific settings.
 }
 ```
 
-## Database Migration
+## Database Sync
 
-When deploying from local to production, WordPress stores the site URL in the database. StrataWP can handle URL replacement automatically.
+StrataWP provides powerful database synchronization between environments.
 
-**Enable in setup wizard or config:**
+### Pull Production Database to Local
+
+```bash
+# Pull database from production
+pnpm stratawp sync:db:pull production
+
+# Options
+--tables=wp_posts,wp_postmeta   # Sync specific tables only
+--no-url-replace                # Skip automatic URL replacement
+--dry-run                       # Preview without making changes
+```
+
+### SSH-Based Sync (Recommended)
+
+Most production databases only allow local connections (`127.0.0.1`). StrataWP handles this by SSHing into the server and running `wp db export` remotely.
+
+**Configure in `.stratawp-sync.json`:**
 ```json
 {
-  "database": {
-    "enabled": true,
-    "localUrl": "http://localhost:8888",
-    "remoteUrl": "https://example.com"
+  "environments": {
+    "local": {
+      "name": "local",
+      "url": "http://local.test",
+      "database": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "wordpress"
+      }
+    },
+    "production": {
+      "name": "production",
+      "url": "https://example.com",
+      "ssh": {
+        "host": "ssh.example.com",
+        "port": 22,
+        "user": "deploy",
+        "key": "~/.ssh/id_rsa"
+      },
+      "wpPath": "/var/www/html",
+      "database": {
+        "host": "127.0.0.1",
+        "user": "prod_user",
+        "password": "prod_pass",
+        "database": "wp_production"
+      }
+    }
   }
 }
 ```
 
-**Note:** Full database migration with WP-CLI integration is coming in Phase 2.
+**For encrypted SSH keys:**
+```bash
+# Set passphrase via environment variable
+STRATAWP_SSH_PASSPHRASE="your-passphrase" pnpm stratawp sync:db:pull production
+
+# Or you'll be prompted to enter it
+```
+
+### URL Replacement
+
+When syncing, URLs are automatically replaced:
+- `https://example.com` → `http://local.test`
+
+This handles PHP serialized strings correctly (recalculates string lengths).
 
 ## Deployment Workflow
 
