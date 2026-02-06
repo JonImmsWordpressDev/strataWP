@@ -31,6 +31,9 @@ That's it! StrataWP will:
 - Build your theme automatically
 - Upload only the necessary files
 - Create a backup on the remote server
+- **Flush WordPress cache and OPcache** (SSH deployments)
+- **Clean up old backups** automatically
+- **Validate the deployment** (file checks, WP health)
 - Show you a detailed deployment summary
 
 ## Deployment Types
@@ -53,13 +56,24 @@ Remote Path: /public_html/wp-content/themes/my-theme
 
 Standard FTP is less secure but widely supported. Use SFTP when possible.
 
-### SSH/rsync (VPS/Cloud Servers)
+### SSH/rsync (Recommended for VPS/Cloud)
 
-Coming soon in Phase 2. Ideal for VPS and cloud servers with SSH access.
+SSH deployment with rsync acceleration. Ideal for VPS and cloud servers with SSH access. Includes post-deploy automation: cache flush, OPcache reset, backup cleanup, validation, and FSE template sync.
+
+**Example Configuration:**
+```bash
+Environment: production
+Type: SSH
+Host: ssh.example.com
+Port: 22
+Username: your-username
+Private Key: ~/.ssh/id_rsa
+Remote Path: /var/www/html/wp-content/themes/my-theme
+```
 
 ### Git (Managed WordPress Hosting)
 
-Coming soon in Phase 2. Perfect for WP Engine, Flywheel, and other managed hosts with Git deployment.
+Coming soon. Perfect for WP Engine, Flywheel, and other managed hosts with Git deployment.
 
 ## What Gets Deployed
 
@@ -137,6 +151,27 @@ pnpm stratawp deploy production --fresh
 
 # Deploy without creating a backup
 pnpm stratawp deploy production --no-backup
+
+# Deploy with debug output
+pnpm stratawp deploy production --verbose
+```
+
+### FSE Template Sync
+
+Sync WordPress Full Site Editing templates between local and production databases:
+
+```bash
+# Sync all templates
+pnpm stratawp sync:templates production --all
+
+# Sync specific template
+pnpm stratawp sync:templates production --template=home
+
+# List templates on local and remote
+pnpm stratawp sync:templates:list production
+
+# Dry run
+pnpm stratawp sync:templates production --all --dry-run
 ```
 
 ## Configuration Files
@@ -153,6 +188,7 @@ Overrides global configuration for project-specific settings.
 
 ### Example Configuration
 
+**SFTP (Shared Hosting):**
 ```json
 {
   "version": "1.0",
@@ -170,15 +206,39 @@ Overrides global configuration for project-specific settings.
         "localUrl": "http://localhost:8888",
         "remoteUrl": "https://example.com"
       }
-    },
-    "staging": {
-      "type": "sftp",
-      "host": "staging.example.com",
+    }
+  }
+}
+```
+
+**SSH (VPS/Cloud — recommended):**
+```json
+{
+  "version": "1.0",
+  "environments": {
+    "production": {
+      "type": "ssh",
+      "host": "ssh.example.com",
       "port": 22,
-      "username": "username",
-      "password": "${STRATAWP_DEPLOY_STAGING_PASSWORD}",
+      "username": "deploy",
+      "privateKey": "~/.ssh/id_rsa",
+      "passphrase": "${STRATAWP_SSH_PASSPHRASE}",
       "remotePath": "/var/www/html/wp-content/themes/my-theme",
-      "buildBefore": true
+      "buildBefore": true,
+      "backup": {
+        "enabled": true,
+        "keepLast": 1
+      },
+      "postDeploy": {
+        "clearCache": true,
+        "resetOpcache": true,
+        "wpCliCommands": []
+      },
+      "database": {
+        "enabled": true,
+        "localUrl": "http://localhost:8888",
+        "remoteUrl": "https://example.com"
+      }
     }
   }
 }
@@ -199,14 +259,20 @@ When deploying from local to production, WordPress stores the site URL in the da
 }
 ```
 
-**Note:** Full database migration with WP-CLI integration is coming in Phase 2.
+**FSE Template Sync:** If you use the WordPress Site Editor, template customizations are stored in the database. Use `stratawp sync:templates` to deploy them:
+
+```bash
+stratawp sync:templates production --all
+```
 
 ## Deployment Workflow
 
 1. **Develop locally** - Work on your theme with hot reload
 2. **Build** - StrataWP builds your theme automatically
 3. **Deploy** - Upload to production with one command
-4. **Verify** - Check your live site
+4. **Post-deploy** - Cache flush, OPcache reset, backup cleanup (automatic for SSH)
+5. **Validate** - File checks, WP health check, HTTP health check (automatic for SSH)
+6. **Template sync** - Sync Site Editor templates if needed
 
 ## Troubleshooting
 

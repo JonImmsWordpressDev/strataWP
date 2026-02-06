@@ -1,10 +1,11 @@
 # Advanced Deployment Guide
 
-This guide covers advanced deployment scenarios including SSH with passphrase-protected keys, WordPress FSE database template synchronization, and plugin deployment workflows.
+This guide covers advanced deployment scenarios including SSH with passphrase-protected keys, WordPress FSE database template synchronization, post-deploy automation, and plugin deployment workflows.
 
 ## Table of Contents
 
 - [SSH Deployment with Passphrase-Protected Keys](#ssh-deployment-with-passphrase-protected-keys)
+- [Post-Deploy Automation](#post-deploy-automation)
 - [WordPress FSE Template Sync](#wordpress-fse-template-sync)
 - [Plugin Deployment](#plugin-deployment)
 - [Complete Deployment Workflow](#complete-deployment-workflow)
@@ -15,11 +16,9 @@ This guide covers advanced deployment scenarios including SSH with passphrase-pr
 
 ## SSH Deployment with Passphrase-Protected Keys
 
-### Understanding the Issue
-
-When using SSH keys protected with a passphrase, StrataWP's deployment system requires the passphrase to be provided in the configuration. Currently, the `resolveEnvVariables()` function doesn't handle the `passphrase` field, so environment variables won't work for this specific field.
-
 ### Configuration
+
+The passphrase field supports environment variable syntax (`${VAR_NAME}`), making it secure to use in config files.
 
 Add SSH configuration to `~/.stratawp/deploy-config.json`:
 
@@ -33,9 +32,18 @@ Add SSH configuration to `~/.stratawp/deploy-config.json`:
       "port": 22,
       "username": "your-username",
       "privateKey": "~/.ssh/your-key",
-      "passphrase": "your-passphrase-here",
+      "passphrase": "${STRATAWP_SSH_PASSPHRASE}",
       "remotePath": "/var/www/html/wp-content/themes/your-theme",
       "buildBefore": true,
+      "backup": {
+        "enabled": true,
+        "keepLast": 1
+      },
+      "postDeploy": {
+        "clearCache": true,
+        "resetOpcache": true,
+        "wpCliCommands": []
+      },
       "rsync": {
         "enabled": true,
         "deleteOrphaned": false
@@ -50,7 +58,7 @@ Add SSH configuration to `~/.stratawp/deploy-config.json`:
 }
 ```
 
-> **Security Note:** The passphrase must be stored directly in the config file. Ensure `~/.stratawp/` has proper permissions (`chmod 700`).
+> **Security Note:** Use environment variables for the passphrase: `export STRATAWP_SSH_PASSPHRASE="your-passphrase"`. Ensure `~/.stratawp/` has proper permissions (`chmod 700`).
 
 ### Alternative: SSH Agent
 
@@ -79,6 +87,69 @@ pnpm stratawp deploy:test production
 
 ---
 
+## Post-Deploy Automation
+
+SSH deployments now include automatic post-deploy actions that run while still connected to the server.
+
+### What Happens After File Upload
+
+1. **WordPress Cache Flush** — Runs `wp cache flush` and `wp transient delete --all` via WP-CLI
+2. **PHP OPcache Reset** — Creates and executes a temporary PHP script to invalidate OPcache
+3. **Backup Cleanup** — Removes old backup folders, keeping only the most recent N (configurable)
+4. **Custom WP-CLI Commands** — Runs any commands specified in `postDeploy.wpCliCommands`
+5. **Validation** — Checks critical files exist, WP-CLI health check, HTTP health check
+
+### Configuration
+
+```json
+{
+  "postDeploy": {
+    "clearCache": true,
+    "resetOpcache": true,
+    "wpCliCommands": ["wp rewrite flush"],
+    "wpRootPath": "/custom/path/to/wordpress"
+  },
+  "backup": {
+    "enabled": true,
+    "keepLast": 1
+  }
+}
+```
+
+- **clearCache**: Run `wp cache flush` + `wp transient delete --all` (default: true)
+- **resetOpcache**: Invalidate PHP OPcache (default: true)
+- **wpCliCommands**: Additional WP-CLI commands to run after deployment
+- **wpRootPath**: WordPress root path (auto-detected from `remotePath` if not set)
+- **backup.keepLast**: Number of backups to retain (default: 1, 0 = keep all)
+
+### Deployment Output
+
+After a successful SSH deployment, you'll see:
+
+```
+✓ Deployment complete!
+
+✓ Deployment Summary:
+  Deployed: 42 files (1.2 MB)
+  Backup: /path/to/backup-2026-02-05T10-30-00
+  Duration: 8.2s
+
+🔧 Post-Deploy Actions:
+  ✓ WordPress cache flushed
+  ✓ PHP OPcache reset
+  ✓ Cleaned up 2 old backup(s)
+
+✅ Validation:
+  ✓ File: style.css — exists
+  ✓ File: theme.json — exists
+  ✓ WordPress loads — OK
+  ✓ Site responds — HTTP 200
+
+✓ Deployment successful!
+```
+
+---
+
 ## WordPress FSE Template Sync
 
 ### The Problem
@@ -90,7 +161,42 @@ WordPress Full Site Editing (FSE) stores template customizations in the **databa
 - Template customizations made in Site Editor are **not deployed**
 - Production will use file-based templates unless database is synced
 
-### Solution: Database Template Export/Import
+### Solution: Built-in Template Sync (Recommended)
+
+StrataWP now includes a built-in `sync:templates` command that handles everything automatically:
+
+```bash
+# Sync all templates from local to production
+stratawp sync:templates production --all
+
+# Sync a specific template
+stratawp sync:templates production --template=home
+
+# List templates on local and remote
+stratawp sync:templates:list production
+
+# Preview without making changes
+stratawp sync:templates production --all --dry-run
+```
+
+**How it works:**
+1. Detects local WP-CLI (including Local by Flywheel path)
+2. Exports template content from local WordPress database
+3. Uploads to remote server via SCP
+4. Updates remote database using `wp eval-file` (safe PHP execution)
+5. Flushes WordPress caches on remote
+
+**Options:**
+- `--template=<slug>` — Sync a specific template by slug
+- `--all` — Sync all templates
+- `--dry-run` — Preview without making changes
+- `--wp-cli=<path>` — Custom local WP-CLI path
+- `--wp-path=<path>` — Custom local WordPress root path
+- `--verbose` — Show debug output
+
+### Manual Template Export/Import (Alternative)
+
+If you prefer manual control, you can export and import templates directly:
 
 #### Step 1: Find Template IDs
 
@@ -333,37 +439,28 @@ For a complete local-to-production deployment including theme files, database te
 
 ### Full Deployment Checklist
 
-1. **Build the theme**
+1. **Build and deploy theme files** (includes automatic cache flush, OPcache reset, backup cleanup, and validation)
    ```bash
    pnpm build
-   ```
-
-2. **Deploy theme files**
-   ```bash
    pnpm stratawp deploy production
    ```
 
-3. **Deploy custom plugins** (if any)
+2. **Deploy custom plugins** (if any)
    ```bash
    ./scripts/deploy-plugin.sh wp-content/plugins/your-plugin
    ```
 
-4. **Sync database templates** (if using Site Editor customizations)
+3. **Sync database templates** (if using Site Editor customizations)
    ```bash
-   ./scripts/sync-templates.sh index
-   ./scripts/sync-templates.sh single
-   # ... other templates
+   pnpm stratawp sync:templates production --all
    ```
 
-5. **Flush production cache**
-   ```bash
-   ssh -p PORT user@host "cd /path/to/wordpress && wp cache flush && wp transient delete --all"
-   ```
-
-6. **Verify deployment**
+4. **Verify deployment**
    - Check the site visually
    - Test block rendering
    - Verify custom blocks work
+
+> **Note:** Steps 1 includes automatic cache flushing, OPcache invalidation, backup cleanup, and validation when using SSH deployment. No manual cache flush needed!
 
 ### One-Command Full Deploy Script
 
@@ -380,7 +477,7 @@ echo "=== Starting Full Deployment ==="
 echo "Building theme..."
 pnpm build
 
-# 2. Deploy theme files
+# 2. Deploy theme files (auto: cache flush, OPcache, backup cleanup, validation)
 echo "Deploying theme files..."
 pnpm stratawp deploy production --force
 
@@ -388,13 +485,9 @@ pnpm stratawp deploy production --force
 # echo "Deploying plugins..."
 # ./scripts/deploy-plugin.sh wp-content/plugins/your-plugin
 
-# 4. Sync templates (add your templates here)
+# 4. Sync FSE templates from Site Editor
 echo "Syncing database templates..."
-./scripts/sync-templates.sh index
-
-# 5. Final cache flush
-echo "Flushing cache..."
-# (handled by sync-templates.sh)
+pnpm stratawp sync:templates production --all
 
 echo "=== Full deployment complete! ==="
 ```
@@ -513,5 +606,7 @@ wp cache flush
 ## Related Documentation
 
 - [Getting Started with Deployment](./getting-started.md)
-- [Database Sync Commands](../../CHEAT_SHEET.md#database-sync)
-- [Rollback & Snapshots](../../CHEAT_SHEET.md#rollback--snapshots)
+- [Cheat Sheet — Deployment Commands](../../CHEAT_SHEET.md#deployment)
+- [Cheat Sheet — FSE Template Sync](../../CHEAT_SHEET.md#fse-template-sync)
+- [Cheat Sheet — Database Sync](../../CHEAT_SHEET.md#database-sync)
+- [Cheat Sheet — Rollback & Snapshots](../../CHEAT_SHEET.md#rollback--snapshots)

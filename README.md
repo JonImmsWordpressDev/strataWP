@@ -65,7 +65,9 @@ The CLI automatically:
 - **Comprehensive Testing**: Vitest unit tests, Playwright E2E
 - **Component Explorer**: Interactive Storybook-like component browser
 - **Headless WordPress**: REST API client, React hooks, Next.js integration
-- **Production Deployment**: SFTP/FTP deployment with change detection
+- **Production Deployment**: SFTP/FTP/SSH deployment with change detection
+- **Post-Deploy Automation**: Cache flush, OPcache reset, backup cleanup, validation
+- **FSE Template Sync**: Sync Site Editor templates via WP-CLI over SSH
 - **Environment Sync**: Database sync between local and production
 - **Rollback Support**: Automatic snapshots before deployment
 
@@ -142,6 +144,11 @@ stratawp registry:install @stratawp/hero-block
 stratawp deploy:setup
 stratawp deploy production
 stratawp deploy production --dry-run
+
+# FSE Template Sync
+stratawp sync:templates production --all
+stratawp sync:templates production --template=home
+stratawp sync:templates:list production
 
 # Database sync
 stratawp sync:db:pull production
@@ -233,6 +240,6 @@ Inspired by:
 
 ---
 
-**Current Version**: v1.5.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
+**Current Version**: v1.6.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)

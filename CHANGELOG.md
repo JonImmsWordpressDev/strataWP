@@ -2,6 +2,126 @@
 
 All notable changes to StrataWP are documented in this file.
 
+## v1.6.0 - Deployment Overhaul
+
+**Reliable, Production-Ready Deployment**
+
+This release completely overhauls the deployment system, fixing long-standing issues with backup accumulation, missing post-deploy actions, and adding FSE template sync support.
+
+### Post-Deploy Lifecycle Hooks
+
+Deployments now include automatic post-deploy actions that run while still connected to the server:
+
+- **WordPress Cache Flush**: Automatically runs `wp cache flush` and `wp transient delete --all` via WP-CLI
+- **PHP OPcache Reset**: Creates and executes a temporary PHP script to invalidate OPcache
+- **Custom WP-CLI Commands**: Run arbitrary WP-CLI commands after deployment via `postDeploy.wpCliCommands` config
+- **Automatic WP Root Detection**: Derives WordPress root path from theme `remotePath` (3 directories up)
+
+### Backup Auto-Cleanup (Fixes #5)
+
+Backup folders no longer accumulate on the production server:
+
+- **Automatic cleanup** after successful deployment — keeps only the most recent N backups
+- **Configurable retention** via `backup.keepLast` (default: 1)
+- **`--no-backup` flag** to skip backup creation entirely
+
+```json
+{
+  "backup": {
+    "enabled": true,
+    "keepLast": 1
+  }
+}
+```
+
+### Post-Deploy Validation (Fixes #7)
+
+Every deployment now includes automatic health checks:
+
+- **Critical file checks**: Verifies `style.css` and `theme.json` exist on remote
+- **WP-CLI health check**: Runs `wp eval "echo 'OK';"` to confirm WordPress loads
+- **HTTP health check**: Curls the site URL to verify 200 response (when `database.remoteUrl` configured)
+
+```
+✅ Validation:
+  ✓ File: style.css — exists
+  ✓ File: theme.json — exists
+  ✓ WordPress loads — OK
+  ✓ Site responds — HTTP 200
+```
+
+### rsync SSH Key Fix (Fixes #6)
+
+Fixed rsync SSH command to properly pass identity file and disable strict host key checking:
+
+```
+ssh -p PORT -i ~/.ssh/your-key -o StrictHostKeyChecking=no
+```
+
+### FSE Template Sync
+
+New `sync:templates` command for syncing WordPress Full Site Editing templates between local and production databases:
+
+```bash
+# Sync all templates
+stratawp sync:templates production --all
+
+# Sync specific template
+stratawp sync:templates production --template=home
+
+# List templates (local vs remote)
+stratawp sync:templates:list production
+
+# Dry run
+stratawp sync:templates production --all --dry-run
+```
+
+**How it works:**
+1. Detects local WP-CLI (including Local by Flywheel path)
+2. Exports template content from local database
+3. Uploads to remote server via SCP
+4. Updates remote database using `wp eval-file` (safe PHP execution)
+5. Flushes caches on remote
+
+### New Configuration Options
+
+```json
+{
+  "environments": {
+    "production": {
+      "type": "ssh",
+      "host": "ssh.example.com",
+      "passphrase": "${STRATAWP_SSH_PASSPHRASE}",
+      "backup": {
+        "enabled": true,
+        "keepLast": 1
+      },
+      "postDeploy": {
+        "clearCache": true,
+        "resetOpcache": true,
+        "wpCliCommands": [],
+        "wpRootPath": "/custom/wp/root"
+      },
+      "deleteRemoved": false,
+      "localWpCli": "/path/to/wp"
+    }
+  }
+}
+```
+
+### Files Changed
+
+**Modified:**
+- `deployers/base.ts` — Added `postDeploy()`, `validate()` lifecycle methods to deploy flow; new interfaces
+- `deployers/ssh.ts` — Implemented post-deploy hooks, validation, backup cleanup, template sync, rsync SSH fix
+- `commands/deploy/index.ts` — Wired post-deploy results display, validation output, template sync guidance
+- `utils/deploy-config.ts` — Added `BackupConfig`, `passphrase`, `deleteRemoved`, `localWpCli` fields
+
+**New:**
+- `commands/deploy/sync-templates.ts` — `stratawp sync:templates` and `sync:templates:list` commands
+
+---
+
 ## v1.5.0 - Block Library
 
 **Block Library Showcase for StrataWP Studio**
