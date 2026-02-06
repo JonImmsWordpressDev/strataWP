@@ -145,7 +145,8 @@ Commands in `packages/cli/src/commands/`:
 - **template.ts**: Generate FSE templates (`stratawp template:new`)
 - **part.ts**: Generate template parts (`stratawp part:new`)
 - **design-system.ts**: Setup Tailwind/UnoCSS (`stratawp design-system:setup`)
-- **deploy/**: Deployment system (SFTP/FTP, setup, test, list)
+- **deploy/**: Deployment system (SFTP/FTP/SSH, setup, test, list, post-deploy hooks, validation)
+- **deploy/sync-templates.ts**: FSE template sync via WP-CLI over SSH (`stratawp sync:templates`)
 - **sync.ts**: Database sync between environments (`stratawp sync:db:pull`, `sync:db:push`)
 - **rollback.ts**: Snapshot management (`stratawp rollback:list`, `rollback:diff`, `rollback:mark-stable`)
 - **update.ts**: Package updates (`stratawp update`, `stratawp update --check`)
@@ -160,8 +161,9 @@ Each command uses:
 
 Located in `packages/cli/src/deployers/`:
 
+- **base.ts**: Abstract base class with full deploy lifecycle (connect → backup → upload → delete orphans → postDeploy → validate → disconnect)
 - **ftp.ts**: SFTP/FTP deployment via `ssh2-sftp-client` and `basic-ftp`
-- **ssh.ts**: SSH/rsync deployment via `node-ssh` with optional rsync acceleration
+- **ssh.ts**: SSH/rsync deployment via `node-ssh` with post-deploy hooks, validation, backup cleanup, and template sync
 - **git.ts**: Git-based deployment (future)
 
 Supported deployment types:
@@ -180,13 +182,36 @@ stratawp deploy:setup         # Interactive configuration
 stratawp deploy production    # Deploy to environment
 stratawp deploy:test production  # Test connection
 stratawp deploy:list          # List environments
+
+# FSE Template Sync
+stratawp sync:templates production --all       # Sync all FSE templates
+stratawp sync:templates production --template=home  # Sync specific template
+stratawp sync:templates:list production        # List local vs remote templates
 ```
 
 SSH-specific features:
-- Password or private key authentication (with optional passphrase)
-- rsync for efficient bulk file transfers when available
-- Remote command execution for WP-CLI post-deploy hooks
+- Password or private key authentication (with optional passphrase via env var)
+- rsync for efficient bulk file transfers with proper SSH key args (`-i`, `-o StrictHostKeyChecking=no`)
+- **Post-deploy hooks**: Cache flush, OPcache reset, backup cleanup, custom WP-CLI commands
+- **Post-deploy validation**: File existence checks, WP-CLI health check, HTTP health check
+- **Backup auto-cleanup**: Keeps only N most recent backups (configurable via `backup.keepLast`)
+- **FSE template sync**: Sync Site Editor templates via WP-CLI over SSH
 - Server-side backup/restore operations
+
+Deploy config options:
+```json
+{
+  "backup": { "enabled": true, "keepLast": 1 },
+  "postDeploy": {
+    "clearCache": true,
+    "resetOpcache": true,
+    "wpCliCommands": [],
+    "wpRootPath": "/custom/wp/root"
+  },
+  "deleteRemoved": false,
+  "localWpCli": "/path/to/wp"
+}
+```
 
 ### Sync System
 
@@ -398,6 +423,12 @@ stratawp deploy production --dry-run     # Preview changes
 stratawp deploy production --no-build    # Skip build
 stratawp deploy production --force       # Skip confirmation
 stratawp deploy production --no-backup   # Skip pre-deploy snapshot
+stratawp deploy production --verbose     # Debug output
+
+# FSE Template Sync (Site Editor templates stored in database)
+stratawp sync:templates production --all              # Sync all templates
+stratawp sync:templates production --template=home    # Sync specific template
+stratawp sync:templates:list production               # Compare local vs remote
 ```
 
 ### Database Sync & Rollback
@@ -445,6 +476,10 @@ stratawp rollback:mark-stable 1
 - **Change detection**: Only modified files uploaded (incremental)
 - **Security**: SSH/rsync or SFTP preferred over FTP, supports environment variables for credentials
 - **SSH deployment**: Use key-based authentication for VPS/cloud servers, rsync enabled for faster transfers
+- **Post-deploy hooks (SSH)**: Automatic cache flush, OPcache reset, backup cleanup, custom WP-CLI commands
+- **Post-deploy validation (SSH)**: File existence checks, WP-CLI health check, HTTP health check
+- **Backup auto-cleanup**: Configurable via `backup.keepLast` — old backups removed after successful deploy
+- **FSE template sync**: `stratawp sync:templates` syncs Site Editor templates via WP-CLI over SSH
 - **Rollback**: Use `rollback:list` to see snapshots, `rollback:diff` to compare
 
 ## Working with the Core Package

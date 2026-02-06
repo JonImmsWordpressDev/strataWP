@@ -17,7 +17,14 @@ export interface DatabaseConfig {
 
 export interface PostDeployConfig {
   clearCache?: boolean
+  resetOpcache?: boolean
   wpCliCommands?: string[]
+  wpRootPath?: string
+}
+
+export interface BackupConfig {
+  enabled?: boolean
+  keepLast?: number
 }
 
 export interface RsyncConfig {
@@ -33,6 +40,7 @@ export interface EnvironmentConfig {
   username: string
   password?: string
   privateKey?: string
+  passphrase?: string
   remotePath: string
   remoteName?: string // For git deployments
   branch?: string // For git deployments
@@ -42,7 +50,10 @@ export interface EnvironmentConfig {
   commitBuiltAssets?: boolean // For git deployments
   database?: DatabaseConfig
   postDeploy?: PostDeployConfig
+  backup?: BackupConfig
   rsync?: RsyncConfig
+  deleteRemoved?: boolean
+  localWpCli?: string
 }
 
 export interface DefaultsConfig {
@@ -295,7 +306,7 @@ STRATAWP_DEPLOY_STAGING_URL=https://staging.example.com
   private resolveEnvVariables(config: DeploymentConfig): DeploymentConfig {
     const resolved = JSON.parse(JSON.stringify(config)) // Deep clone
 
-    for (const [envName, envConfig] of Object.entries(resolved.environments)) {
+    for (const [_envName, envConfig] of Object.entries(resolved.environments) as [string, EnvironmentConfig][]) {
       // Resolve host
       if (envConfig.host && envConfig.host.startsWith('${')) {
         const varName = envConfig.host.slice(2, -1)
@@ -318,6 +329,12 @@ STRATAWP_DEPLOY_STAGING_URL=https://staging.example.com
       if (envConfig.privateKey && envConfig.privateKey.startsWith('${')) {
         const varName = envConfig.privateKey.slice(2, -1)
         envConfig.privateKey = process.env[varName] || envConfig.privateKey
+      }
+
+      // Resolve passphrase
+      if (envConfig.passphrase && envConfig.passphrase.startsWith('${')) {
+        const varName = envConfig.passphrase.slice(2, -1)
+        envConfig.passphrase = process.env[varName] || envConfig.passphrase
       }
 
       // Resolve remotePath

@@ -4,6 +4,7 @@
  */
 
 import { BaseDeployer } from './base'
+import type { DeployOptions, PostDeployResult, ValidationCheck } from './base'
 import type { FileRecord } from '../utils/file-filter'
 import { NodeSSH, type Config as SSHConfig } from 'node-ssh'
 import path from 'path'
@@ -145,17 +146,32 @@ export class SSHDeployer extends BaseDeployer {
 
   /**
    * Upload files using rsync
+   * Includes proper SSH key and port handling
    */
   private async uploadWithRsync(files: FileRecord[]): Promise<void> {
     // Get local base path (common parent directory of all files)
     const localBasePath = process.cwd()
+
+    // Build SSH command with proper key handling
+    let sshCommand = `ssh -p ${this.config.port || 22}`
+
+    // Include SSH key if configured
+    if (this.config.privateKey) {
+      const keyPath = this.config.privateKey.replace(
+        '~',
+        process.env.HOME || ''
+      )
+      sshCommand += ` -i "${keyPath}"`
+    }
+
+    sshCommand += ' -o StrictHostKeyChecking=no'
 
     // Build rsync arguments
     const args: string[] = [
       '-avz', // archive, verbose, compress
       '--progress',
       '-e',
-      `ssh -p ${this.config.port || 22}`,
+      sshCommand,
     ]
 
     // Add exclude-from file if specified
@@ -184,7 +200,7 @@ export class SSHDeployer extends BaseDeployer {
       )
 
       // Execute rsync
-      const result = await execa('rsync', args, {
+      await execa('rsync', args, {
         stdio: 'pipe',
       })
 
@@ -261,7 +277,6 @@ export class SSHDeployer extends BaseDeployer {
     const backupName = `backup-${timestamp}`
     const parentDir = path.posix.dirname(this.config.remotePath)
     const backupPath = path.posix.join(parentDir, backupName)
-    const sourceName = path.posix.basename(this.config.remotePath)
 
     try {
       // Check if source exists
@@ -365,6 +380,25 @@ export class SSHDeployer extends BaseDeployer {
   }
 
   /**
+   * Cleanup old backups, keeping the most recent N
+   * Returns the number of backups removed
+   */
+  async cleanupOldBackups(keepLast: number = 1): Promise<number> {
+    const backups = await this.listBackups()
+    const toDelete = backups.slice(keepLast)
+
+    for (const backup of toDelete) {
+      try {
+        await this.ssh.execCommand(`rm -rf "${backup.path}"`)
+      } catch {
+        // Continue cleanup even if individual deletion fails
+      }
+    }
+
+    return toDelete.length
+  }
+
+  /**
    * Check if a path exists on remote
    */
   async pathExists(remotePath: string): Promise<boolean> {
@@ -405,5 +439,352 @@ export class SSHDeployer extends BaseDeployer {
     }
 
     return result.stdout
+  }
+
+  /**
+   * Execute a command on remote server (non-throwing variant)
+   * Returns result even if command fails — useful for optional post-deploy steps
+   */
+  private async execCommandSafe(
+    command: string,
+    cwd?: string
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
+    try {
+      const result = await this.ssh.execCommand(command, {
+        cwd: cwd || this.config.remotePath,
+      })
+      return {
+        success: result.code === 0,
+        stdout: result.stdout,
+        stderr: result.stderr,
+      }
+    } catch (error) {
+      return {
+        success: false,
+        stdout: '',
+        stderr: error instanceof Error ? error.message : 'Unknown error',
+      }
+    }
+  }
+
+  /**
+   * Check if WP-CLI is available on the remote server
+   */
+  private async isWpCliAvailable(): Promise<boolean> {
+    const result = await this.execCommandSafe('which wp')
+    return result.success
+  }
+
+  /**
+   * Post-deploy lifecycle hook
+   * Flushes WordPress cache, resets OPcache, cleans up old backups,
+   * and runs any user-defined WP-CLI commands.
+   */
+  override async postDeploy(options: DeployOptions): Promise<PostDeployResult> {
+    const postDeployConfig = options.postDeploy || this.config.postDeploy || {}
+    const wpRootPath = this.getWpRootPath()
+    const result: PostDeployResult = {
+      cacheCleared: false,
+      opcacheReset: false,
+      backupsCleanedUp: 0,
+      customCommands: [],
+    }
+
+    // 1. Flush WordPress cache (default: true)
+    if (postDeployConfig.clearCache !== false) {
+      const hasWpCli = await this.isWpCliAvailable()
+      if (hasWpCli) {
+        const flushResult = await this.execCommandSafe(
+          `cd "${wpRootPath}" && wp cache flush && wp transient delete --all`
+        )
+        result.cacheCleared = flushResult.success
+      }
+    }
+
+    // 2. Reset PHP OPcache (default: true)
+    if (postDeployConfig.resetOpcache !== false) {
+      // Create a temporary PHP script to reset OPcache
+      // Use heredoc-style to avoid shell escaping issues
+      const tmpPath = '/tmp/stratawp-opcache-reset.php'
+      const writeResult = await this.execCommandSafe(
+        `cat > ${tmpPath} << 'STRATAWP_EOF'
+<?php
+if (function_exists('opcache_reset')) {
+  opcache_reset();
+  echo 'OPcache reset successfully';
+} else {
+  echo 'OPcache not available';
+}
+STRATAWP_EOF`
+      )
+
+      if (writeResult.success) {
+        const execResult = await this.execCommandSafe(
+          `cd "${wpRootPath}" && php ${tmpPath} 2>/dev/null; rm -f ${tmpPath}`
+        )
+        result.opcacheReset = execResult.success &&
+          execResult.stdout.includes('reset successfully')
+      }
+    }
+
+    // 3. Cleanup old backups
+    const keepLast = options.keepBackups ?? this.config.backup?.keepLast ?? 1
+    if (keepLast > 0) {
+      result.backupsCleanedUp = await this.cleanupOldBackups(keepLast)
+    }
+
+    // 4. Run user-defined WP-CLI commands
+    if (
+      postDeployConfig.wpCliCommands &&
+      postDeployConfig.wpCliCommands.length > 0
+    ) {
+      const hasWpCli = await this.isWpCliAvailable()
+      if (hasWpCli) {
+        for (const command of postDeployConfig.wpCliCommands) {
+          const cmdResult = await this.execCommandSafe(
+            `cd "${wpRootPath}" && ${command}`
+          )
+          result.customCommands.push({
+            command,
+            success: cmdResult.success,
+            output: cmdResult.stdout || cmdResult.stderr,
+          })
+        }
+      }
+    }
+
+    return result
+  }
+
+  /**
+   * Post-deploy validation
+   * Checks critical theme files exist, WordPress health via WP-CLI,
+   * and optionally checks site HTTP response
+   */
+  override async validate(): Promise<{
+    success: boolean
+    checks: ValidationCheck[]
+  }> {
+    const checks: ValidationCheck[] = []
+    const wpRootPath = this.getWpRootPath()
+
+    // 1. Check critical theme files exist
+    const criticalFiles = ['style.css', 'index.php']
+    for (const file of criticalFiles) {
+      const remotePath = path.posix.join(this.config.remotePath, file)
+      const exists = await this.pathExists(remotePath)
+      checks.push({
+        name: `File: ${file}`,
+        passed: exists,
+        message: exists ? 'exists' : 'missing on remote',
+      })
+    }
+
+    // 2. Check theme.json exists (FSE themes)
+    const themeJsonPath = path.posix.join(
+      this.config.remotePath,
+      'theme.json'
+    )
+    const themeJsonExists = await this.pathExists(themeJsonPath)
+    if (themeJsonExists) {
+      checks.push({
+        name: 'File: theme.json',
+        passed: true,
+        message: 'exists',
+      })
+    }
+
+    // 3. WordPress health check via WP-CLI
+    const hasWpCli = await this.isWpCliAvailable()
+    if (hasWpCli) {
+      const wpCheck = await this.execCommandSafe(
+        `cd "${wpRootPath}" && wp eval "echo 'OK';"`
+      )
+      checks.push({
+        name: 'WordPress loads',
+        passed: wpCheck.success && wpCheck.stdout.includes('OK'),
+        message: wpCheck.success
+          ? 'healthy'
+          : (wpCheck.stderr || 'unknown error').slice(0, 100),
+      })
+    }
+
+    // 4. HTTP health check if remote URL configured
+    if (this.config.database?.remoteUrl) {
+      const urlCheck = await this.execCommandSafe(
+        `curl -sL -o /dev/null -w "%{http_code}" "${this.config.database.remoteUrl}" 2>/dev/null`
+      )
+      const statusCode = urlCheck.stdout.trim()
+      const isHealthy =
+        statusCode === '200' ||
+        statusCode === '301' ||
+        statusCode === '302'
+      checks.push({
+        name: 'Site responds',
+        passed: isHealthy,
+        message: `HTTP ${statusCode}`,
+      })
+    }
+
+    return {
+      success: checks.every((c) => c.passed),
+      checks,
+    }
+  }
+
+  /**
+   * Sync an FSE template from local content to remote database via WP-CLI
+   * Uses wp eval-file to safely update post content without shell escaping issues
+   */
+  async syncTemplate(
+    templateContent: string,
+    templateSlug: string,
+    wpRootPath: string
+  ): Promise<{ success: boolean; message: string }> {
+    if (!this.isConnected) {
+      throw new Error('Not connected to SSH server')
+    }
+
+    const timestamp = Date.now()
+    const localTmpPath = path.join(
+      process.env.TMPDIR || '/tmp',
+      `stratawp-template-${timestamp}.html`
+    )
+    const remoteTmpPath = `/tmp/stratawp-template-${timestamp}.html`
+    const localPhpPath = path.join(
+      process.env.TMPDIR || '/tmp',
+      `stratawp-template-update-${timestamp}.php`
+    )
+    const remotePhpPath = `/tmp/stratawp-template-update-${timestamp}.php`
+
+    try {
+      // 1. Write content to local temp file
+      await fs.writeFile(localTmpPath, templateContent)
+
+      // 2. Upload content file to remote
+      await this.ssh.putFile(localTmpPath, remoteTmpPath)
+
+      // 3. Find the remote template ID for this slug
+      const listResult = await this.execCommandSafe(
+        `cd "${wpRootPath}" && wp post list --post_type=wp_template --fields=ID,post_name --format=csv 2>/dev/null`
+      )
+
+      if (!listResult.success) {
+        return {
+          success: false,
+          message: 'Failed to list remote templates',
+        }
+      }
+
+      // Parse CSV output to find the template
+      const lines = listResult.stdout.trim().split('\n').filter(Boolean)
+      let remoteId: string | null = null
+
+      for (const line of lines) {
+        const cleanLine = line.replace(/\r/g, '')
+        // Match either "id,slug" or "id,theme//slug"
+        if (
+          cleanLine.endsWith(`,${templateSlug}`) ||
+          cleanLine.includes(`//${templateSlug}`)
+        ) {
+          remoteId = cleanLine.split(',')[0].trim()
+          break
+        }
+      }
+
+      if (!remoteId) {
+        return {
+          success: false,
+          message: `Template '${templateSlug}' not found on remote`,
+        }
+      }
+
+      // 4. Create PHP updater script and upload it
+      const phpScript = `<?php
+$content = file_get_contents('${remoteTmpPath}');
+if ($content === false) {
+  echo 'ERROR: Could not read template file';
+  exit(1);
+}
+$result = wp_update_post([
+  'ID' => ${remoteId},
+  'post_content' => $content,
+], true);
+if (is_wp_error($result)) {
+  echo 'ERROR: ' . $result->get_error_message();
+  exit(1);
+}
+echo 'OK: Updated template ID ' . $result;
+`
+      await fs.writeFile(localPhpPath, phpScript)
+      await this.ssh.putFile(localPhpPath, remotePhpPath)
+
+      // 5. Execute the updater via wp eval-file
+      const updateResult = await this.execCommandSafe(
+        `cd "${wpRootPath}" && wp eval-file "${remotePhpPath}"`
+      )
+
+      // 6. Cleanup remote temp files
+      await this.execCommandSafe(
+        `rm -f "${remoteTmpPath}" "${remotePhpPath}"`
+      )
+
+      if (updateResult.success && updateResult.stdout.includes('OK')) {
+        return { success: true, message: updateResult.stdout.trim() }
+      } else {
+        return {
+          success: false,
+          message:
+            updateResult.stderr || updateResult.stdout || 'Unknown error',
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Unknown error',
+      }
+    } finally {
+      // Always cleanup local temp files
+      await fs.remove(localTmpPath).catch(() => {})
+      await fs.remove(localPhpPath).catch(() => {})
+      // Attempt remote cleanup
+      await this.execCommandSafe(
+        `rm -f "${remoteTmpPath}" "${remotePhpPath}"`
+      ).catch(() => {})
+    }
+  }
+
+  /**
+   * List all FSE templates on remote via WP-CLI
+   */
+  async listRemoteTemplates(
+    wpRootPath: string
+  ): Promise<Array<{ id: string; slug: string }>> {
+    const result = await this.execCommandSafe(
+      `cd "${wpRootPath}" && wp post list --post_type=wp_template --fields=ID,post_name --format=csv 2>/dev/null`
+    )
+
+    if (!result.success) return []
+
+    const templates: Array<{ id: string; slug: string }> = []
+    const lines = result.stdout.trim().split('\n').filter(Boolean)
+
+    // Skip CSV header
+    for (let i = 1; i < lines.length; i++) {
+      const cleanLine = lines[i].replace(/\r/g, '')
+      const commaIdx = cleanLine.indexOf(',')
+      if (commaIdx > 0) {
+        const id = cleanLine.substring(0, commaIdx).trim()
+        let slug = cleanLine.substring(commaIdx + 1).trim()
+        // Strip theme prefix (e.g. "theme-name//front-page" → "front-page")
+        const slashIdx = slug.indexOf('//')
+        if (slashIdx >= 0) {
+          slug = slug.substring(slashIdx + 2)
+        }
+        templates.push({ id, slug })
+      }
+    }
+
+    return templates
   }
 }

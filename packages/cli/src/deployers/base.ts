@@ -4,7 +4,8 @@
  */
 
 import type { FileRecord } from '../utils/file-filter'
-import type { EnvironmentConfig } from '../utils/deploy-config'
+import type { EnvironmentConfig, PostDeployConfig } from '../utils/deploy-config'
+import path from 'path'
 
 export interface DeploymentProgress {
   current: number
@@ -16,6 +17,19 @@ export interface DeploymentProgress {
 
 export type ProgressCallback = (progress: DeploymentProgress) => void
 
+export interface ValidationCheck {
+  name: string
+  passed: boolean
+  message?: string
+}
+
+export interface PostDeployResult {
+  cacheCleared: boolean
+  opcacheReset: boolean
+  backupsCleanedUp: number
+  customCommands: Array<{ command: string; success: boolean; output?: string }>
+}
+
 export interface DeploymentResult {
   success: boolean
   filesUploaded: number
@@ -23,6 +37,20 @@ export interface DeploymentResult {
   backupPath?: string
   errorMessage?: string
   duration: number
+  postDeploy?: PostDeployResult
+  validation?: {
+    success: boolean
+    checks: ValidationCheck[]
+  }
+}
+
+export interface DeployOptions {
+  createBackup?: boolean
+  keepBackups?: number
+  deleteOrphaned?: boolean
+  orphanedFiles?: FileRecord[]
+  postDeploy?: PostDeployConfig
+  validate?: boolean
 }
 
 /**
@@ -123,8 +151,60 @@ export abstract class BaseDeployer {
    * Execute a command on remote (for SSH deployers)
    * Optional implementation for deployers that don't support remote commands
    */
-  async executeCommand(command: string): Promise<string> {
+  async executeCommand(_command: string): Promise<string> {
     throw new Error('Remote command execution not supported by this deployer')
+  }
+
+  /**
+   * Post-deploy lifecycle hook
+   * Called after files are uploaded and orphans deleted, while still connected.
+   * Default is no-op. SSH deployer overrides to flush caches, OPcache, cleanup backups.
+   */
+  async postDeploy(_options: DeployOptions): Promise<PostDeployResult> {
+    return {
+      cacheCleared: false,
+      opcacheReset: false,
+      backupsCleanedUp: 0,
+      customCommands: [],
+    }
+  }
+
+  /**
+   * Post-deploy validation hook
+   * Called after postDeploy(), while still connected.
+   * Default checks critical files exist. SSH deployer adds WP-CLI health check.
+   */
+  async validate(): Promise<{ success: boolean; checks: ValidationCheck[] }> {
+    const checks: ValidationCheck[] = []
+
+    // Check critical theme files exist
+    const criticalFiles = ['style.css']
+    for (const file of criticalFiles) {
+      const remotePath = path.posix.join(this.config.remotePath, file)
+      const exists = await this.pathExists(remotePath)
+      checks.push({
+        name: `File: ${file}`,
+        passed: exists,
+        message: exists ? 'exists' : 'missing',
+      })
+    }
+
+    return {
+      success: checks.every((c) => c.passed),
+      checks,
+    }
+  }
+
+  /**
+   * Derive WordPress root path from theme remotePath
+   * WordPress themes are always at wp-content/themes/<theme-name>
+   * So WP root is 3 directories up
+   */
+  getWpRootPath(): string {
+    return (
+      this.config.postDeploy?.wpRootPath ||
+      path.posix.join(this.config.remotePath, '..', '..', '..')
+    )
   }
 
   /**
@@ -133,38 +213,44 @@ export abstract class BaseDeployer {
    */
   async deploy(
     files: FileRecord[],
-    options: {
-      createBackup?: boolean
-      deleteOrphaned?: boolean
-      orphanedFiles?: FileRecord[]
-    } = {}
+    options: DeployOptions = {}
   ): Promise<DeploymentResult> {
     const startTime = Date.now()
     let backupPath: string | undefined
     let filesUploaded = 0
     let filesDeleted = 0
+    let postDeployResult: PostDeployResult | undefined
+    let validationResult: { success: boolean; checks: ValidationCheck[] } | undefined
 
     try {
-      // Connect
+      // 1. Connect
       await this.connect()
 
-      // Create backup if requested
+      // 2. Create backup if requested
       if (options.createBackup) {
         backupPath = await this.createBackup()
       }
 
-      // Upload files
+      // 3. Upload files
       await this.uploadFiles(files)
       filesUploaded = files.length
 
-      // Delete orphaned files if requested
+      // 4. Delete orphaned files if requested
       if (options.deleteOrphaned && options.orphanedFiles) {
         const orphanedPaths = options.orphanedFiles.map((f) => f.remotePath)
         await this.deleteFiles(orphanedPaths)
         filesDeleted = orphanedPaths.length
       }
 
-      // Disconnect
+      // 5. Post-deploy hooks (cache flush, OPcache, backup cleanup)
+      postDeployResult = await this.postDeploy(options)
+
+      // 6. Validation (file checks, WP health)
+      if (options.validate !== false) {
+        validationResult = await this.validate()
+      }
+
+      // 7. Disconnect
       await this.disconnect()
 
       return {
@@ -173,6 +259,8 @@ export abstract class BaseDeployer {
         filesDeleted,
         backupPath,
         duration: Date.now() - startTime,
+        postDeploy: postDeployResult,
+        validation: validationResult,
       }
     } catch (error) {
       const errorMessage =
@@ -185,6 +273,8 @@ export abstract class BaseDeployer {
         backupPath,
         errorMessage,
         duration: Date.now() - startTime,
+        postDeploy: postDeployResult,
+        validation: validationResult,
       }
     } finally {
       // Ensure we disconnect

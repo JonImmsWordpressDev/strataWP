@@ -7,14 +7,13 @@ import chalk from 'chalk'
 import ora from 'ora'
 import prompts from 'prompts'
 import { execa } from 'execa'
-import path from 'path'
 import { DeployConfigManager } from '../../utils/deploy-config'
 import { FileFilter } from '../../utils/file-filter'
 import { ManifestManager } from '../../utils/manifest'
 import { FTPDeployer } from '../../deployers/ftp'
 import { SSHDeployer } from '../../deployers/ssh'
-import type { BaseDeployer } from '../../deployers/base'
-import { SnapshotManager, DatabaseDumper } from '@stratawp/sync'
+import type { BaseDeployer, PostDeployResult, ValidationCheck } from '../../deployers/base'
+import { SnapshotManager } from '@stratawp/sync'
 
 export interface DeployOptions {
   build?: boolean
@@ -40,6 +39,64 @@ async function getGitBranch(): Promise<string | undefined> {
     return execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim()
   } catch {
     return undefined
+  }
+}
+
+/**
+ * Display post-deploy action results
+ */
+function displayPostDeployResults(result: PostDeployResult): void {
+  console.log(chalk.cyan('\n🔧 Post-Deploy Actions:\n'))
+
+  if (result.cacheCleared) {
+    console.log(chalk.green('  ✓ WordPress cache flushed'))
+  }
+
+  if (result.opcacheReset) {
+    console.log(chalk.green('  ✓ PHP OPcache reset'))
+  } else {
+    console.log(chalk.dim('  ○ OPcache not available or reset skipped'))
+  }
+
+  if (result.backupsCleanedUp > 0) {
+    console.log(
+      chalk.green(`  ✓ Cleaned up ${result.backupsCleanedUp} old backup(s)`)
+    )
+  }
+
+  if (result.customCommands.length > 0) {
+    for (const cmd of result.customCommands) {
+      if (cmd.success) {
+        console.log(chalk.green(`  ✓ ${cmd.command}`))
+      } else {
+        console.log(chalk.red(`  ✖ ${cmd.command}: ${cmd.output?.slice(0, 80) || 'failed'}`))
+      }
+    }
+  }
+}
+
+/**
+ * Display validation check results
+ */
+function displayValidationResults(
+  validation: { success: boolean; checks: ValidationCheck[] }
+): void {
+  console.log(chalk.cyan('\n✅ Validation:\n'))
+
+  for (const check of validation.checks) {
+    if (check.passed) {
+      console.log(chalk.green(`  ✓ ${check.name} — ${check.message || 'passed'}`))
+    } else {
+      console.log(chalk.red(`  ✖ ${check.name} — ${check.message || 'failed'}`))
+    }
+  }
+
+  if (!validation.success) {
+    console.log(
+      chalk.yellow(
+        '\n  ⚠ Some validation checks failed. Your site may need attention.'
+      )
+    )
   }
 }
 
@@ -235,13 +292,18 @@ export async function deployCommand(
       progressSpinner.text = `Deploying (${progress.current}/${progress.total}) ${progress.currentFile || ''}`
     })
 
-    // Deploy
+    // Deploy with full lifecycle (upload → post-deploy → validation)
     console.log(chalk.yellow('\n🚀 Deploying...\n'))
 
+    const createBackup = !options['no-backup'] && (envConfig.backup?.enabled !== false)
     const filesToDeploy = [...changes.added, ...changes.modified]
     const result = await deployer.deploy(filesToDeploy, {
-      createBackup: !options['no-backup'],
-      deleteOrphaned: false, // Can be added as option later
+      createBackup,
+      keepBackups: envConfig.backup?.keepLast ?? 1,
+      deleteOrphaned: envConfig.deleteRemoved ?? false,
+      orphanedFiles: changes.deleted,
+      postDeploy: envConfig.postDeploy,
+      validate: true,
     })
 
     if (result.success) {
@@ -261,7 +323,7 @@ export async function deployCommand(
       )
       await manifestManager.save(manifest)
 
-      // Display summary
+      // Display file deployment summary
       console.log(chalk.green('\n✓ Deployment Summary:\n'))
       console.log(
         chalk.white(`  Deployed: ${result.filesUploaded} files (${FileFilter.formatSize(FileFilter.calculateTotalSize(filesToDeploy))})`)
@@ -273,12 +335,27 @@ export async function deployCommand(
         chalk.white(`  Duration: ${(result.duration / 1000).toFixed(1)}s`)
       )
 
-      // Database migration (if enabled)
-      if (envConfig.database?.enabled) {
-        console.log(chalk.yellow('\n🔄 Database migration not yet implemented'))
+      // Display post-deploy results
+      if (result.postDeploy) {
+        displayPostDeployResults(result.postDeploy)
+      }
+
+      // Display validation results
+      if (result.validation) {
+        displayValidationResults(result.validation)
+      }
+
+      // Template sync for FSE themes (when database is enabled and using SSH)
+      if (envConfig.database?.enabled && envConfig.type === 'ssh') {
+        console.log(chalk.cyan('\n📝 FSE Template Sync:\n'))
         console.log(
-          chalk.white(
-            `  Will replace: ${envConfig.database.localUrl} → ${envConfig.database.remoteUrl}`
+          chalk.dim(
+            `  Templates in database can be synced with: ${chalk.cyan(`stratawp sync:templates ${environment}`)}`
+          )
+        )
+        console.log(
+          chalk.dim(
+            `  URL mapping: ${envConfig.database.localUrl} → ${envConfig.database.remoteUrl}`
           )
         )
       }

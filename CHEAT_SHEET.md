@@ -142,8 +142,29 @@ stratawp deploy production --dry-run     # Preview changes
 stratawp deploy production --force       # Skip confirmation
 stratawp deploy production --fresh       # Upload all files (ignore manifest)
 stratawp deploy production --no-backup   # Skip pre-deploy snapshot
+stratawp deploy production --verbose     # Show debug output
 stratawp deploy:test production          # Test connection
 stratawp deploy:list                     # List environments
+```
+
+**Post-deploy actions (automatic with SSH deployments):**
+- WordPress cache flush (`wp cache flush` + `wp transient delete --all`)
+- PHP OPcache invalidation
+- Old backup cleanup (keeps last N, configurable)
+- Custom WP-CLI commands (via `postDeploy.wpCliCommands` config)
+- Validation checks (file existence, WP health, HTTP response)
+
+### FSE Template Sync
+
+Sync WordPress Full Site Editing templates between local and production databases:
+
+```bash
+stratawp sync:templates production --all              # Sync all templates
+stratawp sync:templates production --template=home    # Sync specific template
+stratawp sync:templates production --all --dry-run    # Preview without changes
+stratawp sync:templates:list production               # List local vs remote templates
+stratawp sync:templates production --wp-cli=/path/wp  # Custom WP-CLI path
+stratawp sync:templates production --wp-path=/wp/root # Custom WordPress root
 ```
 
 ### Database Sync
