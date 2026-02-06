@@ -36,6 +36,10 @@ import {
   syncDbPullCommand,
   syncDbPushCommand,
 } from './commands/sync'
+import {
+  syncTemplatesCommand,
+  listTemplatesCommand,
+} from './commands/deploy/sync-templates'
 import { updateCommand } from './commands/update'
 
 const program = new Command()
@@ -274,6 +278,24 @@ program
   .option('--dry-run', 'Show what would be done without doing it')
   .option('--force', 'Skip confirmation prompt')
   .action(syncDbPushCommand)
+
+program
+  .command('sync:templates <environment>')
+  .description('Sync FSE templates from local database to remote via SSH')
+  .option('-t, --template <name>', 'Sync a specific template by slug')
+  .option('--all', 'Sync all templates')
+  .option('--dry-run', 'Show what would be synced without syncing')
+  .option('--wp-path <path>', 'Local WordPress root path')
+  .option('--wp-cli <path>', 'Path to local WP-CLI binary')
+  .option('--verbose', 'Show detailed output')
+  .action(syncTemplatesCommand)
+
+program
+  .command('sync:templates:list <environment>')
+  .description('List FSE templates on local and remote')
+  .option('--wp-path <path>', 'Local WordPress root path')
+  .option('--wp-cli <path>', 'Path to local WP-CLI binary')
+  .action(listTemplatesCommand)
 
 // Update command
 program
