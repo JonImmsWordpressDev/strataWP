@@ -14,6 +14,7 @@ export interface SSHConfig {
   username: string
   privateKey?: string
   password?: string
+  passphrase?: string // Passphrase for encrypted private keys
 }
 
 export interface EnvironmentConfig {

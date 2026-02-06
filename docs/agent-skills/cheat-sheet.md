@@ -384,6 +384,43 @@ wp db import backup.sql
 wp db query "SELECT * FROM wp_options WHERE autoload='yes' ORDER BY LENGTH(option_value) DESC LIMIT 10"
 ```
 
+### Database Sync (StrataWP)
+
+```bash
+# Pull production database to local (SSH-based, handles localhost-only DBs)
+pnpm stratawp sync:db:pull production
+
+# With passphrase for encrypted SSH keys
+STRATAWP_SSH_PASSPHRASE="passphrase" pnpm stratawp sync:db:pull production
+
+# Specific tables only
+pnpm stratawp sync:db:pull production --tables=wp_posts,wp_postmeta
+
+# Dry run (preview changes)
+pnpm stratawp sync:db:pull production --dry-run
+
+# Push local to staging (use with caution!)
+pnpm stratawp sync:db:push staging
+```
+
+**Configuration (`.stratawp-sync.json`):**
+```json
+{
+  "environments": {
+    "local": {
+      "url": "http://local.test",
+      "database": { "host": "localhost", "user": "root", "password": "", "database": "wordpress" }
+    },
+    "production": {
+      "url": "https://example.com",
+      "ssh": { "host": "ssh.example.com", "port": 22, "user": "deploy", "key": "~/.ssh/id_rsa" },
+      "wpPath": "/var/www/html",
+      "database": { "host": "127.0.0.1", "user": "prod_user", "password": "pass", "database": "wp_prod" }
+    }
+  }
+}
+```
+
 ## PHPStan
 
 ### Basic Configuration

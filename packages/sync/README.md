@@ -53,7 +53,11 @@ stratawp rollback:mark-stable 1
 
 ## Configuration
 
-Create `.stratawp-sync.json` in your project root:
+Create `.stratawp-sync.json` in your project root.
+
+### SSH Configuration (Recommended)
+
+Most production databases only allow connections from localhost (`127.0.0.1`), making direct MySQL connections impossible. Use SSH-based sync instead:
 
 ```json
 {
@@ -69,21 +73,18 @@ Create `.stratawp-sync.json` in your project root:
         "database": "wordpress"
       }
     },
-    "staging": {
-      "name": "staging",
-      "url": "https://staging.example.com",
-      "database": {
-        "host": "db.staging.example.com",
-        "user": "staging_user",
-        "password": "staging_pass",
-        "database": "wp_staging"
-      }
-    },
     "production": {
       "name": "production",
       "url": "https://example.com",
+      "ssh": {
+        "host": "ssh.example.com",
+        "port": 22,
+        "user": "deploy",
+        "key": "~/.ssh/id_rsa"
+      },
+      "wpPath": "/var/www/html",
       "database": {
-        "host": "db.example.com",
+        "host": "127.0.0.1",
         "user": "prod_user",
         "password": "prod_pass",
         "database": "wp_production"
@@ -93,11 +94,86 @@ Create `.stratawp-sync.json` in your project root:
 }
 ```
 
+**SSH Configuration Options:**
+
+| Option | Description |
+|--------|-------------|
+| `ssh.host` | SSH server hostname |
+| `ssh.port` | SSH port (default: 22) |
+| `ssh.user` | SSH username |
+| `ssh.key` | Path to private key (supports `~` expansion) |
+| `ssh.passphrase` | Passphrase for encrypted keys (optional) |
+| `wpPath` | WordPress installation path on remote server |
+| `wpCliPath` | Custom WP-CLI path (optional, defaults to `wp`) |
+
+**Passphrase Handling:**
+
+For encrypted SSH keys, you can:
+1. Set `STRATAWP_SSH_PASSPHRASE` environment variable (recommended for CI/CD)
+2. Include `passphrase` in the config (not recommended - use env var instead)
+3. Enter it when prompted
+
+### Direct MySQL Configuration
+
+For databases with public access (development/staging servers):
+
+```json
+{
+  "environments": {
+    "staging": {
+      "name": "staging",
+      "url": "https://staging.example.com",
+      "database": {
+        "host": "db.staging.example.com",
+        "user": "staging_user",
+        "password": "staging_pass",
+        "database": "wp_staging"
+      }
+    }
+  }
+}
+```
+
 ## Programmatic API
 
-### DatabaseDumper
+### SSHDatabaseDumper (Recommended for Production)
 
-Export MySQL databases to SQL:
+Export databases via SSH - works with databases that only allow local connections:
+
+```typescript
+import { SSHDatabaseDumper } from '@stratawp/sync'
+
+const dumper = new SSHDatabaseDumper({
+  ssh: {
+    host: 'ssh.example.com',
+    port: 22,
+    username: 'deploy',
+    privateKey: '~/.ssh/id_rsa',
+    passphrase: process.env.SSH_PASSPHRASE, // Optional
+  },
+  wpPath: '/var/www/html',
+  wpCliPath: 'wp', // Optional custom WP-CLI path
+})
+
+// Generate full database dump
+const sql = await dumper.generateDumpSQL()
+
+// Dump specific tables
+const sql = await dumper.generateDumpSQL({
+  tables: ['wp_posts', 'wp_postmeta'],
+})
+
+// Dump to file
+await dumper.dumpToFile('/path/to/dump.sql')
+
+// Test connection and WP-CLI availability
+const result = await dumper.testConnection()
+console.log(result.success, result.message)
+```
+
+### DatabaseDumper (Direct MySQL)
+
+Export MySQL databases to SQL (requires direct database access):
 
 ```typescript
 import { DatabaseDumper } from '@stratawp/sync'

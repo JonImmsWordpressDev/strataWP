@@ -2,7 +2,7 @@
 import chalk from 'chalk'
 import ora from 'ora'
 import prompts from 'prompts'
-import { DatabaseDumper, DatabaseRestorer, UrlReplacer } from '@stratawp/sync'
+import { DatabaseDumper, SSHDatabaseDumper, DatabaseRestorer, UrlReplacer } from '@stratawp/sync'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
@@ -10,9 +10,20 @@ interface SyncConfig {
   environments: Record<string, EnvironmentConfig>
 }
 
+interface SSHConfig {
+  host: string
+  port?: number
+  user: string
+  key?: string
+  passphrase?: string
+}
+
 interface EnvironmentConfig {
   name: string
   url: string
+  ssh?: SSHConfig
+  wpPath?: string // WordPress path on remote server (required when using SSH)
+  wpCliPath?: string // Optional custom WP-CLI path
   database: {
     host: string
     port?: number
@@ -32,7 +43,7 @@ export async function syncDbPullCommand(environment: string, options: {
   if (!config) {
     console.log(chalk.red('No sync configuration found.'))
     console.log(chalk.dim('Create a .stratawp-sync.json file in your project root.'))
-    console.log(chalk.dim('\nExample configuration:'))
+    console.log(chalk.dim('\nExample configuration (with SSH - recommended):'))
     console.log(chalk.dim(JSON.stringify({
       environments: {
         local: {
@@ -43,10 +54,20 @@ export async function syncDbPullCommand(environment: string, options: {
         production: {
           name: 'production',
           url: 'https://example.com',
-          database: { host: 'db.example.com', user: 'user', password: 'pass', database: 'wp_prod' }
+          ssh: {
+            host: 'ssh.example.com',
+            port: 22,
+            user: 'deploy',
+            key: '~/.ssh/id_rsa'
+          },
+          wpPath: '/var/www/html',
+          database: { host: '127.0.0.1', user: 'dbuser', password: 'pass', database: 'wp_prod' }
         }
       }
     }, null, 2)))
+    console.log(chalk.dim('\nNote: SSH config is recommended for production databases that only'))
+    console.log(chalk.dim('allow local connections. Set STRATAWP_SSH_PASSPHRASE env var for'))
+    console.log(chalk.dim('encrypted keys to avoid passphrase prompts.'))
     return
   }
 
@@ -70,12 +91,51 @@ export async function syncDbPullCommand(environment: string, options: {
     // Dump remote database
     spinner.text = `Dumping database from ${environment}...`
 
-    const dumper = new DatabaseDumper(remoteEnv.database)
+    let sql: string
     const dumpOptions = options.tables
       ? { tables: options.tables.split(',') }
       : {}
 
-    const sql = await dumper.generateDumpSQL(dumpOptions)
+    // Use SSH-based dump if SSH config is present (recommended for production)
+    if (remoteEnv.ssh) {
+      if (!remoteEnv.wpPath) {
+        spinner.fail('SSH sync requires wpPath to be configured')
+        console.log(chalk.dim('Add "wpPath": "/path/to/wordpress" to your environment config'))
+        return
+      }
+
+      // Get passphrase from env var or prompt if key is encrypted
+      let passphrase = remoteEnv.ssh.passphrase || process.env.STRATAWP_SSH_PASSPHRASE
+
+      if (remoteEnv.ssh.key && !passphrase) {
+        spinner.stop()
+        const response = await prompts({
+          type: 'password',
+          name: 'passphrase',
+          message: 'SSH key passphrase (or set STRATAWP_SSH_PASSPHRASE env var):',
+        })
+        passphrase = response.passphrase
+        spinner.start()
+      }
+
+      const sshDumper = new SSHDatabaseDumper({
+        ssh: {
+          host: remoteEnv.ssh.host,
+          port: remoteEnv.ssh.port || 22,
+          username: remoteEnv.ssh.user,
+          privateKey: remoteEnv.ssh.key,
+          passphrase,
+        },
+        wpPath: remoteEnv.wpPath,
+        wpCliPath: remoteEnv.wpCliPath,
+      })
+
+      sql = await sshDumper.generateDumpSQL(dumpOptions)
+    } else {
+      // Direct MySQL connection (only works if database is publicly accessible)
+      const dumper = new DatabaseDumper(remoteEnv.database)
+      sql = await dumper.generateDumpSQL(dumpOptions)
+    }
 
     spinner.text = 'Detecting URLs to replace...'
 
