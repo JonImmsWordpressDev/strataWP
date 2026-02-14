@@ -41,6 +41,7 @@ import {
   listTemplatesCommand,
 } from './commands/deploy/sync-templates'
 import { updateCommand } from './commands/update'
+import { iconsSetupCommand, iconsUpdateCommand, iconsListCommand } from './commands/icons'
 
 const program = new Command()
 
@@ -304,5 +305,23 @@ program
   .option('-c, --check', 'Check for updates without applying them')
   .option('-f, --force', 'Skip confirmation prompts')
   .action(updateCommand)
+
+// Icon font management
+program
+  .command('icons:setup')
+  .description('Set up icon font directory (Flaticon)')
+  .option('--zip <path>', 'Path to Flaticon icon font ZIP file')
+  .action(iconsSetupCommand)
+
+program
+  .command('icons:update')
+  .description('Update icon font from new ZIP file')
+  .option('--zip <path>', 'Path to Flaticon icon font ZIP file')
+  .action(iconsUpdateCommand)
+
+program
+  .command('icons:list')
+  .description('List available icon names')
+  .action(iconsListCommand)
 
 program.parse()
