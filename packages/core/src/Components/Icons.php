@@ -266,9 +266,11 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 	 * @return string CSS string with size utility rules.
 	 */
 	protected function get_size_utilities_css(): string {
-		return '.strata-icon--sm { font-size: 16px; }
-.strata-icon--md { font-size: 24px; }
-.strata-icon--lg { font-size: 32px; }
-.strata-icon--xl { font-size: 48px; }';
+		return <<<CSS
+.strata-icon--sm { font-size: 0.875rem; }
+.strata-icon--md { font-size: 1.25rem; }
+.strata-icon--lg { font-size: 1.75rem; }
+.strata-icon--xl { font-size: 2.5rem; }
+CSS;
 	}
 }
