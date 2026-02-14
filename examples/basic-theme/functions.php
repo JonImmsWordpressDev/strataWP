@@ -24,6 +24,7 @@ use StrataWP\Components\Assets;
 use StrataWP\Components\Blocks;
 use StrataWP\Components\Performance;
 use StrataWP\Components\Fonts;
+use StrataWP\Components\Icons;
 use StrataBasic\Components\Navigation;
 use StrataBasic\Components\Customizer;
 
@@ -38,6 +39,7 @@ function strata_basic_init(): void {
         new Blocks(),
         new Performance(),
         new Fonts(),
+        new Icons(),
         new Navigation(),
         new Customizer(),
     ]);
