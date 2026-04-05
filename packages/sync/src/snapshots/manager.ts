@@ -25,6 +25,20 @@ export class SnapshotManager {
   private basePath: string
   private indexPath: string
 
+  /** Directories and files excluded from snapshot archives */
+  private static readonly SNAPSHOT_EXCLUDES = [
+    'node_modules',
+    '.stratawp-snapshots',
+    '.git',
+    'src',
+    'e2e',
+    '__tests__',
+    '.playwright-mcp',
+    '.claude',
+    '.turbo',
+    '.cache',
+  ]
+
   constructor(basePath: string = '.stratawp-snapshots') {
     this.basePath = basePath
     this.indexPath = path.join(basePath, 'snapshots.json')
@@ -49,7 +63,7 @@ export class SnapshotManager {
 
     await fs.mkdir(snapshotDir, { recursive: true })
 
-    // Archive theme files
+    // Archive theme files (excluding node_modules, snapshots, dev files)
     const themeArchive = path.join(snapshotDir, 'theme.tar.gz')
     const themeFiles = await this.getFileList(options.themePath)
 
@@ -58,6 +72,12 @@ export class SnapshotManager {
         gzip: true,
         file: themeArchive,
         cwd: path.dirname(options.themePath),
+        filter: (entryPath) => {
+          const parts = entryPath.split(path.sep)
+          return !parts.some((part) =>
+            SnapshotManager.SNAPSHOT_EXCLUDES.includes(part)
+          )
+        },
       },
       [path.basename(options.themePath)]
     )
@@ -190,10 +210,12 @@ export class SnapshotManager {
 
   private async getFileList(dirPath: string): Promise<string[]> {
     const files: string[] = []
+    const excludes = SnapshotManager.SNAPSHOT_EXCLUDES
 
     async function walk(dir: string) {
       const entries = await fs.readdir(dir, { withFileTypes: true })
       for (const entry of entries) {
+        if (excludes.includes(entry.name)) continue
         const fullPath = path.join(dir, entry.name)
         if (entry.isDirectory()) {
           await walk(fullPath)
