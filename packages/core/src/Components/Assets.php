@@ -38,7 +38,7 @@ class Assets implements ComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'wp_head', [ $this, 'add_font_preconnect' ], 1 );
+		$this->add_font_preconnect();
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_fonts' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_editor_assets' ] );
@@ -140,15 +140,21 @@ class Assets implements ComponentInterface {
 	}
 
 	/**
-	 * Add preconnect hints for Google Fonts
+	 * Add preconnect hints for Google Fonts via Performance component filter
 	 */
 	public function add_font_preconnect(): void {
 		if ( empty( $this->google_fonts ) ) {
 			return;
 		}
 
-		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+		add_filter( 'stratawp_preconnect_hints', function ( array $hints ): array {
+			$hints[] = 'https://fonts.googleapis.com';
+			$hints[] = [
+				'href'        => 'https://fonts.gstatic.com',
+				'crossorigin' => true,
+			];
+			return $hints;
+		} );
 	}
 
 	/**

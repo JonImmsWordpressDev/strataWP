@@ -5,6 +5,7 @@
 
 import { render, RenderOptions } from '@testing-library/react'
 import { createElement } from 'react'
+import { vi } from 'vitest'
 
 /**
  * Block Configuration Interface
