@@ -1,0 +1,83 @@
+name: Build and Release Theme
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-attach:
+    name: Build theme and attach to release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+
+      - name: Install Composer dependencies for basic theme
+        working-directory: examples/basic-theme
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Update theme version in style.css
+        working-directory: examples/basic-theme
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/^Version: .*/Version: ${VERSION}/" style.css
+
+      - name: Package theme zip
+        run: |
+          THEME_DIR="examples/basic-theme"
+          ZIP_NAME="strata-basic.zip"
+
+          # Create a clean staging directory
+          mkdir -p /tmp/strata-basic
+
+          # Copy production files
+          cp -r "${THEME_DIR}"/dist /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/vendor /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/templates /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/parts /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/patterns /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/inc /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/languages /tmp/strata-basic/ 2>/dev/null || true
+
+          # Copy PHP files from theme root
+          cp "${THEME_DIR}"/*.php /tmp/strata-basic/ 2>/dev/null || true
+
+          # Copy required theme files
+          cp "${THEME_DIR}"/style.css /tmp/strata-basic/
+          cp "${THEME_DIR}"/theme.json /tmp/strata-basic/ 2>/dev/null || true
+          cp "${THEME_DIR}"/screenshot.png /tmp/strata-basic/ 2>/dev/null || true
+
+          # Create zip
+          cd /tmp
+          zip -r "${GITHUB_WORKSPACE}/${ZIP_NAME}" strata-basic/
+
+      - name: Attach zip to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: strata-basic.zip
