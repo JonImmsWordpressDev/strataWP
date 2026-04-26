@@ -27,6 +27,7 @@ use StrataWP\Components\Accessibility;
 use StrataWP\Components\ConditionalStyles;
 use StrataWP\Components\Fonts;
 use StrataWP\Components\Icons;
+use StrataWP\Components\Updates;
 use StrataBasic\Components\Navigation;
 use StrataBasic\Components\Customizer;
 
@@ -44,6 +45,7 @@ function strata_basic_init(): void {
         new ConditionalStyles(),
         new Fonts(),
         new Icons(),
+        new Updates( 'JonImmsWordpressDev/strataWP', 'strata-basic.zip' ),
         new Navigation(),
         new Customizer(),
     ]);
