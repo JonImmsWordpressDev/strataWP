@@ -23,6 +23,8 @@ use StrataWP\Components\Setup;
 use StrataWP\Components\Assets;
 use StrataWP\Components\Blocks;
 use StrataWP\Components\Performance;
+use StrataWP\Components\Accessibility;
+use StrataWP\Components\ConditionalStyles;
 use StrataWP\Components\Fonts;
 use StrataWP\Components\Icons;
 use StrataBasic\Components\Navigation;
@@ -38,6 +40,8 @@ function strata_basic_init(): void {
         new Assets(),
         new Blocks(),
         new Performance(),
+        new Accessibility(),
+        new ConditionalStyles(),
         new Fonts(),
         new Icons(),
         new Navigation(),
