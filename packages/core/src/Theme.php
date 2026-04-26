@@ -157,6 +157,7 @@ class Theme {
 			new Components\Assets(),
 			new Components\Blocks(),
 			new Components\Performance(),
+			new Components\Accessibility(),
 		];
 	}
 }
