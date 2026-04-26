@@ -34,21 +34,26 @@ class Performance implements ComponentInterface {
 	 */
 	public function add_resource_hints(): void {
 		// DNS prefetch for external resources
-		$hints = apply_filters(
-			'stratawp_resource_hints',
-			[
-				'//fonts.googleapis.com',
-				'//fonts.gstatic.com',
-			]
-		);
+		$hints = apply_filters( 'stratawp_dns_prefetch_hints', [] );
 
 		foreach ( $hints as $hint ) {
 			printf( '<link rel="dns-prefetch" href="%s">' . "\n", esc_url( $hint ) );
 		}
 
-		// Preconnect for fonts
-		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+		// Preconnect hints — only emit when explicitly requested
+		$preconnect = apply_filters( 'stratawp_preconnect_hints', [] );
+
+		foreach ( $preconnect as $hint ) {
+			if ( is_array( $hint ) ) {
+				printf(
+					'<link rel="preconnect" href="%s"%s>' . "\n",
+					esc_url( $hint['href'] ),
+					! empty( $hint['crossorigin'] ) ? ' crossorigin' : ''
+				);
+			} else {
+				printf( '<link rel="preconnect" href="%s">' . "\n", esc_url( $hint ) );
+			}
+		}
 	}
 
 	/**
