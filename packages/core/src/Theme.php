@@ -46,6 +46,15 @@ class Theme {
 			$components = $this->get_default_components();
 		}
 
+		/**
+		 * Filter the list of theme components before registration.
+		 *
+		 * Allows child themes and plugins to add, remove, or replace components.
+		 *
+		 * @param ComponentInterface[] $components Theme components.
+		 */
+		$components = apply_filters( 'stratawp_theme_components', $components );
+
 		// Validate and register components
 		foreach ( $components as $component ) {
 			if ( ! $component instanceof ComponentInterface ) {
