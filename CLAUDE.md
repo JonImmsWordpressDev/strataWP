@@ -101,6 +101,9 @@ StrataWP uses a component-based architecture inspired by WPRig:
    - **Assets**: Enqueue scripts/styles, manifest integration
    - **Blocks**: Block registration and patterns
    - **Performance**: Critical CSS, lazy loading, preloading
+   - **Accessibility**: Skip link focus fix, aria-current on nav items, screen-reader styles
+   - **ConditionalStyles**: Per-page CSS loading with preload callbacks
+   - **Updates**: GitHub-based theme update notifications in WordPress dashboard
 
 4. **Theme initialization** (in `functions.php`):
    ```php
@@ -111,6 +114,87 @@ StrataWP uses a component-based architecture inspired by WPRig:
    ]);
    $theme->initialize();
    ```
+
+### Component Extensibility
+
+The Theme constructor applies a `stratawp_theme_components` filter, allowing child themes and plugins to add, remove, or replace components:
+
+```php
+// In a child theme's functions.php
+add_filter('stratawp_theme_components', function(array $components): array {
+    // Add a custom component
+    $components[] = new My_Custom_Component();
+
+    // Remove a component
+    $components = array_filter($components, fn($c) => $c->get_slug() !== 'analytics');
+
+    return $components;
+});
+```
+
+### Accessibility Component
+
+Located in `packages/core/src/Components/Accessibility.php`. Included in default components.
+
+Features:
+- **Skip link focus fix**: Inlined JavaScript in footer for IE/Edge focus management
+- **aria-current="page"**: Automatically added to current navigation menu items via `nav_menu_link_attributes` and `page_menu_link_attributes` filters
+- **Screen reader styles**: Inlined `.screen-reader-text` CSS utility (available before stylesheets load)
+
+### Conditional Styles Component
+
+Located in `packages/core/src/Components/ConditionalStyles.php`. Implements `TemplatingComponentInterface`.
+
+Per-page CSS loading with preload callbacks. Each stylesheet declares when it should load, reducing render-blocking CSS.
+
+Default conditional styles:
+- `stratawp-comments`: Loads when `is_singular() && comments_open()`
+- `stratawp-sidebar`: Loads when `is_active_sidebar('sidebar-1')`
+- `stratawp-widgets`: Loads when `is_active_sidebar('sidebar-1')`
+
+Register custom conditional styles:
+```php
+add_filter('stratawp_conditional_css_files', function(array $files): array {
+    $files['my-theme-archive'] = [
+        'file'             => 'archive.css',
+        'preload_callback' => fn() => is_archive(),
+    ];
+    return $files;
+});
+```
+
+Disable preloading: `add_filter('stratawp_preloading_styles_enabled', '__return_false');`
+
+### Updates Component (GitHub-Based Theme Updates)
+
+Located in `packages/core/src/Components/Updates.php`.
+
+Checks a GitHub repository for new releases and integrates with WordPress's built-in theme update system. When a newer version is found, WordPress displays an update notification in the dashboard with a one-click "Update Now" button.
+
+Usage in `functions.php`:
+```php
+use StrataWP\Components\Updates;
+
+new Updates('owner/repo', 'theme-name.zip');
+```
+
+Parameters:
+- `$repository`: GitHub repository in "owner/repo" format
+- `$zip_asset_name`: Expected zip filename in release assets (optional, falls back to any .zip)
+
+How it works:
+1. Hooks into `pre_set_site_transient_update_themes` to check GitHub releases
+2. Compares release tag version against `style.css` Version header
+3. If newer, injects update data into WordPress transient
+4. WordPress shows standard "Update available" UI
+5. One-click update downloads the zip from the GitHub release
+
+Cache: Results cached for 6 hours via WordPress transients (`stratawp_github_release`).
+
+Requirements:
+- GitHub releases must use semantic version tags (e.g., `v1.0.0` or `1.0.0`)
+- A built theme `.zip` must be attached as a release asset
+- See the GitHub Actions release workflow section below for automating zip creation
 
 ### Vite Plugin Architecture
 
@@ -135,6 +219,10 @@ The `@stratawp/vite-plugin` provides WordPress-specific features:
    - Critical CSS extraction
    - Lazy loading configuration generation
    - Asset preloading hints
+   - Resource hints are filter-driven:
+     - `stratawp_dns_prefetch_hints`: Array of URLs for DNS prefetch (empty by default)
+     - `stratawp_preconnect_hints`: Array of URLs or `['href' => '...', 'crossorigin' => true]` for preconnect (empty by default)
+     - `stratawp_defer_scripts`: Array of script handles to defer
 
 ### CLI Command Structure
 
@@ -611,6 +699,31 @@ The Pattern Library uses optimized queries:
 - `update_object_term_cache()` primes term cache before processing patterns
 - All endpoints return HTTP caching headers (ETag, Cache-Control)
 - Conditional requests supported via `If-None-Match` header
+
+## GitHub Actions
+
+### Theme Release Workflow (`.github/workflows/release-theme.yml`)
+
+Automatically builds and packages the theme when a GitHub Release is published.
+
+1. Triggered by: `release: [published]`
+2. Builds all packages via `pnpm build`
+3. Installs Composer dependencies (production only)
+4. Updates `style.css` version from release tag
+5. Packages production files into `strata-basic.zip`
+6. Attaches zip to the GitHub release
+
+This zip is what the Updates component downloads for one-click theme updates.
+
+To create a release:
+```bash
+# Tag and push
+git tag v1.1.0
+git push origin v1.1.0
+
+# Create release (GitHub CLI)
+gh release create v1.1.0 --title "v1.1.0" --generate-notes
+```
 
 ## WordPress Agent Skills
 
