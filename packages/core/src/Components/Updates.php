@@ -84,6 +84,7 @@ class Updates implements ComponentInterface {
 		add_filter( 'pre_set_site_transient_update_themes', [ $this, 'check_for_update' ] );
 		add_filter( 'themes_api', [ $this, 'theme_info' ], 10, 3 );
 		add_action( 'admin_notices', [ $this, 'show_update_notice' ] );
+		add_filter( 'upgrader_pre_download', [ $this, 'authenticated_download' ], 10, 3 );
 	}
 
 	/**
@@ -211,6 +212,102 @@ class Updates implements ComponentInterface {
 	}
 
 	/**
+	 * Make an authenticated GET request to the GitHub API
+	 *
+	 * Uses PHP curl directly to avoid WordPress filters and hosting
+	 * security plugins that strip Authorization headers from
+	 * wp_remote_get requests.
+	 *
+	 * @param string $url GitHub API URL.
+	 * @return array|null Decoded JSON response or null on failure.
+	 */
+	protected function github_api_get( string $url ): ?array {
+		$headers = [
+			'Accept: application/vnd.github.v3+json',
+			'User-Agent: StrataWP-Update-Checker',
+		];
+
+		$token = defined( 'STRATAWP_GITHUB_TOKEN' ) ? STRATAWP_GITHUB_TOKEN : '';
+		if ( ! empty( $token ) ) {
+			$headers[] = 'Authorization: Bearer ' . $token;
+		}
+
+		$ch = curl_init( $url );
+		curl_setopt_array( $ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER     => $headers,
+			CURLOPT_TIMEOUT        => 10,
+			CURLOPT_FOLLOWLOCATION => true,
+		] );
+
+		$body = curl_exec( $ch );
+		$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		curl_close( $ch );
+
+		if ( 200 !== $code || empty( $body ) ) {
+			return null;
+		}
+
+		return json_decode( $body, true );
+	}
+
+	/**
+	 * Download the theme zip with authentication
+	 *
+	 * Intercepts WordPress's download for our GitHub repo and uses
+	 * curl directly, since some hosts strip Authorization headers
+	 * from wp_remote_get requests.
+	 *
+	 * @param bool|WP_Error $reply    Whether to short-circuit.
+	 * @param string        $package  The package URL.
+	 * @param \WP_Upgrader  $upgrader The upgrader instance.
+	 * @return bool|string|\WP_Error
+	 */
+	public function authenticated_download( $reply, string $package, $upgrader ) {
+		if ( ! str_contains( $package, 'api.github.com/repos/' . $this->repository ) ) {
+			return $reply;
+		}
+
+		$token = defined( 'STRATAWP_GITHUB_TOKEN' ) ? STRATAWP_GITHUB_TOKEN : '';
+		if ( empty( $token ) ) {
+			return $reply;
+		}
+
+		$tmpfile = wp_tempnam( 'stratawp-update' );
+
+		$headers = [
+			'Accept: application/octet-stream',
+			'User-Agent: StrataWP-Update-Checker',
+			'Authorization: Bearer ' . $token,
+		];
+
+		$ch = curl_init( $package );
+		$fp = fopen( $tmpfile, 'wb' );
+
+		curl_setopt_array( $ch, [
+			CURLOPT_FILE           => $fp,
+			CURLOPT_HTTPHEADER     => $headers,
+			CURLOPT_TIMEOUT        => 300,
+			CURLOPT_FOLLOWLOCATION => true,
+		] );
+
+		curl_exec( $ch );
+		$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		curl_close( $ch );
+		fclose( $fp );
+
+		if ( 200 !== $code ) {
+			unlink( $tmpfile );
+			return new \WP_Error(
+				'download_failed',
+				sprintf( 'GitHub download failed (HTTP %d).', $code )
+			);
+		}
+
+		return $tmpfile;
+	}
+
+	/**
 	 * Get the latest release from GitHub
 	 *
 	 * Results are cached for 6 hours to avoid hitting the GitHub API
@@ -230,21 +327,12 @@ class Updates implements ComponentInterface {
 			$this->repository
 		);
 
-		$response = wp_remote_get( $url, [
-			'timeout' => 10,
-			'headers' => [
-				'Accept'     => 'application/vnd.github.v3+json',
-				'User-Agent' => 'StrataWP-Update-Checker',
-			],
-		] );
+		$data = $this->github_api_get( $url );
 
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			// Cache the failure so we don't retry immediately
+		if ( ! $data ) {
 			set_transient( $this->cache_key, '', $this->cache_ttl );
 			return null;
 		}
-
-		$data = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( empty( $data['tag_name'] ) ) {
 			set_transient( $this->cache_key, '', $this->cache_ttl );
@@ -297,7 +385,7 @@ class Updates implements ComponentInterface {
 		if ( ! empty( $this->zip_asset_name ) ) {
 			foreach ( $assets as $asset ) {
 				if ( $asset['name'] === $this->zip_asset_name ) {
-					return $asset['browser_download_url'] ?? null;
+					return $asset['url'] ?? null;
 				}
 			}
 		}
@@ -305,7 +393,7 @@ class Updates implements ComponentInterface {
 		// Fall back to any .zip asset
 		foreach ( $assets as $asset ) {
 			if ( str_ends_with( $asset['name'] ?? '', '.zip' ) ) {
-				return $asset['browser_download_url'] ?? null;
+				return $asset['url'] ?? null;
 			}
 		}
 
