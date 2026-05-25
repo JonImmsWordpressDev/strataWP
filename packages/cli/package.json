@@ -1,6 +1,6 @@
 {
   "name": "@stratawp/cli",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "CLI tool for StrataWP - create and manage WordPress themes",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
@@ -47,9 +47,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@stratawp/ai": "workspace:*",
     "@stratawp/explorer": "workspace:*",
-    "@stratawp/registry": "workspace:*",
     "@stratawp/sync": "workspace:*",
     "adm-zip": "^0.5.16",
     "basic-ftp": "^5.0.5",

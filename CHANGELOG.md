@@ -2,6 +2,43 @@
 
 All notable changes to StrataWP are documented in this file.
 
+## v2.0.0 - Focus
+
+**Sharpen the scope. Cut what doesn't fit.**
+
+This release deletes three packages from the monorepo so the framework stops trying to be everything. The deletions are the feature.
+
+### Removed
+
+- **`@stratawp/studio`** — admin UI for design tokens, block library, and pattern management. Removed: admin UIs duplicate what the Site Editor and your IDE already do well, and the maintenance burden of a React admin app doesn't fit StrataWP's audience.
+- **`@stratawp/registry`** — npm-powered component registry. Removed: a custom registry needs critical mass we don't have, and npm + private packages already cover the use case.
+- **`@stratawp/ai`** — AI helper SDK (OpenAI, Anthropic). Removed: every editor now ships AI (MCP, Claude Code, Copilot, Cursor), making a framework-embedded SDK a shrinking-value commitment.
+
+### CLI changes
+
+- `stratawp ai:setup`, `ai:generate`, `ai:review`, `ai:document` removed.
+- `stratawp registry:search`, `registry:install`, `registry:info`, `registry:publish`, `registry:list` removed.
+- `create-stratawp` wizard no longer prompts for "Enable AI-powered features?" (the captured boolean was dead code).
+- CLI binary now reports the correct version (was hardcoded to `1.0.0`; now reads as `2.0.0`).
+
+### Docs
+
+- New `ROADMAP.md` at the repo root captures the sharpened scope, the rationale for the cuts, and the ranked investment list for upcoming work.
+- README, CHEAT_SHEET, GETTING_STARTED, and CLAUDE.md rewritten to match.
+
+### Migration
+
+- If you were using `@stratawp/cli` registry or AI commands, drop them from your scripts and use `npm` directly or your editor's AI features.
+- If you embedded `@stratawp/studio` in a theme via `vendor/stratawp/studio/`, that integration will continue to work against the last published 1.x release (now `npm deprecate`d) but receives no further updates. To migrate off it, use the Site Editor for design tokens, templates, and patterns.
+
+### What's still here
+
+`@stratawp/cli`, `@stratawp/vite-plugin`, `@stratawp/core` (PHP), `@stratawp/sync`, `@stratawp/testing`, `@stratawp/headless`, `@stratawp/explorer`. The last two are under review for v2.1.
+
+See [`ROADMAP.md`](./ROADMAP.md) for the full picture.
+
+---
+
 ## v1.6.0 - Deployment Overhaul
 
 **Reliable, Production-Ready Deployment**

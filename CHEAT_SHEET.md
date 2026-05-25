@@ -17,7 +17,7 @@ npx create-stratawp my-theme
    - **Minimal** - Start from scratch
 3. ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
 4. ✅ TypeScript configuration
-5. ✅ Optional testing and AI tools
+5. ✅ Optional testing
 6. ✨ **Automatically detects and links to WordPress!**
 
 **What happens automatically:**
@@ -81,36 +81,6 @@ stratawp part:new <name> [options]
 # Design System
 stratawp design-system:setup <framework>
   # tailwind|unocss
-```
-
-### AI Commands
-
-```bash
-stratawp ai:setup                           # Configure AI provider
-stratawp ai:generate <type>                 # Generate code (block|component|pattern)
-stratawp ai:review <file> [options]         # Code review
-  --focus <focus>                           # security|performance|best-practices|all
-stratawp ai:document <file> [options]       # Generate docs
-  --format <format>                         # markdown|phpdoc|jsdoc
-```
-
-### Registry
-
-```bash
-stratawp registry:search <query> [options]
-  --type <type>              # Filter by type
-  --limit <number>           # Max results (default: 20)
-
-stratawp registry:install <component> [options]
-  --version <version>        # Specific version
-  --force                    # Overwrite existing
-  --target-dir <dir>         # Custom directory
-
-stratawp registry:info <component>         # Component details
-stratawp registry:list                     # List installed
-stratawp registry:publish [options]        # Publish component
-  --tag <tag>                # Publish tag
-  --dry-run                  # Test without publishing
 ```
 
 ### Testing

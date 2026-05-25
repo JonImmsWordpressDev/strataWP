@@ -18,7 +18,6 @@ interface ThemeConfig {
   cssFramework: 'vanilla' | 'tailwind' | 'unocss' | 'panda'
   typescript: boolean
   testing: boolean
-  ai: boolean
 }
 
 async function main() {
@@ -106,12 +105,6 @@ async function main() {
       name: 'testing',
       message: 'Include testing setup?',
       initial: true,
-    },
-    {
-      type: 'confirm',
-      name: 'ai',
-      message: 'Enable AI-powered features?',
-      initial: false,
     },
   ])
 

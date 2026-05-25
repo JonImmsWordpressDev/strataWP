@@ -100,7 +100,6 @@ The fastest and easiest way to get started:
    - **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
    - **TypeScript** - Enable/disable
    - **Testing** - Optional setup
-   - **AI features** - Optional AI assistance
    - ✨ **WordPress linking** - Automatically detects your installations!
 
 4. **Select your WordPress site** (NEW!):
@@ -293,7 +292,6 @@ Let's create your first StrataWP theme from scratch!
    - **CSS Framework**: Choose "vanilla" for now (you can try others later)
    - **TypeScript**: Yes (recommended)
    - **Testing**: No (for now)
-   - **AI**: No (for now)
    - **Link to WordPress**: Yes (it will show you detected sites to choose from)
 
    The CLI will copy the Basic Theme from bundled templates and customize it with your details!
@@ -685,40 +683,6 @@ Use tools like:
 
 ## Advanced Features
 
-### AI-Assisted Development
-
-Generate code with AI:
-
-```bash
-# Setup AI provider
-stratawp ai:setup
-
-# Generate a block
-stratawp ai:generate block
-# > Describe: A testimonial slider with star ratings
-
-# Review code
-stratawp ai:review src/blocks/testimonials/index.tsx
-
-# Generate documentation
-stratawp ai:document src/blocks/testimonials/index.tsx -o docs/testimonials.md
-```
-
-### Component Registry
-
-Share and discover components:
-
-```bash
-# Search for components
-stratawp registry:search slider
-
-# Install a component
-stratawp registry:install @stratawp/testimonial-slider
-
-# Publish your component
-stratawp registry:publish
-```
-
 ### Component Explorer
 
 Browse all your components visually:
@@ -931,10 +895,9 @@ stratawp --help
 
 **Advanced:**
 1. Build headless apps with `@stratawp/headless`
-2. Create and publish components to registry
-3. Contribute to StrataWP core
-4. Build custom Vite plugins
-5. Create advanced block patterns
+2. Contribute to StrataWP core
+3. Build custom Vite plugins
+4. Create advanced block patterns
 
 ### Example Projects
 
@@ -975,7 +938,6 @@ stratawp --help
 
 **StrataWP:**
 - [Main README](./README.md)
-- [Component Registry](./packages/registry/README.md)
 - [Testing Guide](./packages/testing/README.md)
 - [Headless WordPress](./packages/headless/README.md)
 - [Component Explorer](./packages/explorer/README.md)
@@ -1011,9 +973,6 @@ npx stratawp explorer           # Launch browser
 pnpm test                   # Run tests
 pnpm test:coverage          # With coverage
 
-# Component Registry
-npx stratawp registry:search <query>
-npx stratawp registry:install <package>
 ```
 
 ### File Locations
