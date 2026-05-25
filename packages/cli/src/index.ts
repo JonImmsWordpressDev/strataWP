@@ -35,7 +35,7 @@ const program = new Command()
 program
   .name('stratawp')
   .description('⚡ A modern WordPress theme framework')
-  .version('1.0.0')
+  .version('2.0.0')
 
 // Development server
 program
