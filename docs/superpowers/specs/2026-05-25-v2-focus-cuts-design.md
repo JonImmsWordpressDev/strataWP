@@ -76,7 +76,13 @@ StrataWP's value lives in CLI + Vite plugin + PHP Components + Sync. Three packa
 
 ### `CLAUDE.md`
 
-- Remove the three package descriptions from the monorepo structure list (lines 76, 77, 78).
+- Remove `packages/ai` and `packages/registry` lines from the monorepo structure list.
+- Remove `@stratawp/ai` and `@stratawp/registry` from the published-packages list.
+- Delete the entire "Studio Package" section (Building Studio, Installing Studio in a Theme, Troubleshooting Studio, Studio REST API Performance — ~80 lines).
+
+### `DEVELOPMENT_NOTES.md`
+
+- Remove the "Component registry for reusability" bullet from the features list.
 
 ### `CHANGELOG.md`
 
