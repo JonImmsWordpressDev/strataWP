@@ -7,12 +7,6 @@ import { testCommand } from './commands/test'
 import { templateCommand } from './commands/template'
 import { partCommand } from './commands/part'
 import { designSystemCommand } from './commands/design-system'
-import {
-  setupCommand,
-  generateCommand,
-  reviewCommand,
-  documentCommand,
-} from '@stratawp/ai'
 import { startCommand as explorerStartCommand } from '@stratawp/explorer'
 import { setupCommand as deploySetupCommand } from './commands/deploy/setup'
 import {
@@ -134,37 +128,6 @@ program
       host: options.host,
       open: options.open !== false,
     })
-  })
-
-// AI-powered commands
-program
-  .command('ai:setup')
-  .description('Configure AI providers and API keys')
-  .action(setupCommand)
-
-program
-  .command('ai:generate <type>')
-  .description('Generate code with AI (block|component|pattern)')
-  .option('-o, --output <path>', 'Output file path')
-  .action((type: string, options: any) => {
-    generateCommand({ type: type as 'block' | 'component' | 'pattern', ...options })
-  })
-
-program
-  .command('ai:review <file>')
-  .description('Review code for best practices and security')
-  .option('-f, --focus <focus>', 'Focus area (security|performance|best-practices|all)', 'all')
-  .action((file: string, options: any) => {
-    reviewCommand({ file, ...options })
-  })
-
-program
-  .command('ai:document <file>')
-  .description('Generate documentation for code')
-  .option('-o, --output <path>', 'Output file path')
-  .option('-f, --format <format>', 'Documentation format (markdown|phpdoc|jsdoc)')
-  .action((file: string, options: any) => {
-    documentCommand({ file, ...options })
   })
 
 // Deployment commands

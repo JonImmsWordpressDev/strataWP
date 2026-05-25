@@ -47,7 +47,6 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@stratawp/ai": "workspace:*",
     "@stratawp/explorer": "workspace:*",
     "@stratawp/sync": "workspace:*",
     "adm-zip": "^0.5.16",
