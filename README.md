@@ -221,6 +221,6 @@ Inspired by:
 
 ---
 
-**Current Version**: v1.6.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
+**Current Version**: v2.0.0 - See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
