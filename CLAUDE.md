@@ -73,8 +73,6 @@ pnpm dev           # Start Vite dev server on port 3000
 - **packages/cli**: CLI tool for scaffolding themes and components
 - **packages/vite-plugin**: Vite integration with WordPress, block auto-registration, PHP HMR
 - **packages/core**: PHP framework with component architecture
-- **packages/ai**: AI-assisted development (OpenAI GPT-4, Anthropic Claude)
-- **packages/registry**: npm-powered component registry
 - **packages/explorer**: Interactive component browser (Storybook-like)
 - **packages/sync**: Environment sync, snapshots, and rollback
 - **packages/testing**: Vitest and Playwright testing utilities
@@ -434,7 +432,7 @@ npx create-stratawp my-theme
 # 1. Theme configuration (name, description, author)
 # 2. Template selection (basic, advanced, store, minimal)
 # 3. CSS framework (vanilla, Tailwind, UnoCSS, Panda)
-# 4. Features (TypeScript, testing, AI tools)
+# 4. Features (TypeScript, testing)
 # 5. WordPress linking (auto-detected for Local by Flywheel, MAMP)
 
 cd my-theme
@@ -455,23 +453,6 @@ stratawp template:new about --type=page
 
 # Generate template part
 stratawp part:new sidebar --type=sidebar
-```
-
-### Working with AI Tools
-
-```bash
-# Configure AI provider (OpenAI or Anthropic)
-stratawp ai:setup
-
-# Generate code from description
-stratawp ai:generate block
-stratawp ai:generate component
-
-# Review code for security/performance/best practices
-stratawp ai:review functions.php --focus security
-
-# Generate documentation
-stratawp ai:document inc/Components/CustomPostTypes.php
 ```
 
 ### Testing
@@ -606,99 +587,11 @@ pnpm release
 Published packages:
 - `@stratawp/cli` - CLI tool
 - `@stratawp/vite-plugin` - Vite plugin
-- `@stratawp/ai` - AI tools
-- `@stratawp/registry` - Component registry
 - `@stratawp/sync` - Environment sync, snapshots, and rollback
 - `@stratawp/testing` - Testing utilities
 - `@stratawp/explorer` - Component browser
 - `@stratawp/headless` - Headless WordPress utilities
 - `create-stratawp` - Theme creation CLI
-
-## Studio Package
-
-**Location**: `packages/studio/`
-
-StrataWP Studio provides a Design System editor and Pattern Library for WordPress admin.
-
-### Key Features
-
-- **Design System Editor**: Visual color/typography controls with live preview
-- **Pattern Library**: Browse, create, duplicate, export patterns
-- **HTTP Caching**: ETag + Cache-Control headers on all REST endpoints
-- **N+1 Query Prevention**: Term cache priming for efficient pattern loading
-- **Skeleton Loading**: Smooth loading placeholders in Pattern Grid
-- **Toast Notifications**: WordPress-native feedback for actions
-- **Debounced Inputs**: Smooth color picker interactions
-
-### Building Studio
-
-```bash
-pnpm build --filter @stratawp/studio
-```
-
-**Important Vite Config Notes** (vite.config.ts):
-- Uses `rollup-plugin-external-globals` to convert ESM imports to WordPress globals
-- Uses `jsxRuntime: 'classic'` (React.createElement) instead of automatic JSX runtime
-- External packages mapped to WordPress globals:
-  - `@wordpress/element` → `wp.element`
-  - `@wordpress/components` → `wp.components`
-  - `@wordpress/i18n` → `wp.i18n`
-  - `@wordpress/api-fetch` → `wp.apiFetch`
-  - etc.
-
-### Installing Studio in a Theme
-
-1. Copy `packages/studio/` to theme's `vendor/stratawp/studio/`
-
-2. Add namespace to theme's `composer.json`:
-   ```json
-   "autoload": {
-     "psr-4": {
-       "StrataWP\\Studio\\": "vendor/stratawp/studio/php/",
-       "StrataWP\\": "vendor/stratawp/core/src/"
-     }
-   }
-   ```
-
-3. Run `composer dump-autoload`
-
-4. Load in `functions.php`:
-   ```php
-   if (file_exists(__DIR__ . '/vendor/stratawp/studio/php/autoload.php')) {
-       require_once __DIR__ . '/vendor/stratawp/studio/php/autoload.php';
-       \StrataWP\Studio\Studio::instance()->initialize();
-   }
-   ```
-
-### Theme vs Plugin Context
-
-Studio auto-detects if installed in a theme or plugin:
-- **Theme**: Uses `get_template_directory_uri()` for asset URLs
-- **Plugin**: Uses `plugins_url()` for asset URLs
-
-### Troubleshooting Studio
-
-**Blank pages**:
-- Ensure `dist/` folder exists with `index.js`, `gutenberg.js`, `style.css`
-- Check browser console for JS errors
-- Verify Composer autoloader includes `StrataWP\Studio\` namespace
-
-**Class not found errors**:
-- Add `"StrataWP\\Studio\\": "vendor/stratawp/studio/php/"` to composer.json
-- Run `composer dump-autoload`
-- This must come BEFORE the general `StrataWP\\` mapping
-
-**Live Preview not working**:
-- Check browser console for origin mismatch warnings
-- In reverse proxy setups, Studio logs origin mismatches but still accepts valid messages
-- Ensure `home_url()` and `admin_url()` return correct URLs (check `WP_HOME`/`WP_SITEURL`)
-
-### Studio REST API Performance
-
-The Pattern Library uses optimized queries:
-- `update_object_term_cache()` primes term cache before processing patterns
-- All endpoints return HTTP caching headers (ETag, Cache-Control)
-- Conditional requests supported via `If-None-Match` header
 
 ## GitHub Actions
 

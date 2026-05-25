@@ -44,7 +44,6 @@ The CLI automatically:
 |----------|-------------|
 | **[Getting Started Guide](./GETTING_STARTED.md)** | Step-by-step tutorial for beginners |
 | **[Cheat Sheet](./CHEAT_SHEET.md)** | Quick reference for all commands |
-| **[Studio Guide](./docs/STUDIO.md)** | Design System, Block Library & Pattern Management |
 | **[Deployment Guide](./docs/deployment/getting-started.md)** | Basic deployment with SFTP/FTP/SSH |
 | **[Advanced Deployment](./docs/deployment/ADVANCED-DEPLOYMENT.md)** | SSH keys, FSE template sync, plugin deployment |
 | **[Changelog](./CHANGELOG.md)** | Version history and release notes |
@@ -59,9 +58,6 @@ The CLI automatically:
 - **Three Example Themes**: Production-ready themes to start from
 - **CLI Scaffolding**: Generate templates, parts, components, and blocks
 - **Design Systems**: Tailwind CSS or UnoCSS with WordPress preset mappings
-- **Studio Admin**: Visual design tokens editor and pattern library management
-- **AI-Assisted Dev**: OpenAI GPT-4 and Anthropic Claude integration
-- **Component Registry**: npm-powered registry for sharing components
 - **Comprehensive Testing**: Vitest unit tests, Playwright E2E
 - **Component Explorer**: Interactive Storybook-like component browser
 - **Headless WordPress**: REST API client, React hooks, Next.js integration
@@ -76,13 +72,10 @@ The CLI automatically:
 ```
 StrataWP/
 ├── packages/
-│   ├── ai/               # AI-assisted development (OpenAI, Anthropic)
 │   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
 │   ├── core/             # PHP framework core
 │   ├── explorer/         # Interactive component browser
 │   ├── headless/         # REST API client, React hooks, Next.js
-│   ├── registry/         # Component registry
-│   ├── studio/           # Visual design system & pattern management
 │   ├── sync/             # Environment sync, snapshots, rollback
 │   ├── testing/          # Vitest and Playwright utilities
 │   └── vite-plugin/      # Vite integration for WordPress
@@ -130,15 +123,6 @@ stratawp part:new sidebar --type=sidebar
 
 # Design system
 stratawp design-system:setup tailwind
-
-# AI-assisted development
-stratawp ai:setup
-stratawp ai:generate block
-stratawp ai:review functions.php --focus security
-
-# Component registry
-stratawp registry:search hero
-stratawp registry:install @stratawp/hero-block
 
 # Deployment
 stratawp deploy:setup
@@ -230,9 +214,6 @@ Inspired by:
 
 - [@stratawp/cli](https://www.npmjs.com/package/@stratawp/cli) - CLI tool
 - [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) - Vite plugin
-- [@stratawp/ai](https://www.npmjs.com/package/@stratawp/ai) - AI tools
-- [@stratawp/registry](https://www.npmjs.com/package/@stratawp/registry) - Component registry
-- [@stratawp/studio](https://www.npmjs.com/package/@stratawp/studio) - Visual design system & pattern management
 - [@stratawp/sync](https://www.npmjs.com/package/@stratawp/sync) - Environment sync
 - [@stratawp/testing](https://www.npmjs.com/package/@stratawp/testing) - Testing utilities
 - [@stratawp/headless](https://www.npmjs.com/package/@stratawp/headless) - Headless WordPress
