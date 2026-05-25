@@ -49,7 +49,6 @@
   "dependencies": {
     "@stratawp/ai": "workspace:*",
     "@stratawp/explorer": "workspace:*",
-    "@stratawp/registry": "workspace:*",
     "@stratawp/sync": "workspace:*",
     "adm-zip": "^0.5.16",
     "basic-ftp": "^5.0.5",
