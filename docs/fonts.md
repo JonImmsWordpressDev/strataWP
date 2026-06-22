@@ -9,11 +9,13 @@ StrataWP provides flexible font management with three loading modes to suit diff
 Loads fonts directly from Google's servers. Easy to set up with curated pairings.
 
 **Pros:**
+
 - No configuration needed
 - Access to all Google Fonts
 - Curated font pairings available
 
 **Cons:**
+
 - External HTTP requests
 - Creates network dependency chain (Lighthouse warning)
 - Privacy concerns (Google tracking)
@@ -23,6 +25,7 @@ Loads fonts directly from Google's servers. Easy to set up with curated pairings
 Fonts are bundled with your theme. Best for Lighthouse scores and GDPR compliance.
 
 **Pros:**
+
 - No external requests
 - Eliminates "Network dependency tree" Lighthouse warnings
 - Better privacy (no Google tracking)
@@ -30,6 +33,7 @@ Fonts are bundled with your theme. Best for Lighthouse scores and GDPR complianc
 - GDPR compliant
 
 **Cons:**
+
 - Requires manual font installation
 - Slightly larger theme file size
 
@@ -144,6 +148,7 @@ Add fonts to `theme.json` for WordPress editor:
 ### Step 6: Configure StrataWP
 
 Either set via WordPress admin:
+
 - Go to **Settings > StrataWP Typography**
 - Select **Self-Hosted** under Font Loading Mode
 
@@ -208,13 +213,13 @@ $mode = $fonts->get_font_loading_mode();
 
 ## Performance Comparison
 
-| Metric | Google Fonts API | Self-Hosted |
-|--------|------------------|-------------|
-| External Requests | 2+ (CSS + fonts) | 0 |
-| Lighthouse Warning | Yes (dependency chain) | No |
-| First Load | Slower | Faster |
-| Cached Load | Similar | Similar |
-| Privacy | Google tracking | No tracking |
+| Metric             | Google Fonts API       | Self-Hosted |
+| ------------------ | ---------------------- | ----------- |
+| External Requests  | 2+ (CSS + fonts)       | 0           |
+| Lighthouse Warning | Yes (dependency chain) | No          |
+| First Load         | Slower                 | Faster      |
+| Cached Load        | Similar                | Similar     |
+| Privacy            | Google tracking        | No tracking |
 
 ## Troubleshooting
 

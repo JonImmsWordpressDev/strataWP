@@ -1,20 +1,26 @@
-import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { registerBlockType } from '@wordpress/blocks'
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
+import { PanelBody, RangeControl, ToggleControl } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 
 interface Attributes {
-  columns: number;
-  limit: number;
-  showCount: boolean;
-  showEmpty: boolean;
+  columns: number
+  limit: number
+  showCount: boolean
+  showEmpty: boolean
 }
 
 registerBlockType('strata-store/product-categories', {
-  edit: ({ attributes, setAttributes }: { attributes: Attributes; setAttributes: (attrs: Partial<Attributes>) => void }) => {
+  edit: ({
+    attributes,
+    setAttributes,
+  }: {
+    attributes: Attributes
+    setAttributes: (attrs: Partial<Attributes>) => void
+  }) => {
     const blockProps = useBlockProps({
       className: 'product-categories-editor',
-    });
+    })
 
     return (
       <>
@@ -64,8 +70,8 @@ registerBlockType('strata-store/product-categories', {
           </div>
         </div>
       </>
-    );
+    )
   },
 
   save: () => null,
-});
+})

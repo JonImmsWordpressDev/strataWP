@@ -174,10 +174,7 @@ export function createMockBlockContext(overrides: any = {}) {
 /**
  * Wait for block to render
  */
-export async function waitForBlockRender(
-  callback: () => void,
-  options: { timeout?: number } = {}
-) {
+export async function waitForBlockRender(callback: () => void, options: { timeout?: number } = {}) {
   const timeout = options.timeout || 1000
   const startTime = Date.now()
 

@@ -23,9 +23,7 @@ export interface SyncTemplatesOptions {
 /**
  * Detect local WP-CLI binary path
  */
-async function detectLocalWpCli(
-  configPath?: string
-): Promise<string | null> {
+async function detectLocalWpCli(configPath?: string): Promise<string | null> {
   // 1. Explicit config path
   if (configPath) {
     const resolved = configPath.replace('~', process.env.HOME || '')
@@ -158,11 +156,7 @@ export async function syncTemplatesCommand(
   }
 
   if (envConfig.type !== 'ssh') {
-    console.log(
-      chalk.red(
-        '\n✖ Template sync requires SSH deployment type (not FTP/SFTP).\n'
-      )
-    )
+    console.log(chalk.red('\n✖ Template sync requires SSH deployment type (not FTP/SFTP).\n'))
     return
   }
 
@@ -197,16 +191,10 @@ export async function syncTemplatesCommand(
 
   try {
     localTemplates = await getLocalTemplates(wpCliPath, wpPath)
-    localSpinner.succeed(
-      chalk.green(`Found ${localTemplates.length} local templates`)
-    )
+    localSpinner.succeed(chalk.green(`Found ${localTemplates.length} local templates`))
   } catch (error) {
     localSpinner.fail(chalk.red('Failed to list local templates'))
-    console.log(
-      chalk.red(
-        `\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`
-      )
-    )
+    console.log(chalk.red(`\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`))
     return
   }
 
@@ -218,15 +206,9 @@ export async function syncTemplatesCommand(
   // Filter templates if --template is specified
   let templatesToSync = localTemplates
   if (options.template) {
-    templatesToSync = localTemplates.filter(
-      (t) => t.slug === options.template
-    )
+    templatesToSync = localTemplates.filter((t) => t.slug === options.template)
     if (templatesToSync.length === 0) {
-      console.log(
-        chalk.red(
-          `\n✖ Template "${options.template}" not found locally.\n`
-        )
-      )
+      console.log(chalk.red(`\n✖ Template "${options.template}" not found locally.\n`))
       console.log(chalk.white('Available templates:'))
       for (const t of localTemplates) {
         console.log(chalk.gray(`  - ${t.slug} (ID: ${t.id})`))
@@ -243,11 +225,7 @@ export async function syncTemplatesCommand(
 
   // Dry run
   if (options['dry-run']) {
-    console.log(
-      chalk.cyan(
-        '\n🔍 Dry Run Mode - No templates will be synced\n'
-      )
-    )
+    console.log(chalk.cyan('\n🔍 Dry Run Mode - No templates will be synced\n'))
     return
   }
 
@@ -260,11 +238,7 @@ export async function syncTemplatesCommand(
     connectSpinner.succeed(chalk.green('Connected to remote'))
   } catch (error) {
     connectSpinner.fail(chalk.red('Failed to connect'))
-    console.log(
-      chalk.red(
-        `\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`
-      )
-    )
+    console.log(chalk.red(`\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`))
     return
   }
 
@@ -274,48 +248,30 @@ export async function syncTemplatesCommand(
 
   // Sync each template
   for (const template of templatesToSync) {
-    const templateSpinner = ora(
-      `Syncing template: ${template.slug}...`
-    ).start()
+    const templateSpinner = ora(`Syncing template: ${template.slug}...`).start()
 
     try {
       // Get local content
-      const content = await getLocalTemplateContent(
-        wpCliPath,
-        wpPath,
-        template.id
-      )
+      const content = await getLocalTemplateContent(wpCliPath, wpPath, template.id)
 
       if (!content || content.trim().length === 0) {
-        templateSpinner.warn(
-          chalk.yellow(`${template.slug}: No content (empty template)`)
-        )
+        templateSpinner.warn(chalk.yellow(`${template.slug}: No content (empty template)`))
         continue
       }
 
       // Sync to remote
-      const result = await deployer.syncTemplate(
-        content,
-        template.slug,
-        wpRootPath
-      )
+      const result = await deployer.syncTemplate(content, template.slug, wpRootPath)
 
       if (result.success) {
-        templateSpinner.succeed(
-          chalk.green(`${template.slug}: ${result.message}`)
-        )
+        templateSpinner.succeed(chalk.green(`${template.slug}: ${result.message}`))
         successCount++
       } else {
-        templateSpinner.fail(
-          chalk.red(`${template.slug}: ${result.message}`)
-        )
+        templateSpinner.fail(chalk.red(`${template.slug}: ${result.message}`))
         failCount++
       }
     } catch (error) {
       templateSpinner.fail(
-        chalk.red(
-          `${template.slug}: ${error instanceof Error ? error.message : 'Unknown error'}`
-        )
+        chalk.red(`${template.slug}: ${error instanceof Error ? error.message : 'Unknown error'}`)
       )
       failCount++
     }
@@ -350,11 +306,7 @@ export async function syncTemplatesCommand(
   console.log('')
 
   if (failCount > 0) {
-    console.log(
-      chalk.yellow(
-        '⚠ Some templates failed to sync. Check the errors above.\n'
-      )
-    )
+    console.log(chalk.yellow('⚠ Some templates failed to sync. Check the errors above.\n'))
   } else {
     console.log(chalk.green('✓ All templates synced successfully!\n'))
   }
@@ -373,11 +325,7 @@ export async function listTemplatesCommand(
   const envConfig = await configManager.loadEnvironment(environment)
 
   if (!envConfig) {
-    console.log(
-      chalk.red(
-        `\n✖ Environment "${environment}" not found.\n`
-      )
-    )
+    console.log(chalk.red(`\n✖ Environment "${environment}" not found.\n`))
     return
   }
 
@@ -392,11 +340,7 @@ export async function listTemplatesCommand(
         console.log(chalk.gray(`  ${t.id}\t${t.slug}`))
       }
     } catch (error) {
-      console.log(
-        chalk.red(
-          `  Error: ${error instanceof Error ? error.message : 'Unknown error'}`
-        )
-      )
+      console.log(chalk.red(`  Error: ${error instanceof Error ? error.message : 'Unknown error'}`))
     }
   } else {
     console.log(chalk.yellow('Local: WP-CLI not found'))
@@ -415,11 +359,7 @@ export async function listTemplatesCommand(
       }
       await deployer.disconnect()
     } catch (error) {
-      console.log(
-        chalk.red(
-          `  Error: ${error instanceof Error ? error.message : 'Unknown error'}`
-        )
-      )
+      console.log(chalk.red(`  Error: ${error instanceof Error ? error.message : 'Unknown error'}`))
     }
   }
 

@@ -33,38 +33,54 @@ interface EnvironmentConfig {
   }
 }
 
-export async function syncDbPullCommand(environment: string, options: {
-  tables?: string
-  noUrlReplace?: boolean
-  dryRun?: boolean
-}) {
+export async function syncDbPullCommand(
+  environment: string,
+  options: {
+    tables?: string
+    noUrlReplace?: boolean
+    dryRun?: boolean
+  }
+) {
   const config = await loadSyncConfig()
 
   if (!config) {
     console.log(chalk.red('No sync configuration found.'))
     console.log(chalk.dim('Create a .stratawp-sync.json file in your project root.'))
     console.log(chalk.dim('\nExample configuration (with SSH - recommended):'))
-    console.log(chalk.dim(JSON.stringify({
-      environments: {
-        local: {
-          name: 'local',
-          url: 'http://local.test',
-          database: { host: 'localhost', user: 'root', password: '', database: 'wordpress' }
-        },
-        production: {
-          name: 'production',
-          url: 'https://example.com',
-          ssh: {
-            host: 'ssh.example.com',
-            port: 22,
-            user: 'deploy',
-            key: '~/.ssh/id_rsa'
+    console.log(
+      chalk.dim(
+        JSON.stringify(
+          {
+            environments: {
+              local: {
+                name: 'local',
+                url: 'http://local.test',
+                database: { host: 'localhost', user: 'root', password: '', database: 'wordpress' },
+              },
+              production: {
+                name: 'production',
+                url: 'https://example.com',
+                ssh: {
+                  host: 'ssh.example.com',
+                  port: 22,
+                  user: 'deploy',
+                  key: '~/.ssh/id_rsa',
+                },
+                wpPath: '/var/www/html',
+                database: {
+                  host: '127.0.0.1',
+                  user: 'dbuser',
+                  password: 'pass',
+                  database: 'wp_prod',
+                },
+              },
+            },
           },
-          wpPath: '/var/www/html',
-          database: { host: '127.0.0.1', user: 'dbuser', password: 'pass', database: 'wp_prod' }
-        }
-      }
-    }, null, 2)))
+          null,
+          2
+        )
+      )
+    )
     console.log(chalk.dim('\nNote: SSH config is recommended for production databases that only'))
     console.log(chalk.dim('allow local connections. Set STRATAWP_SSH_PASSPHRASE env var for'))
     console.log(chalk.dim('encrypted keys to avoid passphrase prompts.'))
@@ -92,9 +108,7 @@ export async function syncDbPullCommand(environment: string, options: {
     spinner.text = `Dumping database from ${environment}...`
 
     let sql: string
-    const dumpOptions = options.tables
-      ? { tables: options.tables.split(',') }
-      : {}
+    const dumpOptions = options.tables ? { tables: options.tables.split(',') } : {}
 
     // Use SSH-based dump if SSH config is present (recommended for production)
     if (remoteEnv.ssh) {
@@ -178,9 +192,7 @@ export async function syncDbPullCommand(environment: string, options: {
     spinner.text = 'Importing database...'
 
     await restorer.restoreFromSQL(sql, {
-      urlReplacements: options.noUrlReplace
-        ? []
-        : [{ from: remoteEnv.url, to: localEnv.url }],
+      urlReplacements: options.noUrlReplace ? [] : [{ from: remoteEnv.url, to: localEnv.url }],
     })
 
     spinner.succeed(`Database synced from ${environment}`)
@@ -191,12 +203,15 @@ export async function syncDbPullCommand(environment: string, options: {
   }
 }
 
-export async function syncDbPushCommand(environment: string, options: {
-  tables?: string
-  noUrlReplace?: boolean
-  dryRun?: boolean
-  force?: boolean
-}) {
+export async function syncDbPushCommand(
+  environment: string,
+  options: {
+    tables?: string
+    noUrlReplace?: boolean
+    dryRun?: boolean
+    force?: boolean
+  }
+) {
   const config = await loadSyncConfig()
 
   if (!config) {
@@ -248,9 +263,7 @@ export async function syncDbPushCommand(environment: string, options: {
     const restorer = new DatabaseRestorer(remoteEnv.database)
 
     await restorer.restoreFromSQL(sql, {
-      urlReplacements: options.noUrlReplace
-        ? []
-        : [{ from: localEnv.url, to: remoteEnv.url }],
+      urlReplacements: options.noUrlReplace ? [] : [{ from: localEnv.url, to: remoteEnv.url }],
     })
 
     spinner.succeed(`Database pushed to ${environment}`)

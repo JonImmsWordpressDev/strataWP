@@ -21,11 +21,13 @@ pnpm add @stratawp/headless
 ```
 
 For React hooks:
+
 ```bash
 pnpm add @stratawp/headless swr react
 ```
 
 For Next.js integration:
+
 ```bash
 pnpm add @stratawp/headless next
 ```
@@ -99,7 +101,11 @@ function BlogIndex() {
 }
 
 function BlogPost({ slug }: { slug: string }) {
-  const { data: post, error, isLoading } = usePost({
+  const {
+    data: post,
+    error,
+    isLoading,
+  } = usePost({
     client,
     slug,
     params: { _embed: true },
@@ -301,7 +307,11 @@ function BlogList() {
 import { usePost } from '@stratawp/headless/react'
 
 function PostDetail({ slug }: { slug: string }) {
-  const { data: post, error, isLoading } = usePost({
+  const {
+    data: post,
+    error,
+    isLoading,
+  } = usePost({
     client,
     slug,
     params: { _embed: true },
@@ -445,18 +455,17 @@ export async function POST() {
 import { generatePostSEO, generatePageSEO } from '@stratawp/headless'
 import type { Metadata } from 'next'
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
   const post = await client.getPostBySlug(params.slug, { _embed: true })
 
   if (!post) return {}
 
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0]
-  const seo = generatePostSEO(
-    post,
-    'https://your-site.com',
-    'Your Site Name',
-    featuredMedia
-  )
+  const seo = generatePostSEO(post, 'https://your-site.com', 'Your Site Name', featuredMedia)
 
   return {
     title: seo.title,

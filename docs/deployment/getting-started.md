@@ -14,6 +14,7 @@ pnpm stratawp deploy:setup
 ```
 
 The wizard will guide you through:
+
 - Choosing an environment name (production, staging, etc.)
 - Selecting deployment type (FTP, SFTP, SSH, or Git)
 - Entering connection details (host, port, username, password)
@@ -28,6 +29,7 @@ pnpm stratawp deploy production
 ```
 
 That's it! StrataWP will:
+
 - Build your theme automatically
 - Upload only the necessary files
 - Create a backup on the remote server
@@ -43,6 +45,7 @@ That's it! StrataWP will:
 SFTP provides secure, encrypted file transfer and is perfect for shared hosting environments like cPanel, Plesk, etc.
 
 **Example Configuration:**
+
 ```bash
 Environment: production
 Type: SFTP
@@ -61,6 +64,7 @@ Standard FTP is less secure but widely supported. Use SFTP when possible.
 SSH deployment with rsync acceleration. Ideal for VPS and cloud servers with SSH access. Includes post-deploy automation: cache flush, OPcache reset, backup cleanup, validation, and FSE template sync.
 
 **Example Configuration:**
+
 ```bash
 Environment: production
 Type: SSH
@@ -78,6 +82,7 @@ Coming soon. Perfect for WP Engine, Flywheel, and other managed hosts with Git d
 ## What Gets Deployed
 
 ### Included Files ✅
+
 - `dist/` - Built JavaScript and CSS
 - `*.php` - All PHP files (functions.php, templates, etc.)
 - `theme.json` - Block theme configuration
@@ -87,6 +92,7 @@ Coming soon. Perfect for WP Engine, Flywheel, and other managed hosts with Git d
 - `assets/` - Images and other static assets
 
 ### Excluded Files ❌
+
 - `node_modules/` - Node.js dependencies
 - `src/` - Source TypeScript/JavaScript files
 - `.git/` - Git repository
@@ -101,6 +107,7 @@ You can customize what gets deployed using a `.deployignore` file (similar to `.
 For security, store credentials in environment variables rather than config files:
 
 **Create a `.env` file:**
+
 ```env
 STRATAWP_DEPLOY_PROD_PASSWORD=your_secure_password
 STRATAWP_DEPLOY_LOCAL_URL=http://localhost:8888
@@ -108,6 +115,7 @@ STRATAWP_DEPLOY_REMOTE_URL=https://example.com
 ```
 
 **Reference in config using `${VAR_NAME}` syntax:**
+
 ```json
 {
   "password": "${STRATAWP_DEPLOY_PROD_PASSWORD}"
@@ -177,11 +185,13 @@ pnpm stratawp sync:templates production --all --dry-run
 ## Configuration Files
 
 ### Global Configuration
+
 Located at: `~/.stratawp/deploy-config.json`
 
 Contains all your deployment environments and can be shared across projects.
 
 ### Project-Specific Configuration
+
 Located at: `.stratawp-deploy.json` (in your theme directory)
 
 Overrides global configuration for project-specific settings.
@@ -189,6 +199,7 @@ Overrides global configuration for project-specific settings.
 ### Example Configuration
 
 **SFTP (Shared Hosting):**
+
 ```json
 {
   "version": "1.0",
@@ -212,6 +223,7 @@ Overrides global configuration for project-specific settings.
 ```
 
 **SSH (VPS/Cloud — recommended):**
+
 ```json
 {
   "version": "1.0",
@@ -265,6 +277,7 @@ pnpm stratawp sync:db:pull production
 Most production databases only allow local connections (`127.0.0.1`). StrataWP handles this by SSHing into the server and running `wp db export` remotely.
 
 **Configure in `.stratawp-sync.json`:**
+
 ```json
 {
   "environments": {
@@ -300,6 +313,7 @@ Most production databases only allow local connections (`127.0.0.1`). StrataWP h
 ```
 
 **For encrypted SSH keys:**
+
 ```bash
 # Set passphrase via environment variable
 STRATAWP_SSH_PASSPHRASE="your-passphrase" pnpm stratawp sync:db:pull production
@@ -310,6 +324,7 @@ STRATAWP_SSH_PASSPHRASE="your-passphrase" pnpm stratawp sync:db:pull production
 ### URL Replacement
 
 When syncing, URLs are automatically replaced:
+
 - `https://example.com` → `http://local.test`
 
 This handles PHP serialized strings correctly (recalculates string lengths).

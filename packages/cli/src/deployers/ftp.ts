@@ -180,15 +180,9 @@ export class FTPDeployer extends BaseDeployer {
    * Create a backup of the remote directory
    */
   async createBackup(): Promise<string> {
-    const timestamp = new Date()
-      .toISOString()
-      .replace(/[:.]/g, '-')
-      .slice(0, -5)
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
     const backupName = `backup-${timestamp}`
-    const backupPath = path.posix.join(
-      path.posix.dirname(this.config.remotePath),
-      backupName
-    )
+    const backupPath = path.posix.join(path.posix.dirname(this.config.remotePath), backupName)
 
     try {
       if (this.isSFTP && this.sftpClient) {
@@ -216,7 +210,7 @@ export class FTPDeployer extends BaseDeployer {
   /**
    * Restore from a backup
    */
-  async restoreBackup(backupPath: string): Promise<void> {
+  async restoreBackup(_backupPath: string): Promise<void> {
     // Implementation depends on how backups are created
     // This is a placeholder for future implementation
     throw new Error('Restore from backup not yet implemented for FTP/SFTP')
@@ -225,9 +219,7 @@ export class FTPDeployer extends BaseDeployer {
   /**
    * List backups
    */
-  async listBackups(): Promise<
-    Array<{ id: string; path: string; created: number }>
-  > {
+  async listBackups(): Promise<Array<{ id: string; path: string; created: number }>> {
     const parentDir = path.posix.dirname(this.config.remotePath)
     const backups: Array<{ id: string; path: string; created: number }> = []
 
@@ -235,10 +227,7 @@ export class FTPDeployer extends BaseDeployer {
       if (this.isSFTP && this.sftpClient) {
         const files = await this.sftpClient.list(parentDir)
         for (const file of files) {
-          if (
-            file.type === 'd' &&
-            file.name.startsWith('backup-')
-          ) {
+          if (file.type === 'd' && file.name.startsWith('backup-')) {
             backups.push({
               id: file.name,
               path: path.posix.join(parentDir, file.name),

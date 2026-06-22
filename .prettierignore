@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+dist
+build
+node_modules
+.turbo
+coverage
+**/vendor
+# Vendored tooling (WordPress agent-skills, Claude config) — not our source; keep upstream style
+.claude
+.claude-flow

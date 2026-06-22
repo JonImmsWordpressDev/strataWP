@@ -1,20 +1,26 @@
-import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { registerBlockType } from '@wordpress/blocks'
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
+import { PanelBody, RangeControl, SelectControl } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 
 interface Attributes {
-  columns: number;
-  limit: number;
-  orderBy: string;
-  order: string;
+  columns: number
+  limit: number
+  orderBy: string
+  order: string
 }
 
 registerBlockType('strata-store/featured-products', {
-  edit: ({ attributes, setAttributes }: { attributes: Attributes; setAttributes: (attrs: Partial<Attributes>) => void }) => {
+  edit: ({
+    attributes,
+    setAttributes,
+  }: {
+    attributes: Attributes
+    setAttributes: (attrs: Partial<Attributes>) => void
+  }) => {
     const blockProps = useBlockProps({
       className: 'featured-products-editor',
-    });
+    })
 
     return (
       <>
@@ -76,8 +82,8 @@ registerBlockType('strata-store/featured-products', {
           </div>
         </div>
       </>
-    );
+    )
   },
 
   save: () => null,
-});
+})

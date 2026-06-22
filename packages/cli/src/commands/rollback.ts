@@ -20,28 +20,29 @@ export async function rollbackListCommand(options: { environment?: string; limit
   // Table header
   console.log(
     chalk.dim('  #  ') +
-    chalk.dim('Date                 ') +
-    chalk.dim('Environment  ') +
-    chalk.dim('Size      ') +
-    chalk.dim('Status')
+      chalk.dim('Date                 ') +
+      chalk.dim('Environment  ') +
+      chalk.dim('Size      ') +
+      chalk.dim('Status')
   )
   console.log(chalk.dim('─'.repeat(70)))
 
   limited.forEach((snapshot, index) => {
     const date = new Date(snapshot.createdAt).toLocaleString()
     const size = formatBytes(snapshot.files.sizeBytes + snapshot.database.sizeBytes)
-    const status = snapshot.status === 'current'
-      ? chalk.green('current')
-      : snapshot.status === 'stable'
-        ? chalk.blue('stable')
-        : chalk.dim('archived')
+    const status =
+      snapshot.status === 'current'
+        ? chalk.green('current')
+        : snapshot.status === 'stable'
+          ? chalk.blue('stable')
+          : chalk.dim('archived')
 
     console.log(
       `  ${String(index + 1).padStart(2)}  ` +
-      `${date.padEnd(20)} ` +
-      `${snapshot.environment.padEnd(12)} ` +
-      `${size.padEnd(9)} ` +
-      status
+        `${date.padEnd(20)} ` +
+        `${snapshot.environment.padEnd(12)} ` +
+        `${size.padEnd(9)} ` +
+        status
     )
   })
 
@@ -94,7 +95,9 @@ export async function rollbackDiffCommand(id1: string, id2: string) {
   }
 
   console.log()
-  console.log(`Row changes: ${chalk.green('+' + sqlDiff.rowsAdded)} ${chalk.red('-' + sqlDiff.rowsDeleted)}`)
+  console.log(
+    `Row changes: ${chalk.green('+' + sqlDiff.rowsAdded)} ${chalk.red('-' + sqlDiff.rowsDeleted)}`
+  )
   console.log()
 }
 

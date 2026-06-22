@@ -34,6 +34,7 @@ stratawp storybook
 ```
 
 The explorer will automatically:
+
 1. Discover all components in your theme
 2. Start a dev server on `http://localhost:3000`
 3. Open your browser
@@ -68,25 +69,30 @@ stratawp explorer --host 0.0.0.0 --port 8080
 The explorer automatically discovers components from these locations:
 
 ### Gutenberg Blocks
+
 - **Location**: `src/blocks/**/block.json`
 - **Metadata**: Reads from `block.json`
 - **Preview**: Shows block with editable attributes
 
 ### React Components
+
 - **Location**: `src/components/**/*.tsx`
 - **Metadata**: Extracted from JSDoc comments
 - **Preview**: Renders React component
 
 ### Block Patterns
+
 - **Location**: `patterns/**/*.php`
 - **Metadata**: Extracted from PHP comments
 - **Preview**: Shows pattern markup
 
 ### FSE Templates
+
 - **Location**: `templates/**/*.html`
 - **Preview**: Renders full template
 
 ### Template Parts
+
 - **Location**: `parts/**/*.html`
 - **Preview**: Renders template part
 
@@ -127,11 +133,7 @@ Add metadata using JSDoc comments:
  * @description A reusable button component
  */
 export function Button({ children, variant = 'primary' }) {
-  return (
-    <button className={`btn btn-${variant}`}>
-      {children}
-    </button>
-  )
+  return <button className={`btn btn-${variant}`}>{children}</button>
 }
 ```
 
@@ -153,12 +155,14 @@ Add metadata in PHP comment block:
 ## UI Components
 
 ### Sidebar
+
 - **Component List**: Grouped by type with search and filtering
 - **Type Badges**: Color-coded badges for each component type
 - **Tags**: Component keywords/categories
 - **Active Selection**: Highlights currently selected component
 
 ### Preview Area
+
 - **Viewport Controls**: Switch between Mobile, Tablet, Desktop, and Full width
 - **Live Preview**: Real-time component rendering
 - **Attribute Panel**: Edit block attributes in real-time
@@ -166,6 +170,7 @@ Add metadata in PHP comment block:
 - **Open in Tab**: Open preview in new browser tab
 
 ### Details Panel
+
 Three tabs:
 
 1. **Info Tab**
@@ -273,6 +278,7 @@ ws.onmessage = (event) => {
 The explorer server provides a REST API:
 
 ### Get All Components
+
 ```
 GET /api/components
 ```
@@ -280,6 +286,7 @@ GET /api/components
 Returns array of all discovered components.
 
 ### Get Single Component
+
 ```
 GET /api/components/:id
 ```
@@ -287,6 +294,7 @@ GET /api/components/:id
 Returns component info by ID.
 
 ### Get Component Source
+
 ```
 GET /api/components/:id/source
 ```
@@ -294,6 +302,7 @@ GET /api/components/:id/source
 Returns component source code.
 
 ### Health Check
+
 ```
 GET /api/health
 ```
@@ -304,12 +313,12 @@ Returns server status.
 
 Pre-configured viewport sizes:
 
-| Name    | Width | Height |
-|---------|-------|--------|
-| Mobile  | 375px | 667px  |
-| Tablet  | 768px | 1024px |
-| Desktop | 1440px| 900px  |
-| Full    | 100%  | 100%   |
+| Name    | Width  | Height |
+| ------- | ------ | ------ |
+| Mobile  | 375px  | 667px  |
+| Tablet  | 768px  | 1024px |
+| Desktop | 1440px | 900px  |
+| Full    | 100%   | 100%   |
 
 ## Keyboard Shortcuts
 
@@ -321,6 +330,7 @@ Pre-configured viewport sizes:
 ## Development Workflow
 
 1. **Start Explorer**
+
    ```bash
    stratawp explorer
    ```
@@ -350,6 +360,7 @@ Pre-configured viewport sizes:
 ### 1. Add Rich Metadata
 
 **Blocks:**
+
 ```json
 {
   "description": "Clear, concise description",
@@ -363,6 +374,7 @@ Pre-configured viewport sizes:
 ```
 
 **Components:**
+
 ```tsx
 /**
  * @title Descriptive Title
@@ -426,6 +438,7 @@ Use categories to group related components:
 **Problem:** Port 3000 is already in use
 
 **Solution:** Use a different port:
+
 ```bash
 stratawp explorer --port 4000
 ```
@@ -435,6 +448,7 @@ stratawp explorer --port 4000
 **Problem:** Components aren't appearing in the explorer
 
 **Solution:** Check that:
+
 1. Files are in the correct directories
 2. `block.json` files are valid JSON
 3. PHP files have proper comment headers
@@ -445,6 +459,7 @@ stratawp explorer --port 4000
 **Problem:** Changes aren't reflected automatically
 
 **Solution:**
+
 1. Check that file watcher is working
 2. Manually refresh with the refresh button
 3. Restart the explorer
@@ -454,6 +469,7 @@ stratawp explorer --port 4000
 **Problem:** Real-time updates not working
 
 **Solution:**
+
 1. Check browser console for errors
 2. Verify WebSocket port is open
 3. Check firewall settings

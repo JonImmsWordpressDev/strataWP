@@ -38,9 +38,7 @@ export function usePost(options: UsePostOptions) {
     throw new Error('Either id or slug must be provided')
   }
 
-  const key = id
-    ? ['post', id, JSON.stringify(params)]
-    : ['post', slug, JSON.stringify(params)]
+  const key = id ? ['post', id, JSON.stringify(params)] : ['post', slug, JSON.stringify(params)]
 
   const fetcher = async () => {
     if (id) {

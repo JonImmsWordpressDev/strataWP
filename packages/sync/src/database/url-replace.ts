@@ -6,9 +6,7 @@ export class UrlReplacer {
 
   constructor(replacements: UrlReplacement[]) {
     // Sort by length descending to replace longer URLs first
-    this.replacements = [...replacements].sort(
-      (a, b) => b.from.length - a.from.length
-    )
+    this.replacements = [...replacements].sort((a, b) => b.from.length - a.from.length)
   }
 
   /**
@@ -35,10 +33,7 @@ export class UrlReplacer {
 
     for (const { from, to } of this.replacements) {
       // Match serialized string pattern: s:LENGTH:"VALUE";
-      const regex = new RegExp(
-        `s:(\\d+):"([^"]*${this.escapeRegex(from)}[^"]*)";`,
-        'g'
-      )
+      const regex = new RegExp(`s:(\\d+):"([^"]*${this.escapeRegex(from)}[^"]*)";`, 'g')
 
       result = result.replace(regex, (_match, _length, value) => {
         const newValue = value.split(from).join(to)
@@ -74,14 +69,17 @@ export class UrlReplacer {
    */
   replaceInSQL(sql: string): string {
     // Process line by line to handle different value types
-    return sql.split('\n').map((line) => {
-      if (!line.includes('INSERT') && !line.includes('UPDATE')) {
-        return line
-      }
+    return sql
+      .split('\n')
+      .map((line) => {
+        if (!line.includes('INSERT') && !line.includes('UPDATE')) {
+          return line
+        }
 
-      // Extract values from INSERT/UPDATE statements
-      return this.processLine(line)
-    }).join('\n')
+        // Extract values from INSERT/UPDATE statements
+        return this.processLine(line)
+      })
+      .join('\n')
   }
 
   private processLine(line: string): string {

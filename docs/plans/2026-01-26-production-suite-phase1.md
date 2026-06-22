@@ -13,6 +13,7 @@
 ## Task 1: Create Package Structure
 
 **Files:**
+
 - Create: `packages/sync/package.json`
 - Create: `packages/sync/tsconfig.json`
 - Create: `packages/sync/tsup.config.ts`
@@ -72,14 +73,7 @@
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
-  "keywords": [
-    "stratawp",
-    "wordpress",
-    "sync",
-    "database",
-    "rollback",
-    "snapshots"
-  ],
+  "keywords": ["stratawp", "wordpress", "sync", "database", "rollback", "snapshots"],
   "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
@@ -137,6 +131,7 @@ export * from './types.js'
 **Step 5: Create placeholder files**
 
 Create these empty placeholder files:
+
 - `packages/sync/src/database/index.ts` with `export {}`
 - `packages/sync/src/snapshots/index.ts` with `export {}`
 - `packages/sync/src/types.ts` with `export {}`
@@ -144,6 +139,7 @@ Create these empty placeholder files:
 **Step 6: Install dependencies and verify build**
 
 Run:
+
 ```bash
 cd /Users/jon.imms/Local\ Sites/stratawp/strataWP/.worktrees/production-suite
 pnpm install
@@ -164,6 +160,7 @@ git commit -m "feat(sync): initialize @stratawp/sync package structure"
 ## Task 2: Define Core Types
 
 **Files:**
+
 - Create: `packages/sync/src/types.ts`
 
 **Step 1: Write the types file**
@@ -283,6 +280,7 @@ export interface SyncResult {
 **Step 2: Verify types compile**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync build
 ```
@@ -301,6 +299,7 @@ git commit -m "feat(sync): add core type definitions"
 ## Task 3: Database Dump Functionality
 
 **Files:**
+
 - Create: `packages/sync/src/database/dump.ts`
 - Create: `packages/sync/src/database/index.ts`
 - Create: `packages/sync/src/database/__tests__/dump.test.ts`
@@ -338,10 +337,11 @@ describe('DatabaseDumper', () => {
     it('should return list of tables', async () => {
       const mysql = await import('mysql2/promise')
       const mockConnection = {
-        query: vi.fn().mockResolvedValue([[
-          { Tables_in_test_db: 'wp_posts' },
-          { Tables_in_test_db: 'wp_options' },
-        ]]),
+        query: vi
+          .fn()
+          .mockResolvedValue([
+            [{ Tables_in_test_db: 'wp_posts' }, { Tables_in_test_db: 'wp_options' }],
+          ]),
         end: vi.fn(),
       }
       vi.mocked(mysql.createConnection).mockResolvedValue(mockConnection as any)
@@ -358,12 +358,13 @@ describe('DatabaseDumper', () => {
     it('should generate CREATE TABLE and INSERT statements', async () => {
       const mysql = await import('mysql2/promise')
       const mockConnection = {
-        query: vi.fn()
+        query: vi
+          .fn()
           .mockResolvedValueOnce([[{ Tables_in_test_db: 'wp_options' }]]) // getTables
           .mockResolvedValueOnce([[{ 'Create Table': 'CREATE TABLE `wp_options` (id INT)' }]]) // SHOW CREATE
-          .mockResolvedValueOnce([[
-            { option_id: 1, option_name: 'siteurl', option_value: 'http://example.com' },
-          ]]), // SELECT *
+          .mockResolvedValueOnce([
+            [{ option_id: 1, option_name: 'siteurl', option_value: 'http://example.com' }],
+          ]), // SELECT *
         end: vi.fn(),
       }
       vi.mocked(mysql.createConnection).mockResolvedValue(mockConnection as any)
@@ -381,6 +382,7 @@ describe('DatabaseDumper', () => {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- dump.test.ts
 ```
@@ -425,7 +427,7 @@ export class DatabaseDumper {
   async generateDumpSQL(options: DumpOptions = {}): Promise<string> {
     const connection = await this.getConnection()
     try {
-      let tables = options.tables || await this.getTables()
+      let tables = options.tables || (await this.getTables())
 
       if (options.excludeTables) {
         tables = tables.filter((t) => !options.excludeTables!.includes(t))
@@ -460,13 +462,15 @@ export class DatabaseDumper {
             const columnList = columns.map((c) => `\`${c}\``).join(', ')
 
             for (const row of rows as any[]) {
-              const values = columns.map((col) => {
-                const value = row[col]
-                if (value === null) return 'NULL'
-                if (typeof value === 'number') return value.toString()
-                // Escape string values
-                return `'${String(value).replace(/'/g, "''").replace(/\\/g, '\\\\')}'`
-              }).join(', ')
+              const values = columns
+                .map((col) => {
+                  const value = row[col]
+                  if (value === null) return 'NULL'
+                  if (typeof value === 'number') return value.toString()
+                  // Escape string values
+                  return `'${String(value).replace(/'/g, "''").replace(/\\/g, '\\\\')}'`
+                })
+                .join(', ')
 
               output.push(`INSERT INTO \`${table}\` (${columnList}) VALUES (${values});`)
             }
@@ -512,6 +516,7 @@ export { DatabaseDumper } from './dump.js'
 **Step 5: Run test to verify it passes**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- dump.test.ts
 ```
@@ -530,6 +535,7 @@ git commit -m "feat(sync): add database dump functionality"
 ## Task 4: URL Replacement Engine
 
 **Files:**
+
 - Create: `packages/sync/src/database/url-replace.ts`
 - Create: `packages/sync/src/database/__tests__/url-replace.test.ts`
 - Modify: `packages/sync/src/database/index.ts`
@@ -571,7 +577,8 @@ describe('UrlReplacer', () => {
     })
 
     it('should handle nested serialized data', () => {
-      const input = 'a:2:{s:4:"site";s:22:"https://production.com";s:3:"cdn";s:26:"https://cdn.production.com";}'
+      const input =
+        'a:2:{s:4:"site";s:22:"https://production.com";s:3:"cdn";s:26:"https://cdn.production.com";}'
       const result = replacer.replaceInSerialized(input)
       expect(result).toContain('http://local.test')
       expect(result).toContain('http://local.test/wp-content')
@@ -599,6 +606,7 @@ describe('UrlReplacer', () => {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- url-replace.test.ts
 ```
@@ -616,9 +624,7 @@ export class UrlReplacer {
 
   constructor(replacements: UrlReplacement[]) {
     // Sort by length descending to replace longer URLs first
-    this.replacements = [...replacements].sort(
-      (a, b) => b.from.length - a.from.length
-    )
+    this.replacements = [...replacements].sort((a, b) => b.from.length - a.from.length)
   }
 
   /**
@@ -645,10 +651,7 @@ export class UrlReplacer {
 
     for (const { from, to } of this.replacements) {
       // Match serialized string pattern: s:LENGTH:"VALUE";
-      const regex = new RegExp(
-        `s:(\\d+):"([^"]*${this.escapeRegex(from)}[^"]*)";`,
-        'g'
-      )
+      const regex = new RegExp(`s:(\\d+):"([^"]*${this.escapeRegex(from)}[^"]*)";`, 'g')
 
       result = result.replace(regex, (match, length, value) => {
         const newValue = value.split(from).join(to)
@@ -684,14 +687,17 @@ export class UrlReplacer {
    */
   replaceInSQL(sql: string): string {
     // Process line by line to handle different value types
-    return sql.split('\n').map((line) => {
-      if (!line.includes('INSERT') && !line.includes('UPDATE')) {
-        return line
-      }
+    return sql
+      .split('\n')
+      .map((line) => {
+        if (!line.includes('INSERT') && !line.includes('UPDATE')) {
+          return line
+        }
 
-      // Extract values from INSERT/UPDATE statements
-      return this.processLine(line)
-    }).join('\n')
+        // Extract values from INSERT/UPDATE statements
+        return this.processLine(line)
+      })
+      .join('\n')
   }
 
   private processLine(line: string): string {
@@ -753,6 +759,7 @@ export { UrlReplacer } from './url-replace.js'
 **Step 5: Run test to verify it passes**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- url-replace.test.ts
 ```
@@ -771,6 +778,7 @@ git commit -m "feat(sync): add URL replacement engine with serialization support
 ## Task 5: Database Restore Functionality
 
 **Files:**
+
 - Create: `packages/sync/src/database/restore.ts`
 - Create: `packages/sync/src/database/__tests__/restore.test.ts`
 - Modify: `packages/sync/src/database/index.ts`
@@ -837,9 +845,7 @@ describe('DatabaseRestorer', () => {
       const sql = `INSERT INTO wp_options VALUES ('siteurl', 'https://production.com');`
 
       await restorer.restoreFromSQL(sql, {
-        urlReplacements: [
-          { from: 'https://production.com', to: 'http://local.test' },
-        ],
+        urlReplacements: [{ from: 'https://production.com', to: 'http://local.test' }],
       })
 
       const insertQuery = executedQueries.find((q) => q.includes('INSERT'))
@@ -852,6 +858,7 @@ describe('DatabaseRestorer', () => {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- restore.test.ts
 ```
@@ -1002,6 +1009,7 @@ export { UrlReplacer } from './url-replace.js'
 **Step 5: Run test to verify it passes**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- restore.test.ts
 ```
@@ -1020,6 +1028,7 @@ git commit -m "feat(sync): add database restore with URL replacement"
 ## Task 6: Snapshot Manager
 
 **Files:**
+
 - Create: `packages/sync/src/snapshots/manager.ts`
 - Create: `packages/sync/src/snapshots/index.ts`
 - Create: `packages/sync/src/snapshots/__tests__/manager.test.ts`
@@ -1097,8 +1106,9 @@ describe('SnapshotManager', () => {
       const snapshots = await manager.listSnapshots()
       expect(snapshots.length).toBe(2)
       // Most recent first
-      expect(new Date(snapshots[0].createdAt).getTime())
-        .toBeGreaterThan(new Date(snapshots[1].createdAt).getTime())
+      expect(new Date(snapshots[0].createdAt).getTime()).toBeGreaterThan(
+        new Date(snapshots[1].createdAt).getTime()
+      )
     })
   })
 
@@ -1124,6 +1134,7 @@ describe('SnapshotManager', () => {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- manager.test.ts
 ```
@@ -1349,10 +1360,7 @@ export class SnapshotManager {
     await fs.writeFile(this.indexPath, JSON.stringify(snapshots, null, 2), 'utf8')
   }
 
-  private async updatePreviousStatus(
-    currentId: string,
-    environment: string
-  ): Promise<void> {
+  private async updatePreviousStatus(currentId: string, environment: string): Promise<void> {
     const snapshots = await this.listSnapshots()
 
     for (const snapshot of snapshots) {
@@ -1379,6 +1387,7 @@ export type { CreateSnapshotOptions } from './manager.js'
 **Step 5: Run test to verify it passes**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- manager.test.ts
 ```
@@ -1397,6 +1406,7 @@ git commit -m "feat(sync): add snapshot manager for backup/restore"
 ## Task 7: Diff Engine
 
 **Files:**
+
 - Create: `packages/sync/src/diff/index.ts`
 - Create: `packages/sync/src/diff/__tests__/diff.test.ts`
 - Modify: `packages/sync/src/index.ts`
@@ -1459,6 +1469,7 @@ describe('DiffEngine', () => {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- diff.test.ts
 ```
@@ -1543,10 +1554,7 @@ export class DiffEngine {
     return matches ? matches.length : 0
   }
 
-  static formatDiff(
-    filesDiff: FileListDiff,
-    sqlDiff?: SQLDiff
-  ): string {
+  static formatDiff(filesDiff: FileListDiff, sqlDiff?: SQLDiff): string {
     const lines: string[] = []
 
     if (filesDiff.added.length > 0) {
@@ -1598,6 +1606,7 @@ export * from './types.js'
 **Step 5: Run test to verify it passes**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- diff.test.ts
 ```
@@ -1616,6 +1625,7 @@ git commit -m "feat(sync): add diff engine for comparing snapshots"
 ## Task 8: CLI Commands - Rollback List
 
 **Files:**
+
 - Create: `packages/cli/src/commands/rollback.ts`
 - Modify: `packages/cli/src/index.ts` (add rollback command)
 - Modify: `packages/cli/package.json` (add @stratawp/sync dependency)
@@ -1623,6 +1633,7 @@ git commit -m "feat(sync): add diff engine for comparing snapshots"
 **Step 1: Add dependency to CLI package**
 
 In `packages/cli/package.json`, add to dependencies:
+
 ```json
 "@stratawp/sync": "workspace:*"
 ```
@@ -1664,28 +1675,29 @@ export function registerRollbackCommands(program: Command) {
       // Table header
       console.log(
         chalk.dim('  #  ') +
-        chalk.dim('Date                 ') +
-        chalk.dim('Environment  ') +
-        chalk.dim('Size      ') +
-        chalk.dim('Status')
+          chalk.dim('Date                 ') +
+          chalk.dim('Environment  ') +
+          chalk.dim('Size      ') +
+          chalk.dim('Status')
       )
       console.log(chalk.dim('─'.repeat(70)))
 
       limited.forEach((snapshot, index) => {
         const date = new Date(snapshot.createdAt).toLocaleString()
         const size = formatBytes(snapshot.files.sizeBytes + snapshot.database.sizeBytes)
-        const status = snapshot.status === 'current'
-          ? chalk.green('current')
-          : snapshot.status === 'stable'
-            ? chalk.blue('stable')
-            : chalk.dim('archived')
+        const status =
+          snapshot.status === 'current'
+            ? chalk.green('current')
+            : snapshot.status === 'stable'
+              ? chalk.blue('stable')
+              : chalk.dim('archived')
 
         console.log(
           `  ${String(index + 1).padStart(2)}  ` +
-          `${date.padEnd(20)} ` +
-          `${snapshot.environment.padEnd(12)} ` +
-          `${size.padEnd(9)} ` +
-          status
+            `${date.padEnd(20)} ` +
+            `${snapshot.environment.padEnd(12)} ` +
+            `${size.padEnd(9)} ` +
+            status
         )
       })
 
@@ -1744,7 +1756,9 @@ export function registerRollbackCommands(program: Command) {
       }
 
       console.log()
-      console.log(`Row changes: ${chalk.green('+' + sqlDiff.rowsAdded)} ${chalk.red('-' + sqlDiff.rowsDeleted)}`)
+      console.log(
+        `Row changes: ${chalk.green('+' + sqlDiff.rowsAdded)} ${chalk.red('-' + sqlDiff.rowsDeleted)}`
+      )
       console.log()
     })
 
@@ -1780,6 +1794,7 @@ function formatBytes(bytes: number): string {
 **Step 3: Register command in CLI index**
 
 Add to `packages/cli/src/index.ts`:
+
 ```typescript
 import { registerRollbackCommands } from './commands/rollback.js'
 
@@ -1790,6 +1805,7 @@ registerRollbackCommands(program)
 **Step 4: Build and test**
 
 Run:
+
 ```bash
 pnpm install
 pnpm --filter @stratawp/cli build
@@ -1809,6 +1825,7 @@ git commit -m "feat(cli): add rollback:list, rollback:diff, rollback:mark-stable
 ## Task 9: CLI Commands - Sync Database
 
 **Files:**
+
 - Create: `packages/cli/src/commands/sync.ts`
 - Modify: `packages/cli/src/index.ts` (add sync command)
 
@@ -1825,18 +1842,13 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 
 export function registerSyncCommands(program: Command) {
-  const sync = program
-    .command('sync')
-    .description('Sync environments (database, media, config)')
+  const sync = program.command('sync').description('Sync environments (database, media, config)')
 
   // Database sync subcommands
-  const db = sync
-    .command('db')
-    .description('Database sync operations')
+  const db = sync.command('db').description('Database sync operations')
 
   // Pull database from remote
-  db
-    .command('pull <environment>')
+  db.command('pull <environment>')
     .description('Pull database from remote environment to local')
     .option('--tables <tables>', 'Only sync specific tables (comma-separated)')
     .option('--no-url-replace', 'Skip URL replacement')
@@ -1870,9 +1882,7 @@ export function registerSyncCommands(program: Command) {
         spinner.text = `Dumping database from ${environment}...`
 
         const dumper = new DatabaseDumper(remoteEnv.database)
-        const dumpOptions = options.tables
-          ? { tables: options.tables.split(',') }
-          : {}
+        const dumpOptions = options.tables ? { tables: options.tables.split(',') } : {}
 
         const sql = await dumper.generateDumpSQL(dumpOptions)
 
@@ -1917,9 +1927,7 @@ export function registerSyncCommands(program: Command) {
         spinner.text = 'Importing database...'
 
         await restorer.restoreFromSQL(sql, {
-          urlReplacements: options.noUrlReplace
-            ? []
-            : [{ from: remoteEnv.url, to: localEnv.url }],
+          urlReplacements: options.noUrlReplace ? [] : [{ from: remoteEnv.url, to: localEnv.url }],
         })
 
         spinner.succeed(`Database synced from ${environment}`)
@@ -1931,8 +1939,7 @@ export function registerSyncCommands(program: Command) {
     })
 
   // Push database to remote
-  db
-    .command('push <environment>')
+  db.command('push <environment>')
     .description('Push local database to remote environment')
     .option('--tables <tables>', 'Only sync specific tables (comma-separated)')
     .option('--no-url-replace', 'Skip URL replacement')
@@ -1990,9 +1997,7 @@ export function registerSyncCommands(program: Command) {
         const restorer = new DatabaseRestorer(remoteEnv.database)
 
         await restorer.restoreFromSQL(sql, {
-          urlReplacements: options.noUrlReplace
-            ? []
-            : [{ from: localEnv.url, to: remoteEnv.url }],
+          urlReplacements: options.noUrlReplace ? [] : [{ from: localEnv.url, to: remoteEnv.url }],
         })
 
         spinner.succeed(`Database pushed to ${environment}`)
@@ -2003,9 +2008,7 @@ export function registerSyncCommands(program: Command) {
     })
 
   // Config export
-  sync
-    .command('config')
-    .description('Export/import theme configuration')
+  sync.command('config').description('Export/import theme configuration')
 
   sync
     .command('config:export')
@@ -2038,6 +2041,7 @@ async function loadSyncConfig() {
 **Step 2: Register in CLI index**
 
 Add to `packages/cli/src/index.ts`:
+
 ```typescript
 import { registerSyncCommands } from './commands/sync.js'
 
@@ -2048,6 +2052,7 @@ registerSyncCommands(program)
 **Step 3: Build and verify**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/cli build
 ```
@@ -2066,6 +2071,7 @@ git commit -m "feat(cli): add sync:db pull/push commands"
 ## Task 10: Integration with Deploy Command
 
 **Files:**
+
 - Modify: `packages/cli/src/commands/deploy/index.ts` (add snapshot creation)
 
 **Step 1: Add snapshot creation to deploy**
@@ -2073,6 +2079,7 @@ git commit -m "feat(cli): add sync:db pull/push commands"
 Find the deploy command implementation and add snapshot creation before deployment starts.
 
 Add near the top of the deploy action:
+
 ```typescript
 import { SnapshotManager, DatabaseDumper } from '@stratawp/sync'
 
@@ -2106,6 +2113,7 @@ if (!options.noBackup) {
 ```
 
 Add helper functions:
+
 ```typescript
 async function getGitRef(): Promise<string | undefined> {
   try {
@@ -2129,6 +2137,7 @@ async function getGitBranch(): Promise<string | undefined> {
 **Step 2: Add --no-backup option**
 
 Add to deploy command options:
+
 ```typescript
 .option('--no-backup', 'Skip creating pre-deploy snapshot')
 ```
@@ -2136,6 +2145,7 @@ Add to deploy command options:
 **Step 3: Build and verify**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/cli build
 ```
@@ -2154,6 +2164,7 @@ git commit -m "feat(deploy): automatically create snapshot before deployment"
 ## Task 11: Final Integration Test
 
 **Files:**
+
 - Create: `packages/sync/src/__tests__/integration.test.ts`
 
 **Step 1: Write integration test**
@@ -2204,7 +2215,8 @@ describe('Integration: Snapshot workflow', () => {
     const snapshot2 = await manager.createSnapshot({
       environment: 'production',
       themePath,
-      databaseDump: 'CREATE TABLE wp_posts (id INT); INSERT INTO wp_posts VALUES (1); INSERT INTO wp_posts VALUES (2);',
+      databaseDump:
+        'CREATE TABLE wp_posts (id INT); INSERT INTO wp_posts VALUES (1); INSERT INTO wp_posts VALUES (2);',
     })
 
     expect(snapshot2.status).toBe('current')
@@ -2232,6 +2244,7 @@ describe('Integration: Snapshot workflow', () => {
 **Step 2: Run integration test**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test -- integration.test.ts
 ```
@@ -2241,6 +2254,7 @@ Expected: PASS
 **Step 3: Run all tests**
 
 Run:
+
 ```bash
 pnpm --filter @stratawp/sync test
 ```
@@ -2250,6 +2264,7 @@ Expected: All tests pass
 **Step 4: Build entire project**
 
 Run:
+
 ```bash
 pnpm build
 ```
@@ -2287,6 +2302,7 @@ Phase 1 delivers:
    - `--no-backup` flag to skip snapshot
 
 **Next phases** will add:
+
 - Phase 2: Media sync, cloud storage, config export/import
 - Phase 3: Monitoring PHP plugin and RUM
 - Phase 4: Dashboard UI and Lighthouse

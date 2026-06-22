@@ -96,19 +96,20 @@ Most production databases only allow connections from localhost (`127.0.0.1`), m
 
 **SSH Configuration Options:**
 
-| Option | Description |
-|--------|-------------|
-| `ssh.host` | SSH server hostname |
-| `ssh.port` | SSH port (default: 22) |
-| `ssh.user` | SSH username |
-| `ssh.key` | Path to private key (supports `~` expansion) |
-| `ssh.passphrase` | Passphrase for encrypted keys (optional) |
-| `wpPath` | WordPress installation path on remote server |
-| `wpCliPath` | Custom WP-CLI path (optional, defaults to `wp`) |
+| Option           | Description                                     |
+| ---------------- | ----------------------------------------------- |
+| `ssh.host`       | SSH server hostname                             |
+| `ssh.port`       | SSH port (default: 22)                          |
+| `ssh.user`       | SSH username                                    |
+| `ssh.key`        | Path to private key (supports `~` expansion)    |
+| `ssh.passphrase` | Passphrase for encrypted keys (optional)        |
+| `wpPath`         | WordPress installation path on remote server    |
+| `wpCliPath`      | Custom WP-CLI path (optional, defaults to `wp`) |
 
 **Passphrase Handling:**
 
 For encrypted SSH keys, you can:
+
 1. Set `STRATAWP_SSH_PASSPHRASE` environment variable (recommended for CI/CD)
 2. Include `passphrase` in the config (not recommended - use env var instead)
 3. Enter it when prompted
@@ -223,16 +224,12 @@ const backupPath = await restorer.createBackup()
 
 // Restore with URL replacement
 await restorer.restoreFromSQL(sql, {
-  urlReplacements: [
-    { from: 'https://production.com', to: 'http://local.test' },
-  ],
+  urlReplacements: [{ from: 'https://production.com', to: 'http://local.test' }],
 })
 
 // Restore from file (supports .gz)
 await restorer.restoreFromFile('/path/to/dump.sql.gz', {
-  urlReplacements: [
-    { from: 'https://production.com', to: 'http://local.test' },
-  ],
+  urlReplacements: [{ from: 'https://production.com', to: 'http://local.test' }],
 })
 
 // Dry run (no changes made)
@@ -249,11 +246,7 @@ Replace URLs in SQL, correctly handling PHP serialized strings:
 import { UrlReplacer } from '@stratawp/sync'
 
 // Replace URLs (handles serialized strings)
-const newSql = UrlReplacer.replace(
-  sql,
-  'https://old-domain.com',
-  'http://new-domain.test'
-)
+const newSql = UrlReplacer.replace(sql, 'https://old-domain.com', 'http://new-domain.test')
 
 // Detect URLs in SQL
 const urls = UrlReplacer.detectUrls(sql)
@@ -284,9 +277,9 @@ const snapshot = await manager.createSnapshot({
   environment: 'production',
   themePath: '/path/to/theme',
   databaseDump: sql,
-  gitRef: 'abc123',        // Optional
-  gitBranch: 'main',       // Optional
-  themeVersion: '1.0.0',   // Optional
+  gitRef: 'abc123', // Optional
+  gitBranch: 'main', // Optional
+  themeVersion: '1.0.0', // Optional
 })
 
 // List snapshots

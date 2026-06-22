@@ -125,13 +125,13 @@ packages/
 
 ### Metrics Collected
 
-| Category | Metrics |
-|----------|---------|
-| Core Web Vitals | LCP, FID, CLS, INP, TTFB |
-| WordPress | Query count/time, memory peak, active hooks, slow queries (>50ms) |
-| Assets | JS/CSS size, render-blocking resources, unused code percentage |
-| Errors | PHP errors/warnings, JS exceptions, failed REST API calls |
-| Uptime | Response time, HTTP status codes, SSL certificate expiry |
+| Category        | Metrics                                                           |
+| --------------- | ----------------------------------------------------------------- |
+| Core Web Vitals | LCP, FID, CLS, INP, TTFB                                          |
+| WordPress       | Query count/time, memory peak, active hooks, slow queries (>50ms) |
+| Assets          | JS/CSS size, render-blocking resources, unused code percentage    |
+| Errors          | PHP errors/warnings, JS exceptions, failed REST API calls         |
+| Uptime          | Response time, HTTP status codes, SSL certificate expiry          |
 
 ### Database Schema
 
@@ -190,31 +190,34 @@ Lightweight (~2KB gzipped) script injected in production:
 
 ```javascript
 // rum.min.js (source version)
-(function() {
-    const endpoint = window.__STRATA_RUM_ENDPOINT__;
-    const beacon = (data) => {
-        navigator.sendBeacon(endpoint, JSON.stringify({
-            ...data,
-            url: location.pathname,
-            template: document.body.dataset.template,
-            device: window.innerWidth < 768 ? 'mobile' :
-                    window.innerWidth < 1024 ? 'tablet' : 'desktop',
-            connection: navigator.connection?.effectiveType,
-            timestamp: Date.now()
-        }));
-    };
+;(function () {
+  const endpoint = window.__STRATA_RUM_ENDPOINT__
+  const beacon = (data) => {
+    navigator.sendBeacon(
+      endpoint,
+      JSON.stringify({
+        ...data,
+        url: location.pathname,
+        template: document.body.dataset.template,
+        device:
+          window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop',
+        connection: navigator.connection?.effectiveType,
+        timestamp: Date.now(),
+      })
+    )
+  }
 
-    // Core Web Vitals via web-vitals library (inlined)
-    new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-            if (entry.entryType === 'largest-contentful-paint') {
-                beacon({ metric: 'lcp', value: entry.startTime });
-            }
-        }
-    }).observe({ type: 'largest-contentful-paint', buffered: true });
+  // Core Web Vitals via web-vitals library (inlined)
+  new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+      if (entry.entryType === 'largest-contentful-paint') {
+        beacon({ metric: 'lcp', value: entry.startTime })
+      }
+    }
+  }).observe({ type: 'largest-contentful-paint', buffered: true })
 
-    // ... FID, CLS, INP, TTFB collection
-})();
+  // ... FID, CLS, INP, TTFB collection
+})()
 ```
 
 ### Dashboard UI
@@ -228,6 +231,7 @@ stratawp monitor:status             # CLI summary without UI
 ```
 
 Dashboard sections:
+
 - **Overview**: Health score, key metrics, alerts
 - **Vitals**: Core Web Vitals trends with device breakdown
 - **WordPress**: Query times, memory, slow hooks, plugin impact
@@ -250,37 +254,37 @@ Stored in `.stratawp-monitor.json`:
 
 ```json
 {
-    "retention": {
-        "metrics": 30,
-        "errors": 90,
-        "lighthouse": 90
+  "retention": {
+    "metrics": 30,
+    "errors": 90,
+    "lighthouse": 90
+  },
+  "rum": {
+    "enabled": true,
+    "sampleRate": 1.0
+  },
+  "integrations": {
+    "sentry": {
+      "dsn": "${SENTRY_DSN}",
+      "environment": "production"
     },
-    "rum": {
-        "enabled": true,
-        "sampleRate": 1.0
-    },
-    "integrations": {
-        "sentry": {
-            "dsn": "${SENTRY_DSN}",
-            "environment": "production"
-        },
-        "slack": {
-            "webhook": "${SLACK_WEBHOOK}",
-            "channel": "#alerts"
-        }
-    },
-    "alerts": {
-        "errorThreshold": {
-            "count": 10,
-            "period": "1h"
-        },
-        "uptimeThreshold": 99.5,
-        "vitals": {
-            "lcp": 2500,
-            "fid": 100,
-            "cls": 0.1
-        }
+    "slack": {
+      "webhook": "${SLACK_WEBHOOK}",
+      "channel": "#alerts"
     }
+  },
+  "alerts": {
+    "errorThreshold": {
+      "count": 10,
+      "period": "1h"
+    },
+    "uptimeThreshold": 99.5,
+    "vitals": {
+      "lcp": 2500,
+      "fid": 100,
+      "cls": 0.1
+    }
+  }
 }
 ```
 
@@ -311,26 +315,26 @@ Every deployment creates a snapshot automatically:
 
 ```json
 {
-    "id": "2026-01-26T14-30-00_production",
-    "environment": "production",
-    "created_at": "2026-01-26T14:30:00Z",
-    "git_ref": "abc123f",
-    "git_branch": "main",
-    "theme_version": "1.2.0",
-    "wordpress_version": "6.4.2",
-    "php_version": "8.2.0",
-    "files": {
-        "count": 234,
-        "size_bytes": 12400000,
-        "hash": "sha256:..."
-    },
-    "database": {
-        "tables": 45,
-        "size_bytes": 8500000,
-        "hash": "sha256:..."
-    },
-    "status": "current",
-    "previous_snapshot": "2026-01-25T09-15-00_production"
+  "id": "2026-01-26T14-30-00_production",
+  "environment": "production",
+  "created_at": "2026-01-26T14:30:00Z",
+  "git_ref": "abc123f",
+  "git_branch": "main",
+  "theme_version": "1.2.0",
+  "wordpress_version": "6.4.2",
+  "php_version": "8.2.0",
+  "files": {
+    "count": 234,
+    "size_bytes": 12400000,
+    "hash": "sha256:..."
+  },
+  "database": {
+    "tables": 45,
+    "size_bytes": 8500000,
+    "hash": "sha256:..."
+  },
+  "status": "current",
+  "previous_snapshot": "2026-01-25T09-15-00_production"
 }
 ```
 
@@ -427,6 +431,7 @@ stratawp sync:clone production staging --no-media
 ### URL Replacement Engine
 
 Intelligent search/replace that handles:
+
 - Serialized PHP data (safe unserialize/reserialize)
 - JSON encoded URLs in post content
 - Gutenberg block attributes
@@ -453,57 +458,57 @@ stratawp sync:db pull production
 
 ```json
 {
-    "environments": {
-        "local": {
-            "url": "http://mysite.local",
-            "ssh": null,
-            "database": {
-                "host": "localhost",
-                "name": "wordpress",
-                "user": "root",
-                "password": "${LOCAL_DB_PASSWORD}"
-            },
-            "paths": {
-                "wordpress": "/Users/me/Sites/mysite",
-                "uploads": "/Users/me/Sites/mysite/wp-content/uploads"
-            }
-        },
-        "staging": {
-            "url": "https://staging.mysite.com",
-            "ssh": "user@staging.mysite.com",
-            "database": {
-                "host": "localhost",
-                "name": "staging_wp",
-                "user": "staging",
-                "password": "${STAGING_DB_PASSWORD}"
-            },
-            "paths": {
-                "wordpress": "/var/www/staging",
-                "uploads": "/var/www/staging/wp-content/uploads"
-            }
-        },
-        "production": {
-            "url": "https://mysite.com",
-            "ssh": "user@mysite.com",
-            "database": {
-                "host": "localhost",
-                "name": "production_wp",
-                "user": "production",
-                "password": "${PRODUCTION_DB_PASSWORD}"
-            },
-            "paths": {
-                "wordpress": "/var/www/html",
-                "uploads": "/var/www/html/wp-content/uploads"
-            }
-        }
+  "environments": {
+    "local": {
+      "url": "http://mysite.local",
+      "ssh": null,
+      "database": {
+        "host": "localhost",
+        "name": "wordpress",
+        "user": "root",
+        "password": "${LOCAL_DB_PASSWORD}"
+      },
+      "paths": {
+        "wordpress": "/Users/me/Sites/mysite",
+        "uploads": "/Users/me/Sites/mysite/wp-content/uploads"
+      }
     },
-    "cloud": {
-        "provider": "s3",
-        "bucket": "mysite-media",
-        "region": "us-east-1",
-        "accessKey": "${AWS_ACCESS_KEY}",
-        "secretKey": "${AWS_SECRET_KEY}"
+    "staging": {
+      "url": "https://staging.mysite.com",
+      "ssh": "user@staging.mysite.com",
+      "database": {
+        "host": "localhost",
+        "name": "staging_wp",
+        "user": "staging",
+        "password": "${STAGING_DB_PASSWORD}"
+      },
+      "paths": {
+        "wordpress": "/var/www/staging",
+        "uploads": "/var/www/staging/wp-content/uploads"
+      }
+    },
+    "production": {
+      "url": "https://mysite.com",
+      "ssh": "user@mysite.com",
+      "database": {
+        "host": "localhost",
+        "name": "production_wp",
+        "user": "production",
+        "password": "${PRODUCTION_DB_PASSWORD}"
+      },
+      "paths": {
+        "wordpress": "/var/www/html",
+        "uploads": "/var/www/html/wp-content/uploads"
+      }
     }
+  },
+  "cloud": {
+    "provider": "s3",
+    "bucket": "mysite-media",
+    "region": "us-east-1",
+    "accessKey": "${AWS_ACCESS_KEY}",
+    "secretKey": "${AWS_SECRET_KEY}"
+  }
 }
 ```
 
@@ -522,6 +527,7 @@ stratawp sync:media:setup
 ```
 
 Benefits:
+
 - **Cloud-to-cloud copy**: No local download needed for staging↔production
 - **Delta sync**: Only changed files transferred
 - **Backup**: Automatic cloud backup of media library
@@ -561,6 +567,7 @@ add_action('wp_footer', function() {
 ```
 
 Data captured:
+
 - Core Web Vitals (LCP, FID/INP, CLS, TTFB)
 - Device type, viewport, connection speed
 - Page template, post type, taxonomies
@@ -589,32 +596,32 @@ Lighthouse runs via Puppeteer/Chrome headless, results stored in database.
 
 ```json
 {
-    "budgets": {
-        "javascript": {
-            "max": "150kb",
-            "warn": "120kb"
-        },
-        "css": {
-            "max": "50kb",
-            "warn": "40kb"
-        },
-        "images": {
-            "max": "500kb",
-            "warn": "400kb"
-        },
-        "total": {
-            "max": "800kb",
-            "warn": "650kb"
-        },
-        "lighthouse": {
-            "performance": { "min": 90, "warn": 95 },
-            "accessibility": { "min": 90 },
-            "bestPractices": { "min": 90 },
-            "seo": { "min": 90 }
-        }
+  "budgets": {
+    "javascript": {
+      "max": "150kb",
+      "warn": "120kb"
     },
-    "auditOnBuild": true,
-    "failOnBudgetExceeded": false
+    "css": {
+      "max": "50kb",
+      "warn": "40kb"
+    },
+    "images": {
+      "max": "500kb",
+      "warn": "400kb"
+    },
+    "total": {
+      "max": "800kb",
+      "warn": "650kb"
+    },
+    "lighthouse": {
+      "performance": { "min": 90, "warn": 95 },
+      "accessibility": { "min": 90 },
+      "bestPractices": { "min": 90 },
+      "seo": { "min": 90 }
+    }
+  },
+  "auditOnBuild": true,
+  "failOnBudgetExceeded": false
 }
 ```
 
@@ -753,17 +760,17 @@ project/
 
 ```json
 {
-    "dependencies": {
-        "express": "^4.18.0",
-        "ws": "^8.16.0",
-        "better-sqlite3": "^9.4.0",
-        "lighthouse": "^11.0.0",
-        "puppeteer-core": "^22.0.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "recharts": "^2.12.0",
-        "@tanstack/react-query": "^5.0.0"
-    }
+  "dependencies": {
+    "express": "^4.18.0",
+    "ws": "^8.16.0",
+    "better-sqlite3": "^9.4.0",
+    "lighthouse": "^11.0.0",
+    "puppeteer-core": "^22.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.12.0",
+    "@tanstack/react-query": "^5.0.0"
+  }
 }
 ```
 
@@ -771,14 +778,14 @@ project/
 
 ```json
 {
-    "dependencies": {
-        "ssh2": "^1.15.0",
-        "mysql2": "^3.9.0",
-        "@aws-sdk/client-s3": "^3.500.0",
-        "tar": "^6.2.0",
-        "better-sqlite3": "^9.4.0",
-        "php-serialize": "^5.0.0"
-    }
+  "dependencies": {
+    "ssh2": "^1.15.0",
+    "mysql2": "^3.9.0",
+    "@aws-sdk/client-s3": "^3.500.0",
+    "tar": "^6.2.0",
+    "better-sqlite3": "^9.4.0",
+    "php-serialize": "^5.0.0"
+  }
 }
 ```
 
@@ -787,30 +794,35 @@ project/
 ## Implementation Phases
 
 ### Phase 1: Foundation (Sync Package)
+
 - Database dump/restore with URL replacement
 - Snapshot creation and storage
 - Basic rollback:list and rollback commands
 - Integration with existing deploy command
 
 ### Phase 2: Environment Management
+
 - Full environment sync (db + media + config)
 - Cloud storage integration (S3, R2)
 - Config export/import
 - Environment cloning
 
 ### Phase 3: Monitoring Core
+
 - WordPress PHP plugin for metrics collection
 - RUM script and beacon endpoint
 - Local SQLite storage for metrics
 - CLI status command
 
 ### Phase 4: Dashboard & Lighthouse
+
 - React dashboard UI
 - Lighthouse integration
 - Scheduled synthetic tests
 - Performance budgets in build
 
 ### Phase 5: Integrations & Alerts
+
 - Third-party service connections
 - Alert threshold engine
 - Notification delivery (Slack, email)

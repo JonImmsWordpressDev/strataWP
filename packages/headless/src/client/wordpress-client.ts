@@ -45,9 +45,7 @@ export class WordPressClient {
     switch (this.config.auth.type) {
       case 'basic':
         if (this.config.auth.username && this.config.auth.password) {
-          const credentials = btoa(
-            `${this.config.auth.username}:${this.config.auth.password}`
-          )
+          const credentials = btoa(`${this.config.auth.username}:${this.config.auth.password}`)
           headers['Authorization'] = `Basic ${credentials}`
         }
         break
@@ -61,9 +59,7 @@ export class WordPressClient {
 
       case 'application-password':
         if (this.config.auth.username && this.config.auth.password) {
-          const credentials = btoa(
-            `${this.config.auth.username}:${this.config.auth.password}`
-          )
+          const credentials = btoa(`${this.config.auth.username}:${this.config.auth.password}`)
           headers['Authorization'] = `Basic ${credentials}`
         }
         break
@@ -98,10 +94,7 @@ export class WordPressClient {
   /**
    * Get posts
    */
-  async getPosts(
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPResponse<WPPost[]>> {
+  async getPosts(params?: WPQueryParams, options?: FetchOptions): Promise<WPResponse<WPPost[]>> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`posts?${query}`, {
       cache: options?.cache,
@@ -120,11 +113,7 @@ export class WordPressClient {
   /**
    * Get single post
    */
-  async getPost(
-    id: number,
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPPost> {
+  async getPost(id: number, params?: WPQueryParams, options?: FetchOptions): Promise<WPPost> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`posts/${id}?${query}`, {
       cache: options?.cache,
@@ -147,10 +136,7 @@ export class WordPressClient {
   /**
    * Get pages
    */
-  async getPages(
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPResponse<WPPage[]>> {
+  async getPages(params?: WPQueryParams, options?: FetchOptions): Promise<WPResponse<WPPage[]>> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`pages?${query}`, {
       cache: options?.cache,
@@ -169,11 +155,7 @@ export class WordPressClient {
   /**
    * Get single page
    */
-  async getPage(
-    id: number,
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPPage> {
+  async getPage(id: number, params?: WPQueryParams, options?: FetchOptions): Promise<WPPage> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`pages/${id}?${query}`, {
       cache: options?.cache,
@@ -233,10 +215,7 @@ export class WordPressClient {
   /**
    * Get tags
    */
-  async getTags(
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPResponse<WPTag[]>> {
+  async getTags(params?: WPQueryParams, options?: FetchOptions): Promise<WPResponse<WPTag[]>> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`tags?${query}`, {
       cache: options?.cache,
@@ -255,11 +234,7 @@ export class WordPressClient {
   /**
    * Get single tag
    */
-  async getTag(
-    id: number,
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPTag> {
+  async getTag(id: number, params?: WPQueryParams, options?: FetchOptions): Promise<WPTag> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`tags/${id}?${query}`, {
       cache: options?.cache,
@@ -270,10 +245,7 @@ export class WordPressClient {
   /**
    * Get users
    */
-  async getUsers(
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPResponse<WPUser[]>> {
+  async getUsers(params?: WPQueryParams, options?: FetchOptions): Promise<WPResponse<WPUser[]>> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`users?${query}`, {
       cache: options?.cache,
@@ -292,11 +264,7 @@ export class WordPressClient {
   /**
    * Get single user
    */
-  async getUser(
-    id: number,
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPUser> {
+  async getUser(id: number, params?: WPQueryParams, options?: FetchOptions): Promise<WPUser> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`users/${id}?${query}`, {
       cache: options?.cache,
@@ -307,10 +275,7 @@ export class WordPressClient {
   /**
    * Get media
    */
-  async getMedia(
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPResponse<WPMedia[]>> {
+  async getMedia(params?: WPQueryParams, options?: FetchOptions): Promise<WPResponse<WPMedia[]>> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`media?${query}`, {
       cache: options?.cache,
@@ -329,11 +294,7 @@ export class WordPressClient {
   /**
    * Get single media item
    */
-  async getMediaItem(
-    id: number,
-    params?: WPQueryParams,
-    options?: FetchOptions
-  ): Promise<WPMedia> {
+  async getMediaItem(id: number, params?: WPQueryParams, options?: FetchOptions): Promise<WPMedia> {
     const query = this.buildQueryString(params)
     const response = await this.api.get(`media/${id}?${query}`, {
       cache: options?.cache,

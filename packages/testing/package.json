@@ -41,10 +41,10 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
-    "test:e2e": "playwright test",
-    "lint": "eslint src"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@testing-library/react": "^14.1.2",

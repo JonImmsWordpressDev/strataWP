@@ -43,7 +43,7 @@ export async function componentCommand(name: string, options: ComponentOptions):
       const existingComponents = await fs.readdir(componentsDir)
       if (existingComponents.length > 0) {
         // Read first component to extract namespace
-        const firstComponent = existingComponents.find(f => f.endsWith('.php'))
+        const firstComponent = existingComponents.find((f) => f.endsWith('.php'))
         if (firstComponent) {
           const content = await fs.readFile(path.join(componentsDir, firstComponent), 'utf8')
           const namespaceMatch = content.match(/namespace\s+([^;\\]+)/)

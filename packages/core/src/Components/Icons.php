@@ -53,8 +53,8 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_icon_styles' ] );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_icon_styles' ] );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_icon_styles' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_icon_styles' ) );
 	}
 
 	/**
@@ -63,11 +63,11 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 	 * @return array<string, callable>
 	 */
 	public function template_tags(): array {
-		return [
-			'icon'      => [ $this, 'render' ],
-			'get_icon'  => [ $this, 'get' ],
-			'icon_list' => [ $this, 'get_icon_list' ],
-		];
+		return array(
+			'icon'      => array( $this, 'render' ),
+			'get_icon'  => array( $this, 'get' ),
+			'icon_list' => array( $this, 'get_icon_list' ),
+		);
 	}
 
 	/**
@@ -82,7 +82,7 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 	 *     @type string $aria-label Accessible label. If provided, uses role="img". Default empty.
 	 * }
 	 */
-	public function render( string $name, array $args = [] ): void {
+	public function render( string $name, array $args = array() ): void {
 		echo $this->get( $name, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
@@ -99,19 +99,19 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 	 * }
 	 * @return string Icon HTML markup.
 	 */
-	public function get( string $name, array $args = [] ): string {
-		$defaults = [
+	public function get( string $name, array $args = array() ): string {
+		$defaults = array(
 			'size'       => '',
 			'class'      => '',
 			'aria-label' => '',
-		];
+		);
 
 		$args = wp_parse_args( $args, $defaults );
 
 		// Build CSS classes.
-		$classes = [ 'flaticon-' . sanitize_html_class( $name ) ];
+		$classes = array( 'flaticon-' . sanitize_html_class( $name ) );
 
-		$valid_sizes = [ 'sm', 'md', 'lg', 'xl' ];
+		$valid_sizes = array( 'sm', 'md', 'lg', 'xl' );
 		if ( ! empty( $args['size'] ) && in_array( $args['size'], $valid_sizes, true ) ) {
 			$classes[] = 'strata-icon--' . $args['size'];
 		}
@@ -157,7 +157,7 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 			return $this->icon_list;
 		}
 
-		$this->icon_list = [];
+		$this->icon_list = array();
 
 		$css_file = $this->get_css_file_path();
 
@@ -193,7 +193,7 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 		$css_file = $this->get_css_file_path();
 		$version  = ! empty( $css_file ) && file_exists( $css_file ) ? filemtime( $css_file ) : '1.0.0';
 
-		wp_enqueue_style( 'stratawp-icons', $css_url, [], $version );
+		wp_enqueue_style( 'stratawp-icons', $css_url, array(), $version );
 
 		// Add inline size utility classes.
 		$size_css = $this->get_size_utilities_css();
@@ -215,10 +215,10 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 		}
 
 		// Auto-detect: check dist/ first (production), then src/ (development).
-		$candidates = [
+		$candidates = array(
 			'dist/icons/flaticon.css',
 			'src/icons/flaticon.css',
-		];
+		);
 
 		foreach ( $candidates as $candidate ) {
 			$full_path = get_template_directory() . '/' . $candidate;
@@ -245,10 +245,10 @@ class Icons implements ComponentInterface, TemplatingComponentInterface {
 		}
 
 		// Auto-detect: check dist/ first (production), then src/ (development).
-		$candidates = [
+		$candidates = array(
 			'dist/icons/flaticon.css',
 			'src/icons/flaticon.css',
-		];
+		);
 
 		foreach ( $candidates as $candidate ) {
 			$full_path = get_template_directory() . '/' . $candidate;

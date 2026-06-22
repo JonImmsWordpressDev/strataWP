@@ -11,11 +11,7 @@ import type { ManifestOptions, WordPressManifest, ManifestEntry } from '../types
  * with correct dependencies, versions, and URLs.
  */
 export function strataWPManifest(options: ManifestOptions = {}): Plugin {
-  const {
-    enabled = true,
-    output = 'dist/.vite/manifest.json',
-    wordpress = true,
-  } = options
+  const { enabled = true, output = 'dist/.vite/manifest.json', wordpress = true } = options
 
   let rootDir: string
 

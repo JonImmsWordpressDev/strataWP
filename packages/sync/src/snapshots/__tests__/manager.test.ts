@@ -68,8 +68,9 @@ describe('SnapshotManager', () => {
       const snapshots = await manager.listSnapshots()
       expect(snapshots.length).toBe(2)
       // Most recent first
-      expect(new Date(snapshots[0].createdAt).getTime())
-        .toBeGreaterThan(new Date(snapshots[1].createdAt).getTime())
+      expect(new Date(snapshots[0].createdAt).getTime()).toBeGreaterThan(
+        new Date(snapshots[1].createdAt).getTime()
+      )
     })
   })
 

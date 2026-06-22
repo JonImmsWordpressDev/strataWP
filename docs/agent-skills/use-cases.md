@@ -96,6 +96,7 @@ parts/
 ```
 
 **templates/front-page.html**:
+
 ```html
 <!-- wp:template-part {"slug":"header"} /-->
 
@@ -123,6 +124,7 @@ stratawp block:new masonry-gallery
 ```
 
 **src/blocks/masonry-gallery/block.json**:
+
 ```json
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
@@ -179,6 +181,7 @@ stratawp block:new faq-accordion
 #### 2. Configure for Interactivity (wp-block-development)
 
 **block.json**:
+
 ```json
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
@@ -204,6 +207,7 @@ stratawp block:new faq-accordion
 #### 3. Server-Side Render with Initial State (wp-interactivity-api)
 
 **render.php**:
+
 ```php
 <?php
 /**
@@ -251,37 +255,39 @@ wp_interactivity_state('mytheme/faq', [
 #### 4. Client-Side Store (wp-interactivity-api)
 
 **view.ts**:
+
 ```typescript
-import { store, getContext } from '@wordpress/interactivity';
+import { store, getContext } from '@wordpress/interactivity'
 
 interface State {
-  openIndex: number;
+  openIndex: number
 }
 
 interface Context {
-  index: number;
+  index: number
 }
 
 const { state } = store<{ state: State }>('mytheme/faq', {
   state: {
     openIndex: -1,
     get isOpen() {
-      const context = getContext<Context>();
-      return state.openIndex === context.index;
+      const context = getContext<Context>()
+      return state.openIndex === context.index
     },
   },
   actions: {
     toggle() {
-      const context = getContext<Context>();
-      state.openIndex = state.openIndex === context.index ? -1 : context.index;
+      const context = getContext<Context>()
+      state.openIndex = state.openIndex === context.index ? -1 : context.index
     },
   },
-});
+})
 ```
 
 #### 5. Add Styles
 
 **style.scss**:
+
 ```scss
 .wp-block-mytheme-faq-accordion {
   .faq-item {
@@ -296,7 +302,7 @@ const { state } = store<{ state: State }>('mytheme/faq', {
     border: none;
     cursor: pointer;
 
-    &[aria-expanded="true"] {
+    &[aria-expanded='true'] {
       font-weight: bold;
     }
   }
@@ -315,8 +321,14 @@ const { state } = store<{ state: State }>('mytheme/faq', {
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 ```
 
@@ -491,6 +503,7 @@ wp profile stage --url=https://site.test/ --spotlight
 ```
 
 Example output:
+
 ```
 +------------+----------------+-------------+
 | stage      | time           | cache_ratio |
@@ -509,6 +522,7 @@ wp profile hook --url=https://site.test/ --spotlight --stage=main_query
 ```
 
 Example output:
+
 ```
 +--------------------------+-------------+-------+
 | hook                     | time        | calls |
@@ -534,6 +548,7 @@ wp doctor check autoload-options-size
 ```
 
 Output:
+
 ```
 Warning: Autoloaded options are 2.3 MB (threshold 900 KB)
 ```
@@ -635,6 +650,7 @@ Extract colors, fonts, and spacing from existing CSS:
 #### 3. Convert Templates to Block Markup
 
 **Before (classic header.php)**:
+
 ```php
 <header class="site-header">
     <div class="container">
@@ -647,6 +663,7 @@ Extract colors, fonts, and spacing from existing CSS:
 ```
 
 **After (parts/header.html)**:
+
 ```html
 <!-- wp:group {"tagName":"header","className":"site-header","layout":{"type":"constrained"}} -->
 <header class="wp-block-group site-header">
@@ -663,6 +680,7 @@ Extract colors, fonts, and spacing from existing CSS:
 #### 4. Create Index Template
 
 **templates/index.html**:
+
 ```html
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
@@ -717,6 +735,7 @@ cd wp-content/plugins/theme-testimonials
 ```
 
 **theme-testimonials.php**:
+
 ```php
 <?php
 /**
@@ -751,6 +770,7 @@ register_activation_hook(__FILE__, function() {
 #### 2. Create Main Class (wp-plugin-development)
 
 **inc/class-testimonials.php**:
+
 ```php
 <?php
 namespace ThemeTestimonials;
@@ -891,6 +911,7 @@ composer require --dev phpstan/phpstan szepeviktor/phpstan-wordpress
 #### 2. Create Configuration
 
 **phpstan.neon**:
+
 ```neon
 includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon

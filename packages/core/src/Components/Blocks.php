@@ -24,7 +24,7 @@ class Blocks implements ComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'init', [ $this, 'register_blocks' ] );
+		add_action( 'init', array( $this, 'register_blocks' ) );
 	}
 
 	/**

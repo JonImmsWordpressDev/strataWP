@@ -9,11 +9,7 @@ import path from 'path'
 import fs from 'fs'
 
 export function strataWPPreload(options: PreloadOptions = {}): Plugin {
-  const {
-    enabled = true,
-    assets = ['fonts', 'critical-css'],
-    strategy = 'link-tag',
-  } = options
+  const { enabled = true, assets = ['fonts', 'critical-css'], strategy = 'link-tag' } = options
 
   if (!enabled) {
     return {
@@ -36,7 +32,7 @@ export function strataWPPreload(options: PreloadOptions = {}): Plugin {
 async function generatePHPPreloader(
   root: string,
   assets: string[],
-  strategy: string
+  _strategy: string
 ): Promise<void> {
   const incDir = path.join(root, 'inc')
 

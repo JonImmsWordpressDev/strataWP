@@ -6,11 +6,7 @@
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import path from 'path'
-import type {
-  ComponentInfo,
-  BlockMetadata,
-  DiscoveryOptions,
-} from '../types.js'
+import type { ComponentInfo, BlockMetadata, DiscoveryOptions } from '../types.js'
 
 export class ComponentDiscovery {
   private rootDir: string

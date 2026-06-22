@@ -2,6 +2,7 @@
   "name": "@stratawpji/root",
   "version": "2.0.0",
   "private": true,
+  "type": "module",
   "description": "A modern, powerful WordPress theme framework",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
@@ -17,8 +18,11 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "test": "turbo test",
-    "lint": "turbo lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "turbo typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
     "clean": "turbo clean && rm -rf node_modules",
     "changeset": "changeset",
     "version-packages": "changeset version",
@@ -26,14 +30,18 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
+    "@eslint/js": "^9.39.0",
     "@types/node": "^20.10.5",
+    "eslint": "^9.39.0",
+    "globals": "^17.6.0",
     "prettier": "^3.1.1",
     "turbo": "^1.11.2",
     "typescript": "^5.3.3",
+    "typescript-eslint": "^8.18.0",
     "vitest": "^1.0.4"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=18.18",
     "pnpm": ">=8.0.0"
   },
   "packageManager": "pnpm@8.12.1"

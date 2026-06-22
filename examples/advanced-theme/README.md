@@ -5,6 +5,7 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 ## Features
 
 ### Frost Design System Integration
+
 - Built on WP Engine's Frost theme foundation
 - 52+ professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
 - Light and dark mode variants
@@ -12,6 +13,7 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 - Comprehensive block styling
 
 ### Custom Typography Control
+
 - Dual-mode system: Recommended font pairings or custom Google Fonts
 - Select any Google Font for headings and body text
 - Granular font weight control (100-900)
@@ -19,12 +21,14 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 - Settings → StrataWP Typography
 
 ### Block Theme (Full Site Editing)
+
 - Visual Site Editor with drag-and-drop
 - Edit templates and template parts in the admin
 - Global styles and design system via theme.json v3
 - Pattern-based template parts for easy customization
 
 ### Modern Development
+
 - TypeScript + Vite build system
 - Hot Module Replacement (HMR) with instant updates
 - Modular SCSS architecture (wp-rig inspired)
@@ -32,6 +36,7 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 - PHP Hot Reload
 
 ### Included Templates (9)
+
 - Home page
 - Index (blog listing)
 - Single post
@@ -43,11 +48,14 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 - No Title (page without title)
 
 ### Template Parts
+
 - Header (references header patterns)
 - Footer (references footer patterns)
 
 ### Patterns (52)
+
 All patterns from Frost theme, adapted for StrataWP:
+
 - **Headers**: default, notification bar (+ dark variants)
 - **Footers**: default, mega, stacked, three-columns (+ dark variants)
 - **Heroes**: one-column, two-columns
@@ -59,6 +67,7 @@ All patterns from Frost theme, adapted for StrataWP:
 - **Pages**: complete page patterns (home, about, pricing, link)
 
 ### Accessibility
+
 - WCAG 2.1 compliant
 - Proper ARIA labels
 - Keyboard navigation
@@ -69,6 +78,7 @@ All patterns from Frost theme, adapted for StrataWP:
 ### Recommended: Symlink Setup
 
 1. **Clone the repository OUTSIDE your WordPress themes directory:**
+
    ```bash
    cd ~/projects  # or wherever you keep projects
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git
@@ -76,12 +86,14 @@ All patterns from Frost theme, adapted for StrataWP:
    ```
 
 2. **Install dependencies:**
+
    ```bash
    composer install
    pnpm install
    ```
 
 3. **Create a symlink to your WordPress installation:**
+
    ```bash
    # Replace /path/to/wordpress with your actual WordPress path
    ln -s "$(pwd)/examples/advanced-theme" /path/to/wordpress/wp-content/themes/stratawp-advanced
@@ -102,6 +114,7 @@ All patterns from Frost theme, adapted for StrataWP:
 If you prefer to work directly in `wp-content/themes/`:
 
 1. Clone directly into themes:
+
    ```bash
    cd wp-content/themes
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git stratawp
@@ -115,17 +128,20 @@ If you prefer to work directly in `wp-content/themes/`:
 ## Editing the Theme
 
 ### Using the Site Editor
+
 1. Go to **Appearance → Editor**
 2. Edit templates, template parts, and styles visually
 3. Changes save automatically
 
 ### Custom Development
+
 ```bash
 pnpm dev    # Start dev server with HMR
 pnpm build  # Build for production
 ```
 
 ### File Structure
+
 ```
 advanced-theme/
 ├── theme.json              # Design system v3 (Frost-based)
@@ -170,6 +186,7 @@ advanced-theme/
 ## Customization
 
 ### Typography
+
 1. Go to **Settings → StrataWP Typography**
 2. Choose between:
    - **Recommended Pairings**: Curated font combinations
@@ -178,7 +195,9 @@ advanced-theme/
 4. See live preview and save
 
 ### Colors
+
 Edit `theme.json` to customize the color palette:
+
 - Base (background)
 - Contrast (text)
 - Primary (brand color)
@@ -186,6 +205,7 @@ Edit `theme.json` to customize the color palette:
 - Neutral (borders, backgrounds)
 
 ### Patterns
+
 - Swap header/footer patterns by editing `parts/header.html` or `parts/footer.html`
 - Change pattern slug to use different header/footer styles
 - Insert patterns anywhere through the WordPress editor

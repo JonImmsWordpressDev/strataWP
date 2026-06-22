@@ -33,10 +33,7 @@ declare module '@wordpress/blocks' {
     [key: string]: any
   }
 
-  export function registerBlockType(
-    name: string,
-    settings: BlockConfiguration
-  ): any
+  export function registerBlockType(name: string, settings: BlockConfiguration): any
   export function getBlockType(name: string): any
 }
 

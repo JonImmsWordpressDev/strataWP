@@ -138,6 +138,13 @@ function strataWPCore(_options: StrataWPPluginOptions): Plugin {
 }
 
 export * from './types'
-export { strataWPBlocks, strataWPManifest, strataWPPhpHmr, strataWPAssets, strataWPDesignSystem, strataWPPerformance }
+export {
+  strataWPBlocks,
+  strataWPManifest,
+  strataWPPhpHmr,
+  strataWPAssets,
+  strataWPDesignSystem,
+  strataWPPerformance,
+}
 export { strataWPTailwindPreset } from './integrations/tailwind-preset'
 export { strataWPUnoPreset } from './integrations/unocss-preset'

@@ -157,6 +157,7 @@ After a successful SSH deployment, you'll see:
 WordPress Full Site Editing (FSE) stores template customizations in the **database**, not in files. When you edit templates in the WordPress Site Editor, those changes are saved to the `wp_posts` table with `post_type = 'wp_template'`.
 
 **This means:**
+
 - `pnpm stratawp deploy` only syncs **files** (patterns, parts, theme.json)
 - Template customizations made in Site Editor are **not deployed**
 - Production will use file-based templates unless database is synced
@@ -180,6 +181,7 @@ stratawp sync:templates production --all --dry-run
 ```
 
 **How it works:**
+
 1. Detects local WP-CLI (including Local by Flywheel path)
 2. Exports template content from local WordPress database
 3. Uploads to remote server via SCP
@@ -187,6 +189,7 @@ stratawp sync:templates production --all --dry-run
 5. Flushes WordPress caches on remote
 
 **Options:**
+
 - `--template=<slug>` — Sync a specific template by slug
 - `--all` — Sync all templates
 - `--dry-run` — Preview without making changes
@@ -201,6 +204,7 @@ If you prefer manual control, you can export and import templates directly:
 #### Step 1: Find Template IDs
 
 **On Local:**
+
 ```bash
 # List all templates
 wp post list --post_type=wp_template --fields=ID,post_title,post_name
@@ -216,6 +220,7 @@ wp post list --post_type=wp_template --fields=ID,post_title,post_name
 ```
 
 **On Production (via SSH):**
+
 ```bash
 ssh -p PORT user@host "cd /path/to/wordpress && wp post list --post_type=wp_template --fields=ID,post_title,post_name"
 ```
@@ -333,11 +338,13 @@ echo "=== Template sync complete! ==="
 ```
 
 Make it executable:
+
 ```bash
 chmod +x scripts/sync-templates.sh
 ```
 
 Usage:
+
 ```bash
 ./scripts/sync-templates.sh index    # Sync index template
 ./scripts/sync-templates.sh single   # Sync single template
@@ -426,6 +433,7 @@ echo "Done!"
 ```
 
 Usage:
+
 ```bash
 chmod +x scripts/deploy-plugin.sh
 ./scripts/deploy-plugin.sh wp-content/plugins/my-custom-plugin
@@ -440,17 +448,20 @@ For a complete local-to-production deployment including theme files, database te
 ### Full Deployment Checklist
 
 1. **Build and deploy theme files** (includes automatic cache flush, OPcache reset, backup cleanup, and validation)
+
    ```bash
    pnpm build
    pnpm stratawp deploy production
    ```
 
 2. **Deploy custom plugins** (if any)
+
    ```bash
    ./scripts/deploy-plugin.sh wp-content/plugins/your-plugin
    ```
 
 3. **Sync database templates** (if using Site Editor customizations)
+
    ```bash
    pnpm stratawp sync:templates production --all
    ```
@@ -540,6 +551,7 @@ echo "=== Remote Templates ==="
 **Cause:** SSH key is passphrase-protected but passphrase not provided.
 
 **Solution:** Add `passphrase` field to your deploy config:
+
 ```json
 {
   "privateKey": "~/.ssh/your-key",
@@ -548,6 +560,7 @@ echo "=== Remote Templates ==="
 ```
 
 Or use ssh-agent:
+
 ```bash
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/your-key
@@ -558,6 +571,7 @@ ssh-add ~/.ssh/your-key
 **Cause:** Custom blocks from plugins not deployed, or database templates not synced.
 
 **Solutions:**
+
 1. Deploy the plugin containing the custom block
 2. Flush WordPress cache: `wp cache flush && wp transient delete --all`
 3. If using Site Editor customizations, sync database templates
@@ -567,6 +581,7 @@ ssh-add ~/.ssh/your-key
 **Cause:** Template customizations are stored in database, not files.
 
 **Solution:** Sync database templates using the sync script or manually:
+
 ```bash
 # Export from local
 wp post get <local_id> --field=post_content > /tmp/template.html
@@ -587,6 +602,7 @@ wp cache flush
 **Cause:** Block markup changed or custom blocks not registered.
 
 **Solutions:**
+
 1. Ensure all custom block plugins are deployed
 2. Clear browser cache
 3. Re-save the template in Site Editor

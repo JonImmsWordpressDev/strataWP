@@ -135,6 +135,7 @@ add_filter('stratawp_theme_components', function(array $components): array {
 Located in `packages/core/src/Components/Accessibility.php`. Included in default components.
 
 Features:
+
 - **Skip link focus fix**: Inlined JavaScript in footer for IE/Edge focus management
 - **aria-current="page"**: Automatically added to current navigation menu items via `nav_menu_link_attributes` and `page_menu_link_attributes` filters
 - **Screen reader styles**: Inlined `.screen-reader-text` CSS utility (available before stylesheets load)
@@ -146,11 +147,13 @@ Located in `packages/core/src/Components/ConditionalStyles.php`. Implements `Tem
 Per-page CSS loading with preload callbacks. Each stylesheet declares when it should load, reducing render-blocking CSS.
 
 Default conditional styles:
+
 - `stratawp-comments`: Loads when `is_singular() && comments_open()`
 - `stratawp-sidebar`: Loads when `is_active_sidebar('sidebar-1')`
 - `stratawp-widgets`: Loads when `is_active_sidebar('sidebar-1')`
 
 Register custom conditional styles:
+
 ```php
 add_filter('stratawp_conditional_css_files', function(array $files): array {
     $files['my-theme-archive'] = [
@@ -170,6 +173,7 @@ Located in `packages/core/src/Components/Updates.php`.
 Checks a GitHub repository for new releases and integrates with WordPress's built-in theme update system. When a newer version is found, WordPress displays an update notification in the dashboard with a one-click "Update Now" button.
 
 Usage in `functions.php`:
+
 ```php
 use StrataWP\Components\Updates;
 
@@ -177,10 +181,12 @@ new Updates('owner/repo', 'theme-name.zip');
 ```
 
 Parameters:
+
 - `$repository`: GitHub repository in "owner/repo" format
 - `$zip_asset_name`: Expected zip filename in release assets (optional, falls back to any .zip)
 
 How it works:
+
 1. Hooks into `pre_set_site_transient_update_themes` to check GitHub releases
 2. Compares release tag version against `style.css` Version header
 3. If newer, injects update data into WordPress transient
@@ -190,6 +196,7 @@ How it works:
 Cache: Results cached for 6 hours via WordPress transients (`stratawp_github_release`).
 
 Requirements:
+
 - GitHub releases must use semantic version tags (e.g., `v1.0.0` or `1.0.0`)
 - A built theme `.zip` must be attached as a release asset
 - See the GitHub Actions release workflow section below for automating zip creation
@@ -238,6 +245,7 @@ Commands in `packages/cli/src/commands/`:
 - **update.ts**: Package updates (`stratawp update`, `stratawp update --check`)
 
 Each command uses:
+
 - `prompts` for interactive CLI
 - `fs-extra` for file operations
 - `chalk` for colored output
@@ -253,16 +261,19 @@ Located in `packages/cli/src/deployers/`:
 - **git.ts**: Git-based deployment (future)
 
 Supported deployment types:
+
 - **SFTP**: Secure file transfer, recommended for shared hosting
 - **FTP**: Standard file transfer (less secure)
 - **SSH/rsync**: For VPS/cloud servers with SSH access, supports key-based auth and rsync for faster transfers
 
 Configuration stored in:
+
 - Global: `~/.stratawp/deploy-config.json`
 - Project: `.stratawp-deploy.json`
 - Environment variables: `.env` file
 
 Commands:
+
 ```bash
 stratawp deploy:setup         # Interactive configuration
 stratawp deploy production    # Deploy to environment
@@ -276,6 +287,7 @@ stratawp sync:templates:list production        # List local vs remote templates
 ```
 
 SSH-specific features:
+
 - Password or private key authentication (with optional passphrase via env var)
 - rsync for efficient bulk file transfers with proper SSH key args (`-i`, `-o StrictHostKeyChecking=no`)
 - **Post-deploy hooks**: Cache flush, OPcache reset, backup cleanup, custom WP-CLI commands
@@ -285,6 +297,7 @@ SSH-specific features:
 - Server-side backup/restore operations
 
 Deploy config options:
+
 ```json
 {
   "backup": { "enabled": true, "keepLast": 1 },
@@ -310,10 +323,12 @@ Located in `packages/sync/`:
 - **diff/index.ts**: DiffEngine - compares files and SQL dumps
 
 Configuration stored in:
+
 - Project: `.stratawp-sync.json` (environment database configs)
 - Snapshots: `.stratawp-snapshots/` directory
 
 Commands:
+
 ```bash
 # Database sync
 stratawp sync:db:pull production    # Pull remote DB to local
@@ -326,6 +341,7 @@ stratawp rollback:mark-stable 1     # Mark snapshot as stable
 ```
 
 Key features:
+
 - **PHP Serialized URL Replacement**: Correctly recalculates string lengths when replacing URLs
 - **Automatic Backups**: Creates backup before any database restore
 - **Pre-deploy Snapshots**: Deploy command creates snapshot before deployment
@@ -335,11 +351,12 @@ Key features:
 
 Located in `packages/cli/src/utils/update-checker.ts`:
 
-- Queries npm registry for latest @stratawp/* package versions
+- Queries npm registry for latest @stratawp/\* package versions
 - Caches version data in `~/.stratawp/update-cache.json` (1-hour TTL)
 - Compares versions using semver
 
 Commands:
+
 ```bash
 stratawp update                  # Check and apply updates interactively
 stratawp update --check          # Check for updates without applying
@@ -347,6 +364,7 @@ stratawp update --force          # Apply all updates without prompts
 ```
 
 Dev server notifications:
+
 - Vite plugin shows update notifications when dev server starts
 - Configure via `updateNotification.enabled` option in vite.config.ts
 
@@ -365,6 +383,7 @@ Themes follow WordPress Block Theme conventions:
 ### TypeScript & Build Process
 
 1. **Entry points** defined in `vite.config.ts`:
+
    ```ts
    build: {
      rollupOptions: {
@@ -565,6 +584,7 @@ The PHP core (`packages/core/`) is published to Packagist and installed via Comp
 ```
 
 After modifying core:
+
 1. Update version in `packages/core/composer.json`
 2. Commit and push changes
 3. Tag release on GitHub
@@ -585,6 +605,7 @@ pnpm release
 ```
 
 Published packages:
+
 - `@stratawp/cli` - CLI tool
 - `@stratawp/vite-plugin` - Vite plugin
 - `@stratawp/sync` - Environment sync, snapshots, and rollback
@@ -609,6 +630,7 @@ Automatically builds and packages the theme when a GitHub Release is published.
 This zip is what the Updates component downloads for one-click theme updates.
 
 To create a release:
+
 ```bash
 # Tag and push
 git tag v1.1.0
@@ -626,18 +648,18 @@ StrataWP includes WordPress-specific Claude skills from the official [WordPress/
 
 Located in `.claude/skills/`:
 
-| Skill | Description |
-|-------|-------------|
-| **wordpress-router** | Routes to correct workflow based on repo type (plugin/theme/block theme/full site) |
-| **wp-project-triage** | Deterministic repo inspection - classifies project type, tooling, tests, versions |
-| **wp-block-development** | Gutenberg blocks: apiVersion 3, deprecations, InnerBlocks, block.json |
-| **wp-block-themes** | FSE themes: theme.json, templates, parts, patterns, style variations |
-| **wp-interactivity-api** | Interactive blocks: data-wp-* directives, stores, hydration, viewScriptModule |
-| **wp-rest-api** | REST endpoints: register_rest_route, controllers, schema, authentication |
-| **wp-performance** | Backend profiling: WP-CLI doctor/profile, Query Monitor, object cache, DB queries |
-| **wp-plugin-development** | Plugin architecture, hooks, Settings API, activation/deactivation, security |
-| **wp-wpcli-and-ops** | WP-CLI operations: search-replace, db export/import, multisite, automation |
-| **wp-phpstan** | Static analysis: phpstan.neon, baselines, WordPress-specific typing |
+| Skill                     | Description                                                                        |
+| ------------------------- | ---------------------------------------------------------------------------------- |
+| **wordpress-router**      | Routes to correct workflow based on repo type (plugin/theme/block theme/full site) |
+| **wp-project-triage**     | Deterministic repo inspection - classifies project type, tooling, tests, versions  |
+| **wp-block-development**  | Gutenberg blocks: apiVersion 3, deprecations, InnerBlocks, block.json              |
+| **wp-block-themes**       | FSE themes: theme.json, templates, parts, patterns, style variations               |
+| **wp-interactivity-api**  | Interactive blocks: data-wp-\* directives, stores, hydration, viewScriptModule     |
+| **wp-rest-api**           | REST endpoints: register_rest_route, controllers, schema, authentication           |
+| **wp-performance**        | Backend profiling: WP-CLI doctor/profile, Query Monitor, object cache, DB queries  |
+| **wp-plugin-development** | Plugin architecture, hooks, Settings API, activation/deactivation, security        |
+| **wp-wpcli-and-ops**      | WP-CLI operations: search-replace, db export/import, multisite, automation         |
+| **wp-phpstan**            | Static analysis: phpstan.neon, baselines, WordPress-specific typing                |
 
 ### Using Skills
 
@@ -672,6 +694,7 @@ pnpm test && pnpm lint
 ### Skills Target
 
 All skills target **WordPress 6.9+** with **PHP 7.2.24+** and assume:
+
 - Filesystem-based agent with bash + node
 - Some workflows require WP-CLI
 - Vite/@wordpress/scripts for builds

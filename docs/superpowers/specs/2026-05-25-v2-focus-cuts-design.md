@@ -103,6 +103,7 @@ registry. The framework is CLI + Vite plugin + PHP Components + Sync.
 ## v2.0 — Focus (this release)
 
 ### Removed
+
 - **@stratawp/studio** — admin UIs duplicate what the Site Editor and your
   IDE already do. Maintenance burden of a React admin app outweighed value.
 - **@stratawp/registry** — npm + private packages already cover the use
@@ -111,6 +112,7 @@ registry. The framework is CLI + Vite plugin + PHP Components + Sync.
   A framework baking it in is a shrinking-value commitment.
 
 ### Under review for v2.1
+
 - **@stratawp/explorer** — if no active usage, Storybook itself works fine.
 - **@stratawp/headless** — if not actively maintained, the typed REST
   client carries ongoing cost as WordPress core changes.
@@ -144,14 +146,14 @@ Each "Removed" and "Investing in" item gets 2-3 sentences of rationale in the ac
 
 Branch: `feat/v2-focus-cuts` off `main`.
 
-| # | Commit | Touches |
-|---|---|---|
-| 1 | `chore: remove @stratawp/registry package` | `git rm -r packages/registry`, `packages/cli/{package.json,src/index.ts}`, `pnpm-lock.yaml` |
-| 2 | `chore: remove @stratawp/ai package` | `git rm -r packages/ai`, `packages/cli/{package.json,src/index.ts}`, `pnpm-lock.yaml` |
-| 3 | `chore: remove @stratawp/studio package and docs/STUDIO.md` | `git rm -r packages/studio`, `git rm docs/STUDIO.md`, `git rm docs/plans/2026-01-26-*.md` (four files) |
-| 4 | `docs: update README/CHEAT_SHEET/GETTING_STARTED/CLAUDE.md for v2 scope` | All section deletions per "Docs rewrite" |
-| 5 | `docs: add ROADMAP.md` | New file per outline above |
-| 6 | `chore(release): bump root + @stratawp/cli to 2.0.0, CHANGELOG entry` | Root `package.json` → 2.0.0; `packages/cli/package.json` → 2.0.0; grep `packages/create-stratawp/templates/` for references to cut packages and remove them (bump `create-stratawp/package.json` if templates changed); inspect `.github/workflows/` and `turbo.json` and remove any references to cut packages; `CHANGELOG.md` prepend v2.0.0 entry |
+| #   | Commit                                                                   | Touches                                                                                                                                                                                                                                                                                                                                              |
+| --- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `chore: remove @stratawp/registry package`                               | `git rm -r packages/registry`, `packages/cli/{package.json,src/index.ts}`, `pnpm-lock.yaml`                                                                                                                                                                                                                                                          |
+| 2   | `chore: remove @stratawp/ai package`                                     | `git rm -r packages/ai`, `packages/cli/{package.json,src/index.ts}`, `pnpm-lock.yaml`                                                                                                                                                                                                                                                                |
+| 3   | `chore: remove @stratawp/studio package and docs/STUDIO.md`              | `git rm -r packages/studio`, `git rm docs/STUDIO.md`, `git rm docs/plans/2026-01-26-*.md` (four files)                                                                                                                                                                                                                                               |
+| 4   | `docs: update README/CHEAT_SHEET/GETTING_STARTED/CLAUDE.md for v2 scope` | All section deletions per "Docs rewrite"                                                                                                                                                                                                                                                                                                             |
+| 5   | `docs: add ROADMAP.md`                                                   | New file per outline above                                                                                                                                                                                                                                                                                                                           |
+| 6   | `chore(release): bump root + @stratawp/cli to 2.0.0, CHANGELOG entry`    | Root `package.json` → 2.0.0; `packages/cli/package.json` → 2.0.0; grep `packages/create-stratawp/templates/` for references to cut packages and remove them (bump `create-stratawp/package.json` if templates changed); inspect `.github/workflows/` and `turbo.json` and remove any references to cut packages; `CHANGELOG.md` prepend v2.0.0 entry |
 
 Run `pnpm install` after commits 1, 2, 3 so each lockfile-touching commit ships with a coherent lockfile. If the create-stratawp template cleanup in commit 6 turns out non-trivial (more than a handful of edits), split it into its own commit between 5 and 6.
 

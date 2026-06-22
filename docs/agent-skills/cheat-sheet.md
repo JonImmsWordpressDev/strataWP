@@ -97,15 +97,15 @@ const deprecated = [
       return {
         ...attributes,
         title: attributes.heading, // Migrate to new name
-      };
+      }
     },
     save({ attributes }) {
       // Old save function
     },
   },
-];
+]
 
-export default deprecated;
+export default deprecated
 ```
 
 ## Theme.json
@@ -169,14 +169,14 @@ parts/
 
 ```ts
 // view.ts
-import { store, getContext } from '@wordpress/interactivity';
+import { store, getContext } from '@wordpress/interactivity'
 
 interface State {
-  isOpen: boolean;
+  isOpen: boolean
 }
 
 interface Context {
-  itemId: number;
+  itemId: number
 }
 
 store('mytheme/accordion', {
@@ -185,12 +185,12 @@ store('mytheme/accordion', {
   },
   actions: {
     toggle() {
-      const context = getContext<Context>();
-      const state = store<State>('mytheme/accordion').state;
-      state.isOpen = !state.isOpen;
+      const context = getContext<Context>()
+      const state = store<State>('mytheme/accordion').state
+      state.isOpen = !state.isOpen
     },
   },
-});
+})
 ```
 
 ### Directives
@@ -198,19 +198,14 @@ store('mytheme/accordion', {
 ```html
 <!-- Interactive wrapper -->
 <div data-wp-interactive="mytheme/accordion">
-
   <!-- Click handler -->
   <button data-wp-on--click="actions.toggle">Toggle</button>
 
   <!-- Conditional visibility -->
-  <div data-wp-bind--hidden="!state.isOpen">
-    Content here
-  </div>
+  <div data-wp-bind--hidden="!state.isOpen">Content here</div>
 
   <!-- Class binding -->
-  <div data-wp-class--active="state.isOpen">
-    Styled content
-  </div>
+  <div data-wp-class--active="state.isOpen">Styled content</div>
 
   <!-- Context (local state) -->
   <div data-wp-context='{"itemId": 1}'>
@@ -404,6 +399,7 @@ pnpm stratawp sync:db:push staging
 ```
 
 **Configuration (`.stratawp-sync.json`):**
+
 ```json
 {
   "environments": {
@@ -415,7 +411,12 @@ pnpm stratawp sync:db:push staging
       "url": "https://example.com",
       "ssh": { "host": "ssh.example.com", "port": 22, "user": "deploy", "key": "~/.ssh/id_rsa" },
       "wpPath": "/var/www/html",
-      "database": { "host": "127.0.0.1", "user": "prod_user", "password": "pass", "database": "wp_prod" }
+      "database": {
+        "host": "127.0.0.1",
+        "user": "prod_user",
+        "password": "pass",
+        "database": "wp_prod"
+      }
     }
   }
 }

@@ -3,7 +3,6 @@
  */
 import path from 'path'
 import chalk from 'chalk'
-import ora from 'ora'
 import { validateTemplateName, slugify } from '../utils/validation'
 import { generateTemplateHTML } from '../utils/templates'
 import { createFileWithSpinner, ensureDir } from '../utils/filesystem'
@@ -54,11 +53,7 @@ export async function templateCommand(name: string, options: TemplateOptions): P
   const templateContent = generateTemplateHTML(options.type, themeSlug)
 
   // Create template file
-  await createFileWithSpinner(
-    templatePath,
-    templateContent,
-    `Creating ${slug}.html template`
-  )
+  await createFileWithSpinner(templatePath, templateContent, `Creating ${slug}.html template`)
 
   // Success message
   console.log(chalk.green('\n✓ Template created successfully!\n'))

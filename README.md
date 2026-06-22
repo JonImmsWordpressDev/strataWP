@@ -1,9 +1,10 @@
 <div align="center">
   <img src="logo.png" alt="StrataWP Logo" width="200" />
 
-  # StrataWP
+# StrataWP
 
-  **A modern, powerful WordPress theme framework**
+**A modern, powerful WordPress theme framework**
+
 </div>
 
 <div align="center">
@@ -31,6 +32,7 @@ pnpm dev
 ```
 
 The CLI automatically:
+
 - Guides you through theme setup (name, template, CSS framework)
 - Detects your WordPress installation (Local by Flywheel, MAMP)
 - Links your theme automatically
@@ -40,13 +42,13 @@ The CLI automatically:
 
 ### Documentation
 
-| Document | Description |
-|----------|-------------|
-| **[Getting Started Guide](./GETTING_STARTED.md)** | Step-by-step tutorial for beginners |
-| **[Cheat Sheet](./CHEAT_SHEET.md)** | Quick reference for all commands |
-| **[Deployment Guide](./docs/deployment/getting-started.md)** | Basic deployment with SFTP/FTP/SSH |
+| Document                                                            | Description                                    |
+| ------------------------------------------------------------------- | ---------------------------------------------- |
+| **[Getting Started Guide](./GETTING_STARTED.md)**                   | Step-by-step tutorial for beginners            |
+| **[Cheat Sheet](./CHEAT_SHEET.md)**                                 | Quick reference for all commands               |
+| **[Deployment Guide](./docs/deployment/getting-started.md)**        | Basic deployment with SFTP/FTP/SSH             |
 | **[Advanced Deployment](./docs/deployment/ADVANCED-DEPLOYMENT.md)** | SSH keys, FSE template sync, plugin deployment |
-| **[Changelog](./CHANGELOG.md)** | Version history and release notes |
+| **[Changelog](./CHANGELOG.md)**                                     | Version history and release notes              |
 
 ## Why StrataWP?
 
@@ -89,21 +91,27 @@ StrataWP/
 ## Example Themes
 
 ### Basic Theme
+
 General purpose theme for blogs, portfolios, and business sites.
+
 - Frost design system with 52+ patterns
 - Custom typography with Google Fonts
 - 9 templates including home, blog, archive
 - Light and dark mode variants
 
 ### Advanced Theme
+
 Enterprise features for complex sites.
+
 - 4 Custom Post Types (Portfolio, Team, Testimonials, Case Studies)
 - Custom Gutenberg blocks (Portfolio Grid, Team Members)
 - Advanced Layouts component with Customizer
 - Complete Meta Boxes system
 
 ### Store Theme
+
 Full-featured WooCommerce theme.
+
 - 4 WooCommerce templates (shop, product, cart, checkout)
 - Featured Products & Product Categories blocks
 - 4 e-commerce patterns
@@ -206,6 +214,7 @@ GPL-3.0-or-later - just like WordPress itself.
 ## Acknowledgments
 
 Inspired by:
+
 - [WPRig](https://wprig.io/) - For the excellent component architecture
 - [Next.js](https://nextjs.org/) - For modern DX patterns
 - [Vite](https://vitejs.dev/) - For the incredible build tool

@@ -21,7 +21,9 @@ export async function devCommand(options: DevOptions) {
     spinner.succeed('Development server started!')
 
     console.log()
-    console.log(chalk.green('  ➜') + '  Local:   ' + chalk.cyan(`http://${options.host}:${options.port}`))
+    console.log(
+      chalk.green('  ➜') + '  Local:   ' + chalk.cyan(`http://${options.host}:${options.port}`)
+    )
     console.log(chalk.green('  ➜') + '  Hot reload enabled')
     console.log(chalk.green('  ➜') + '  TypeScript checking in background')
     console.log()

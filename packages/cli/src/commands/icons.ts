@@ -34,7 +34,7 @@ async function extractFlatIconZip(zipPath: string, iconsDir: string): Promise<vo
   const fs = await import('fs-extra')
 
   const resolvedZipPath = path.resolve(zipPath)
-  if (!await fs.pathExists(resolvedZipPath)) {
+  if (!(await fs.pathExists(resolvedZipPath))) {
     console.error(chalk.red(`\n  ZIP file not found: ${resolvedZipPath}`))
     process.exit(1)
   }
@@ -190,7 +190,7 @@ export async function iconsUpdateCommand(options: { zip: string }): Promise<void
   const fs = await import('fs-extra')
 
   // Validate icons directory exists
-  if (!await fs.pathExists(iconsDir)) {
+  if (!(await fs.pathExists(iconsDir))) {
     console.error(chalk.red('  Icons directory not found at src/icons/'))
     console.error(chalk.dim('  Run "stratawp icons:setup" first to create the directory.\n'))
     process.exit(1)

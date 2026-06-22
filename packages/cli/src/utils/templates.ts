@@ -347,11 +347,7 @@ if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 /**
  * Generate PHP component class
  */
-export function generateComponentClass(
-  name: string,
-  namespace: string,
-  type: string
-): string {
+export function generateComponentClass(name: string, namespace: string, _type: string): string {
   return `<?php
 /**
  * ${name} Component

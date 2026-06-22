@@ -73,10 +73,7 @@ export class DiffEngine {
     return matches ? matches.length : 0
   }
 
-  static formatDiff(
-    filesDiff: FileListDiff,
-    sqlDiff?: SQLDiff
-  ): string {
+  static formatDiff(filesDiff: FileListDiff, sqlDiff?: SQLDiff): string {
     const lines: string[] = []
 
     if (filesDiff.added.length > 0) {

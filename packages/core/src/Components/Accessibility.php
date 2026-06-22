@@ -29,10 +29,10 @@ class Accessibility implements ComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'wp_print_footer_scripts', [ $this, 'print_skip_link_focus_fix' ] );
-		add_filter( 'nav_menu_link_attributes', [ $this, 'add_nav_aria_current' ], 10, 2 );
-		add_filter( 'page_menu_link_attributes', [ $this, 'add_nav_aria_current' ], 10, 2 );
-		add_action( 'wp_head', [ $this, 'print_screen_reader_styles' ], 5 );
+		add_action( 'wp_print_footer_scripts', array( $this, 'print_skip_link_focus_fix' ) );
+		add_filter( 'nav_menu_link_attributes', array( $this, 'add_nav_aria_current' ), 10, 2 );
+		add_filter( 'page_menu_link_attributes', array( $this, 'add_nav_aria_current' ), 10, 2 );
+		add_action( 'wp_head', array( $this, 'print_screen_reader_styles' ), 5 );
 	}
 
 	/**

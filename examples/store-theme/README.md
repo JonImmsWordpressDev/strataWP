@@ -5,6 +5,7 @@ An e-commerce Block Theme (FSE) built on the Frost design system with WooCommerc
 ## Features
 
 ### WooCommerce Integration
+
 - Full WooCommerce compatibility with custom styling
 - Product listing and single product templates
 - Cart and checkout page templates
@@ -13,7 +14,9 @@ An e-commerce Block Theme (FSE) built on the Frost design system with WooCommerc
 - WooCommerce block patterns optimized for sales
 
 ### E-Commerce Patterns
+
 All patterns from Frost theme, plus store-specific patterns:
+
 - **Product Grids**: Showcase products in modern grid layouts
 - **Featured Products**: Highlight bestsellers and promotions
 - **Product Categories**: Browse by category with images
@@ -24,6 +27,7 @@ All patterns from Frost theme, plus store-specific patterns:
 - **Testimonials**: Customer reviews and social proof
 
 ### Frost Design System Integration
+
 - Built on WP Engine's Frost theme foundation
 - 52+ professional patterns (headers, footers, heroes, CTAs)
 - Light and dark mode variants
@@ -31,6 +35,7 @@ All patterns from Frost theme, plus store-specific patterns:
 - Comprehensive block styling optimized for product pages
 
 ### Store Templates (13+)
+
 - Home page (store homepage)
 - Shop (product archive)
 - Single product
@@ -46,6 +51,7 @@ All patterns from Frost theme, plus store-specific patterns:
 - Blank (no header/footer)
 
 ### Custom Typography Control
+
 - Dual-mode system: Recommended font pairings or custom Google Fonts
 - Select any Google Font for headings and body text
 - Granular font weight control (100-900)
@@ -53,12 +59,14 @@ All patterns from Frost theme, plus store-specific patterns:
 - Settings → StrataWP Typography
 
 ### Block Theme (Full Site Editing)
+
 - Visual Site Editor with drag-and-drop
 - Edit templates and template parts in the admin
 - Global styles and design system via theme.json v3
 - Pattern-based template parts for easy customization
 
 ### Modern Development
+
 - TypeScript + Vite build system
 - Hot Module Replacement (HMR) with instant updates
 - Modular SCSS architecture (wp-rig inspired)
@@ -67,6 +75,7 @@ All patterns from Frost theme, plus store-specific patterns:
 - WooCommerce-specific styles with Sass variables
 
 ### Product Showcase Features
+
 - Image zoom and lightbox ready
 - Product galleries with thumbnails
 - Related products section
@@ -76,6 +85,7 @@ All patterns from Frost theme, plus store-specific patterns:
 - Sale badges and pricing
 
 ### Accessibility
+
 - WCAG 2.1 compliant
 - Proper ARIA labels for e-commerce elements
 - Keyboard navigation for product browsing
@@ -85,6 +95,7 @@ All patterns from Frost theme, plus store-specific patterns:
 ## Installation
 
 ### Prerequisites
+
 1. **Install WooCommerce plugin:**
    ```bash
    # Via WordPress admin: Plugins → Add New → Search "WooCommerce"
@@ -95,6 +106,7 @@ All patterns from Frost theme, plus store-specific patterns:
 ### Recommended: Symlink Setup
 
 1. **Clone the repository OUTSIDE your WordPress themes directory:**
+
    ```bash
    cd ~/projects  # or wherever you keep projects
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git
@@ -102,12 +114,14 @@ All patterns from Frost theme, plus store-specific patterns:
    ```
 
 2. **Install dependencies:**
+
    ```bash
    composer install
    pnpm install
    ```
 
 3. **Create a symlink to your WordPress installation:**
+
    ```bash
    # Replace /path/to/wordpress with your actual WordPress path
    ln -s "$(pwd)/examples/store-theme" /path/to/wordpress/wp-content/themes/stratawp-store
@@ -128,6 +142,7 @@ All patterns from Frost theme, plus store-specific patterns:
 If you prefer to work directly in `wp-content/themes/`:
 
 1. Clone directly into themes:
+
    ```bash
    cd wp-content/themes
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git stratawp
@@ -161,17 +176,20 @@ After activating the theme:
 ## Editing the Theme
 
 ### Using the Site Editor
+
 1. Go to **Appearance → Editor**
 2. Edit templates (Shop, Product, Cart, etc.) visually
 3. Changes save automatically
 
 ### Custom Development
+
 ```bash
 pnpm dev    # Start dev server with HMR
 pnpm build  # Build for production
 ```
 
 ### File Structure
+
 ```
 store-theme/
 ├── theme.json              # Design system v3 (Frost + WooCommerce)
@@ -223,6 +241,7 @@ store-theme/
 ## Customization
 
 ### Typography
+
 1. Go to **Settings → StrataWP Typography**
 2. Choose between:
    - **Recommended Pairings**: Curated font combinations
@@ -231,7 +250,9 @@ store-theme/
 4. See live preview and save
 
 ### Colors
+
 Edit `theme.json` to customize the store color palette:
+
 - Base (background)
 - Contrast (text)
 - Primary (brand color - buttons, links, sale badges)
@@ -239,7 +260,9 @@ Edit `theme.json` to customize the store color palette:
 - Neutral (borders, backgrounds)
 
 ### Product Display
+
 Edit `functions.php` to customize:
+
 - Products per page
 - Product columns
 - Related products count
@@ -247,6 +270,7 @@ Edit `functions.php` to customize:
 - Gallery behavior
 
 ### Patterns
+
 - Swap header/footer patterns by editing `parts/header.html` or `parts/footer.html`
 - Use product patterns to create custom shop pages
 - Insert patterns anywhere through the WordPress editor
@@ -254,18 +278,21 @@ Edit `functions.php` to customize:
 ## Store Optimization
 
 ### Performance
+
 - Lazy load product images
 - Optimize product image sizes
 - Use Vite for asset optimization
 - Enable WooCommerce caching
 
 ### SEO
+
 - Yoast SEO or Rank Math compatible
 - Schema.org markup for products
 - Proper heading hierarchy
 - Alt text for product images
 
 ### Conversion
+
 - Clear CTAs (Add to Cart, Buy Now)
 - Trust badges and security indicators
 - Customer testimonials

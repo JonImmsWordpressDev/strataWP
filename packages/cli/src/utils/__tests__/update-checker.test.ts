@@ -1,14 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import fs from 'fs-extra'
-import path from 'path'
-import os from 'os'
 import {
   fetchLatestVersion,
   loadCache,
   saveCache,
-  checkPackageUpdates,
   readInstalledPackages,
-  clearCache,
   formatVersionStatus,
 } from '../update-checker.js'
 

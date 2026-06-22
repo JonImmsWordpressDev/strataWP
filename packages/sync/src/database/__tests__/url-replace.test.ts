@@ -32,7 +32,8 @@ describe('UrlReplacer', () => {
     })
 
     it('should handle nested serialized data', () => {
-      const input = 'a:2:{s:4:"site";s:22:"https://production.com";s:3:"cdn";s:26:"https://cdn.production.com";}'
+      const input =
+        'a:2:{s:4:"site";s:22:"https://production.com";s:3:"cdn";s:26:"https://cdn.production.com";}'
       const result = replacer.replaceInSerialized(input)
       expect(result).toContain('http://local.test')
       expect(result).toContain('http://local.test/wp-content')

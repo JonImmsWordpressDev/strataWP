@@ -78,16 +78,21 @@ $theme->template_tags()->some_method();
 ## Built-in Components
 
 ### Setup Component
+
 Handles theme setup, features, and WordPress integrations.
 
 ### Assets Component
+
 Manages Vite-built assets with proper enqueuing and dependencies.
 
 ### Blocks Component
+
 Auto-registers Gutenberg blocks from Vite plugin.
 
 ### Performance Component
+
 Implements performance optimizations:
+
 - Resource hints
 - Script defer/async
 - Remove WordPress bloat

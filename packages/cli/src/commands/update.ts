@@ -24,18 +24,9 @@ interface UpdateOptions {
  */
 function displayVersionTable(result: UpdateCheckResult): void {
   // Calculate column widths
-  const nameWidth = Math.max(
-    'Package'.length,
-    ...result.packages.map((p) => p.name.length)
-  )
-  const currentWidth = Math.max(
-    'Current'.length,
-    ...result.packages.map((p) => p.current.length)
-  )
-  const latestWidth = Math.max(
-    'Latest'.length,
-    ...result.packages.map((p) => p.latest.length)
-  )
+  const nameWidth = Math.max('Package'.length, ...result.packages.map((p) => p.name.length))
+  const currentWidth = Math.max('Current'.length, ...result.packages.map((p) => p.current.length))
+  const latestWidth = Math.max('Latest'.length, ...result.packages.map((p) => p.latest.length))
   const statusWidth = 'Update available'.length
 
   // Print header
@@ -63,7 +54,9 @@ function displayVersionTable(result: UpdateCheckResult): void {
         '  ' +
         pkg.current.padEnd(currentWidth) +
         '  ' +
-        (pkg.hasUpdate ? chalk.green(pkg.latest) : pkg.latest).padEnd(latestWidth + (pkg.hasUpdate ? 10 : 0)) +
+        (pkg.hasUpdate ? chalk.green(pkg.latest) : pkg.latest).padEnd(
+          latestWidth + (pkg.hasUpdate ? 10 : 0)
+        ) +
         '  ' +
         statusColor(status)
     )
@@ -91,7 +84,11 @@ async function updatePackages(packages: string[]): Promise<boolean> {
       stdio: 'pipe',
     })
 
-    spinner.succeed(chalk.green(`Successfully updated ${packages.length} package${packages.length > 1 ? 's' : ''}.`))
+    spinner.succeed(
+      chalk.green(
+        `Successfully updated ${packages.length} package${packages.length > 1 ? 's' : ''}.`
+      )
+    )
     return true
   } catch (error) {
     spinner.fail('Failed to update packages')

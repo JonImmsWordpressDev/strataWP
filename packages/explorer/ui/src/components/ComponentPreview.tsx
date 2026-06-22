@@ -33,11 +33,7 @@ export function ComponentPreview({ component }: ComponentPreviewProps) {
               key={vp.name}
               className={`viewport-btn ${viewport.name === vp.name ? 'active' : ''}`}
               onClick={() => setViewport(vp)}
-              title={
-                vp.name === 'Full'
-                  ? 'Full width'
-                  : `${vp.width}x${vp.height}`
-              }
+              title={vp.name === 'Full' ? 'Full width' : `${vp.width}x${vp.height}`}
             >
               {vp.name}
             </button>
@@ -58,13 +54,9 @@ export function ComponentPreview({ component }: ComponentPreviewProps) {
           {component.type === 'block' && (
             <div className="block-preview">
               <h3>{component.title}</h3>
-              <p className="preview-placeholder">
-                Block preview will be rendered here
-              </p>
+              <p className="preview-placeholder">Block preview will be rendered here</p>
               {Object.keys(attributes).length > 0 && (
-                <pre className="attributes-preview">
-                  {JSON.stringify(attributes, null, 2)}
-                </pre>
+                <pre className="attributes-preview">{JSON.stringify(attributes, null, 2)}</pre>
               )}
             </div>
           )}
@@ -72,18 +64,14 @@ export function ComponentPreview({ component }: ComponentPreviewProps) {
           {component.type === 'component' && (
             <div className="component-preview-content">
               <h3>{component.title}</h3>
-              <p className="preview-placeholder">
-                Component preview will be rendered here
-              </p>
+              <p className="preview-placeholder">Component preview will be rendered here</p>
             </div>
           )}
 
           {component.type === 'pattern' && (
             <div className="pattern-preview">
               <h3>{component.title}</h3>
-              <p className="preview-placeholder">
-                Pattern preview will be rendered here
-              </p>
+              <p className="preview-placeholder">Pattern preview will be rendered here</p>
             </div>
           )}
 
@@ -91,8 +79,8 @@ export function ComponentPreview({ component }: ComponentPreviewProps) {
             <div className="template-preview">
               <h3>{component.title}</h3>
               <p className="preview-placeholder">
-                {component.type === 'template' ? 'Template' : 'Template Part'}{' '}
-                preview will be rendered here
+                {component.type === 'template' ? 'Template' : 'Template Part'} preview will be
+                rendered here
               </p>
             </div>
           )}
@@ -109,25 +97,19 @@ export function ComponentPreview({ component }: ComponentPreviewProps) {
                 <input
                   type="checkbox"
                   checked={attributes[key] || false}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, [key]: e.target.checked })
-                  }
+                  onChange={(e) => setAttributes({ ...attributes, [key]: e.target.checked })}
                 />
               ) : attr.type === 'number' ? (
                 <input
                   type="number"
                   value={attributes[key] || attr.default || 0}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, [key]: Number(e.target.value) })
-                  }
+                  onChange={(e) => setAttributes({ ...attributes, [key]: Number(e.target.value) })}
                 />
               ) : (
                 <input
                   type="text"
                   value={attributes[key] || attr.default || ''}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, [key]: e.target.value })
-                  }
+                  onChange={(e) => setAttributes({ ...attributes, [key]: e.target.value })}
                 />
               )}
             </div>

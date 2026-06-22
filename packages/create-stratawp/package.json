@@ -33,6 +33,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@stratawp/cli": "^0.5.2"
+    "@stratawp/cli": "workspace:*"
   }
 }

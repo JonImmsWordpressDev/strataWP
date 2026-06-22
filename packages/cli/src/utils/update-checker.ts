@@ -48,7 +48,7 @@ export async function fetchLatestVersion(packageName: string): Promise<string | 
 
     const response = await fetch(url, {
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
     })
 
@@ -130,10 +130,12 @@ async function getLatestVersionWithCache(
 /**
  * Read installed @stratawp/* packages from package.json
  */
-export async function readInstalledPackages(packageJsonPath?: string): Promise<Record<string, string>> {
+export async function readInstalledPackages(
+  packageJsonPath?: string
+): Promise<Record<string, string>> {
   const pkgPath = packageJsonPath || path.join(process.cwd(), 'package.json')
 
-  if (!await fs.pathExists(pkgPath)) {
+  if (!(await fs.pathExists(pkgPath))) {
     return {}
   }
 

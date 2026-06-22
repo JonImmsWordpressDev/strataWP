@@ -14,9 +14,7 @@ import type { EnvironmentConfig } from '../../utils/deploy-config'
 export async function setupCommand() {
   console.log(chalk.cyan('\n🚀 Deployment Setup Wizard\n'))
   console.log(
-    chalk.white(
-      'This wizard will help you configure deployment for your StrataWP theme.\n'
-    )
+    chalk.white('This wizard will help you configure deployment for your StrataWP theme.\n')
   )
 
   const configManager = new DeployConfigManager()
@@ -27,8 +25,7 @@ export async function setupCommand() {
     name: 'environmentName',
     message: 'Environment name:',
     initial: 'production',
-    validate: (value) =>
-      value.length > 0 ? true : 'Environment name is required',
+    validate: (value) => (value.length > 0 ? true : 'Environment name is required'),
   })
 
   if (!environmentName) {
@@ -39,9 +36,7 @@ export async function setupCommand() {
   // Check if environment already exists
   const exists = await configManager.environmentExists(environmentName)
   if (exists) {
-    console.log(
-      chalk.yellow(`⚠️  Environment "${environmentName}" already exists.\n`)
-    )
+    console.log(chalk.yellow(`⚠️  Environment "${environmentName}" already exists.\n`))
     const { overwrite } = await prompts({
       type: 'confirm',
       name: 'overwrite',
@@ -188,9 +183,10 @@ export async function setupCommand() {
   // Choose credential storage method (for FTP/SFTP or SSH with password)
   let password: string | undefined
   let passwordEnvVar: string | undefined
+  let credentialStorage: string | undefined
 
   if (deploymentType !== 'ssh' || authMethod === 'password') {
-    const { credentialStorage } = await prompts({
+    const result = await prompts({
       type: 'select',
       name: 'credentialStorage',
       message: 'How do you want to store credentials?',
@@ -207,15 +203,14 @@ export async function setupCommand() {
         },
       ],
     })
+    credentialStorage = result.credentialStorage
 
     if (credentialStorage === 'env') {
       const envVarName = `STRATAWP_DEPLOY_${environmentName.toUpperCase()}_PASSWORD`
       passwordEnvVar = `\${${envVarName}}`
 
       console.log(
-        chalk.yellow(
-          `\n📝 Add this to your .env file:\n${envVarName}=your_password_here\n`
-        )
+        chalk.yellow(`\n📝 Add this to your .env file:\n${envVarName}=your_password_here\n`)
       )
 
       const { skipPassword } = await prompts({
@@ -333,9 +328,8 @@ export async function setupCommand() {
   const spinner = ora('Connecting to server').start()
 
   try {
-    const deployer = deploymentType === 'ssh'
-      ? new SSHDeployer(envConfig)
-      : new FTPDeployer(envConfig)
+    const deployer =
+      deploymentType === 'ssh' ? new SSHDeployer(envConfig) : new FTPDeployer(envConfig)
     const testResult = await deployer.testConnection()
 
     if (testResult) {
@@ -356,9 +350,7 @@ export async function setupCommand() {
     }
   } catch (error) {
     spinner.fail(chalk.red('Connection test failed'))
-    console.log(
-      chalk.red(`Error: ${error instanceof Error ? error.message : 'Unknown error'}\n`)
-    )
+    console.log(chalk.red(`Error: ${error instanceof Error ? error.message : 'Unknown error'}\n`))
 
     const { saveAnyway } = await prompts({
       type: 'confirm',

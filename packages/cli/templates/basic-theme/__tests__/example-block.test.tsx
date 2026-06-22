@@ -75,11 +75,7 @@ describe('Example Block', () => {
 
   it('should have correct block classes', () => {
     const SaveComponent = ({ attributes }: any) => {
-      return (
-        <div className="wp-block-stratawp-example">
-          {attributes.content}
-        </div>
-      )
+      return <div className="wp-block-stratawp-example">{attributes.content}</div>
     }
 
     const { container } = renderBlockSave(SaveComponent, {

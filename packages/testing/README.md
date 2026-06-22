@@ -63,6 +63,7 @@ describe('My Block', () => {
 ```
 
 Run tests:
+
 ```bash
 pnpm test
 ```
@@ -95,13 +96,13 @@ test.describe('My Block E2E', () => {
 
     await publishPost(page)
 
-    await expect(page.locator('.components-snackbar'))
-      .toContainText('published')
+    await expect(page.locator('.components-snackbar')).toContainText('published')
   })
 })
 ```
 
 Run E2E tests:
+
 ```bash
 pnpm test:e2e
 ```
@@ -121,6 +122,7 @@ beforeAll(() => {
 ```
 
 **Mocked APIs:**
+
 - `@wordpress/blocks` - Block registration and manipulation
 - `@wordpress/data` - Data stores and state management
 - `@wordpress/i18n` - Internationalization functions
@@ -374,12 +376,14 @@ pnpm test:coverage
 ```
 
 **Coverage Thresholds:**
+
 - Lines: 80%
 - Functions: 80%
 - Branches: 75%
 - Statements: 80%
 
 View coverage report:
+
 ```bash
 open coverage/index.html
 ```
@@ -389,6 +393,7 @@ open coverage/index.html
 ### Unit Tests
 
 1. **Mock WordPress APIs**
+
    ```typescript
    beforeAll(() => {
      setupWordPressMocks()
@@ -397,6 +402,7 @@ open coverage/index.html
    ```
 
 2. **Test Block Registration**
+
    ```typescript
    it('should register with correct configuration', () => {
      testBlockRegistration('my-theme/my-block', expectedConfig)
@@ -404,6 +410,7 @@ open coverage/index.html
    ```
 
 3. **Test Component Rendering**
+
    ```typescript
    it('should render with attributes', () => {
      const { getByText } = renderBlockEdit(EditComponent, {
@@ -414,6 +421,7 @@ open coverage/index.html
    ```
 
 4. **Test Attribute Updates**
+
    ```typescript
    it('should update attributes', () => {
      const setAttributes = vi.fn()
@@ -427,6 +435,7 @@ open coverage/index.html
 ### E2E Tests
 
 1. **Login Before Each Test**
+
    ```typescript
    test.beforeEach(async ({ page }) => {
      await wpLogin(page)
@@ -434,6 +443,7 @@ open coverage/index.html
    ```
 
 2. **Use Descriptive Test Names**
+
    ```typescript
    test('should insert heading block and change level to H3', async ({ page }) => {
      // ...
@@ -441,11 +451,13 @@ open coverage/index.html
    ```
 
 3. **Wait for Network Idle**
+
    ```typescript
    await page.waitForLoadState('networkidle')
    ```
 
 4. **Take Screenshots on Failure**
+
    ```typescript
    test('visual test', async ({ page }) => {
      await page.screenshot({ path: 'screenshots/my-block.png' })
@@ -521,6 +533,7 @@ See the `examples/basic-theme/__tests__` and `examples/basic-theme/e2e` director
 **Problem:** Tests fail with "wp is not defined"
 
 **Solution:** Call `setupWordPressMocks()` before your tests:
+
 ```typescript
 beforeAll(() => {
   setupWordPressMocks()
@@ -532,6 +545,7 @@ beforeAll(() => {
 **Problem:** Custom matchers like `toHaveBlockClass` are not recognized
 
 **Solution:** Call `setupCustomMatchers()`:
+
 ```typescript
 beforeAll(() => {
   setupCustomMatchers()
@@ -543,6 +557,7 @@ beforeAll(() => {
 **Problem:** E2E tests timeout
 
 **Solution:** Increase timeout in `playwright.config.ts`:
+
 ```typescript
 export default defineConfig({
   timeout: 60 * 1000, // 60 seconds
@@ -554,6 +569,7 @@ export default defineConfig({
 **Problem:** Block editor doesn't load in E2E tests
 
 **Solution:** Ensure WordPress is running and the URL is correct:
+
 ```typescript
 use: {
   baseURL: process.env.WP_BASE_URL || 'http://localhost:8888',

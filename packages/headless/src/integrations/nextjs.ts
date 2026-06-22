@@ -69,10 +69,7 @@ export async function getAllPages(
 /**
  * Generate static params for posts
  */
-export async function generatePostParams(
-  client: WordPressClient,
-  params?: WPQueryParams
-) {
+export async function generatePostParams(client: WordPressClient, params?: WPQueryParams) {
   const posts = await getAllPosts(client, params)
   return posts.map((post) => ({
     slug: post.slug,
@@ -82,10 +79,7 @@ export async function generatePostParams(
 /**
  * Generate static params for pages
  */
-export async function generatePageParams(
-  client: WordPressClient,
-  params?: WPQueryParams
-) {
+export async function generatePageParams(client: WordPressClient, params?: WPQueryParams) {
   const pages = await getAllPages(client, params)
   return pages.map((page) => ({
     slug: page.slug,
@@ -102,7 +96,8 @@ export function revalidateTag(tag: string) {
   }
 
   try {
-    // Next.js 13+ App Router
+    // Next.js 13+ App Router — dynamic require to handle optional dependency
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { revalidateTag: nextRevalidateTag } = require('next/cache')
     nextRevalidateTag(tag)
   } catch (error) {
@@ -120,7 +115,8 @@ export function revalidatePath(path: string) {
   }
 
   try {
-    // Next.js 13+ App Router
+    // Next.js 13+ App Router — dynamic require to handle optional dependency
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { revalidatePath: nextRevalidatePath } = require('next/cache')
     nextRevalidatePath(path)
   } catch (error) {

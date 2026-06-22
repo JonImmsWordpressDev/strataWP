@@ -142,7 +142,7 @@ export function validatePackageName(name: string): { valid: boolean; error?: str
     const errors = result.errors || []
     return {
       valid: false,
-      error: errors[0] || 'Invalid package name'
+      error: errors[0] || 'Invalid package name',
     }
   }
 

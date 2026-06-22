@@ -47,8 +47,7 @@ export class FileFilter {
    * Load patterns from .deployignore file
    */
   async loadDeployIgnore(deployIgnorePath?: string): Promise<void> {
-    const ignoreFile =
-      deployIgnorePath || path.join(this.baseDir, '.deployignore')
+    const ignoreFile = deployIgnorePath || path.join(this.baseDir, '.deployignore')
 
     if (!(await fs.pathExists(ignoreFile))) {
       return
@@ -134,13 +133,7 @@ export class FileFilter {
    */
   private shouldExclude(filePath: string): boolean {
     // Common exclusions that should always apply
-    const alwaysExclude = [
-      '.git',
-      '.git/',
-      'node_modules',
-      'node_modules/',
-      '.DS_Store',
-    ]
+    const alwaysExclude = ['.git', '.git/', 'node_modules', 'node_modules/', '.DS_Store']
 
     // Check always excluded paths
     if (alwaysExclude.some((pattern) => filePath.includes(pattern))) {
@@ -192,12 +185,8 @@ export class FileFilter {
     deleted: FileRecord[]
     unchanged: FileRecord[]
   } {
-    const currentMap = new Map(
-      current.map((file) => [file.relativePath, file])
-    )
-    const previousMap = new Map(
-      previous.map((file) => [file.relativePath, file])
-    )
+    const currentMap = new Map(current.map((file) => [file.relativePath, file]))
+    const previousMap = new Map(previous.map((file) => [file.relativePath, file]))
 
     const added: FileRecord[] = []
     const modified: FileRecord[] = []
@@ -254,9 +243,7 @@ export class FileFilter {
 /**
  * Create default .deployignore file
  */
-export async function createDefaultDeployIgnore(
-  themePath: string
-): Promise<void> {
+export async function createDefaultDeployIgnore(themePath: string): Promise<void> {
   const deployIgnorePath = path.join(themePath, '.deployignore')
 
   // Don't overwrite existing file

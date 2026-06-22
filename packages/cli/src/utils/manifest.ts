@@ -73,17 +73,11 @@ export class ManifestManager {
     await fs.ensureDir(this.historyDir)
 
     // Save as current manifest for this environment
-    const currentPath = path.join(
-      this.manifestDir,
-      `${manifest.environment}.json`
-    )
+    const currentPath = path.join(this.manifestDir, `${manifest.environment}.json`)
     await fs.writeJSON(currentPath, manifest, { spaces: 2 })
 
     // Save to history with timestamp
-    const historyPath = path.join(
-      this.historyDir,
-      `${manifest.environment}-${manifest.id}.json`
-    )
+    const historyPath = path.join(this.historyDir, `${manifest.environment}-${manifest.id}.json`)
     await fs.writeJSON(historyPath, manifest, { spaces: 2 })
 
     // Cleanup old history (keep last 10 deployments per environment)
@@ -93,9 +87,7 @@ export class ManifestManager {
   /**
    * Load the current manifest for an environment
    */
-  async loadCurrent(
-    environment: string
-  ): Promise<DeploymentManifest | null> {
+  async loadCurrent(environment: string): Promise<DeploymentManifest | null> {
     const currentPath = path.join(this.manifestDir, `${environment}.json`)
 
     if (!(await fs.pathExists(currentPath))) {
@@ -108,14 +100,8 @@ export class ManifestManager {
   /**
    * Load a specific manifest by ID
    */
-  async loadById(
-    environment: string,
-    id: string
-  ): Promise<DeploymentManifest | null> {
-    const historyPath = path.join(
-      this.historyDir,
-      `${environment}-${id}.json`
-    )
+  async loadById(environment: string, id: string): Promise<DeploymentManifest | null> {
+    const historyPath = path.join(this.historyDir, `${environment}-${id}.json`)
 
     if (!(await fs.pathExists(historyPath))) {
       return null
@@ -127,10 +113,7 @@ export class ManifestManager {
   /**
    * Load deployment history for an environment
    */
-  async loadHistory(
-    environment: string,
-    limit: number = 10
-  ): Promise<DeploymentManifest[]> {
+  async loadHistory(environment: string, limit: number = 10): Promise<DeploymentManifest[]> {
     await fs.ensureDir(this.historyDir)
 
     const files = await fs.readdir(this.historyDir)
@@ -194,9 +177,7 @@ export class ManifestManager {
 
     const files = await fs.readdir(this.historyDir)
     const envFilter = environment ? `${environment}-` : ''
-    const envFiles = files.filter(
-      (file) => file.startsWith(envFilter) && file.endsWith('.json')
-    )
+    const envFiles = files.filter((file) => file.startsWith(envFilter) && file.endsWith('.json'))
 
     const manifests: DeploymentManifest[] = []
     for (const file of envFiles) {
@@ -205,14 +186,11 @@ export class ManifestManager {
     }
 
     // Get unique environments
-    const environments = [
-      ...new Set(manifests.map((m) => m.environment)),
-    ]
+    const environments = [...new Set(manifests.map((m) => m.environment))]
 
     const stats = {
       totalDeployments: manifests.length,
-      successfulDeployments: manifests.filter((m) => m.status === 'success')
-        .length,
+      successfulDeployments: manifests.filter((m) => m.status === 'success').length,
       failedDeployments: manifests.filter((m) => m.status === 'failed').length,
       lastDeployment: manifests.sort((a, b) => b.timestamp - a.timestamp)[0],
       environments,
@@ -233,9 +211,7 @@ export class ManifestManager {
 
     // Delete history entries
     const files = await fs.readdir(this.historyDir)
-    const envFiles = files.filter((file) =>
-      file.startsWith(`${environment}-`)
-    )
+    const envFiles = files.filter((file) => file.startsWith(`${environment}-`))
 
     for (const file of envFiles) {
       await fs.remove(path.join(this.historyDir, file))
@@ -245,10 +221,7 @@ export class ManifestManager {
   /**
    * Cleanup old history entries
    */
-  private async cleanupHistory(
-    environment: string,
-    keepLast: number
-  ): Promise<void> {
+  private async cleanupHistory(environment: string, keepLast: number): Promise<void> {
     const files = await fs.readdir(this.historyDir)
     const envFiles = files
       .filter((file) => file.startsWith(`${environment}-`) && file.endsWith('.json'))

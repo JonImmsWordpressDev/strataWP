@@ -84,6 +84,7 @@ export default defineConfig({
 ### Block Auto-Discovery
 
 The plugin scans your `src/blocks` directory for `block.json` files and automatically:
+
 1. Discovers all blocks
 2. Generates PHP registration code
 3. Watches for changes during development
@@ -92,6 +93,7 @@ The plugin scans your `src/blocks` directory for `block.json` files and automati
 ### PHP Hot Reload
 
 When you modify PHP template files:
+
 1. Plugin detects the change
 2. Sends reload signal to browser
 3. Page refreshes automatically
@@ -100,6 +102,7 @@ When you modify PHP template files:
 ### Asset Manifest
 
 Generates a WordPress-compatible manifest that includes:
+
 - File paths and hashes
 - CSS dependencies
 - WordPress script dependencies (wp-element, wp-blocks, etc.)

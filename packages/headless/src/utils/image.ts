@@ -38,10 +38,7 @@ export function getImageSizes(maxWidth: number = 1200): string {
 /**
  * Get optimized image URL
  */
-export function getOptimizedImageUrl(
-  media: WPMedia,
-  options: ImageOptions = {}
-): string {
+export function getOptimizedImageUrl(media: WPMedia, options: ImageOptions = {}): string {
   const { width, height } = options
 
   if (!width && !height) {
@@ -112,10 +109,7 @@ export function isImage(media: WPMedia): boolean {
 /**
  * Generate Next.js Image component props
  */
-export function getNextImageProps(
-  media: WPMedia,
-  options: ImageOptions = {}
-) {
+export function getNextImageProps(media: WPMedia, options: ImageOptions = {}) {
   const { width, height, quality = 75 } = options
   const dimensions = getImageDimensions(media)
 

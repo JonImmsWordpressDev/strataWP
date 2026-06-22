@@ -81,7 +81,7 @@ async function fetchLatestVersion(packageName: string): Promise<string | null> {
 
     const response = await fetch(url, {
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
     })
 

@@ -59,9 +59,7 @@ function displayPostDeployResults(result: PostDeployResult): void {
   }
 
   if (result.backupsCleanedUp > 0) {
-    console.log(
-      chalk.green(`  ✓ Cleaned up ${result.backupsCleanedUp} old backup(s)`)
-    )
+    console.log(chalk.green(`  ✓ Cleaned up ${result.backupsCleanedUp} old backup(s)`))
   }
 
   if (result.customCommands.length > 0) {
@@ -78,9 +76,10 @@ function displayPostDeployResults(result: PostDeployResult): void {
 /**
  * Display validation check results
  */
-function displayValidationResults(
-  validation: { success: boolean; checks: ValidationCheck[] }
-): void {
+function displayValidationResults(validation: {
+  success: boolean
+  checks: ValidationCheck[]
+}): void {
   console.log(chalk.cyan('\n✅ Validation:\n'))
 
   for (const check of validation.checks) {
@@ -92,18 +91,11 @@ function displayValidationResults(
   }
 
   if (!validation.success) {
-    console.log(
-      chalk.yellow(
-        '\n  ⚠ Some validation checks failed. Your site may need attention.'
-      )
-    )
+    console.log(chalk.yellow('\n  ⚠ Some validation checks failed. Your site may need attention.'))
   }
 }
 
-export async function deployCommand(
-  environment: string,
-  options: DeployOptions = {}
-) {
+export async function deployCommand(environment: string, options: DeployOptions = {}) {
   console.log(chalk.cyan('\n⚡ StrataWP Deployment\n'))
 
   const configManager = new DeployConfigManager()
@@ -132,27 +124,21 @@ export async function deployCommand(
   const log = (msg: string) => verbose && console.log(chalk.gray(`[DEBUG] ${msg}`))
 
   // Build if needed
-  const shouldBuild =
-    options.build !== false && (envConfig.buildBefore || options.build)
+  const shouldBuild = options.build !== false && (envConfig.buildBefore || options.build)
 
   if (shouldBuild) {
     console.log(chalk.yellow('📦 Building theme...\n'))
     const spinner = ora('Running build').start()
 
     try {
-      const buildCommand = (await configManager.load())?.defaults
-        .buildCommand || 'pnpm build'
+      const buildCommand = (await configManager.load())?.defaults.buildCommand || 'pnpm build'
       await execa(buildCommand.split(' ')[0], buildCommand.split(' ').slice(1), {
         stdio: 'inherit',
       })
       spinner.succeed(chalk.green('Build complete'))
     } catch (error) {
       spinner.fail(chalk.red('Build failed'))
-      console.log(
-        chalk.red(
-          `\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`
-        )
-      )
+      console.log(chalk.red(`\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`))
       return
     }
   }
@@ -190,7 +176,11 @@ export async function deployCommand(
 
       snapshotSpinner.succeed(chalk.green(`Snapshot created: ${snapshot.id}`))
     } catch (snapshotError) {
-      snapshotSpinner.warn(chalk.yellow(`Could not create snapshot: ${snapshotError instanceof Error ? snapshotError.message : 'Unknown error'}`))
+      snapshotSpinner.warn(
+        chalk.yellow(
+          `Could not create snapshot: ${snapshotError instanceof Error ? snapshotError.message : 'Unknown error'}`
+        )
+      )
       // Continue with deployment even if snapshot fails
     }
   }
@@ -231,7 +221,12 @@ export async function deployCommand(
 
     // Load previous deployment for comparison (unless --fresh flag is used)
     const previousManifest = options.fresh ? null : await manifestManager.loadCurrent(environment)
-    let changes = { added: files, modified: [] as any[], deleted: [] as any[], unchanged: [] as any[] }
+    let changes = {
+      added: files,
+      modified: [] as any[],
+      deleted: [] as any[],
+      unchanged: [] as any[],
+    }
 
     if (options.fresh) {
       console.log(chalk.yellow('\n🔄 Fresh deploy - uploading all files'))
@@ -295,7 +290,7 @@ export async function deployCommand(
     // Deploy with full lifecycle (upload → post-deploy → validation)
     console.log(chalk.yellow('\n🚀 Deploying...\n'))
 
-    const createBackup = !options['no-backup'] && (envConfig.backup?.enabled !== false)
+    const createBackup = !options['no-backup'] && envConfig.backup?.enabled !== false
     const filesToDeploy = [...changes.added, ...changes.modified]
     const result = await deployer.deploy(filesToDeploy, {
       createBackup,
@@ -326,14 +321,14 @@ export async function deployCommand(
       // Display file deployment summary
       console.log(chalk.green('\n✓ Deployment Summary:\n'))
       console.log(
-        chalk.white(`  Deployed: ${result.filesUploaded} files (${FileFilter.formatSize(FileFilter.calculateTotalSize(filesToDeploy))})`)
+        chalk.white(
+          `  Deployed: ${result.filesUploaded} files (${FileFilter.formatSize(FileFilter.calculateTotalSize(filesToDeploy))})`
+        )
       )
       if (result.backupPath) {
         console.log(chalk.white(`  Backup: ${result.backupPath}`))
       }
-      console.log(
-        chalk.white(`  Duration: ${(result.duration / 1000).toFixed(1)}s`)
-      )
+      console.log(chalk.white(`  Duration: ${(result.duration / 1000).toFixed(1)}s`))
 
       // Display post-deploy results
       if (result.postDeploy) {
@@ -366,27 +361,18 @@ export async function deployCommand(
       console.log(chalk.red(`\n✖ ${result.errorMessage}\n`))
 
       // Update manifest status
-      const failedManifest = await manifestManager.create(
-        environment,
-        files,
-        'build-hash',
-        {
-          addedFiles: changes.added.length,
-          modifiedFiles: changes.modified.length,
-          deletedFiles: changes.deleted.length,
-        }
-      )
+      const failedManifest = await manifestManager.create(environment, files, 'build-hash', {
+        addedFiles: changes.added.length,
+        modifiedFiles: changes.modified.length,
+        deletedFiles: changes.deleted.length,
+      })
       failedManifest.status = 'failed'
       failedManifest.metadata.errorMessage = result.errorMessage
       await manifestManager.save(failedManifest)
     }
   } catch (error) {
     spinner.fail(chalk.red('Deployment failed'))
-    console.log(
-      chalk.red(
-        `\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`
-      )
-    )
+    console.log(chalk.red(`\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`))
   }
 }
 
@@ -470,10 +456,6 @@ export async function testCommand(environment: string) {
     }
   } catch (error) {
     spinner.fail(chalk.red('Connection test failed'))
-    console.log(
-      chalk.red(
-        `\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`
-      )
-    )
+    console.log(chalk.red(`\n✖ ${error instanceof Error ? error.message : 'Unknown error'}\n`))
   }
 }
