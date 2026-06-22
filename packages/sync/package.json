@@ -36,23 +36,24 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
+    "chalk": "^5.3.0",
     "mysql2": "^3.9.0",
     "node-ssh": "^13.2.0",
-    "ssh2": "^1.15.0",
-    "tar": "^6.2.0",
+    "ora": "^8.0.0",
     "php-serialize": "^5.0.0",
-    "chalk": "^5.3.0",
-    "ora": "^8.0.0"
+    "ssh2": "^1.15.0",
+    "tar": "^6.2.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",
     "@types/ssh2": "^1.11.0",
     "@types/tar": "^6.1.11",
+    "@vitest/coverage-v8": "^1.0.4",
     "tsup": "^8.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.6.0"

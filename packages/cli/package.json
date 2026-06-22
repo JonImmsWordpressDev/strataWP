@@ -43,7 +43,8 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -72,6 +73,7 @@
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.5.8",
     "@types/validate-npm-package-name": "^4.0.2",
+    "@vitest/coverage-v8": "^1.0.4",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^1.0.4"
