@@ -20,10 +20,7 @@ function copyIconsDir(srcDir: string, destDir: string): void {
     } else if (entry.name.endsWith('.css')) {
       // Rewrite font url() paths in CSS files
       let content = fs.readFileSync(srcPath, 'utf-8')
-      content = content.replace(
-        /url\(\s*['"]?\.\.\/fonts\//g,
-        'url(./fonts/'
-      )
+      content = content.replace(/url\(\s*['"]?\.\.\/fonts\//g, 'url(./fonts/')
       fs.writeFileSync(destPath, content, 'utf-8')
     } else {
       fs.copyFileSync(srcPath, destPath)
@@ -42,10 +39,7 @@ function copyIconsDir(srcDir: string, destDir: string): void {
  * - Dev: watches for changes and triggers full page reload
  */
 export function strataWPAssets(options: AssetOptions = {}): Plugin {
-  const {
-    publicDir = 'dist',
-    baseUrl,
-  } = options
+  const { publicDir = 'dist', baseUrl } = options
 
   let rootDir: string
 

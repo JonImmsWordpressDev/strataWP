@@ -61,10 +61,7 @@ export async function exitPreview() {
 /**
  * Get preview post
  */
-export async function getPreviewPost(
-  client: WordPressClient,
-  id: number
-): Promise<WPPost | null> {
+export async function getPreviewPost(client: WordPressClient, id: number): Promise<WPPost | null> {
   try {
     return await client.getPost(id, {
       status: ['publish', 'draft', 'pending', 'future', 'private'],
@@ -78,10 +75,7 @@ export async function getPreviewPost(
 /**
  * Get preview page
  */
-export async function getPreviewPage(
-  client: WordPressClient,
-  id: number
-): Promise<WPPage | null> {
+export async function getPreviewPage(client: WordPressClient, id: number): Promise<WPPage | null> {
   try {
     return await client.getPage(id, {
       status: ['publish', 'draft', 'pending', 'future', 'private'],
@@ -95,9 +89,6 @@ export async function getPreviewPage(
 /**
  * Verify preview secret
  */
-export function verifyPreviewSecret(
-  providedSecret: string,
-  configSecret: string
-): boolean {
+export function verifyPreviewSecret(providedSecret: string, configSecret: string): boolean {
   return providedSecret === configSecret
 }

@@ -19,23 +19,14 @@ import {
   rollbackDiffCommand,
   rollbackMarkStableCommand,
 } from './commands/rollback'
-import {
-  syncDbPullCommand,
-  syncDbPushCommand,
-} from './commands/sync'
-import {
-  syncTemplatesCommand,
-  listTemplatesCommand,
-} from './commands/deploy/sync-templates'
+import { syncDbPullCommand, syncDbPushCommand } from './commands/sync'
+import { syncTemplatesCommand, listTemplatesCommand } from './commands/deploy/sync-templates'
 import { updateCommand } from './commands/update'
 import { iconsSetupCommand, iconsUpdateCommand, iconsListCommand } from './commands/icons'
 
 const program = new Command()
 
-program
-  .name('stratawp')
-  .description('⚡ A modern WordPress theme framework')
-  .version('2.0.0')
+program.name('stratawp').description('⚡ A modern WordPress theme framework').version('2.0.0')
 
 // Development server
 program
@@ -233,9 +224,6 @@ program
   .option('--zip <path>', 'Path to Flaticon icon font ZIP file')
   .action(iconsUpdateCommand)
 
-program
-  .command('icons:list')
-  .description('List available icon names')
-  .action(iconsListCommand)
+program.command('icons:list').description('List available icon names').action(iconsListCommand)
 
 program.parse()

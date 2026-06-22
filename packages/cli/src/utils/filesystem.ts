@@ -133,10 +133,7 @@ export function getRelativePath(filePath: string): string {
 /**
  * Create directory structure
  */
-export async function createDirStructure(
-  baseDir: string,
-  structure: string[]
-): Promise<void> {
+export async function createDirStructure(baseDir: string, structure: string[]): Promise<void> {
   for (const dir of structure) {
     await ensureDir(path.join(baseDir, dir))
   }

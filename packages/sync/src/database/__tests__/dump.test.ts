@@ -31,10 +31,11 @@ describe('DatabaseDumper', () => {
     it('should return list of tables', async () => {
       const mysql = await import('mysql2/promise')
       const mockConnection = {
-        query: vi.fn().mockResolvedValue([[
-          { Tables_in_test_db: 'wp_posts' },
-          { Tables_in_test_db: 'wp_options' },
-        ]]),
+        query: vi
+          .fn()
+          .mockResolvedValue([
+            [{ Tables_in_test_db: 'wp_posts' }, { Tables_in_test_db: 'wp_options' }],
+          ]),
         end: vi.fn(),
       }
       vi.mocked(mysql.default.createConnection).mockResolvedValue(mockConnection as any)
@@ -51,12 +52,13 @@ describe('DatabaseDumper', () => {
     it('should generate CREATE TABLE and INSERT statements', async () => {
       const mysql = await import('mysql2/promise')
       const mockConnection = {
-        query: vi.fn()
+        query: vi
+          .fn()
           .mockResolvedValueOnce([[{ Tables_in_test_db: 'wp_options' }]]) // getTables
           .mockResolvedValueOnce([[{ 'Create Table': 'CREATE TABLE `wp_options` (id INT)' }]]) // SHOW CREATE
-          .mockResolvedValueOnce([[
-            { option_id: 1, option_name: 'siteurl', option_value: 'http://example.com' },
-          ]]), // SELECT *
+          .mockResolvedValueOnce([
+            [{ option_id: 1, option_name: 'siteurl', option_value: 'http://example.com' }],
+          ]), // SELECT *
         end: vi.fn(),
       }
       vi.mocked(mysql.default.createConnection).mockResolvedValue(mockConnection as any)

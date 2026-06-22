@@ -20,6 +20,7 @@ ls .claude/skills/
 ```
 
 You should see:
+
 ```
 wordpress-router/
 wp-block-development/
@@ -184,11 +185,13 @@ parameters:
 ### Creating a New Block
 
 1. **Triage**: Verify project supports blocks
+
    ```bash
    node .claude/skills/wp-project-triage/scripts/detect_wp_project.mjs
    ```
 
 2. **Scaffold**: Use StrataWP CLI
+
    ```bash
    stratawp block:new testimonial --styleFramework=tailwind
    ```
@@ -207,11 +210,13 @@ parameters:
 ### Optimizing Performance
 
 1. **Baseline**: Capture current state
+
    ```bash
    wp profile stage --url=https://your-site.test/
    ```
 
 2. **Identify**: Find bottlenecks
+
    ```bash
    wp profile hook --url=https://your-site.test/ --spotlight
    ```

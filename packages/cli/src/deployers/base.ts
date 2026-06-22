@@ -99,10 +99,7 @@ export abstract class BaseDeployer {
   /**
    * Upload a single file
    */
-  abstract uploadFile(
-    localPath: string,
-    remotePath: string
-  ): Promise<void>
+  abstract uploadFile(localPath: string, remotePath: string): Promise<void>
 
   /**
    * Upload multiple files
@@ -133,9 +130,7 @@ export abstract class BaseDeployer {
   /**
    * List backups available for this environment
    */
-  abstract listBackups(): Promise<
-    Array<{ id: string; path: string; created: number }>
-  >
+  abstract listBackups(): Promise<Array<{ id: string; path: string; created: number }>>
 
   /**
    * Check if a remote path exists
@@ -211,10 +206,7 @@ export abstract class BaseDeployer {
    * Deploy files with full workflow
    * This is the main deployment method that orchestrates the process
    */
-  async deploy(
-    files: FileRecord[],
-    options: DeployOptions = {}
-  ): Promise<DeploymentResult> {
+  async deploy(files: FileRecord[], options: DeployOptions = {}): Promise<DeploymentResult> {
     const startTime = Date.now()
     let backupPath: string | undefined
     let filesUploaded = 0
@@ -263,8 +255,7 @@ export abstract class BaseDeployer {
         validation: validationResult,
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
 
       return {
         success: false,

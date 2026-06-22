@@ -70,9 +70,7 @@ export function ComponentDetails({ component }: ComponentDetailsProps) {
 
                 <dt>Type</dt>
                 <dd>
-                  <span className={`type-badge ${component.type}`}>
-                    {component.type}
-                  </span>
+                  <span className={`type-badge ${component.type}`}>{component.type}</span>
                 </dd>
 
                 {component.description && (

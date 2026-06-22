@@ -79,6 +79,7 @@ The fastest and easiest way to get started:
 1. **Open your terminal** (Terminal on Mac, Command Prompt or PowerShell on Windows)
 
 2. **Navigate to your projects folder** (NOT your WordPress directory):
+
    ```bash
    # Create a projects folder if you don't have one
    mkdir -p ~/Projects
@@ -86,6 +87,7 @@ The fastest and easiest way to get started:
    ```
 
 3. **Run create-stratawp**:
+
    ```bash
    npx create-stratawp my-awesome-theme
    ```
@@ -112,11 +114,13 @@ The fastest and easiest way to get started:
    Just select your site from the list and the theme is automatically linked!
 
    **If no sites are detected**, you can manually create the symlink:
+
    ```bash
    ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-awesome-theme
    ```
 
 5. **Navigate to your theme**:
+
    ```bash
    cd my-awesome-theme
    ```
@@ -129,6 +133,7 @@ The fastest and easiest way to get started:
    - Find your theme and click "Activate"
 
 7. **Start the development server**:
+
    ```bash
    pnpm dev
    ```
@@ -136,6 +141,7 @@ The fastest and easiest way to get started:
    Keep this terminal window open! The dev server needs to run continuously.
 
 **Then in WordPress:**
+
 - Your browser will have hot-reload at your WordPress URL!
 - Make changes to your files and see them instantly
 
@@ -148,6 +154,7 @@ If you want to explore the example themes that come with StrataWP:
 1. **Open your terminal** (Terminal on Mac, Command Prompt or PowerShell on Windows)
 
 2. **Navigate to your projects folder** (NOT your WordPress directory):
+
    ```bash
    # Create a projects folder if you don't have one
    mkdir -p ~/Projects
@@ -155,6 +162,7 @@ If you want to explore the example themes that come with StrataWP:
    ```
 
 3. **Clone the StrataWP repository**:
+
    ```bash
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git
    cd StrataWP
@@ -163,11 +171,13 @@ If you want to explore the example themes that come with StrataWP:
    You're now in: `~/Projects/StrataWP/`
 
 4. **Install all dependencies**:
+
    ```bash
    pnpm install
    ```
 
 5. **Link the example theme to WordPress**:
+
    ```bash
    # Replace /path/to/wordpress with YOUR WordPress path
    # Example for Local by Flywheel:
@@ -178,6 +188,7 @@ If you want to explore the example themes that come with StrataWP:
    ```
 
 6. **Navigate to the example theme**:
+
    ```bash
    cd examples/basic-theme
    ```
@@ -185,6 +196,7 @@ If you want to explore the example themes that come with StrataWP:
    You're now in: `~/Projects/StrataWP/examples/basic-theme/`
 
 7. **Start the development server**:
+
    ```bash
    pnpm dev
    ```
@@ -192,6 +204,7 @@ If you want to explore the example themes that come with StrataWP:
    Keep this terminal window open! The dev server needs to run continuously.
 
 **Then in WordPress:**
+
 1. Go to `WordPress Admin → Appearance → Themes`
 2. Activate "StrataWP Basic"
 3. Your browser will have hot-reload at your WordPress URL!
@@ -205,11 +218,13 @@ To create your own theme based on an example (advanced users):
 **Step-by-step instructions:**
 
 1. **Open your terminal and navigate to your projects folder**:
+
    ```bash
    cd ~/Projects
    ```
 
 2. **Copy the basic theme as your starting point**:
+
    ```bash
    # Make sure you've cloned StrataWP first (see Option 1)
    cp -r StrataWP/examples/basic-theme my-awesome-theme
@@ -224,11 +239,13 @@ To create your own theme based on an example (advanced users):
    - Save the file
 
 4. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
 
 5. **Link your theme to WordPress**:
+
    ```bash
    # Replace with YOUR WordPress path
    # Example for Local by Flywheel:
@@ -239,6 +256,7 @@ To create your own theme based on an example (advanced users):
    ```
 
 6. **Start development**:
+
    ```bash
    pnpm dev
    ```
@@ -275,11 +293,13 @@ Let's create your first StrataWP theme from scratch!
 ### Step 1: Create the Theme
 
 1. **Open your terminal and go to your projects folder**:
+
    ```bash
    cd ~/Projects
    ```
 
 2. **Create your theme with the CLI**:
+
    ```bash
    npx create-stratawp my-first-theme
    ```
@@ -297,6 +317,7 @@ Let's create your first StrataWP theme from scratch!
    The CLI will copy the Basic Theme from bundled templates and customize it with your details!
 
 3. **Navigate to your theme**:
+
    ```bash
    cd my-first-theme
    ```
@@ -336,6 +357,7 @@ Your theme is already linked to WordPress (if you selected a site during creatio
    - Click "Activate"
 
 2. **Start the development server:**
+
    ```bash
    cd my-first-theme
    pnpm dev
@@ -344,6 +366,7 @@ Your theme is already linked to WordPress (if you selected a site during creatio
    **Important:** Keep this terminal window open! The dev server must run continuously for hot-reload to work.
 
 **If you skipped linking during creation**, you can manually link it:
+
 ```bash
 # Check where you are
 pwd  # Should show: /Users/yourname/Projects/my-first-theme
@@ -469,6 +492,7 @@ stratawp block:new hero --type=dynamic --category=design
 ```
 
 This creates:
+
 - `src/blocks/hero/block.json` - Block metadata
 - `src/blocks/hero/index.tsx` - Edit component
 - `src/blocks/hero/save.tsx` - Save component
@@ -614,6 +638,7 @@ pnpm build
 ```
 
 This will:
+
 - Compile and minify all TypeScript/JavaScript
 - Process and minify all SCSS/CSS
 - Generate optimized assets
@@ -635,6 +660,7 @@ Visit your site and test all functionality.
 **Option A: Direct Upload**
 
 1. Create a ZIP of your theme:
+
    ```bash
    # From your theme directory
    zip -r my-first-theme.zip . -x "node_modules/*" -x ".git/*" -x "*.log"
@@ -664,6 +690,7 @@ pnpm build
 **Option C: Deployment Tools**
 
 Use tools like:
+
 - **WP Pusher** - Git-based deployment
 - **DeployHQ** - Automated deployments
 - **GitHub Actions** - CI/CD workflows
@@ -695,6 +722,7 @@ stratawp explorer
 ```
 
 Features:
+
 - View all blocks, components, patterns
 - Test with different attributes
 - Preview on Mobile/Tablet/Desktop
@@ -766,6 +794,7 @@ Your design system will automatically sync with `theme.json` for WordPress prese
 **Problem:** `Error: Port 3000 is already in use`
 
 **Solution:**
+
 ```bash
 # Use a different port
 pnpm dev --port 3001
@@ -776,6 +805,7 @@ pnpm dev --port 3001
 **Problem:** `Build failed with errors`
 
 **Solution:**
+
 ```bash
 # Clear cache and rebuild
 rm -rf node_modules dist .vite
@@ -788,6 +818,7 @@ pnpm build
 **Problem:** Changes don't appear automatically
 
 **Solution:**
+
 1. Check that dev server is running: `pnpm dev`
 2. Clear browser cache (Cmd/Ctrl + Shift + R)
 3. Check browser console for errors
@@ -798,6 +829,7 @@ pnpm build
 **Problem:** `TS2307: Cannot find module`
 
 **Solution:**
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules
@@ -812,6 +844,7 @@ pnpm type-check
 **Problem:** Theme doesn't appear in WordPress admin
 
 **Solution:**
+
 1. Check symlink is correct:
    ```bash
    ls -la /path/to/wordpress/wp-content/themes/
@@ -824,6 +857,7 @@ pnpm type-check
 **Problem:** CSS changes don't appear
 
 **Solution:**
+
 1. Check SCSS files have no syntax errors
 2. Clear WordPress cache (if using caching plugin)
 3. Hard refresh browser (Cmd/Ctrl + Shift + R)
@@ -856,11 +890,13 @@ stratawp --help
 ### Getting Help
 
 **Resources:**
+
 - **Documentation**: https://github.com/JonImmsWordpressDev/StrataWP#readme
 - **Issues**: https://github.com/JonImmsWordpressDev/StrataWP/issues
 - **Discussions**: https://github.com/JonImmsWordpressDev/StrataWP/discussions
 
 **Before Asking for Help:**
+
 1. Check this guide's troubleshooting section
 2. Search existing GitHub issues
 3. Review package READMEs in `packages/`
@@ -868,6 +904,7 @@ stratawp --help
 5. Try with a fresh installation
 
 **When Asking for Help, Include:**
+
 - Node.js version: `node --version`
 - pnpm version: `pnpm --version`
 - WordPress version
@@ -880,6 +917,7 @@ stratawp --help
 ### Learn More
 
 **Beginner:**
+
 1. ✅ Complete this guide
 2. Explore example themes in `examples/`
 3. Read block creation guide: `packages/cli/README.md`
@@ -887,6 +925,7 @@ stratawp --help
 5. Customize an existing pattern
 
 **Intermediate:**
+
 1. Learn PHP component system
 2. Create custom post types
 3. Add Gutenberg blocks with controls
@@ -894,6 +933,7 @@ stratawp --help
 5. Set up testing with `@stratawp/testing`
 
 **Advanced:**
+
 1. Build headless apps with `@stratawp/headless`
 2. Contribute to StrataWP core
 3. Build custom Vite plugins
@@ -902,6 +942,7 @@ stratawp --help
 ### Example Projects
 
 **Blog Theme:**
+
 - Custom post types (Portfolio, Testimonials)
 - Blog layouts with sidebar
 - Category and tag archives
@@ -909,6 +950,7 @@ stratawp --help
 - Search functionality
 
 **Business Theme:**
+
 - Services section with custom blocks
 - Team member showcase
 - Contact forms
@@ -916,6 +958,7 @@ stratawp --help
 - Portfolio grid
 
 **E-Commerce Theme:**
+
 - WooCommerce integration
 - Product showcases
 - Category grids
@@ -923,6 +966,7 @@ stratawp --help
 - Product quick view
 
 **Headless Blog:**
+
 - Next.js frontend
 - WordPress backend
 - API integration
@@ -932,17 +976,20 @@ stratawp --help
 ### Resources
 
 **WordPress:**
+
 - [Block Editor Handbook](https://developer.wordpress.org/block-editor/)
 - [Theme Handbook](https://developer.wordpress.org/themes/)
 - [REST API Handbook](https://developer.wordpress.org/rest-api/)
 
 **StrataWP:**
+
 - [Main README](./README.md)
 - [Testing Guide](./packages/testing/README.md)
 - [Headless WordPress](./packages/headless/README.md)
 - [Component Explorer](./packages/explorer/README.md)
 
 **Tools:**
+
 - [Vite Documentation](https://vitejs.dev/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [React Documentation](https://react.dev/)
@@ -977,16 +1024,16 @@ pnpm test:coverage          # With coverage
 
 ### File Locations
 
-| What | Where |
-|------|-------|
-| Blocks | `src/blocks/` |
-| Styles | `src/scss/` |
+| What           | Where             |
+| -------------- | ----------------- |
+| Blocks         | `src/blocks/`     |
+| Styles         | `src/scss/`       |
 | PHP Components | `inc/Components/` |
-| Templates | `templates/` |
-| Template Parts | `parts/` |
-| Patterns | `patterns/` |
-| Theme Config | `theme.json` |
-| Build Output | `dist/` |
+| Templates      | `templates/`      |
+| Template Parts | `parts/`          |
+| Patterns       | `patterns/`       |
+| Theme Config   | `theme.json`      |
+| Build Output   | `dist/`           |
 
 ### Important Files
 

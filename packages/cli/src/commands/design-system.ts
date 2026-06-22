@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
 import { execa } from 'execa'
-import {createFileWithSpinner, readFile, writeFile } from '../utils/filesystem'
+import { createFileWithSpinner, readFile, writeFile } from '../utils/filesystem'
 
 type Framework = 'tailwind' | 'unocss'
 
@@ -38,7 +38,11 @@ export async function designSystemCommand(framework: Framework): Promise<void> {
   console.log(chalk.dim(`  1. Import the CSS in your main JS file:`))
   console.log(chalk.dim(`     import '../css/design-system.css'`))
   console.log(chalk.dim(`  2. Start using utility classes in your blocks`))
-  console.log(chalk.dim(`  3. Customize ${framework === 'tailwind' ? 'tailwind' : 'uno'}.config.${framework === 'tailwind' ? 'js' : 'ts'} as needed\n`))
+  console.log(
+    chalk.dim(
+      `  3. Customize ${framework === 'tailwind' ? 'tailwind' : 'uno'}.config.${framework === 'tailwind' ? 'js' : 'ts'} as needed\n`
+    )
+  )
 }
 
 async function detectPackageManager(): Promise<'npm' | 'pnpm' | 'yarn'> {
@@ -58,9 +62,10 @@ async function installDependencies(framework: Framework, pm: string): Promise<vo
   const spinner = ora('Installing dependencies...').start()
 
   try {
-    const packages = framework === 'tailwind'
-      ? ['tailwindcss', 'postcss', 'autoprefixer']
-      : ['@unocss/vite', 'unocss']
+    const packages =
+      framework === 'tailwind'
+        ? ['tailwindcss', 'postcss', 'autoprefixer']
+        : ['@unocss/vite', 'unocss']
 
     const installCmd = pm === 'yarn' ? 'add' : 'install'
     const devFlag = pm === 'yarn' ? '--dev' : '--save-dev'

@@ -13,13 +13,16 @@ export function ComponentList({
   onSelectComponent,
 }: ComponentListProps) {
   // Group components by type
-  const groupedComponents = components.reduce((acc, component) => {
-    if (!acc[component.type]) {
-      acc[component.type] = []
-    }
-    acc[component.type].push(component)
-    return acc
-  }, {} as Record<string, ComponentInfo[]>)
+  const groupedComponents = components.reduce(
+    (acc, component) => {
+      if (!acc[component.type]) {
+        acc[component.type] = []
+      }
+      acc[component.type].push(component)
+      return acc
+    },
+    {} as Record<string, ComponentInfo[]>
+  )
 
   const typeLabels: Record<string, string> = {
     block: 'Blocks',
@@ -46,9 +49,7 @@ export function ComponentList({
                 onClick={() => onSelectComponent(component)}
               >
                 <div className="component-item-header">
-                  <span className={`component-type-badge ${component.type}`}>
-                    {component.type}
-                  </span>
+                  <span className={`component-type-badge ${component.type}`}>{component.type}</span>
                   <h4 className="component-title">{component.title}</h4>
                 </div>
                 {component.description && (

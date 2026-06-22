@@ -103,9 +103,7 @@ describe('DatabaseRestorer', () => {
       const sql = `INSERT INTO wp_options VALUES ('siteurl', 'https://production.com');`
 
       await restorer.restoreFromSQL(sql, {
-        urlReplacements: [
-          { from: 'https://production.com', to: 'http://local.test' },
-        ],
+        urlReplacements: [{ from: 'https://production.com', to: 'http://local.test' }],
       })
 
       const insertQuery = executedQueries.find((q) => q.includes('INSERT'))

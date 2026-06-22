@@ -36,10 +36,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
       </InspectorControls>
 
       <div {...blockProps}>
-        <div
-          className="feature-icon"
-          style={{ backgroundColor: attributes.iconBackgroundColor }}
-        >
+        <div className="feature-icon" style={{ backgroundColor: attributes.iconBackgroundColor }}>
           <span className="feature-icon-content">{attributes.icon}</span>
         </div>
         <RichText

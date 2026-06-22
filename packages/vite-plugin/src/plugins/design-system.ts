@@ -9,11 +9,7 @@ import path from 'path'
 import fs from 'fs'
 
 export function strataWPDesignSystem(options: DesignSystemOptions = {}): Plugin {
-  const {
-    enabled = false,
-    framework = 'none',
-    wordpressPresets = true,
-  } = options
+  const { enabled = false, framework = 'none', wordpressPresets = true } = options
 
   if (!enabled || framework === 'none') {
     return {
@@ -100,7 +96,11 @@ export function strataWPDesignSystem(options: DesignSystemOptions = {}): Plugin 
 
     async transform(code, id) {
       // Inject WordPress CSS variable mappings if needed
-      if (wordpressPresets && id.endsWith('.css') && (framework === 'tailwind' || framework === 'unocss')) {
+      if (
+        wordpressPresets &&
+        id.endsWith('.css') &&
+        (framework === 'tailwind' || framework === 'unocss')
+      ) {
         // Check if theme.json exists
         const themeJsonPath = path.join(process.cwd(), 'theme.json')
         if (fs.existsSync(themeJsonPath)) {

@@ -69,10 +69,7 @@ export async function getAllPages(
 /**
  * Generate static params for posts
  */
-export async function generatePostParams(
-  client: WordPressClient,
-  params?: WPQueryParams
-) {
+export async function generatePostParams(client: WordPressClient, params?: WPQueryParams) {
   const posts = await getAllPosts(client, params)
   return posts.map((post) => ({
     slug: post.slug,
@@ -82,10 +79,7 @@ export async function generatePostParams(
 /**
  * Generate static params for pages
  */
-export async function generatePageParams(
-  client: WordPressClient,
-  params?: WPQueryParams
-) {
+export async function generatePageParams(client: WordPressClient, params?: WPQueryParams) {
   const pages = await getAllPages(client, params)
   return pages.map((page) => ({
     slug: page.slug,

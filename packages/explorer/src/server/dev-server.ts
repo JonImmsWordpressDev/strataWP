@@ -36,10 +36,7 @@ export class ExplorerDevServer {
     }
 
     this.app = express()
-    this.discovery = new ComponentDiscovery(
-      this.config.rootDir,
-      this.config.discovery
-    )
+    this.discovery = new ComponentDiscovery(this.config.rootDir, this.config.discovery)
   }
 
   /**

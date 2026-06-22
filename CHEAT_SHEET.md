@@ -9,6 +9,7 @@ npx create-stratawp my-theme
 ```
 
 **The CLI does everything:**
+
 1. ✅ Interactive setup wizard
 2. 🎨 **Template selection** - Choose from example themes:
    - **Basic Theme** - Essential blocks and clean structure
@@ -21,23 +22,27 @@ npx create-stratawp my-theme
 6. ✨ **Automatically detects and links to WordPress!**
 
 **What happens automatically:**
+
 - 📦 Copies selected theme from bundled templates
 - ✏️ Customizes with your name and details
 - 🔍 Scans Local by Flywheel & MAMP sites
 - 🔗 Creates symlink automatically!
 
 **Then start developing:**
+
 ```bash
 cd my-theme
 pnpm dev  # Keep terminal open!
 ```
 
 **Build for production:**
+
 ```bash
 pnpm build
 ```
 
 **Manual linking (if needed):**
+
 ```bash
 # Only if you skipped auto-linking
 ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-theme
@@ -118,6 +123,7 @@ stratawp deploy:list                     # List environments
 ```
 
 **Post-deploy actions (automatic with SSH deployments):**
+
 - WordPress cache flush (`wp cache flush` + `wp transient delete --all`)
 - PHP OPcache invalidation
 - Old backup cleanup (keeps last N, configurable)
@@ -294,11 +300,13 @@ $theme = new Theme([
 **Settings:** Configure at Settings → StrataWP Analytics
 
 **Exclusion Modes:**
+
 - `Admins only` - Users with `manage_options` capability
 - `All logged-in users` - Any authenticated user
 - `Disabled` - No cookie set (default)
 
 **GA4 Setup:**
+
 1. Enable mode in WordPress admin
 2. GA4 → Admin → Data Streams → Configure tag settings
 3. Define internal traffic rule matching "dev" cookie
@@ -362,7 +370,7 @@ class MyComponent implements ComponentInterface {
 
 <!-- wp:group {"layout":{"type":"constrained"}} -->
 <div class="wp-block-group">
-    <!-- Content -->
+  <!-- Content -->
 </div>
 <!-- /wp:group -->
 
@@ -374,17 +382,17 @@ class MyComponent implements ComponentInterface {
 ```html
 <!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0}} -->
 <div class="wp-block-query">
-    <!-- wp:post-template -->
-        <!-- wp:post-title {"isLink":true} /-->
-        <!-- wp:post-excerpt /-->
-        <!-- wp:post-date /-->
-    <!-- /wp:post-template -->
+  <!-- wp:post-template -->
+  <!-- wp:post-title {"isLink":true} /-->
+  <!-- wp:post-excerpt /-->
+  <!-- wp:post-date /-->
+  <!-- /wp:post-template -->
 
-    <!-- wp:query-pagination -->
-        <!-- wp:query-pagination-previous /-->
-        <!-- wp:query-pagination-numbers /-->
-        <!-- wp:query-pagination-next /-->
-    <!-- /wp:query-pagination -->
+  <!-- wp:query-pagination -->
+  <!-- wp:query-pagination-previous /-->
+  <!-- wp:query-pagination-numbers /-->
+  <!-- wp:query-pagination-next /-->
+  <!-- /wp:query-pagination -->
 </div>
 <!-- /wp:query -->
 ```
@@ -516,17 +524,17 @@ export async function generateStaticParams() {
 ```html
 <!-- wp:columns -->
 <div class="wp-block-columns">
-    <!-- wp:column -->
-    <div class="wp-block-column">
-        <!-- Left content -->
-    </div>
-    <!-- /wp:column -->
+  <!-- wp:column -->
+  <div class="wp-block-column">
+    <!-- Left content -->
+  </div>
+  <!-- /wp:column -->
 
-    <!-- wp:column -->
-    <div class="wp-block-column">
-        <!-- Right content -->
-    </div>
-    <!-- /wp:column -->
+  <!-- wp:column -->
+  <div class="wp-block-column">
+    <!-- Right content -->
+  </div>
+  <!-- /wp:column -->
 </div>
 <!-- /wp:columns -->
 ```
@@ -536,10 +544,10 @@ export async function generateStaticParams() {
 ```html
 <!-- wp:cover {"url":"image.jpg","dimRatio":50} -->
 <div class="wp-block-cover">
-    <span aria-hidden="true" class="wp-block-cover__background has-background-dim"></span>
-    <div class="wp-block-cover__inner-container">
-        <!-- Content -->
-    </div>
+  <span aria-hidden="true" class="wp-block-cover__background has-background-dim"></span>
+  <div class="wp-block-cover__inner-container">
+    <!-- Content -->
+  </div>
 </div>
 <!-- /wp:cover -->
 ```
@@ -549,11 +557,11 @@ export async function generateStaticParams() {
 ```html
 <!-- wp:buttons -->
 <div class="wp-block-buttons">
-    <!-- wp:button -->
-    <div class="wp-block-button">
-        <a class="wp-block-button__link wp-element-button">Click Me</a>
-    </div>
-    <!-- /wp:button -->
+  <!-- wp:button -->
+  <div class="wp-block-button">
+    <a class="wp-block-button__link wp-element-button">Click Me</a>
+  </div>
+  <!-- /wp:button -->
 </div>
 <!-- /wp:buttons -->
 ```
@@ -580,7 +588,7 @@ stratawp --version     # StrataWP CLI
 
 ### Update StrataWP Packages
 
-Check for and apply updates to all @stratawp/* packages:
+Check for and apply updates to all @stratawp/\* packages:
 
 ```bash
 stratawp update                 # Interactive update

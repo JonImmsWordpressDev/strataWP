@@ -18,29 +18,30 @@
 
 Files modified or deleted across the six commits:
 
-| File | Action | Notes |
-|---|---|---|
-| `packages/registry/` (entire dir) | Delete (commit 1) | 13 src files |
-| `packages/cli/src/index.ts` | Modify (commits 1, 2, 6) | Remove Registry imports + 5 commands (1); Remove AI imports + 4 commands (2); bump `.version()` (6) |
-| `packages/cli/package.json` | Modify (commits 1, 2, 6) | Remove `@stratawp/registry` (1) and `@stratawp/ai` (2) deps; bump version to 2.0.0 (6) |
-| `pnpm-lock.yaml` | Auto-regenerated (commits 1, 2, 3) | `pnpm install` rewrites after each removal |
-| `packages/ai/` (entire dir) | Delete (commit 2) | 13 src files |
-| `packages/studio/` (entire dir) | Delete (commit 3) | 54 src files |
-| `docs/STUDIO.md` | Delete (commit 3) | Studio guide |
-| `docs/plans/2026-01-26-save-pattern-plugin.md` | Delete (commit 3) | Studio implementation plan |
-| `docs/plans/2026-01-26-pattern-library-design.md` | Delete (commit 3) | Studio design doc |
-| `docs/plans/2026-01-26-pattern-library-phase2.md` | Delete (commit 3) | Studio plan |
-| `docs/plans/2026-01-26-block-library-design.md` | Delete (commit 3) | Studio plan |
-| `README.md` | Modify (commit 4) | Drop Studio Guide row, three feature bullets, project-structure entries, CLI examples, three published-packages bullets |
-| `CHEAT_SHEET.md` | Modify (commit 4) | Delete AI Commands section and Registry section |
-| `GETTING_STARTED.md` | Modify (commit 4) | Delete AI-Assisted Development section, Component Registry section, registry references in summaries |
-| `CLAUDE.md` | Modify (commit 4) | Remove `packages/ai`/`packages/registry` bullets, `@stratawp/ai`/`@stratawp/registry` bullets, and the entire Studio Package section (~80 lines) |
-| `DEVELOPMENT_NOTES.md` | Modify (commit 4) | Remove "Component registry for reusability" bullet |
-| `ROADMAP.md` | Create (commit 5) | New file |
-| `package.json` (root) | Modify (commit 6) | Bump `"version": "1.2.0"` → `"2.0.0"` |
-| `CHANGELOG.md` | Modify (commit 6) | Prepend v2.0.0 entry |
+| File                                              | Action                             | Notes                                                                                                                                            |
+| ------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `packages/registry/` (entire dir)                 | Delete (commit 1)                  | 13 src files                                                                                                                                     |
+| `packages/cli/src/index.ts`                       | Modify (commits 1, 2, 6)           | Remove Registry imports + 5 commands (1); Remove AI imports + 4 commands (2); bump `.version()` (6)                                              |
+| `packages/cli/package.json`                       | Modify (commits 1, 2, 6)           | Remove `@stratawp/registry` (1) and `@stratawp/ai` (2) deps; bump version to 2.0.0 (6)                                                           |
+| `pnpm-lock.yaml`                                  | Auto-regenerated (commits 1, 2, 3) | `pnpm install` rewrites after each removal                                                                                                       |
+| `packages/ai/` (entire dir)                       | Delete (commit 2)                  | 13 src files                                                                                                                                     |
+| `packages/studio/` (entire dir)                   | Delete (commit 3)                  | 54 src files                                                                                                                                     |
+| `docs/STUDIO.md`                                  | Delete (commit 3)                  | Studio guide                                                                                                                                     |
+| `docs/plans/2026-01-26-save-pattern-plugin.md`    | Delete (commit 3)                  | Studio implementation plan                                                                                                                       |
+| `docs/plans/2026-01-26-pattern-library-design.md` | Delete (commit 3)                  | Studio design doc                                                                                                                                |
+| `docs/plans/2026-01-26-pattern-library-phase2.md` | Delete (commit 3)                  | Studio plan                                                                                                                                      |
+| `docs/plans/2026-01-26-block-library-design.md`   | Delete (commit 3)                  | Studio plan                                                                                                                                      |
+| `README.md`                                       | Modify (commit 4)                  | Drop Studio Guide row, three feature bullets, project-structure entries, CLI examples, three published-packages bullets                          |
+| `CHEAT_SHEET.md`                                  | Modify (commit 4)                  | Delete AI Commands section and Registry section                                                                                                  |
+| `GETTING_STARTED.md`                              | Modify (commit 4)                  | Delete AI-Assisted Development section, Component Registry section, registry references in summaries                                             |
+| `CLAUDE.md`                                       | Modify (commit 4)                  | Remove `packages/ai`/`packages/registry` bullets, `@stratawp/ai`/`@stratawp/registry` bullets, and the entire Studio Package section (~80 lines) |
+| `DEVELOPMENT_NOTES.md`                            | Modify (commit 4)                  | Remove "Component registry for reusability" bullet                                                                                               |
+| `ROADMAP.md`                                      | Create (commit 5)                  | New file                                                                                                                                         |
+| `package.json` (root)                             | Modify (commit 6)                  | Bump `"version": "1.2.0"` → `"2.0.0"`                                                                                                            |
+| `CHANGELOG.md`                                    | Modify (commit 6)                  | Prepend v2.0.0 entry                                                                                                                             |
 
 **Files explicitly NOT modified** (verified during planning):
+
 - `packages/core/` — has zero references to cut packages.
 - `packages/explorer/`, `packages/headless/`, `packages/sync/`, `packages/testing/`, `packages/vite-plugin/` — no references to cut packages.
 - `examples/basic-theme/`, `examples/advanced-theme/`, `examples/store-theme/` — no references.
@@ -57,30 +58,37 @@ Files modified or deleted across the six commits:
 ## Task 0: Branch setup
 
 **Files:**
+
 - No file changes; verifies clean working tree and creates the feature branch.
 
 - [ ] **Step 0.1: Confirm clean working tree on main**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git status -sb
 ```
+
 Expected: `## main...origin/main` with no `M`/`A`/`D` lines. Untracked entries (`.claude/`, `.claude-flow/`, `.mcp.json`, `.stratawp-snapshots/`, `docs/superpowers/`) are pre-existing personal tooling and OK to leave. If there are modified/staged files you don't recognise, stop and investigate before continuing.
 
 - [ ] **Step 0.2: Create feature branch**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git checkout -b feat/v2-focus-cuts
 ```
+
 Expected: `Switched to a new branch 'feat/v2-focus-cuts'`.
 
 - [ ] **Step 0.3: Capture baseline `--help` output for later comparison**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm -F @stratawp/cli build 2>&1 | tail -5 && node packages/cli/dist/index.js --help > /tmp/stratawp-help-baseline.txt && grep -cE "^\s+(registry|ai):" /tmp/stratawp-help-baseline.txt
 ```
+
 Expected: `9` (5 registry: + 4 ai: commands present before the cuts). If the count differs, the file shape changed since this plan was written — inspect `/tmp/stratawp-help-baseline.txt` before proceeding.
 
 ---
@@ -88,6 +96,7 @@ Expected: `9` (5 registry: + 4 ai: commands present before the cuts). If the cou
 ## Task 1: Remove @stratawp/registry
 
 **Files:**
+
 - Modify: `packages/cli/src/index.ts` (remove import block + 5 commands)
 - Modify: `packages/cli/package.json` (remove dep)
 - Delete: `packages/registry/` (whole directory)
@@ -105,7 +114,6 @@ import {
   publishCommand,
   listCommand,
 } from '@stratawp/registry'
-
 ```
 
 (Note: the trailing blank line is part of the deletion — it preserves a single blank line between the remaining `@stratawp/ai` import and the next import.)
@@ -156,7 +164,6 @@ program
   .command('registry:list')
   .description('List installed StrataWP components')
   .action(listCommand)
-
 ```
 
 (Trailing blank line included so the result keeps a single blank line before `// Deployment commands`.)
@@ -172,49 +179,61 @@ Edit `packages/cli/package.json` and remove this exact line (Edit tool, `old_str
 - [ ] **Step 1.4: Delete the packages/registry/ directory**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git rm -r packages/registry
 ```
+
 Expected: lines reading `rm 'packages/registry/...'` for each file in the directory (13 src files plus build artefacts if any are tracked).
 
 - [ ] **Step 1.5: Refresh the lockfile**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm install 2>&1 | tail -10
 ```
+
 Expected: ends with `Done in <time>` and no error. `pnpm-lock.yaml` is rewritten to drop the registry workspace entry.
 
 - [ ] **Step 1.6: Verify CLI build still succeeds**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm -F @stratawp/cli build 2>&1 | tail -10
 ```
+
 Expected: build completes, no TypeScript errors. If there's a "Cannot find module '@stratawp/registry'" error, you missed a removal in step 1.1 or 1.2 — grep `packages/cli/src/index.ts` for `registry` to locate.
 
 - [ ] **Step 1.7: Verify registry commands no longer in --help**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && node packages/cli/dist/index.js --help | grep -cE "^\s+registry:" || echo "0 (none — good)"
 ```
+
 Expected: `0 (none — good)`.
 
 - [ ] **Step 1.8: Verify ai: commands still present (sanity check that we didn't accidentally cut them)**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && node packages/cli/dist/index.js --help | grep -cE "^\s+ai:"
 ```
+
 Expected: `4` (`ai:setup`, `ai:generate`, `ai:review`, `ai:document` — these are removed in Task 2, not Task 1).
 
 - [ ] **Step 1.9: Commit**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git add -A && git status -sb | head -20
 ```
+
 Verify staged: `packages/cli/src/index.ts`, `packages/cli/package.json`, deleted `packages/registry/...`, modified `pnpm-lock.yaml`. Then:
 
 ```bash
@@ -236,6 +255,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ## Task 2: Remove @stratawp/ai
 
 **Files:**
+
 - Modify: `packages/cli/src/index.ts` (remove import block + 4 commands)
 - Modify: `packages/cli/package.json` (remove dep)
 - Delete: `packages/ai/` (whole directory)
@@ -246,13 +266,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 Edit `packages/cli/src/index.ts` and remove this exact block (Edit tool, `old_string` = below, `new_string` = empty string):
 
 ```typescript
-import {
-  setupCommand,
-  generateCommand,
-  reviewCommand,
-  documentCommand,
-} from '@stratawp/ai'
-
+import { setupCommand, generateCommand, reviewCommand, documentCommand } from '@stratawp/ai'
 ```
 
 - [ ] **Step 2.2: Remove the AI commands block from packages/cli/src/index.ts**
@@ -261,10 +275,7 @@ Edit `packages/cli/src/index.ts` and remove this exact block (Edit tool, `old_st
 
 ```typescript
 // AI-powered commands
-program
-  .command('ai:setup')
-  .description('Configure AI providers and API keys')
-  .action(setupCommand)
+program.command('ai:setup').description('Configure AI providers and API keys').action(setupCommand)
 
 program
   .command('ai:generate <type>')
@@ -290,7 +301,6 @@ program
   .action((file: string, options: any) => {
     documentCommand({ file, ...options })
   })
-
 ```
 
 - [ ] **Step 2.3: Remove the @stratawp/ai dependency from packages/cli/package.json**
@@ -304,6 +314,7 @@ Edit `packages/cli/package.json` and remove this exact line:
 - [ ] **Step 2.4: Delete the packages/ai/ directory**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git rm -r packages/ai
 ```
@@ -311,33 +322,41 @@ cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git rm -r packages/ai
 - [ ] **Step 2.5: Refresh the lockfile**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm install 2>&1 | tail -10
 ```
+
 Expected: `Done in <time>` with no errors.
 
 - [ ] **Step 2.6: Verify CLI build still succeeds**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm -F @stratawp/cli build 2>&1 | tail -10
 ```
+
 Expected: build succeeds. If "Cannot find module '@stratawp/ai'" — you missed a removal in 2.1 or 2.2.
 
 - [ ] **Step 2.7: Verify ai: commands no longer in --help**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && node packages/cli/dist/index.js --help | grep -cE "^\s+ai:" || echo "0 (none — good)"
 ```
+
 Expected: `0 (none — good)`.
 
 - [ ] **Step 2.8: Commit**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git add -A && git status -sb | head -20
 ```
+
 Verify staged: `packages/cli/src/index.ts`, `packages/cli/package.json`, deleted `packages/ai/...`, modified `pnpm-lock.yaml`. Then:
 
 ```bash
@@ -360,6 +379,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ## Task 3: Remove @stratawp/studio and Studio docs
 
 **Files:**
+
 - Delete: `packages/studio/` (whole directory)
 - Delete: `docs/STUDIO.md`
 - Delete: `docs/plans/2026-01-26-save-pattern-plugin.md`
@@ -373,49 +393,61 @@ Studio is not imported by the CLI or by `packages/core` (verified during plannin
 - [ ] **Step 3.1: Delete the packages/studio/ directory**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git rm -r packages/studio
 ```
+
 Expected: many `rm 'packages/studio/...'` lines (54 src files + build artefacts).
 
 - [ ] **Step 3.2: Delete the Studio docs**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git rm docs/STUDIO.md docs/plans/2026-01-26-save-pattern-plugin.md docs/plans/2026-01-26-pattern-library-design.md docs/plans/2026-01-26-pattern-library-phase2.md docs/plans/2026-01-26-block-library-design.md
 ```
+
 Expected: 5 `rm '...'` lines.
 
 - [ ] **Step 3.3: Refresh the lockfile**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm install 2>&1 | tail -10
 ```
+
 Expected: `Done in <time>` with no errors.
 
 - [ ] **Step 3.4: Verify the full monorepo builds**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm build 2>&1 | tail -20
 ```
+
 Expected: all remaining packages build without error. If a package fails because it imported something from Studio, that's an undocumented dependency — stop and bring the build output back before continuing.
 
 - [ ] **Step 3.5: Verify the full test suite passes**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm test 2>&1 | tail -20
 ```
+
 Expected: all tests pass. If a test fails due to a now-missing module, that's an undocumented dependency — stop and surface the output.
 
 - [ ] **Step 3.6: Commit**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git add -A && git status -sb | head -20
 ```
+
 Verify staged: deleted `packages/studio/...`, deleted `docs/STUDIO.md`, deleted 4× `docs/plans/2026-01-26-*.md`, modified `pnpm-lock.yaml`. Then:
 
 ```bash
@@ -441,6 +473,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ## Task 4: Rewrite documentation
 
 **Files:**
+
 - Modify: `README.md`
 - Modify: `CHEAT_SHEET.md`
 - Modify: `GETTING_STARTED.md`
@@ -491,29 +524,29 @@ In `README.md`, replace:
 
 ```markdown
 ├── packages/
-│   ├── ai/               # AI-assisted development (OpenAI, Anthropic)
-│   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
-│   ├── core/             # PHP framework core
-│   ├── explorer/         # Interactive component browser
-│   ├── headless/         # REST API client, React hooks, Next.js
-│   ├── registry/         # Component registry
-│   ├── studio/           # Visual design system & pattern management
-│   ├── sync/             # Environment sync, snapshots, rollback
-│   ├── testing/          # Vitest and Playwright testing utilities
-│   └── vite-plugin/      # Vite integration for WordPress
+│ ├── ai/ # AI-assisted development (OpenAI, Anthropic)
+│ ├── cli/ # CLI tool (create-stratawp, stratawp commands)
+│ ├── core/ # PHP framework core
+│ ├── explorer/ # Interactive component browser
+│ ├── headless/ # REST API client, React hooks, Next.js
+│ ├── registry/ # Component registry
+│ ├── studio/ # Visual design system & pattern management
+│ ├── sync/ # Environment sync, snapshots, rollback
+│ ├── testing/ # Vitest and Playwright testing utilities
+│ └── vite-plugin/ # Vite integration for WordPress
 ```
 
 with:
 
 ```markdown
 ├── packages/
-│   ├── cli/              # CLI tool (create-stratawp, stratawp commands)
-│   ├── core/             # PHP framework core
-│   ├── explorer/         # Interactive component browser
-│   ├── headless/         # REST API client, React hooks, Next.js
-│   ├── sync/             # Environment sync, snapshots, rollback
-│   ├── testing/          # Vitest and Playwright testing utilities
-│   └── vite-plugin/      # Vite integration for WordPress
+│ ├── cli/ # CLI tool (create-stratawp, stratawp commands)
+│ ├── core/ # PHP framework core
+│ ├── explorer/ # Interactive component browser
+│ ├── headless/ # REST API client, React hooks, Next.js
+│ ├── sync/ # Environment sync, snapshots, rollback
+│ ├── testing/ # Vitest and Playwright testing utilities
+│ └── vite-plugin/ # Vite integration for WordPress
 ```
 
 - [ ] **Step 4.4: README — remove the AI + Component Registry CLI examples**
@@ -522,11 +555,13 @@ In `README.md`, replace:
 
 ```markdown
 # AI-assisted development
+
 stratawp ai:setup
 stratawp ai:generate block
 stratawp ai:review functions.php --focus security
 
 # Component registry
+
 stratawp registry:search hero
 stratawp registry:install @stratawp/hero-block
 
@@ -598,9 +633,9 @@ stratawp registry:publish [options]        # Publish component
 
 with:
 
-````markdown
+```markdown
 ### Testing
-````
+```
 
 ### GETTING_STARTED.md edits
 
@@ -640,6 +675,7 @@ In `GETTING_STARTED.md`, replace this exact block:
 
 ```markdown
 **Advanced:**
+
 1. Build headless apps with `@stratawp/headless`
 2. Create and publish components to registry
 3. Contribute to StrataWP core
@@ -651,6 +687,7 @@ with:
 
 ```markdown
 **Advanced:**
+
 1. Build headless apps with `@stratawp/headless`
 2. Contribute to StrataWP core
 3. Build custom Vite plugins
@@ -675,6 +712,7 @@ In `GETTING_STARTED.md`, replace:
 
 ```markdown
 # Component Registry
+
 npx stratawp registry:search <query>
 npx stratawp registry:install <package>
 ```
@@ -729,6 +767,7 @@ If the section also contains a `- @stratawp/studio` entry in a list that wasn't 
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && grep -c -iE "studio" CLAUDE.md
 ```
+
 Expected: `0`. If non-zero, grep again to find what was missed.
 
 ### DEVELOPMENT_NOTES.md edit
@@ -757,14 +796,17 @@ Run:
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && grep -rn -iE "@stratawp/(ai|registry|studio)|packages/(ai|registry|studio)|stratawp ai:|stratawp registry:|StrataWP\\\\Studio|docs/STUDIO\.md" README.md CHEAT_SHEET.md GETTING_STARTED.md CLAUDE.md DEVELOPMENT_NOTES.md CONTRIBUTING.md 2>/dev/null
 ```
+
 Expected: zero output (no matches). If any line prints, investigate and remove with another targeted Edit before committing.
 
 - [ ] **Step 4.20: Commit**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git add -A && git status -sb | head -20
 ```
+
 Verify staged: `README.md`, `CHEAT_SHEET.md`, `GETTING_STARTED.md`, `CLAUDE.md`, `DEVELOPMENT_NOTES.md`. Then:
 
 ```bash
@@ -793,13 +835,14 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ## Task 5: Add ROADMAP.md
 
 **Files:**
+
 - Create: `ROADMAP.md`
 
 - [ ] **Step 5.1: Create ROADMAP.md with the agreed content**
 
 Use the Write tool to create `ROADMAP.md` at the repo root with this exact content:
 
-````markdown
+```markdown
 # StrataWP Roadmap
 
 ## What StrataWP is (and isn't)
@@ -839,21 +882,24 @@ Decision criterion for both: real usage signal (downloads, issues, recent commit
 - **Admin UIs.** The Site Editor handles design tokens, templates, and patterns. Your IDE handles code. We don't need a third surface.
 - **AI SDK lock-in.** MCP, Claude Code, Copilot, and Cursor are where AI lives now. Recommending them in the docs beats baking in a wrapper.
 - **A component registry.** Use npm. If you need privacy, use private npm packages or a private registry like Verdaccio. We don't need to be in that business.
-````
+```
 
 (That's the literal file contents. Note this uses ``` ` `` `` `` ` `` ``` fences inside markdown — when the engineer uses Write, they pass the markdown as-is; nothing about the surrounding fenced block in this plan is part of the file.)
 
 - [ ] **Step 5.2: Verify the file rendered correctly**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && wc -l ROADMAP.md && head -5 ROADMAP.md && tail -3 ROADMAP.md
 ```
+
 Expected: line count around 45–50; first line `# StrataWP Roadmap`; last line ends with a period (or blank line) — no accidental fence remnants.
 
 - [ ] **Step 5.3: Commit**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git add ROADMAP.md && git commit -m "docs: add ROADMAP.md
 
@@ -869,6 +915,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 ## Task 6: Release prep — version bumps + CHANGELOG + final verification
 
 **Files:**
+
 - Modify: `package.json` (root) — bump version 1.2.0 → 2.0.0
 - Modify: `packages/cli/package.json` — bump version 1.2.0 → 2.0.0
 - Modify: `packages/cli/src/index.ts` — bump hardcoded `.version('1.0.0')` → `'2.0.0'`
@@ -971,49 +1018,61 @@ See [`ROADMAP.md`](./ROADMAP.md) for the full picture.
 - [ ] **Step 6.5: Final cross-repo grep for orphaned references**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && grep -rn -iE "@stratawp/(ai|registry|studio)|packages/(ai|registry|studio)|StrataWP\\\\Studio" packages/ examples/ docs/ README.md CHEAT_SHEET.md GETTING_STARTED.md CLAUDE.md DEVELOPMENT_NOTES.md CONTRIBUTING.md ROADMAP.md CHANGELOG.md 2>/dev/null | grep -v node_modules | grep -vE "(CHANGELOG\.md|ROADMAP\.md):"
 ```
+
 Expected: zero output. The `grep -vE` excludes intentional historical mentions in CHANGELOG.md and ROADMAP.md. If anything else prints, investigate before committing.
 
 - [ ] **Step 6.6: Full build**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm install && pnpm build 2>&1 | tail -20
 ```
+
 Expected: clean install, all remaining packages build.
 
 - [ ] **Step 6.7: Full test suite**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm test 2>&1 | tail -20
 ```
+
 Expected: all tests pass.
 
 - [ ] **Step 6.8: Verify CLI binary shows the new version**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && node packages/cli/dist/index.js --version
 ```
+
 Expected: `2.0.0`.
 
 - [ ] **Step 6.9: Verify CLI --help is clean**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && node packages/cli/dist/index.js --help | grep -cE "^\s+(registry|ai):" || echo "0 (none — good)"
 ```
+
 Expected: `0 (none — good)`.
 
 - [ ] **Step 6.10: Commit**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git add -A && git status -sb | head -10
 ```
+
 Verify staged: `package.json`, `packages/cli/package.json`, `packages/cli/src/index.ts`, `CHANGELOG.md`. Then:
 
 ```bash
@@ -1038,14 +1097,17 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - [ ] **Step 7.1: Push the feature branch**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git push -u origin feat/v2-focus-cuts 2>&1 | tail -5
 ```
+
 Expected: `* [new branch]      feat/v2-focus-cuts -> feat/v2-focus-cuts` and a "Create a pull request" hint.
 
 - [ ] **Step 7.2: Open the PR with `gh`**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && gh pr create \
   --title "v2.0 — Focus release: remove Studio, Registry, AI" \
@@ -1088,10 +1150,13 @@ Expected: PR URL printed. Capture it for the post-merge tasks.
 - [ ] **Step 7.3: Self-review the PR diff**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && gh pr view --web
 ```
+
 This opens the PR in the browser. Scroll the Files Changed tab and confirm:
+
 - The three package directories are entirely deleted (just the `--- /dev/null` and `+++ b/dev/null` style entries, no surprise content).
 - The CLI `index.ts` diff shows only the targeted import + command removals plus the version bump (no other functional changes).
 - The README/CHEAT_SHEET/GETTING_STARTED/CLAUDE.md edits match what's described in Task 4.
@@ -1113,40 +1178,49 @@ In the GitHub UI: choose "Create a merge commit" (NOT squash) so the six-commit 
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && gh pr merge --merge --delete-branch
 ```
+
 (`--merge` = create a merge commit; `--delete-branch` removes the feature branch after merge.)
 
 - [ ] **Step 8.2: Pull main locally**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git checkout main && git pull origin main
 ```
+
 Expected: clean fast-forward including the six new commits.
 
 - [ ] **Step 8.3: Tag v2.0.0**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && git tag -a v2.0.0 -m "v2.0 — Focus release: remove Studio, Registry, AI" && git push origin v2.0.0
 ```
+
 Expected: tag pushed; output shows `* [new tag]         v2.0.0 -> v2.0.0`.
 
 - [ ] **Step 8.4: Create the GitHub Release**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && gh release create v2.0.0 \
   --title "v2.0 — Focus" \
   --notes-file <(awk '/^## v2\.0\.0/{flag=1} flag && /^## v1\.6\.0/{exit} flag' CHANGELOG.md)
 ```
+
 Expected: release URL printed. The `awk` pipe extracts the v2.0.0 section from CHANGELOG.md (everything from `## v2.0.0` up to but not including the next `## v1.6.0`).
 
 - [ ] **Step 8.5: Publish @stratawp/cli@2.0.0**
 
 Run:
+
 ```bash
 cd "/Users/jon.imms/Local Sites/stratawp/strataWP" && pnpm -F @stratawp/cli build && cd packages/cli && npm publish --access public
 ```
+
 Expected: `npm notice` block followed by `+ @stratawp/cli@2.0.0`. If you hit `ENEEDAUTH`, run `npm login` first.
 
 - [ ] **Step 8.6: Deprecate the three retired npm packages**
@@ -1160,6 +1234,7 @@ npm deprecate "@stratawp/registry@*" "Removed in StrataWP v2.0 to sharpen scope.
 
 npm deprecate "@stratawp/ai@*"       "Removed in StrataWP v2.0 to sharpen scope. See https://github.com/JonImmsWordpressDev/strataWP/blob/main/ROADMAP.md"
 ```
+
 Expected: each command exits with no output on success. Verify with:
 
 ```bash
@@ -1167,6 +1242,7 @@ npm view @stratawp/studio deprecated
 npm view @stratawp/registry deprecated
 npm view @stratawp/ai deprecated
 ```
+
 Each should print the deprecation message.
 
 - [ ] **Step 8.7: Done**
@@ -1176,9 +1252,11 @@ Smoke-test the published CLI from a scratch directory:
 ```bash
 cd /tmp && mkdir stratawp-v2-smoketest && cd stratawp-v2-smoketest && npm install @stratawp/cli@2.0.0 && npx stratawp --version
 ```
+
 Expected: `2.0.0`.
 
 Tear down:
+
 ```bash
 rm -rf /tmp/stratawp-v2-smoketest
 ```

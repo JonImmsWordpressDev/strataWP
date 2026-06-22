@@ -1,21 +1,27 @@
-import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { registerBlockType } from '@wordpress/blocks'
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
+import { PanelBody, RangeControl, SelectControl } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 
 interface Attributes {
-  columns: number;
-  postsPerPage: number;
-  category: string;
-  orderBy: string;
-  order: string;
+  columns: number
+  postsPerPage: number
+  category: string
+  orderBy: string
+  order: string
 }
 
 registerBlockType('strata-advanced/portfolio-grid', {
-  edit: ({ attributes, setAttributes }: { attributes: Attributes; setAttributes: (attrs: Partial<Attributes>) => void }) => {
+  edit: ({
+    attributes,
+    setAttributes,
+  }: {
+    attributes: Attributes
+    setAttributes: (attrs: Partial<Attributes>) => void
+  }) => {
     const blockProps = useBlockProps({
       className: 'portfolio-grid-editor',
-    });
+    })
 
     return (
       <>
@@ -74,8 +80,8 @@ registerBlockType('strata-advanced/portfolio-grid', {
           </div>
         </div>
       </>
-    );
+    )
   },
 
   save: () => null, // Dynamic block, rendered in PHP
-});
+})

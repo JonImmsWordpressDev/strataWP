@@ -1,20 +1,26 @@
-import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { registerBlockType } from '@wordpress/blocks'
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
+import { PanelBody, RangeControl, ToggleControl } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 
 interface Attributes {
-  columns: number;
-  postsPerPage: number;
-  department: string;
-  showBio: boolean;
+  columns: number
+  postsPerPage: number
+  department: string
+  showBio: boolean
 }
 
 registerBlockType('strata-advanced/team-members', {
-  edit: ({ attributes, setAttributes }: { attributes: Attributes; setAttributes: (attrs: Partial<Attributes>) => void }) => {
+  edit: ({
+    attributes,
+    setAttributes,
+  }: {
+    attributes: Attributes
+    setAttributes: (attrs: Partial<Attributes>) => void
+  }) => {
     const blockProps = useBlockProps({
       className: 'team-members-editor',
-    });
+    })
 
     return (
       <>
@@ -57,8 +63,8 @@ registerBlockType('strata-advanced/team-members', {
           </div>
         </div>
       </>
-    );
+    )
   },
 
   save: () => null,
-});
+})

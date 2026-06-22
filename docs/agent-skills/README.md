@@ -19,18 +19,18 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 
 ## Available Skills
 
-| Skill | When to Use |
-|-------|-------------|
-| [wordpress-router](#wordpress-router) | Starting any WordPress task - routes to correct workflow |
-| [wp-project-triage](#wp-project-triage) | Analyzing a repo to understand its structure |
-| [wp-block-development](#wp-block-development) | Creating or modifying Gutenberg blocks |
-| [wp-block-themes](#wp-block-themes) | Working with FSE themes, theme.json, templates |
-| [wp-interactivity-api](#wp-interactivity-api) | Adding interactive behavior to blocks |
-| [wp-rest-api](#wp-rest-api) | Building or debugging REST endpoints |
-| [wp-performance](#wp-performance) | Profiling and optimizing WordPress |
-| [wp-plugin-development](#wp-plugin-development) | Building WordPress plugins |
-| [wp-wpcli-and-ops](#wp-wpcli-and-ops) | WP-CLI operations and automation |
-| [wp-phpstan](#wp-phpstan) | Static analysis configuration |
+| Skill                                           | When to Use                                              |
+| ----------------------------------------------- | -------------------------------------------------------- |
+| [wordpress-router](#wordpress-router)           | Starting any WordPress task - routes to correct workflow |
+| [wp-project-triage](#wp-project-triage)         | Analyzing a repo to understand its structure             |
+| [wp-block-development](#wp-block-development)   | Creating or modifying Gutenberg blocks                   |
+| [wp-block-themes](#wp-block-themes)             | Working with FSE themes, theme.json, templates           |
+| [wp-interactivity-api](#wp-interactivity-api)   | Adding interactive behavior to blocks                    |
+| [wp-rest-api](#wp-rest-api)                     | Building or debugging REST endpoints                     |
+| [wp-performance](#wp-performance)               | Profiling and optimizing WordPress                       |
+| [wp-plugin-development](#wp-plugin-development) | Building WordPress plugins                               |
+| [wp-wpcli-and-ops](#wp-wpcli-and-ops)           | WP-CLI operations and automation                         |
+| [wp-phpstan](#wp-phpstan)                       | Static analysis configuration                            |
 
 ## Skill Details
 
@@ -39,11 +39,13 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Entry point for most WordPress tasks. Classifies the repo and routes to the appropriate domain skill.
 
 **Use when**:
+
 - Starting work on any WordPress codebase
 - Unsure which skill to use
 - Need to understand repo structure first
 
 **Key workflow**:
+
 1. Runs `wp-project-triage` to classify repo
 2. Identifies project type (plugin/theme/block theme/full site)
 3. Routes to appropriate domain skill based on task
@@ -55,11 +57,13 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Deterministic inspection of WordPress repositories. Outputs structured JSON with project classification.
 
 **Use when**:
+
 - First time working with a WordPress repo
 - After significant structural changes
 - Need to verify tooling/test setup
 
 **Output includes**:
+
 - Project kind (plugin, theme, block-theme, wp-core, gutenberg, full-site)
 - Tooling (Composer, npm/pnpm, @wordpress/scripts, Vite)
 - Tests present (PHPUnit, Playwright, wp-env)
@@ -72,12 +76,14 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Creating and modifying Gutenberg blocks following current best practices.
 
 **Use when**:
+
 - Creating new blocks
 - Updating blocks to apiVersion 3
 - Adding deprecations for attribute changes
 - Working with InnerBlocks or block variations
 
 **Key concepts**:
+
 - `block.json` metadata (apiVersion 3)
 - `render.php` for dynamic blocks
 - Deprecation patterns
@@ -90,6 +96,7 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Full Site Editing theme development with theme.json, templates, and patterns.
 
 **Use when**:
+
 - Creating or modifying theme.json
 - Building FSE templates
 - Creating template parts
@@ -97,6 +104,7 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 - Setting up style variations
 
 **Key concepts**:
+
 - theme.json v3 schema
 - Template hierarchy for FSE
 - Pattern registration
@@ -109,12 +117,14 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Adding interactive behavior to blocks using WordPress's Interactivity API.
 
 **Use when**:
+
 - Adding client-side interactivity to blocks
 - Using `data-wp-*` directives
 - Working with stores and state
 - Debugging hydration issues
 
 **Key concepts**:
+
 - `data-wp-interactive` namespace
 - Store definitions (state, actions, callbacks)
 - Server-side rendering for initial state
@@ -127,12 +137,14 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Building and debugging WordPress REST API endpoints.
 
 **Use when**:
+
 - Registering custom endpoints
 - Debugging 401/403/404 errors
 - Adding fields to existing responses
 - Implementing authentication
 
 **Key concepts**:
+
 - `register_rest_route()` patterns
 - `WP_REST_Controller` architecture
 - Schema validation
@@ -146,12 +158,14 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Backend performance profiling and optimization.
 
 **Use when**:
+
 - Site/page/endpoint is slow
 - Optimizing database queries
 - Investigating cron issues
 - Setting up object caching
 
 **Key concepts**:
+
 - WP-CLI `doctor` and `profile` commands
 - Query Monitor headless usage
 - Autoload optimization
@@ -164,12 +178,14 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: WordPress plugin architecture and best practices.
 
 **Use when**:
+
 - Creating new plugins
 - Adding activation/deactivation hooks
 - Building settings pages
 - Implementing security measures
 
 **Key concepts**:
+
 - Plugin header and bootstrap
 - Hook registration patterns
 - Settings API
@@ -182,6 +198,7 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: WP-CLI operations and automation scripts.
 
 **Use when**:
+
 - Database migrations
 - URL/domain changes
 - Plugin/theme management
@@ -189,6 +206,7 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 - Building automation scripts
 
 **Key concepts**:
+
 - Safe `search-replace` workflow
 - `wp-cli.yml` configuration
 - Multisite targeting
@@ -201,12 +219,14 @@ Agent skills are portable instruction bundles that teach AI assistants (like Cla
 **Purpose**: Static analysis configuration for WordPress projects.
 
 **Use when**:
+
 - Setting up PHPStan
 - Managing baselines
 - Adding WordPress-specific typing
 - Handling third-party plugin classes
 
 **Key concepts**:
+
 - `phpstan.neon` configuration
 - WordPress stubs
 - Baseline management

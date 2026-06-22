@@ -105,9 +105,7 @@ export class DeployConfigManager {
   /**
    * Load a specific environment configuration
    */
-  async loadEnvironment(
-    environment: string
-  ): Promise<EnvironmentConfig | null> {
+  async loadEnvironment(environment: string): Promise<EnvironmentConfig | null> {
     const config = await this.load()
     if (!config || !config.environments[environment]) {
       return null
@@ -131,13 +129,8 @@ export class DeployConfigManager {
   /**
    * Save configuration to file
    */
-  async save(
-    config: DeploymentConfig,
-    useProjectConfig = false
-  ): Promise<void> {
-    const targetPath = useProjectConfig
-      ? this.projectConfigPath
-      : this.configPath
+  async save(config: DeploymentConfig, useProjectConfig = false): Promise<void> {
+    const targetPath = useProjectConfig ? this.projectConfigPath : this.configPath
     await fs.ensureDir(path.dirname(targetPath))
     await fs.writeJSON(targetPath, config, { spaces: 2 })
   }
@@ -182,10 +175,7 @@ export class DeployConfigManager {
    * Check if configuration exists
    */
   async exists(): Promise<boolean> {
-    return (
-      (await fs.pathExists(this.configPath)) ||
-      (await fs.pathExists(this.projectConfigPath))
-    )
+    return (await fs.pathExists(this.configPath)) || (await fs.pathExists(this.projectConfigPath))
   }
 
   /**
@@ -306,7 +296,10 @@ STRATAWP_DEPLOY_STAGING_URL=https://staging.example.com
   private resolveEnvVariables(config: DeploymentConfig): DeploymentConfig {
     const resolved = JSON.parse(JSON.stringify(config)) // Deep clone
 
-    for (const [_envName, envConfig] of Object.entries(resolved.environments) as [string, EnvironmentConfig][]) {
+    for (const [_envName, envConfig] of Object.entries(resolved.environments) as [
+      string,
+      EnvironmentConfig,
+    ][]) {
       // Resolve host
       if (envConfig.host && envConfig.host.startsWith('${')) {
         const varName = envConfig.host.slice(2, -1)
@@ -345,22 +338,14 @@ STRATAWP_DEPLOY_STAGING_URL=https://staging.example.com
 
       // Resolve database URLs
       if (envConfig.database) {
-        if (
-          envConfig.database.localUrl &&
-          envConfig.database.localUrl.startsWith('${')
-        ) {
+        if (envConfig.database.localUrl && envConfig.database.localUrl.startsWith('${')) {
           const varName = envConfig.database.localUrl.slice(2, -1)
-          envConfig.database.localUrl =
-            process.env[varName] || envConfig.database.localUrl
+          envConfig.database.localUrl = process.env[varName] || envConfig.database.localUrl
         }
 
-        if (
-          envConfig.database.remoteUrl &&
-          envConfig.database.remoteUrl.startsWith('${')
-        ) {
+        if (envConfig.database.remoteUrl && envConfig.database.remoteUrl.startsWith('${')) {
           const varName = envConfig.database.remoteUrl.slice(2, -1)
-          envConfig.database.remoteUrl =
-            process.env[varName] || envConfig.database.remoteUrl
+          envConfig.database.remoteUrl = process.env[varName] || envConfig.database.remoteUrl
         }
       }
     }

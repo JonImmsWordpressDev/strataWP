@@ -53,11 +53,7 @@ export async function templateCommand(name: string, options: TemplateOptions): P
   const templateContent = generateTemplateHTML(options.type, themeSlug)
 
   // Create template file
-  await createFileWithSpinner(
-    templatePath,
-    templateContent,
-    `Creating ${slug}.html template`
-  )
+  await createFileWithSpinner(templatePath, templateContent, `Creating ${slug}.html template`)
 
   // Success message
   console.log(chalk.green('\n✓ Template created successfully!\n'))

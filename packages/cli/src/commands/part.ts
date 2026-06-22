@@ -51,16 +51,13 @@ export async function partCommand(name: string, options: PartOptions): Promise<v
   }
 
   // Generate part content
-  const partContent = options.markup === 'html'
-    ? generatePartHTML(options.type)
-    : generatePartPHP(options.type, themeSlug)
+  const partContent =
+    options.markup === 'html'
+      ? generatePartHTML(options.type)
+      : generatePartPHP(options.type, themeSlug)
 
   // Create part file
-  await createFileWithSpinner(
-    partPath,
-    partContent,
-    `Creating ${slug}.${ext} template part`
-  )
+  await createFileWithSpinner(partPath, partContent, `Creating ${slug}.${ext} template part`)
 
   // Success message
   console.log(chalk.green('\n✓ Template part created successfully!\n'))
@@ -70,6 +67,8 @@ export async function partCommand(name: string, options: PartOptions): Promise<v
 
   console.log(chalk.cyan('\n  Next steps:'))
   console.log(chalk.dim(`  1. Edit the part in parts/${slug}.${ext}`))
-  console.log(chalk.dim('  2. Use in templates with <!-- wp:template-part {"slug":"' + slug + '"} /-->'))
+  console.log(
+    chalk.dim('  2. Use in templates with <!-- wp:template-part {"slug":"' + slug + '"} /-->')
+  )
   console.log(chalk.dim("  3. Or in PHP with get_template_part('parts/" + slug + "')\n"))
 }

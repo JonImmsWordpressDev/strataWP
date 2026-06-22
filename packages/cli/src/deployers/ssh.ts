@@ -36,10 +36,7 @@ export class SSHDeployer extends BaseDeployer {
       if (this.config.password) {
         sshConfig.password = this.config.password
       } else if (this.config.privateKey) {
-        const keyPath = this.config.privateKey.replace(
-          '~',
-          process.env.HOME || ''
-        )
+        const keyPath = this.config.privateKey.replace('~', process.env.HOME || '')
         sshConfig.privateKeyPath = keyPath
 
         // Support optional passphrase
@@ -48,11 +45,7 @@ export class SSHDeployer extends BaseDeployer {
         }
       } else {
         // Default to ~/.ssh/id_rsa
-        const defaultKeyPath = path.join(
-          process.env.HOME || '',
-          '.ssh',
-          'id_rsa'
-        )
+        const defaultKeyPath = path.join(process.env.HOME || '', '.ssh', 'id_rsa')
         if (await fs.pathExists(defaultKeyPath)) {
           sshConfig.privateKeyPath = defaultKeyPath
         }
@@ -109,7 +102,9 @@ export class SSHDeployer extends BaseDeployer {
       await this.connect()
 
       // Test we can execute a command and access the remote path
-      const result = await this.ssh.execCommand(`test -d "${this.config.remotePath}" && echo "exists"`)
+      const result = await this.ssh.execCommand(
+        `test -d "${this.config.remotePath}" && echo "exists"`
+      )
 
       await this.disconnect()
       return result.stdout.includes('exists') || result.code === 0
@@ -157,10 +152,7 @@ export class SSHDeployer extends BaseDeployer {
 
     // Include SSH key if configured
     if (this.config.privateKey) {
-      const keyPath = this.config.privateKey.replace(
-        '~',
-        process.env.HOME || ''
-      )
+      const keyPath = this.config.privateKey.replace('~', process.env.HOME || '')
       sshCommand += ` -i "${keyPath}"`
     }
 
@@ -185,19 +177,14 @@ export class SSHDeployer extends BaseDeployer {
     }
 
     // Create a temp file with the file list for --files-from
-    const tmpFileList = path.join(
-      process.env.TMPDIR || '/tmp',
-      `stratawp-rsync-${Date.now()}.txt`
-    )
+    const tmpFileList = path.join(process.env.TMPDIR || '/tmp', `stratawp-rsync-${Date.now()}.txt`)
     const relativePaths = files.map((f) => f.relativePath).join('\n')
     await fs.writeFile(tmpFileList, relativePaths)
 
     try {
       args.push(`--files-from=${tmpFileList}`)
       args.push(localBasePath + '/')
-      args.push(
-        `${this.config.username}@${this.config.host}:${this.config.remotePath}/`
-      )
+      args.push(`${this.config.username}@${this.config.host}:${this.config.remotePath}/`)
 
       // Execute rsync
       await execa('rsync', args, {
@@ -270,10 +257,7 @@ export class SSHDeployer extends BaseDeployer {
    * Create a backup of the remote directory
    */
   async createBackup(): Promise<string> {
-    const timestamp = new Date()
-      .toISOString()
-      .replace(/[:.]/g, '-')
-      .slice(0, -5)
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
     const backupName = `backup-${timestamp}`
     const parentDir = path.posix.dirname(this.config.remotePath)
     const backupPath = path.posix.join(parentDir, backupName)
@@ -316,9 +300,7 @@ export class SSHDeployer extends BaseDeployer {
       await this.ssh.execCommand(`rm -rf "${this.config.remotePath}"`)
 
       // Restore from backup
-      const result = await this.ssh.execCommand(
-        `cp -r "${backupPath}" "${this.config.remotePath}"`
-      )
+      const result = await this.ssh.execCommand(`cp -r "${backupPath}" "${this.config.remotePath}"`)
 
       if (result.code !== 0) {
         throw new Error(result.stderr || 'Failed to restore backup')
@@ -333,9 +315,7 @@ export class SSHDeployer extends BaseDeployer {
   /**
    * List backups
    */
-  async listBackups(): Promise<
-    Array<{ id: string; path: string; created: number }>
-  > {
+  async listBackups(): Promise<Array<{ id: string; path: string; created: number }>> {
     const parentDir = path.posix.dirname(this.config.remotePath)
     const backups: Array<{ id: string; path: string; created: number }> = []
 
@@ -522,8 +502,7 @@ STRATAWP_EOF`
         const execResult = await this.execCommandSafe(
           `cd "${wpRootPath}" && php ${tmpPath} 2>/dev/null; rm -f ${tmpPath}`
         )
-        result.opcacheReset = execResult.success &&
-          execResult.stdout.includes('reset successfully')
+        result.opcacheReset = execResult.success && execResult.stdout.includes('reset successfully')
       }
     }
 
@@ -534,16 +513,11 @@ STRATAWP_EOF`
     }
 
     // 4. Run user-defined WP-CLI commands
-    if (
-      postDeployConfig.wpCliCommands &&
-      postDeployConfig.wpCliCommands.length > 0
-    ) {
+    if (postDeployConfig.wpCliCommands && postDeployConfig.wpCliCommands.length > 0) {
       const hasWpCli = await this.isWpCliAvailable()
       if (hasWpCli) {
         for (const command of postDeployConfig.wpCliCommands) {
-          const cmdResult = await this.execCommandSafe(
-            `cd "${wpRootPath}" && ${command}`
-          )
+          const cmdResult = await this.execCommandSafe(`cd "${wpRootPath}" && ${command}`)
           result.customCommands.push({
             command,
             success: cmdResult.success,
@@ -581,10 +555,7 @@ STRATAWP_EOF`
     }
 
     // 2. Check theme.json exists (FSE themes)
-    const themeJsonPath = path.posix.join(
-      this.config.remotePath,
-      'theme.json'
-    )
+    const themeJsonPath = path.posix.join(this.config.remotePath, 'theme.json')
     const themeJsonExists = await this.pathExists(themeJsonPath)
     if (themeJsonExists) {
       checks.push({
@@ -597,15 +568,11 @@ STRATAWP_EOF`
     // 3. WordPress health check via WP-CLI
     const hasWpCli = await this.isWpCliAvailable()
     if (hasWpCli) {
-      const wpCheck = await this.execCommandSafe(
-        `cd "${wpRootPath}" && wp eval "echo 'OK';"`
-      )
+      const wpCheck = await this.execCommandSafe(`cd "${wpRootPath}" && wp eval "echo 'OK';"`)
       checks.push({
         name: 'WordPress loads',
         passed: wpCheck.success && wpCheck.stdout.includes('OK'),
-        message: wpCheck.success
-          ? 'healthy'
-          : (wpCheck.stderr || 'unknown error').slice(0, 100),
+        message: wpCheck.success ? 'healthy' : (wpCheck.stderr || 'unknown error').slice(0, 100),
       })
     }
 
@@ -615,10 +582,7 @@ STRATAWP_EOF`
         `curl -sL -o /dev/null -w "%{http_code}" "${this.config.database.remoteUrl}" 2>/dev/null`
       )
       const statusCode = urlCheck.stdout.trim()
-      const isHealthy =
-        statusCode === '200' ||
-        statusCode === '301' ||
-        statusCode === '302'
+      const isHealthy = statusCode === '200' || statusCode === '301' || statusCode === '302'
       checks.push({
         name: 'Site responds',
         passed: isHealthy,
@@ -683,10 +647,7 @@ STRATAWP_EOF`
       for (const line of lines) {
         const cleanLine = line.replace(/\r/g, '')
         // Match either "id,slug" or "id,theme//slug"
-        if (
-          cleanLine.endsWith(`,${templateSlug}`) ||
-          cleanLine.includes(`//${templateSlug}`)
-        ) {
+        if (cleanLine.endsWith(`,${templateSlug}`) || cleanLine.includes(`//${templateSlug}`)) {
           remoteId = cleanLine.split(',')[0].trim()
           break
         }
@@ -725,17 +686,14 @@ echo 'OK: Updated template ID ' . $result;
       )
 
       // 6. Cleanup remote temp files
-      await this.execCommandSafe(
-        `rm -f "${remoteTmpPath}" "${remotePhpPath}"`
-      )
+      await this.execCommandSafe(`rm -f "${remoteTmpPath}" "${remotePhpPath}"`)
 
       if (updateResult.success && updateResult.stdout.includes('OK')) {
         return { success: true, message: updateResult.stdout.trim() }
       } else {
         return {
           success: false,
-          message:
-            updateResult.stderr || updateResult.stdout || 'Unknown error',
+          message: updateResult.stderr || updateResult.stdout || 'Unknown error',
         }
       }
     } catch (error) {
@@ -748,18 +706,14 @@ echo 'OK: Updated template ID ' . $result;
       await fs.remove(localTmpPath).catch(() => {})
       await fs.remove(localPhpPath).catch(() => {})
       // Attempt remote cleanup
-      await this.execCommandSafe(
-        `rm -f "${remoteTmpPath}" "${remotePhpPath}"`
-      ).catch(() => {})
+      await this.execCommandSafe(`rm -f "${remoteTmpPath}" "${remotePhpPath}"`).catch(() => {})
     }
   }
 
   /**
    * List all FSE templates on remote via WP-CLI
    */
-  async listRemoteTemplates(
-    wpRootPath: string
-  ): Promise<Array<{ id: string; slug: string }>> {
+  async listRemoteTemplates(wpRootPath: string): Promise<Array<{ id: string; slug: string }>> {
     const result = await this.execCommandSafe(
       `cd "${wpRootPath}" && wp post list --post_type=wp_template --fields=ID,post_name --format=csv 2>/dev/null`
     )

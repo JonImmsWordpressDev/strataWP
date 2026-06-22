@@ -104,9 +104,7 @@ export class SSHDatabaseDumper {
       const exportResult = await this.ssh.execCommand(exportCmd)
 
       if (exportResult.code !== 0) {
-        throw new Error(
-          `Failed to export database: ${exportResult.stderr || exportResult.stdout}`
-        )
+        throw new Error(`Failed to export database: ${exportResult.stderr || exportResult.stdout}`)
       }
 
       // Download the dump file via SFTP

@@ -61,10 +61,7 @@ beforeAll(() => {
   }
 
   console.warn = (...args: any[]) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('componentWillReceiveProps')
-    ) {
+    if (typeof args[0] === 'string' && args[0].includes('componentWillReceiveProps')) {
       return
     }
     originalWarn.call(console, ...args)

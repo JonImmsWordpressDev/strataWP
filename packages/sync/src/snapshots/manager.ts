@@ -74,9 +74,7 @@ export class SnapshotManager {
         cwd: path.dirname(options.themePath),
         filter: (entryPath) => {
           const parts = entryPath.split(path.sep)
-          return !parts.some((part) =>
-            SnapshotManager.SNAPSHOT_EXCLUDES.includes(part)
-          )
+          return !parts.some((part) => SnapshotManager.SNAPSHOT_EXCLUDES.includes(part))
         },
       },
       [path.basename(options.themePath)]
@@ -245,10 +243,7 @@ export class SnapshotManager {
     await fs.writeFile(this.indexPath, JSON.stringify(snapshots, null, 2), 'utf8')
   }
 
-  private async updatePreviousStatus(
-    currentId: string,
-    environment: string
-  ): Promise<void> {
+  private async updatePreviousStatus(currentId: string, environment: string): Promise<void> {
     const snapshots = await this.listSnapshots()
 
     for (const snapshot of snapshots) {

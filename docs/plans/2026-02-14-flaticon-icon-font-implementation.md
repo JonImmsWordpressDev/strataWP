@@ -15,9 +15,11 @@
 ### Task 1: Create the Icons PHP Component
 
 **Files:**
+
 - Create: `packages/core/src/Components/Icons.php`
 
 **Reference files to study first:**
+
 - `packages/core/src/Components/Fonts.php` — similar component pattern
 - `packages/core/src/Components/Assets.php` — asset enqueuing pattern
 - `packages/core/src/ComponentInterface.php` — interface to implement
@@ -273,16 +275,19 @@ auto-detects CSS in dist/ or src/icons/, and adds size utility classes."
 ### Task 2: Register Icons Component in Example Theme
 
 **Files:**
+
 - Modify: `examples/basic-theme/functions.php` (add Icons import and registration)
 
 **Step 1: Add the Icons component to `functions.php`**
 
 Add the import at line 26 (after the other StrataWP component imports):
+
 ```php
 use StrataWP\Components\Icons;
 ```
 
 Add `new Icons(),` to the Theme constructor array (after `new Fonts(),` on line 40):
+
 ```php
 new Icons(),
 ```
@@ -299,15 +304,18 @@ git commit -m "feat(basic-theme): register Icons component"
 ### Task 3: Add Icon Directory Handling to Vite Plugin
 
 **Files:**
+
 - Modify: `packages/vite-plugin/src/plugins/assets.ts`
 
 **Reference:** Current file is minimal (40 lines). We need to add:
+
 1. A `buildEnd` or `writeBundle` hook to copy `src/icons/` → `dist/icons/`
 2. In the `configureServer` hook (or via PHPHmr watcher), watch `src/icons/` for changes
 
 **Step 1: Extend the assets plugin**
 
 Replace the current `packages/vite-plugin/src/plugins/assets.ts` content. The key additions are:
+
 - Import `fs` and `path` from Node
 - Add `writeBundle` hook that copies `src/icons/` → `dist/icons/` and rewrites font `url()` paths in the CSS
 - Add `configureServer` hook that watches `src/icons/` for changes and triggers full reload
@@ -326,10 +334,7 @@ import path from 'path'
  * Also handles icon font directory (src/icons/ → dist/icons/).
  */
 export function strataWPAssets(options: AssetOptions = {}): Plugin {
-  const {
-    publicDir = 'dist',
-    baseUrl,
-  } = options
+  const { publicDir = 'dist', baseUrl } = options
 
   let rootDir: string
 
@@ -453,10 +458,12 @@ Watches src/icons/ for changes during dev and triggers full page reload."
 ### Task 4: Create CLI Icons Command
 
 **Files:**
+
 - Create: `packages/cli/src/commands/icons.ts`
 - Modify: `packages/cli/src/index.ts` (register new commands)
 
 **Reference files:**
+
 - `packages/cli/src/commands/component.ts` — similar command pattern
 - `packages/cli/src/commands/design-system.ts` — similar setup command
 - `packages/cli/src/utils/filesystem.ts` — file helpers
@@ -498,11 +505,7 @@ export async function iconsSetupCommand(options: IconsSetupOptions): Promise<voi
     // Create README placeholder
     const readmePath = path.join(iconsDir, 'README.md')
     if (!(await fs.pathExists(readmePath))) {
-      await createFileWithSpinner(
-        readmePath,
-        getIconsReadme(),
-        'Creating icons README'
-      )
+      await createFileWithSpinner(readmePath, getIconsReadme(), 'Creating icons README')
     }
   }
 
@@ -523,16 +526,18 @@ export async function iconsSetupCommand(options: IconsSetupOptions): Promise<voi
     const icons = await parseIconNames(cssPath)
     console.log(chalk.green(`\n✓ Found ${icons.length} icons\n`))
     if (icons.length > 0 && icons.length <= 30) {
-      icons.forEach(name => console.log(chalk.dim(`  flaticon-${name}`)))
+      icons.forEach((name) => console.log(chalk.dim(`  flaticon-${name}`)))
     } else if (icons.length > 30) {
-      icons.slice(0, 20).forEach(name => console.log(chalk.dim(`  flaticon-${name}`)))
+      icons.slice(0, 20).forEach((name) => console.log(chalk.dim(`  flaticon-${name}`)))
       console.log(chalk.dim(`  ... and ${icons.length - 20} more`))
     }
   }
 
   console.log(chalk.green('\n✓ Icons directory ready!\n'))
   console.log(chalk.cyan('  Usage in templates:'))
-  console.log(chalk.dim('  <?php strata_basic()->template_tags()->icon(\'home\', [\'size\' => \'lg\']); ?>\n'))
+  console.log(
+    chalk.dim("  <?php strata_basic()->template_tags()->icon('home', ['size' => 'lg']); ?>\n")
+  )
 }
 
 /**
@@ -601,7 +606,7 @@ export async function iconsListCommand(): Promise<void> {
   }
 
   console.log(chalk.cyan(`\n🎨 ${icons.length} icons available:\n`))
-  icons.forEach(name => console.log(`  ${chalk.dim('flaticon-')}${name}`))
+  icons.forEach((name) => console.log(`  ${chalk.dim('flaticon-')}${name}`))
   console.log('')
 }
 
@@ -655,7 +660,7 @@ async function parseIconNames(cssPath: string): Promise<string[]> {
 
   const content = await fs.readFile(cssPath, 'utf8')
   const matches = content.matchAll(/\.flaticon-([a-z0-9_-]+)\s*[:{]/g)
-  const names = [...new Set([...matches].map(m => m[1]))]
+  const names = [...new Set([...matches].map((m) => m[1]))]
   names.sort()
   return names
 }
@@ -708,11 +713,13 @@ src/icons/
 **Step 2: Register commands in `packages/cli/src/index.ts`**
 
 Add import near the top (after other command imports, around line 9):
+
 ```typescript
 import { iconsSetupCommand, iconsUpdateCommand, iconsListCommand } from './commands/icons'
 ```
 
 Add commands before `program.parse()` (before line 308):
+
 ```typescript
 // Icon font management
 program
@@ -727,10 +734,7 @@ program
   .option('--zip <path>', 'Path to Flaticon icon font ZIP file')
   .action(iconsUpdateCommand)
 
-program
-  .command('icons:list')
-  .description('List available icon names')
-  .action(iconsListCommand)
+program.command('icons:list').description('List available icon names').action(iconsListCommand)
 ```
 
 **Step 3: Add adm-zip dependency (needed for ZIP extraction)**
@@ -755,6 +759,7 @@ parses CSS for available icon names, and provides usage guidance."
 ### Task 5: Add Icons README to Example Theme
 
 **Files:**
+
 - Create: `examples/basic-theme/src/icons/README.md`
 
 **Step 1: Create the placeholder directory and README**
@@ -817,17 +822,21 @@ git commit -m "chore: build verification for icons integration"
 This task verifies the full workflow in a running WordPress instance.
 
 **Step 1: Download a test icon font from Flaticon**
+
 - Go to flaticon.com, pick 5-10 icons, download as icon font ZIP
 
 **Step 2: Run the setup command**
+
 ```bash
 cd /path/to/test-theme
 stratawp icons:setup --zip ~/Downloads/flaticon-font.zip
 ```
 
 **Step 3: Verify icons render in WordPress**
+
 - Add `<?php strata_basic()->template_tags()->icon('home', ['size' => 'lg']); ?>` to a template
 - Visit the page and confirm the icon renders correctly
 
 **Step 4: Run `stratawp icons:list`**
+
 - Confirm all imported icons are listed

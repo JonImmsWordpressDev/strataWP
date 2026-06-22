@@ -38,9 +38,7 @@ export function usePage(options: UsePageOptions) {
     throw new Error('Either id or slug must be provided')
   }
 
-  const key = id
-    ? ['page', id, JSON.stringify(params)]
-    : ['page', slug, JSON.stringify(params)]
+  const key = id ? ['page', id, JSON.stringify(params)] : ['page', slug, JSON.stringify(params)]
 
   const fetcher = async () => {
     if (id) {

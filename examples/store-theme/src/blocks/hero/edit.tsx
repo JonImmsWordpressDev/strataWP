@@ -65,10 +65,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 
       <div {...blockProps}>
         {attributes.backgroundImage && (
-          <div
-            className="hero-overlay"
-            style={{ opacity: attributes.overlayOpacity }}
-          />
+          <div className="hero-overlay" style={{ opacity: attributes.overlayOpacity }} />
         )}
         <div className="hero-content">
           <RichText

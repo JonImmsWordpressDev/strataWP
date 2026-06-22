@@ -47,9 +47,7 @@ export const mockWordPressData = {
 export const mockWordPressi18n = {
   __: vi.fn((text: string) => text),
   _x: vi.fn((text: string) => text),
-  _n: vi.fn((single: string, plural: string, number: number) =>
-    number === 1 ? single : plural
-  ),
+  _n: vi.fn((single: string, plural: string, number: number) => (number === 1 ? single : plural)),
   sprintf: vi.fn((format: string, ..._args: any[]) => format),
   setLocaleData: vi.fn(),
 }

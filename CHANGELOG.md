@@ -114,6 +114,7 @@ stratawp sync:templates production --all --dry-run
 ```
 
 **How it works:**
+
 1. Detects local WP-CLI (including Local by Flywheel path)
 2. Exports template content from local database
 3. Uploads to remote server via SCP
@@ -149,12 +150,14 @@ stratawp sync:templates production --all --dry-run
 ### Files Changed
 
 **Modified:**
+
 - `deployers/base.ts` — Added `postDeploy()`, `validate()` lifecycle methods to deploy flow; new interfaces
 - `deployers/ssh.ts` — Implemented post-deploy hooks, validation, backup cleanup, template sync, rsync SSH fix
 - `commands/deploy/index.ts` — Wired post-deploy results display, validation output, template sync guidance
 - `utils/deploy-config.ts` — Added `BackupConfig`, `passphrase`, `deleteRemoved`, `localWpCli` fields
 
 **New:**
+
 - `commands/deploy/sync-templates.ts` — `stratawp sync:templates` and `sync:templates:list` commands
 
 ---
@@ -183,20 +186,24 @@ Browse, search, and inspect all blocks registered in your WordPress installation
 **REST API Endpoints**
 
 New endpoints with HTTP caching:
+
 - `GET /stratawp/v1/blocks` - List blocks with filtering
 - `GET /stratawp/v1/blocks/categories` - List block categories
 
 ### Files Added
 
 **PHP:**
+
 - `php/RestApi/BlocksController.php` - REST API controller with HTTP caching
 
 **TypeScript:**
+
 - `src/types/blocks.ts` - Block type definitions
 - `src/api/blocks.ts` - REST API client
 - `src/hooks/useBlocks.ts` - React state management hook
 
 **React Components:**
+
 - `src/pages/BlockLibrary/index.tsx` - Main page with tab navigation
 - `src/pages/BlockLibrary/ShowcaseTab.tsx` - Showcase tab content
 - `src/pages/BlockLibrary/BlockCard.tsx` - Block card component
@@ -221,11 +228,13 @@ This release focuses on improving the StrataWP Studio admin experience with crit
 ### Bug Fixes
 
 **Pagination Fix**
+
 - Fixed incorrect total count in Pattern Library when combining database and theme patterns
 - "Load More" button now works correctly with proper pagination metadata
 - Added `total_pages`, `page`, and `per_page` to API responses
 
 **Origin Validation Fix**
+
 - Fixed Live Preview failing in reverse proxy and load balancer setups
 - Implemented "trust on first message" pattern for postMessage communication
 - Added debug logging when origin mismatches occur for easier troubleshooting
@@ -233,11 +242,13 @@ This release focuses on improving the StrataWP Studio admin experience with crit
 ### Performance Improvements
 
 **N+1 Query Elimination**
+
 - Reduced database queries from 2N+1 to ~3 queries when loading patterns
 - Uses WordPress `update_object_term_cache()` to prime term cache
 - 20 patterns now loads in ~3 queries instead of ~41
 
 **HTTP Caching**
+
 - Added ETag and Cache-Control headers to REST endpoints
 - Design System endpoint: 60s cache with file-based ETag
 - Presets endpoint: 1 hour cache (static content)
@@ -248,16 +259,19 @@ This release focuses on improving the StrataWP Studio admin experience with crit
 ### UI/UX Improvements
 
 **Loading Skeletons**
+
 - Replaced spinner with skeleton loading placeholders in Pattern Grid
 - Smooth shimmer animation matches actual card layout
 - Better perceived performance during pattern loading
 
 **Toast Notifications**
+
 - Replaced `window.alert()` with WordPress-native toast notifications
 - Shows success/error messages for pattern export, duplicate, and delete
 - Uses `@wordpress/notices` SnackbarList component
 
 **Debounced Color Inputs**
+
 - Added 150ms debounce to color picker inputs in Design System
 - Immediate visual feedback in the picker
 - Reduced re-renders and live preview updates while adjusting colors
@@ -265,10 +279,12 @@ This release focuses on improving the StrataWP Studio admin experience with crit
 ### Files Changed
 
 **New Components:**
+
 - `src/components/DebouncedColorInput/` - Debounced color input with local state
 - `src/pages/PatternLibrary/PatternCardSkeleton.tsx` - Skeleton loading component
 
 **Updated:**
+
 - `php/RestApi/PatternsController.php` - Pagination fix, N+1 fix, HTTP caching
 - `php/RestApi/DesignSystemController.php` - HTTP caching headers
 - `php/Studio.php` - Origin validation fix in preview script
@@ -286,6 +302,7 @@ This release focuses on improving the StrataWP Studio admin experience with crit
 This release introduces a comprehensive production management toolkit for WordPress deployments.
 
 ### Environment Sync
+
 Sync databases between environments with intelligent URL replacement:
 
 ```bash
@@ -297,12 +314,14 @@ stratawp sync:db:push staging
 ```
 
 **Features:**
+
 - **Automatic URL Replacement**: Handles PHP serialized strings correctly (recalculates string lengths)
 - **Backup Before Restore**: Creates automatic backup before overwriting database
 - **Selective Table Sync**: Sync specific tables with `--tables` flag
 - **Production Protection**: Requires confirmation for production pushes
 
 ### Deployment Snapshots
+
 Automatic snapshots are created before every deployment:
 
 ```bash
@@ -317,6 +336,7 @@ stratawp rollback:mark-stable 1
 ```
 
 **Features:**
+
 - **Pre-Deploy Snapshots**: Automatically captures theme files and database before deployment
 - **Compressed Storage**: Theme archived as tar.gz, database as gzip SQL
 - **SHA256 Hashing**: Verify snapshot integrity
@@ -330,6 +350,7 @@ pnpm add @stratawp/sync
 ```
 
 **Programmatic API:**
+
 ```typescript
 import {
   DatabaseDumper,
@@ -372,6 +393,7 @@ new \StrataWP\Components\Analytics(),
 ```
 
 **Features:**
+
 - **Dev Cookie Setting**: Automatically sets a `dev=true` cookie for internal users
 - **Three Exclusion Modes**:
   - `Admins only` - Users with `manage_options` capability
@@ -395,6 +417,7 @@ stratawp deploy production --fresh
 ```
 
 **When to use `--fresh`:**
+
 - Server files are out of sync with the deployment manifest
 - Previous deployment partially failed but manifest was saved
 - You made manual changes on the server
@@ -409,6 +432,7 @@ stratawp deploy production --fresh
 StrataWP 1.0 introduces a comprehensive deployment system that makes deploying your WordPress themes to production servers effortless.
 
 ### Deployment Features
+
 - **One-Command Deployment**: Deploy to production with a single command
 - **Multiple Hosting Support**: SFTP, FTP, SSH/rsync (coming soon), Git (coming soon)
 - **Interactive Setup Wizard**: Configure deployment in minutes with guided prompts
@@ -419,6 +443,7 @@ StrataWP 1.0 introduces a comprehensive deployment system that makes deploying y
 - **Secure Credentials**: Environment variable support to keep passwords out of git
 
 **New Commands:**
+
 ```bash
 stratawp deploy:setup              # Interactive deployment configuration
 stratawp deploy production         # Deploy to production
@@ -435,6 +460,7 @@ stratawp deploy:test production    # Test connection without deploying
 This release introduces comprehensive support for headless WordPress architectures.
 
 ### Features
+
 - **TypeScript-First REST API Client**: Fully-typed WordPress REST API client
 - **Authentication Support**: Basic Auth, JWT, Application Passwords, and OAuth
 - **React Hooks**: SWR-powered hooks for data fetching
@@ -443,6 +469,7 @@ This release introduces comprehensive support for headless WordPress architectur
 - **Image Optimization**: Responsive images and Next.js Image integration
 
 **New Package:**
+
 ```bash
 pnpm add @stratawp/headless
 ```
@@ -456,6 +483,7 @@ pnpm add @stratawp/headless
 This release introduces an interactive component browser and documentation tool, similar to Storybook but specifically designed for WordPress Block Themes.
 
 ### Features
+
 - **Auto-Discovery**: Automatically discovers all blocks, components, patterns
 - **Live Preview**: Interactive preview with viewport testing
 - **Hot Reload**: Real-time updates when you modify components
@@ -463,6 +491,7 @@ This release introduces an interactive component browser and documentation tool,
 - **Source Code Viewer**: View component source code directly in the browser
 
 **New Commands:**
+
 ```bash
 stratawp explorer            # Launch component explorer
 stratawp storybook           # Alias for explorer
@@ -477,6 +506,7 @@ stratawp storybook           # Alias for explorer
 This release introduces a complete testing solution for WordPress themes.
 
 ### Features
+
 - **Vitest Integration**: Fast unit and integration tests with WordPress mocks
 - **Playwright E2E**: Full user workflow testing with browser automation
 - **WordPress Mocks**: Complete mocks for WordPress JavaScript APIs
@@ -484,6 +514,7 @@ This release introduces a complete testing solution for WordPress themes.
 - **Coverage Reporting**: Built-in code coverage with thresholds
 
 **Commands:**
+
 ```bash
 pnpm test              # Run unit tests
 pnpm test:coverage     # Run with coverage
@@ -499,12 +530,14 @@ pnpm test:e2e          # Run E2E tests
 This release introduces a powerful component registry system for sharing and discovering reusable WordPress components.
 
 ### Features
+
 - **Search & Discovery**: Find components by name, type, or keywords
 - **One-Command Installation**: Install blocks, components, patterns
 - **Version Management**: Semantic versioning and dependency resolution
 - **Easy Publishing**: Share your components with the community
 
 **Commands:**
+
 ```bash
 stratawp registry:search <query>     # Find components
 stratawp registry:install <package>  # Install components
@@ -520,12 +553,14 @@ stratawp registry:publish            # Publish your component
 This release introduces comprehensive AI integration to accelerate your WordPress theme development.
 
 ### Features
+
 - **Code Generation**: Generate blocks, components, and patterns from natural language
 - **Code Review**: AI-powered analysis for security and performance
 - **Documentation**: Automatically create comprehensive documentation
 - **Multi-Provider Support**: OpenAI GPT-4 or Anthropic Claude
 
 **Commands:**
+
 ```bash
 stratawp ai:setup        # Interactive AI provider configuration
 stratawp ai:generate     # Generate blocks, components, patterns
@@ -540,12 +575,14 @@ stratawp ai:document     # Generate documentation
 **Three Complete Production-Ready Themes**
 
 ### Advanced Theme - Enterprise Features
+
 - 4 Custom Post Types: Portfolio, Team Members, Testimonials, Case Studies
 - Custom Gutenberg Blocks: Portfolio Grid and Team Members
 - Advanced Layouts Component with Customizer integration
 - Meta Boxes System with comprehensive custom fields
 
 ### Store Theme - WooCommerce E-Commerce
+
 - 4 WooCommerce Templates: Shop, Product, Cart, Checkout
 - 2 Product Blocks: Featured Products and Product Categories
 - 4 E-Commerce Patterns with professional styling
@@ -556,6 +593,7 @@ stratawp ai:document     # Generate documentation
 ## v0.2.0 - CLI & Design Systems
 
 ### Features
+
 - **CLI Scaffolding** - Generate templates, parts, components, and blocks
 - **Design System Integration** - Tailwind CSS and UnoCSS support
 - **Performance Optimization** - Critical CSS extraction, lazy loading
@@ -566,6 +604,7 @@ stratawp ai:document     # Generate documentation
 ## v0.1.0 - Initial Release
 
 ### Features
+
 - **Published npm packages** - `@stratawp/cli` and `@stratawp/vite-plugin`
 - **Block Theme (FSE) support** - Full Site Editing out of the box
 - **Vite integration** - Lightning-fast HMR and build times

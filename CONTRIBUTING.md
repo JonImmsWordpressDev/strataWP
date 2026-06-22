@@ -61,6 +61,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) for commit m
 - `test:` Test additions/changes
 
 Examples:
+
 ```bash
 git commit -m "feat(cli): add block generator command"
 git commit -m "fix(vite-plugin): resolve HMR issue with PHP files"

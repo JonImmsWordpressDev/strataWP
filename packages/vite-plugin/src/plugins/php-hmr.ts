@@ -10,11 +10,7 @@ import type { PhpHmrOptions } from '../types'
  * without manually refreshing the browser.
  */
 export function strataWPPhpHmr(options: PhpHmrOptions = {}): Plugin {
-  const {
-    enabled = true,
-    watch: patterns = ['**/*.php', 'theme.json'],
-    debounce = 100,
-  } = options
+  const { enabled = true, watch: patterns = ['**/*.php', 'theme.json'], debounce = 100 } = options
 
   let server: ViteDevServer
   let watcher: ReturnType<typeof watch> | null = null

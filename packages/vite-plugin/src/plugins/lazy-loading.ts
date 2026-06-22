@@ -9,12 +9,7 @@ import path from 'path'
 import fs from 'fs'
 
 export function strataWPLazyLoading(options: LazyLoadingOptions = {}): Plugin {
-  const {
-    enabled = true,
-    images = 'native',
-    css = true,
-    chunks = true,
-  } = options
+  const { enabled = true, images = 'native', css = true, chunks = true } = options
 
   if (!enabled) {
     return {
@@ -58,11 +53,7 @@ export function strataWPLazyLoading(options: LazyLoadingOptions = {}): Plugin {
   }
 }
 
-async function generatePHPUtilities(
-  root: string,
-  images: string,
-  css: boolean
-): Promise<void> {
+async function generatePHPUtilities(root: string, images: string, css: boolean): Promise<void> {
   const incDir = path.join(root, 'inc')
 
   if (!fs.existsSync(incDir)) {

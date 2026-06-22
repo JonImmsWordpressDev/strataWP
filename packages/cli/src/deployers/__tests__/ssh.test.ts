@@ -2,13 +2,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { EnvironmentConfig } from '../../utils/deploy-config'
 
 // Create hoisted mock functions - these are created before any imports
-const { mockConnect, mockDispose, mockIsConnected, mockExecCommand, mockPutFile } = vi.hoisted(() => ({
-  mockConnect: vi.fn(),
-  mockDispose: vi.fn(),
-  mockIsConnected: vi.fn(),
-  mockExecCommand: vi.fn(),
-  mockPutFile: vi.fn(),
-}))
+const { mockConnect, mockDispose, mockIsConnected, mockExecCommand, mockPutFile } = vi.hoisted(
+  () => ({
+    mockConnect: vi.fn(),
+    mockDispose: vi.fn(),
+    mockIsConnected: vi.fn(),
+    mockExecCommand: vi.fn(),
+    mockPutFile: vi.fn(),
+  })
+)
 
 // Mock node-ssh using hoisted mocks
 vi.mock('node-ssh', () => {
@@ -218,9 +220,7 @@ describe('SSHDeployer', () => {
       await deployer.connect()
       await deployer.deleteFiles(['/remote/file1.php', '/remote/file2.php'])
 
-      expect(mockExecCommand).toHaveBeenCalledWith(
-        'rm -f "/remote/file1.php" "/remote/file2.php"'
-      )
+      expect(mockExecCommand).toHaveBeenCalledWith('rm -f "/remote/file1.php" "/remote/file2.php"')
     })
 
     it('should handle empty file list', async () => {
@@ -238,9 +238,7 @@ describe('SSHDeployer', () => {
       await deployer.connect()
       await deployer.createDirectory('/var/www/new/dir')
 
-      expect(mockExecCommand).toHaveBeenCalledWith(
-        'mkdir -p "/var/www/new/dir"'
-      )
+      expect(mockExecCommand).toHaveBeenCalledWith('mkdir -p "/var/www/new/dir"')
     })
   })
 
@@ -293,9 +291,7 @@ describe('SSHDeployer', () => {
           stderr: 'Permission denied',
         }) // cp -r fails
 
-      await expect(deployer.createBackup()).rejects.toThrow(
-        'Failed to create backup'
-      )
+      await expect(deployer.createBackup()).rejects.toThrow('Failed to create backup')
     })
   })
 
@@ -306,9 +302,7 @@ describe('SSHDeployer', () => {
 
       await deployer.restoreBackup('/var/www/html/backup-2024-01-01')
 
-      expect(mockExecCommand).toHaveBeenCalledWith(
-        expect.stringContaining('rm -rf')
-      )
+      expect(mockExecCommand).toHaveBeenCalledWith(expect.stringContaining('rm -rf'))
       expect(mockExecCommand).toHaveBeenCalledWith(
         expect.stringContaining('cp -r "/var/www/html/backup-2024-01-01"')
       )
@@ -318,9 +312,9 @@ describe('SSHDeployer', () => {
       await deployer.connect()
       mockExecCommand.mockResolvedValue({ code: 1, stdout: '', stderr: '' })
 
-      await expect(
-        deployer.restoreBackup('/nonexistent/backup')
-      ).rejects.toThrow('Backup not found')
+      await expect(deployer.restoreBackup('/nonexistent/backup')).rejects.toThrow(
+        'Backup not found'
+      )
     })
   })
 
@@ -370,9 +364,7 @@ describe('SSHDeployer', () => {
 
     it('should throw error when not connected', async () => {
       // Don't call connect - deployer is not connected
-      await expect(deployer.executeCommand('ls')).rejects.toThrow(
-        'Not connected to SSH server'
-      )
+      await expect(deployer.executeCommand('ls')).rejects.toThrow('Not connected to SSH server')
     })
 
     it('should throw error when command fails', async () => {
@@ -383,9 +375,7 @@ describe('SSHDeployer', () => {
         stderr: 'Command not found',
       })
 
-      await expect(deployer.executeCommand('invalid-cmd')).rejects.toThrow(
-        'Command not found'
-      )
+      await expect(deployer.executeCommand('invalid-cmd')).rejects.toThrow('Command not found')
     })
   })
 

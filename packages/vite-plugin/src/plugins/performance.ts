@@ -14,27 +14,23 @@ export function strataWPPerformance(options: PerformanceOptions = {}): Plugin[] 
 
   // Critical CSS
   if (options.criticalCSS !== false) {
-    const criticalOptions = typeof options.criticalCSS === 'object'
-      ? options.criticalCSS
-      : { enabled: true }
+    const criticalOptions =
+      typeof options.criticalCSS === 'object' ? options.criticalCSS : { enabled: true }
 
     plugins.push(strataWPCriticalCSS(criticalOptions))
   }
 
   // Lazy Loading
   if (options.lazyLoading !== false) {
-    const lazyOptions = typeof options.lazyLoading === 'object'
-      ? options.lazyLoading
-      : { enabled: true }
+    const lazyOptions =
+      typeof options.lazyLoading === 'object' ? options.lazyLoading : { enabled: true }
 
     plugins.push(strataWPLazyLoading(lazyOptions))
   }
 
   // Preload
   if (options.preload !== false) {
-    const preloadOptions = typeof options.preload === 'object'
-      ? options.preload
-      : { enabled: true }
+    const preloadOptions = typeof options.preload === 'object' ? options.preload : { enabled: true }
 
     plugins.push(strataWPPreload(preloadOptions))
   }

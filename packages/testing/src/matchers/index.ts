@@ -49,10 +49,7 @@ export function toBeRegisteredBlock(received: string) {
 /**
  * Check if block has required attributes
  */
-export function toHaveBlockAttributes(
-  received: any,
-  expectedAttributes: string[]
-) {
+export function toHaveBlockAttributes(received: any, expectedAttributes: string[]) {
   if (!received || !received.attributes) {
     return {
       pass: false,
@@ -61,9 +58,7 @@ export function toHaveBlockAttributes(
   }
 
   const actualAttributes = Object.keys(received.attributes)
-  const missingAttributes = expectedAttributes.filter(
-    (attr) => !actualAttributes.includes(attr)
-  )
+  const missingAttributes = expectedAttributes.filter((attr) => !actualAttributes.includes(attr))
 
   const pass = missingAttributes.length === 0
 
@@ -81,8 +76,9 @@ export function toHaveBlockAttributes(
  */
 export function toBeValidWordPressBlock(received: HTMLElement) {
   const hasDataType = received.hasAttribute('data-type')
-  const hasWpBlock = received.classList.contains('wp-block') ||
-                     Array.from(received.classList).some(c => c.startsWith('wp-block-'))
+  const hasWpBlock =
+    received.classList.contains('wp-block') ||
+    Array.from(received.classList).some((c) => c.startsWith('wp-block-'))
 
   const pass = hasDataType && hasWpBlock
 

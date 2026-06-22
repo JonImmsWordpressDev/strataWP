@@ -33,7 +33,7 @@ export class DatabaseDumper {
   async generateDumpSQL(options: DumpOptions = {}): Promise<string> {
     const connection = await this.getConnection()
     try {
-      let tables = options.tables || await this.getTables()
+      let tables = options.tables || (await this.getTables())
 
       if (options.excludeTables) {
         tables = tables.filter((t) => !options.excludeTables!.includes(t))
@@ -68,13 +68,15 @@ export class DatabaseDumper {
             const columnList = columns.map((c) => `\`${c}\``).join(', ')
 
             for (const row of rows as any[]) {
-              const values = columns.map((col) => {
-                const value = row[col]
-                if (value === null) return 'NULL'
-                if (typeof value === 'number') return value.toString()
-                // Escape string values
-                return `'${String(value).replace(/'/g, "''").replace(/\\/g, '\\\\')}'`
-              }).join(', ')
+              const values = columns
+                .map((col) => {
+                  const value = row[col]
+                  if (value === null) return 'NULL'
+                  if (typeof value === 'number') return value.toString()
+                  // Escape string values
+                  return `'${String(value).replace(/'/g, "''").replace(/\\/g, '\\\\')}'`
+                })
+                .join(', ')
 
               output.push(`INSERT INTO \`${table}\` (${columnList}) VALUES (${values});`)
             }

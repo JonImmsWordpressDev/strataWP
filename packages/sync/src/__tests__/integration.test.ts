@@ -47,7 +47,8 @@ describe('Integration: Snapshot workflow', () => {
     const snapshot2 = await manager.createSnapshot({
       environment: 'production',
       themePath,
-      databaseDump: 'CREATE TABLE wp_posts (id INT); INSERT INTO wp_posts VALUES (1); INSERT INTO wp_posts VALUES (2);',
+      databaseDump:
+        'CREATE TABLE wp_posts (id INT); INSERT INTO wp_posts VALUES (1); INSERT INTO wp_posts VALUES (2);',
     })
 
     expect(snapshot2.status).toBe('current')

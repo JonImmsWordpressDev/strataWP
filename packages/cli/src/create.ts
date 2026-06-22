@@ -62,22 +62,22 @@ async function main() {
         {
           title: 'Basic Theme (Recommended)',
           description: 'Simple starter with essential blocks and clean structure',
-          value: 'basic'
+          value: 'basic',
         },
         {
           title: 'Advanced Theme',
           description: 'Portfolio features, team members, advanced blocks',
-          value: 'advanced'
+          value: 'advanced',
         },
         {
           title: 'Store Theme',
           description: 'WooCommerce ready with product features',
-          value: 'store'
+          value: 'store',
         },
         {
           title: 'Minimal',
           description: 'Start from scratch with minimal setup',
-          value: 'minimal'
+          value: 'minimal',
         },
       ],
       initial: 0,
@@ -214,9 +214,7 @@ async function customizeTheme(themePath: string, config: ThemeConfig) {
     // Add StrataWP metadata for update tracking
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = dirname(__filename)
-    const cliPackageJson = await fs.readJson(
-      path.join(__dirname, '..', 'package.json')
-    )
+    const cliPackageJson = await fs.readJson(path.join(__dirname, '..', 'package.json'))
     packageJson.stratawp = {
       createdWith: cliPackageJson.version,
       template: config.template,
@@ -297,7 +295,11 @@ async function offerWordPressLinking(themePath: string, slug: string) {
   } catch (error) {
     console.log(chalk.red('\n✖ Failed to create symlink'))
     console.log(chalk.dim('You can manually create it:\n'))
-    console.log(chalk.dim(`  ln -s "${themePath}" ${path.join(selectedSite.path, 'wp-content', 'themes', slug)}\n`))
+    console.log(
+      chalk.dim(
+        `  ln -s "${themePath}" ${path.join(selectedSite.path, 'wp-content', 'themes', slug)}\n`
+      )
+    )
   }
 }
 
@@ -367,9 +369,7 @@ async function createBasicStructure(themePath: string, config: ThemeConfig) {
   // Get CLI version for metadata
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = dirname(__filename)
-  const cliPackageJson = await fs.readJson(
-    path.join(__dirname, '..', 'package.json')
-  )
+  const cliPackageJson = await fs.readJson(path.join(__dirname, '..', 'package.json'))
 
   // Create package.json
   const packageJson = {
@@ -458,11 +458,15 @@ export default defineConfig({
         autoRegister: true,
         namespace: '${config.slug}',
       },
-      ${config.cssFramework !== 'vanilla' ? `designSystem: {
+      ${
+        config.cssFramework !== 'vanilla'
+          ? `designSystem: {
         enabled: true,
         framework: '${config.cssFramework === 'unocss' ? 'unocss' : config.cssFramework === 'tailwind' ? 'tailwind' : 'none'}',
         wordpressPresets: true,
-      },` : ''}
+      },`
+          : ''
+      }
       performance: {
         criticalCSS: { enabled: true },
         lazyLoading: { enabled: true },
@@ -537,10 +541,7 @@ require_once get_template_directory() . '/inc/vite-assets.php';
   )
 
   // Create editor.ts
-  await fs.writeFile(
-    path.join(themePath, 'src/js/editor.ts'),
-    `import '../css/editor.css'\n`
-  )
+  await fs.writeFile(path.join(themePath, 'src/js/editor.ts'), `import '../css/editor.css'\n`)
 
   // Create main.css
   await fs.writeFile(
@@ -549,10 +550,7 @@ require_once get_template_directory() . '/inc/vite-assets.php';
   )
 
   // Create editor.css
-  await fs.writeFile(
-    path.join(themePath, 'src/css/editor.css'),
-    `/* Editor stylesheet */\n`
-  )
+  await fs.writeFile(path.join(themePath, 'src/css/editor.css'), `/* Editor stylesheet */\n`)
 
   // Create vite-assets.php helper
   const viteAssetsPhp = `<?php

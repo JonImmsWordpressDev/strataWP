@@ -9,6 +9,7 @@ npx create-stratawp my-theme
 ```
 
 This will guide you through creating a new WordPress theme with:
+
 - TypeScript & React support
 - Vite for lightning-fast HMR
 - Block Theme (FSE) architecture

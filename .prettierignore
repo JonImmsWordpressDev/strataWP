@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+dist
+build
+node_modules
+.turbo
+coverage
+**/vendor
