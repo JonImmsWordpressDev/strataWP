@@ -70,6 +70,6 @@ export async function partCommand(name: string, options: PartOptions): Promise<v
 
   console.log(chalk.cyan('\n  Next steps:'))
   console.log(chalk.dim(`  1. Edit the part in parts/${slug}.${ext}`))
-  console.log(chalk.dim('  2. Use in templates with <!-- wp:template-part {\"slug\":\"' + slug + '\"} /-->'))
-  console.log(chalk.dim('  3. Or in PHP with get_template_part(\'parts/' + slug + '\')\n'))
+  console.log(chalk.dim('  2. Use in templates with <!-- wp:template-part {"slug":"' + slug + '"} /-->'))
+  console.log(chalk.dim("  3. Or in PHP with get_template_part('parts/" + slug + "')\n"))
 }

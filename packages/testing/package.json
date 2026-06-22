@@ -43,8 +43,7 @@
     "build": "tsup",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "test:e2e": "playwright test",
-    "lint": "eslint src"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@testing-library/react": "^14.1.2",

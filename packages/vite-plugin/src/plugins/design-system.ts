@@ -54,10 +54,12 @@ export function strataWPDesignSystem(options: DesignSystemOptions = {}): Plugin 
         )
       }
 
-      // Configure PostCSS for Tailwind
+      // Configure PostCSS for Tailwind — dynamic require for optional peer dependencies
       if (framework === 'tailwind') {
         try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           const tailwindcss = require('tailwindcss')
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           const autoprefixer = require('autoprefixer')
 
           return {

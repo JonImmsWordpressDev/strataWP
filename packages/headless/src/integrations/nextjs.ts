@@ -102,7 +102,8 @@ export function revalidateTag(tag: string) {
   }
 
   try {
-    // Next.js 13+ App Router
+    // Next.js 13+ App Router — dynamic require to handle optional dependency
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { revalidateTag: nextRevalidateTag } = require('next/cache')
     nextRevalidateTag(tag)
   } catch (error) {
@@ -120,7 +121,8 @@ export function revalidatePath(path: string) {
   }
 
   try {
-    // Next.js 13+ App Router
+    // Next.js 13+ App Router — dynamic require to handle optional dependency
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { revalidatePath: nextRevalidatePath } = require('next/cache')
     nextRevalidatePath(path)
   } catch (error) {

@@ -127,7 +127,8 @@ export function setupCustomMatchers() {
   })
 }
 
-// Type declarations for TypeScript
+// Type declarations for TypeScript — namespace Vi is required by Vitest's type augmentation API
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
   namespace Vi {
     interface Matchers<R = any> {
@@ -139,3 +140,4 @@ declare global {
     }
   }
 }
+/* eslint-enable @typescript-eslint/no-namespace */

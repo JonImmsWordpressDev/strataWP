@@ -35,9 +35,10 @@ export function strataWPCriticalCSS(options: CriticalCSSOptions = {}): Plugin {
       const templatesDir = path.join(root, 'templates')
       const outputDir = path.join(root, output)
 
-      // Check if critical module is available
+      // Check if critical module is available — dynamic require for optional dependency
       let critical
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         critical = require('critical')
       } catch {
         console.warn(
