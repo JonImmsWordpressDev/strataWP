@@ -36,6 +36,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
     "clean": "rm -rf dist"
   },

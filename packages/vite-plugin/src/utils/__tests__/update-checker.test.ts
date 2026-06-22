@@ -42,7 +42,7 @@ describe('vite-plugin update-checker', () => {
 
     it('should return updates when newer versions available', async () => {
       vi.mocked(fs.existsSync).mockImplementation((path) => {
-        return path.includes('package.json')
+        return String(path).includes('package.json')
       })
       vi.mocked(fs.readFileSync).mockReturnValue(
         JSON.stringify({
@@ -72,7 +72,7 @@ describe('vite-plugin update-checker', () => {
 
     it('should return null when all packages up to date', async () => {
       vi.mocked(fs.existsSync).mockImplementation((path) => {
-        return path.includes('package.json')
+        return String(path).includes('package.json')
       })
       vi.mocked(fs.readFileSync).mockReturnValue(
         JSON.stringify({

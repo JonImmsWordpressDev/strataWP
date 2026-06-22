@@ -36,7 +36,7 @@ export function strataWPPreload(options: PreloadOptions = {}): Plugin {
 async function generatePHPPreloader(
   root: string,
   assets: string[],
-  strategy: string
+  _strategy: string
 ): Promise<void> {
   const incDir = path.join(root, 'inc')
 

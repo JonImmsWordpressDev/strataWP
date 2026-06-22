@@ -188,9 +188,10 @@ export async function setupCommand() {
   // Choose credential storage method (for FTP/SFTP or SSH with password)
   let password: string | undefined
   let passwordEnvVar: string | undefined
+  let credentialStorage: string | undefined
 
   if (deploymentType !== 'ssh' || authMethod === 'password') {
-    const { credentialStorage } = await prompts({
+    const result = await prompts({
       type: 'select',
       name: 'credentialStorage',
       message: 'How do you want to store credentials?',
@@ -207,6 +208,7 @@ export async function setupCommand() {
         },
       ],
     })
+    credentialStorage = result.credentialStorage
 
     if (credentialStorage === 'env') {
       const envVarName = `STRATAWP_DEPLOY_${environmentName.toUpperCase()}_PASSWORD`

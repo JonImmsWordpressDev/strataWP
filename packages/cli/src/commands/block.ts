@@ -72,13 +72,9 @@ async function generateBlockConfig(
   await fs.writeJson(path.join(blockDir, 'block.json'), config, { spaces: 2 })
 }
 
-async function generateBlockEdit(blockDir: string, name: string, slug: string, framework: string) {
+async function generateBlockEdit(blockDir: string, name: string, _slug: string, framework: string) {
   const useTailwind = framework === 'tailwind'
   const useUno = framework === 'unocss'
-
-  const classes = useTailwind || useUno
-    ? 'className="p-4 bg-gray-100 rounded-lg"'
-    : ''
 
   const headingClasses = useTailwind || useUno
     ? 'className="text-2xl font-bold mb-2"'
@@ -104,7 +100,7 @@ export default function Edit() {
 async function generateBlockRender(
   blockDir: string,
   name: string,
-  slug: string,
+  _slug: string,
   type: 'static' | 'dynamic',
   framework: string
 ) {

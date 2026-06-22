@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
 import { execa } from 'execa'
-import {createFileWithSpinner, readFile, writeFile, readJson, writeJson } from '../utils/filesystem'
+import {createFileWithSpinner, readFile, writeFile } from '../utils/filesystem'
 
 type Framework = 'tailwind' | 'unocss'
 

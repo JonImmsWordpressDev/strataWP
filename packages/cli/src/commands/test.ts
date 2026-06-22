@@ -6,7 +6,7 @@ interface TestOptions {
   watch?: boolean
 }
 
-export async function testCommand(options: TestOptions) {
+export async function testCommand(_options: TestOptions) {
   console.log(chalk.cyan('🧪 Running tests...'))
   console.log(chalk.yellow('⚠️  Coming soon!'))
 }

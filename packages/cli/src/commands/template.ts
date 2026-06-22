@@ -3,7 +3,6 @@
  */
 import path from 'path'
 import chalk from 'chalk'
-import ora from 'ora'
 import { validateTemplateName, slugify } from '../utils/validation'
 import { generateTemplateHTML } from '../utils/templates'
 import { createFileWithSpinner, ensureDir } from '../utils/filesystem'

@@ -216,7 +216,7 @@ export class FTPDeployer extends BaseDeployer {
   /**
    * Restore from a backup
    */
-  async restoreBackup(backupPath: string): Promise<void> {
+  async restoreBackup(_backupPath: string): Promise<void> {
     // Implementation depends on how backups are created
     // This is a placeholder for future implementation
     throw new Error('Restore from backup not yet implemented for FTP/SFTP')

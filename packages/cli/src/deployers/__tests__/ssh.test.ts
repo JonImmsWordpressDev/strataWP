@@ -179,6 +179,7 @@ describe('SSHDeployer', () => {
           relativePath: 'file1.php',
           size: 100,
           hash: 'abc123',
+          modified: 0,
         },
         {
           localPath: '/local/file2.php',
@@ -186,6 +187,7 @@ describe('SSHDeployer', () => {
           relativePath: 'file2.php',
           size: 200,
           hash: 'def456',
+          modified: 0,
         },
       ]
 

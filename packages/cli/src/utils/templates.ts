@@ -350,7 +350,7 @@ if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 export function generateComponentClass(
   name: string,
   namespace: string,
-  type: string
+  _type: string
 ): string {
   return `<?php
 /**
