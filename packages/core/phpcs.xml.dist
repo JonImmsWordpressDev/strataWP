@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="StrataWP Core">
+  <description>WordPress coding standards for StrataWP core.</description>
+
+  <file>src</file>
+
+  <arg name="extensions" value="php"/>
+  <arg name="colors"/>
+  <arg value="sp"/>
+
+  <config name="testVersion" value="8.1-"/>
+  <config name="minimum_wp_version" value="6.5"/>
+
+  <rule ref="WordPress-Core"/>
+  <rule ref="WordPress-Docs"/>
+  <rule ref="PHPCompatibilityWP"/>
+
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array">
+        <element value="stratawp"/>
+      </property>
+    </properties>
+  </rule>
+</ruleset>
