@@ -8,9 +8,7 @@ import {
 
 describe('toBeValidBlockMarkup', () => {
   it('passes for valid wp block comment markup', () => {
-    const r = toBeValidBlockMarkup(
-      '<!-- wp:paragraph --><p>hi</p><!-- /wp:paragraph -->'
-    )
+    const r = toBeValidBlockMarkup('<!-- wp:paragraph --><p>hi</p><!-- /wp:paragraph -->')
     expect(r.pass).toBe(true)
   })
 
