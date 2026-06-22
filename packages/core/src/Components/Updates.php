@@ -81,10 +81,10 @@ class Updates implements ComponentInterface {
 			return;
 		}
 
-		add_filter( 'pre_set_site_transient_update_themes', [ $this, 'check_for_update' ] );
-		add_filter( 'themes_api', [ $this, 'theme_info' ], 10, 3 );
-		add_action( 'admin_notices', [ $this, 'show_update_notice' ] );
-		add_filter( 'upgrader_pre_download', [ $this, 'authenticated_download' ], 10, 3 );
+		add_filter( 'pre_set_site_transient_update_themes', array( $this, 'check_for_update' ) );
+		add_filter( 'themes_api', array( $this, 'theme_info' ), 10, 3 );
+		add_action( 'admin_notices', array( $this, 'show_update_notice' ) );
+		add_filter( 'upgrader_pre_download', array( $this, 'authenticated_download' ), 10, 3 );
 	}
 
 	/**
@@ -108,17 +108,17 @@ class Updates implements ComponentInterface {
 			return $transient;
 		}
 
-		$theme_slug    = get_template();
+		$theme_slug      = get_template();
 		$current_version = wp_get_theme()->get( 'Version' );
 		$remote_version  = $release['version'];
 
 		if ( version_compare( $remote_version, $current_version, '>' ) ) {
-			$transient->response[ $theme_slug ] = [
+			$transient->response[ $theme_slug ] = array(
 				'theme'       => $theme_slug,
 				'new_version' => $remote_version,
 				'url'         => $release['html_url'],
 				'package'     => $release['zip_url'],
-			];
+			);
 		}
 
 		return $transient;
@@ -151,18 +151,18 @@ class Updates implements ComponentInterface {
 
 		$theme = wp_get_theme();
 
-		return (object) [
+		return (object) array(
 			'name'          => $theme->get( 'Name' ),
 			'slug'          => $theme_slug,
 			'version'       => $release['version'],
 			'author'        => $theme->get( 'Author' ),
 			'homepage'      => $theme->get( 'ThemeURI' ),
 			'download_link' => $release['zip_url'],
-			'sections'      => [
+			'sections'      => array(
 				'description' => $theme->get( 'Description' ),
 				'changelog'   => $release['body'],
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -222,10 +222,10 @@ class Updates implements ComponentInterface {
 	 * @return array|null Decoded JSON response or null on failure.
 	 */
 	protected function github_api_get( string $url ): ?array {
-		$headers = [
+		$headers = array(
 			'Accept: application/vnd.github.v3+json',
 			'User-Agent: StrataWP-Update-Checker',
-		];
+		);
 
 		$token = defined( 'STRATAWP_GITHUB_TOKEN' ) ? STRATAWP_GITHUB_TOKEN : '';
 		if ( ! empty( $token ) ) {
@@ -233,12 +233,15 @@ class Updates implements ComponentInterface {
 		}
 
 		$ch = curl_init( $url );
-		curl_setopt_array( $ch, [
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER     => $headers,
-			CURLOPT_TIMEOUT        => 10,
-			CURLOPT_FOLLOWLOCATION => true,
-		] );
+		curl_setopt_array(
+			$ch,
+			array(
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPHEADER     => $headers,
+				CURLOPT_TIMEOUT        => 10,
+				CURLOPT_FOLLOWLOCATION => true,
+			)
+		);
 
 		$body = curl_exec( $ch );
 		$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
@@ -275,21 +278,24 @@ class Updates implements ComponentInterface {
 
 		$tmpfile = wp_tempnam( 'stratawp-update' );
 
-		$headers = [
+		$headers = array(
 			'Accept: application/octet-stream',
 			'User-Agent: StrataWP-Update-Checker',
 			'Authorization: Bearer ' . $token,
-		];
+		);
 
 		$ch = curl_init( $package );
 		$fp = fopen( $tmpfile, 'wb' );
 
-		curl_setopt_array( $ch, [
-			CURLOPT_FILE           => $fp,
-			CURLOPT_HTTPHEADER     => $headers,
-			CURLOPT_TIMEOUT        => 300,
-			CURLOPT_FOLLOWLOCATION => true,
-		] );
+		curl_setopt_array(
+			$ch,
+			array(
+				CURLOPT_FILE           => $fp,
+				CURLOPT_HTTPHEADER     => $headers,
+				CURLOPT_TIMEOUT        => 300,
+				CURLOPT_FOLLOWLOCATION => true,
+			)
+		);
 
 		curl_exec( $ch );
 		$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
@@ -343,7 +349,7 @@ class Updates implements ComponentInterface {
 		$version = ltrim( $data['tag_name'], 'v' );
 
 		// Find the zip asset in release assets
-		$zip_url = $this->find_zip_asset( $data['assets'] ?? [] );
+		$zip_url = $this->find_zip_asset( $data['assets'] ?? array() );
 
 		// Fall back to GitHub's auto-generated zipball
 		if ( ! $zip_url ) {
@@ -355,12 +361,12 @@ class Updates implements ComponentInterface {
 			return null;
 		}
 
-		$release = [
+		$release = array(
 			'version'  => $version,
 			'html_url' => $data['html_url'] ?? '',
 			'zip_url'  => $zip_url,
 			'body'     => $data['body'] ?? '',
-		];
+		);
 
 		set_transient( $this->cache_key, $release, $this->cache_ttl );
 

@@ -20,7 +20,7 @@ class TemplateTags {
 	 *
 	 * @var array<string, callable>
 	 */
-	protected array $tags = [];
+	protected array $tags = array();
 
 	/**
 	 * Constructor

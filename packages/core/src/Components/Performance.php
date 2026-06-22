@@ -24,9 +24,9 @@ class Performance implements ComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'wp_head', [ $this, 'add_resource_hints' ], 1 );
-		add_filter( 'script_loader_tag', [ $this, 'add_async_defer' ], 10, 3 );
-		add_action( 'wp_enqueue_scripts', [ $this, 'remove_wp_bloat' ] );
+		add_action( 'wp_head', array( $this, 'add_resource_hints' ), 1 );
+		add_filter( 'script_loader_tag', array( $this, 'add_async_defer' ), 10, 3 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'remove_wp_bloat' ) );
 	}
 
 	/**
@@ -34,14 +34,14 @@ class Performance implements ComponentInterface {
 	 */
 	public function add_resource_hints(): void {
 		// DNS prefetch for external resources
-		$hints = apply_filters( 'stratawp_dns_prefetch_hints', [] );
+		$hints = apply_filters( 'stratawp_dns_prefetch_hints', array() );
 
 		foreach ( $hints as $hint ) {
 			printf( '<link rel="dns-prefetch" href="%s">' . "\n", esc_url( $hint ) );
 		}
 
 		// Preconnect hints — only emit when explicitly requested
-		$preconnect = apply_filters( 'stratawp_preconnect_hints', [] );
+		$preconnect = apply_filters( 'stratawp_preconnect_hints', array() );
 
 		foreach ( $preconnect as $hint ) {
 			if ( is_array( $hint ) ) {
@@ -68,7 +68,7 @@ class Performance implements ComponentInterface {
 		// Scripts to defer
 		$defer_scripts = apply_filters(
 			'stratawp_defer_scripts',
-			[ 'stratawp-main' ]
+			array( 'stratawp-main' )
 		);
 
 		if ( in_array( $handle, $defer_scripts, true ) ) {

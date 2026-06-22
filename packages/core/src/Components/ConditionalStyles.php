@@ -30,17 +30,17 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ] );
-		add_action( 'wp_head', [ $this, 'preload_styles' ], 2 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+		add_action( 'wp_head', array( $this, 'preload_styles' ), 2 );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function template_tags(): array {
-		return [
-			'print_conditional_styles' => [ $this, 'print_preload_tags' ],
-		];
+		return array(
+			'print_conditional_styles' => array( $this, 'print_preload_tags' ),
+		);
 	}
 
 	/**
@@ -56,26 +56,26 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 	 * @return array<string, array{file: string, global?: bool, preload_callback?: callable}>
 	 */
 	public function get_css_files(): array {
-		$css_files = [
-			'stratawp-comments' => [
+		$css_files = array(
+			'stratawp-comments' => array(
 				'file'             => 'comments.css',
 				'preload_callback' => static function (): bool {
 					return is_singular() && comments_open();
 				},
-			],
-			'stratawp-sidebar'  => [
+			),
+			'stratawp-sidebar'  => array(
 				'file'             => 'sidebar.css',
 				'preload_callback' => static function (): bool {
 					return is_active_sidebar( 'sidebar-1' );
 				},
-			],
-			'stratawp-widgets'  => [
+			),
+			'stratawp-widgets'  => array(
 				'file'             => 'widgets.css',
 				'preload_callback' => static function (): bool {
 					return is_active_sidebar( 'sidebar-1' );
 				},
-			],
-		];
+			),
+		);
 
 		/**
 		 * Filter conditional CSS files.
@@ -105,7 +105,7 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 			wp_enqueue_style(
 				$handle,
 				$css_uri . $data['file'],
-				[],
+				array(),
 				$version
 			);
 		}

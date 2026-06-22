@@ -25,7 +25,7 @@ class Assets implements ComponentInterface {
 	 *
 	 * @var array
 	 */
-	protected array $google_fonts = [];
+	protected array $google_fonts = array();
 
 	/**
 	 * {@inheritdoc}
@@ -39,9 +39,9 @@ class Assets implements ComponentInterface {
 	 */
 	public function initialize(): void {
 		$this->add_font_preconnect();
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_fonts' ] );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_editor_assets' ] );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_fonts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_editor_assets' ) );
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Assets implements ComponentInterface {
 		$version = file_exists( $path ) ? filemtime( $path ) : '1.0.0';
 
 		// Get WordPress dependencies
-		$deps = $entry['dependencies'] ?? [];
+		$deps = $entry['dependencies'] ?? array();
 
 		if ( 'script' === $type ) {
 			wp_enqueue_script( $handle, $url, $deps, $version, true );
@@ -111,7 +111,7 @@ class Assets implements ComponentInterface {
 			if ( ! empty( $entry['css'] ) ) {
 				foreach ( $entry['css'] as $index => $css_file ) {
 					$css_url = get_template_directory_uri() . '/dist/' . $css_file;
-					wp_enqueue_style( $handle . '-' . $index, $css_url, [], $version );
+					wp_enqueue_style( $handle . '-' . $index, $css_url, array(), $version );
 				}
 			}
 		}
@@ -147,14 +147,17 @@ class Assets implements ComponentInterface {
 			return;
 		}
 
-		add_filter( 'stratawp_preconnect_hints', function ( array $hints ): array {
-			$hints[] = 'https://fonts.googleapis.com';
-			$hints[] = [
-				'href'        => 'https://fonts.gstatic.com',
-				'crossorigin' => true,
-			];
-			return $hints;
-		} );
+		add_filter(
+			'stratawp_preconnect_hints',
+			function ( array $hints ): array {
+				$hints[] = 'https://fonts.googleapis.com';
+				$hints[] = array(
+					'href'        => 'https://fonts.gstatic.com',
+					'crossorigin' => true,
+				);
+				return $hints;
+			}
+		);
 	}
 
 	/**
@@ -171,7 +174,7 @@ class Assets implements ComponentInterface {
 			wp_enqueue_style(
 				'stratawp-fonts',
 				$font_url,
-				[],
+				array(),
 				null // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 			);
 		}
@@ -190,10 +193,10 @@ class Assets implements ComponentInterface {
 		$families = implode( '&family=', $this->google_fonts );
 
 		return add_query_arg(
-			[
+			array(
 				'family'  => $families,
 				'display' => 'swap',
-			],
+			),
 			'https://fonts.googleapis.com/css2'
 		);
 	}
@@ -222,4 +225,3 @@ class Assets implements ComponentInterface {
 		return $this;
 	}
 }
-

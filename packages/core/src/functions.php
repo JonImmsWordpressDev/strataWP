@@ -50,7 +50,7 @@ if ( ! function_exists( 'stratawp_template_part' ) ) {
 	 * @param string $name Optional. Template name.
 	 * @param array  $args Optional. Arguments to pass to template.
 	 */
-	function stratawp_template_part( string $slug, string $name = '', array $args = [] ): void {
+	function stratawp_template_part( string $slug, string $name = '', array $args = array() ): void {
 		if ( ! empty( $args ) ) {
 			set_query_var( 'template_args', $args );
 		}

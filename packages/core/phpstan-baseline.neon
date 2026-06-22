@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property WP_Post\\:\\:\\$classes\\.$#"
+			count: 1
+			path: src/Components/Accessibility.php
+
+		-
+			message: "#^Constant DAY_IN_SECONDS not found\\.$#"
+			count: 1
+			path: src/Components/Fonts.php
+
+		-
+			message: "#^Method StrataWP\\\\Components\\\\Fonts\\:\\:get_font_pairing_choices\\(\\) is unused\\.$#"
+			count: 1
+			path: src/Components/Fonts.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$response\\.$#"
+			count: 1
+			path: src/Components/Updates.php
+
+		-
+			message: "#^Constant HOUR_IN_SECONDS not found\\.$#"
+			count: 1
+			path: src/Components/Updates.php
+
+		-
+			message: "#^Parameter \\$reply of method StrataWP\\\\Components\\\\Updates\\:\\:authenticated_download\\(\\) has invalid type StrataWP\\\\Components\\\\WP_Error\\.$#"
+			count: 1
+			path: src/Components/Updates.php

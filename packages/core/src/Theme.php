@@ -20,7 +20,7 @@ class Theme {
 	 *
 	 * @var ComponentInterface[]
 	 */
-	protected array $components = [];
+	protected array $components = array();
 
 	/**
 	 * Template tags instance
@@ -41,7 +41,7 @@ class Theme {
 	 *
 	 * @param ComponentInterface[] $components Theme components.
 	 */
-	public function __construct( array $components = [] ) {
+	public function __construct( array $components = array() ) {
 		if ( empty( $components ) ) {
 			$components = $this->get_default_components();
 		}
@@ -152,12 +152,12 @@ class Theme {
 	 * @return ComponentInterface[]
 	 */
 	protected function get_default_components(): array {
-		return [
+		return array(
 			new Components\Setup(),
 			new Components\Assets(),
 			new Components\Blocks(),
 			new Components\Performance(),
 			new Components\Accessibility(),
-		];
+		);
 	}
 }

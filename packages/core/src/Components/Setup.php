@@ -24,8 +24,8 @@ class Setup implements ComponentInterface {
 	 * {@inheritdoc}
 	 */
 	public function initialize(): void {
-		add_action( 'after_setup_theme', [ $this, 'setup_theme' ] );
-		add_action( 'after_setup_theme', [ $this, 'setup_content_width' ] );
+		add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
+		add_action( 'after_setup_theme', array( $this, 'setup_content_width' ) );
 	}
 
 	/**
@@ -45,7 +45,7 @@ class Setup implements ComponentInterface {
 		// HTML5 support
 		add_theme_support(
 			'html5',
-			[
+			array(
 				'search-form',
 				'comment-form',
 				'comment-list',
@@ -53,7 +53,7 @@ class Setup implements ComponentInterface {
 				'caption',
 				'style',
 				'script',
-			]
+			)
 		);
 
 		// Title tag
@@ -62,12 +62,12 @@ class Setup implements ComponentInterface {
 		// Custom logo
 		add_theme_support(
 			'custom-logo',
-			[
+			array(
 				'height'      => 250,
 				'width'       => 250,
 				'flex-width'  => true,
 				'flex-height' => true,
-			]
+			)
 		);
 
 		// Responsive embeds

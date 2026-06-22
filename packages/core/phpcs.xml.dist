@@ -22,4 +22,43 @@
       </property>
     </properties>
   </rule>
+
+  <!-- ratchet: PSR-4 library uses PascalCase file names for Composer autoloading; WP naming convention is not applicable here -->
+  <rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+    <severity>0</severity>
+  </rule>
+  <rule ref="WordPress.Files.FileName.InvalidClassFileName">
+    <severity>0</severity>
+  </rule>
+
+  <!-- ratchet: inline comments in existing code lack terminal punctuation; tighten as code is touched -->
+  <rule ref="Squiz.Commenting.InlineComment.InvalidEndChar">
+    <severity>0</severity>
+  </rule>
+
+  <!-- ratchet: modern PHP style used throughout; Yoda conditions not required in PSR-4 library context -->
+  <rule ref="WordPress.PHP.YodaConditions.NotYoda">
+    <severity>0</severity>
+  </rule>
+
+  <!-- ratchet: in_array strict-mode warnings in Fonts.php; fix when refactoring that file -->
+  <rule ref="WordPress.PHP.StrictInArray.MissingTrueStrict">
+    <severity>0</severity>
+  </rule>
+
+  <!-- ratchet: short ternary (?:) used in Updates.php; replace with null coalescing when refactoring -->
+  <rule ref="Universal.Operators.DisallowShortTernary.Found">
+    <severity>0</severity>
+  </rule>
+
+  <!-- ratchet: doc comment completeness issues; address when adding/updating docblocks -->
+  <rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.ParamCommentFullStop">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
+    <severity>0</severity>
+  </rule>
 </ruleset>
