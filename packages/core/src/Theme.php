@@ -158,6 +158,8 @@ class Theme {
 			new Components\Blocks(),
 			new Components\Performance(),
 			new Components\Accessibility(),
+			new Components\ConditionalStyles(),
+			new Components\ImageSizes(),
 		);
 	}
 }
