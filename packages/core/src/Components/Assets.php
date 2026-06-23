@@ -104,6 +104,16 @@ class Assets implements ComponentInterface {
 
 		if ( 'script' === $type ) {
 			wp_enqueue_script( $handle, $url, $deps, $version, true );
+
+			// Vite splits an entry's CSS into the entry's `css` array; enqueue it
+			// so the compiled stylesheet actually loads (it is not a separate
+			// manifest key).
+			if ( ! empty( $entry['css'] ) ) {
+				foreach ( $entry['css'] as $index => $css_file ) {
+					$css_url = get_template_directory_uri() . '/dist/' . $css_file;
+					wp_enqueue_style( $handle . '-' . $index, $css_url, array(), $version );
+				}
+			}
 		} else {
 			wp_enqueue_style( $handle, $url, $deps, $version );
 
