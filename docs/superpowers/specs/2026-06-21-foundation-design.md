@@ -1,15 +1,15 @@
 # StrataWP Foundation — Design Spec (Phases 0 + 1)
 
 - **Date:** 2026-06-21
-- **Branch:** `feat/surpass-wprig` (off `main` @ `8e6f782`)
+- **Branch:** `feat/foundation` (off `main` @ `8e6f782`)
 - **Status:** Draft — awaiting review
-- **Sub-project 1 of the "surpass WP Rig" program.** Later phases (2 Performance, 3 Quality/a11y, 4 AI-readiness, 5 Doc truth-up) each get their own spec.
+- **Sub-project 1 of the "surpass Triple XXX" program.** Later phases (2 Performance, 3 Quality/a11y, 4 AI-readiness, 5 Doc truth-up) each get their own spec.
 
 ## 1. Goal
 
-Make the StrataWP monorepo's quality posture **real and enforced**, so that every later claim ("it's tested", "it's typed", "it lints", "it's fast") is backed by a green CI gate rather than aspirational config. This is the dimension WP Rig wins not by being more ambitious but by _enforcing_ — so we close it by enforcing.
+Make the StrataWP monorepo's quality posture **real and enforced**, so that every later claim ("it's tested", "it's typed", "it lints", "it's fast") is backed by a green CI gate rather than aspirational config. This is the dimension Triple XXX wins not by being more ambitious but by _enforcing_ — so we close it by enforcing.
 
-The north star for the whole program is a **scorecard rematch**: each dimension WP Rig currently wins, StrataWP ties or beats _with evidence_. This sub-project delivers the evidence machinery (CI, tests, typecheck, lint, PHP QA) plus the cleanup that unblocks it.
+The north star for the whole program is a **scorecard rematch**: each dimension Triple XXX currently wins, StrataWP ties or beats _with evidence_. This sub-project delivers the evidence machinery (CI, tests, typecheck, lint, PHP QA) plus the cleanup that unblocks it.
 
 ## 2. Scope
 
@@ -22,7 +22,7 @@ The north star for the whole program is a **scorecard rematch**: each dimension 
 
 - `@stratawp/sync` security/perf/tests — **frozen**; travels to the future sync _plugin_ project (this is where the plaintext-credential and insecure-FTP fixes belong). `sync` must remain _buildable_ because `cli` imports concrete classes from it.
 - Phases 2–5 (performance system, a11y/PHPCS-on-everything beyond core wiring, MCP/AI-readiness, doc rewrite). Phase 1 lays the rails; later phases ride them.
-- Removing `explorer`/`headless` — **kept** (headless is a competitive moat vs WP Rig). They get minimal "not broken" wiring here (typecheck), full tests later.
+- Removing `explorer`/`headless` — **kept** (headless is a competitive moat vs Triple XXX). They get minimal "not broken" wiring here (typecheck), full tests later.
 
 ## 3. Phase 0 — Focus & Hygiene
 
@@ -144,4 +144,4 @@ On a clean checkout with **no global tooling** on PATH:
 
 ## 8. What this unlocks
 
-With the rails down, Phase 2 (Performance) can prove its numbers via Lighthouse CI in the same gate, Phase 3 (a11y) plugs axe-core into the existing Playwright/CI setup, and every subsequent claim ships behind a green check. That is precisely the credibility gap the WP Rig review said "sinks adoption" — closed.
+With the rails down, Phase 2 (Performance) can prove its numbers via Lighthouse CI in the same gate, Phase 3 (a11y) plugs axe-core into the existing Playwright/CI setup, and every subsequent claim ships behind a green check. That is precisely the credibility gap the Triple XXX review said "sinks adoption" — closed.
