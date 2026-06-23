@@ -39,9 +39,8 @@ export function strataWP(options: StrataWPPluginOptions = {}): Plugin[] {
       framework: 'none',
     },
     performance = {
-      criticalCSS: true,
-      lazyLoading: true,
-      preload: true,
+      criticalCSS: false,
+      images: true,
     },
   } = options
 
@@ -94,6 +93,14 @@ function strataWPCore(_options: StrataWPPluginOptions): Plugin {
                   return 'fonts/[name].[hash][extname]'
                 }
                 return 'assets/[name].[hash][extname]'
+              },
+              manualChunks: (id: string) => {
+                if (id.includes('@wordpress/')) {
+                  return 'wordpress'
+                }
+                if (id.includes('node_modules')) {
+                  return 'vendor'
+                }
               },
             },
           },
