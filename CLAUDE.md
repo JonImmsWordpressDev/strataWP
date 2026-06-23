@@ -98,9 +98,10 @@ StrataWP uses a component-based architecture inspired by WPRig:
    - **Setup**: Theme supports, post thumbnails, menus
    - **Assets**: Enqueue scripts/styles, manifest integration
    - **Blocks**: Block registration and patterns
-   - **Performance**: Critical CSS, lazy loading, preloading
+   - **Performance**: Resource hints (filter-driven), async/defer scripts, WP bloat removal
    - **Accessibility**: Skip link focus fix, aria-current on nav items, screen-reader styles
-   - **ConditionalStyles**: Per-page CSS loading with preload callbacks
+   - **ConditionalStyles**: Non-render-blocking conditional CSS via preload/onload swap
+   - **ImageSizes**: Responsive image `sizes` tuning for better LCP/CLS
    - **Updates**: GitHub-based theme update notifications in WordPress dashboard
 
 4. **Theme initialization** (in `functions.php`):
@@ -144,7 +145,7 @@ Features:
 
 Located in `packages/core/src/Components/ConditionalStyles.php`. Implements `TemplatingComponentInterface`.
 
-Per-page CSS loading with preload callbacks. Each stylesheet declares when it should load, reducing render-blocking CSS.
+Per-page CSS loading with preload callbacks. Non-global sheets are registered (not enqueued) and injected via `<link rel="preload" as="style" onload="this.rel='stylesheet'">` with a `<noscript>` fallback, so they load without blocking render.
 
 Default conditional styles:
 
