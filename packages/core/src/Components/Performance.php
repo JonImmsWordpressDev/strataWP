@@ -65,12 +65,12 @@ class Performance implements ComponentInterface {
 	 * @return string
 	 */
 	public function add_async_defer( string $tag, string $handle, string $src ): string {
-		// Scripts to defer
-		$defer_scripts = apply_filters(
-			'stratawp_defer_scripts',
-			array( 'stratawp-main' )
-		);
+		$async_scripts = apply_filters( 'stratawp_async_scripts', array() );
+		if ( in_array( $handle, $async_scripts, true ) ) {
+			return str_replace( '<script ', '<script async ', $tag );
+		}
 
+		$defer_scripts = apply_filters( 'stratawp_defer_scripts', array( 'stratawp-main' ) );
 		if ( in_array( $handle, $defer_scripts, true ) ) {
 			return str_replace( '<script ', '<script defer ', $tag );
 		}
