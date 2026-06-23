@@ -104,6 +104,7 @@ class Assets implements ComponentInterface {
 
 		if ( 'script' === $type ) {
 			wp_enqueue_script( $handle, $url, $deps, $version, true );
+			wp_script_add_data( $handle, 'precache', true );
 
 			// Vite splits an entry's CSS into the entry's `css` array; enqueue it
 			// so the compiled stylesheet actually loads (it is not a separate
@@ -112,16 +113,19 @@ class Assets implements ComponentInterface {
 				foreach ( $entry['css'] as $index => $css_file ) {
 					$css_url = get_template_directory_uri() . '/dist/' . $css_file;
 					wp_enqueue_style( $handle . '-' . $index, $css_url, array(), $version );
+					wp_style_add_data( $handle . '-' . $index, 'precache', true );
 				}
 			}
 		} else {
 			wp_enqueue_style( $handle, $url, $deps, $version );
+			wp_style_add_data( $handle, 'precache', true );
 
 			// Enqueue associated CSS files
 			if ( ! empty( $entry['css'] ) ) {
 				foreach ( $entry['css'] as $index => $css_file ) {
 					$css_url = get_template_directory_uri() . '/dist/' . $css_file;
 					wp_enqueue_style( $handle . '-' . $index, $css_url, array(), $version );
+					wp_style_add_data( $handle . '-' . $index, 'precache', true );
 				}
 			}
 		}
