@@ -123,6 +123,8 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 				wp_register_style( $handle, $src, array(), $version );
 			}
 
+			// 'precache' is a PWA service-worker convention, not in core stubs.
+			// @phpstan-ignore-next-line
 			wp_style_add_data( $handle, 'precache', true );
 		}
 	}
