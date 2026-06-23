@@ -225,18 +225,6 @@ export interface PerformanceOptions {
   criticalCSS?: boolean | CriticalCSSOptions
 
   /**
-   * Lazy loading options
-   * @default true
-   */
-  lazyLoading?: boolean | LazyLoadingOptions
-
-  /**
-   * Asset preloading options
-   * @default true
-   */
-  preload?: boolean | PreloadOptions
-
-  /**
    * Build-time image optimization (sharp + webp + svgo)
    * @default true
    */

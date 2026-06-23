@@ -222,9 +222,8 @@ The `@stratawp/vite-plugin` provides WordPress-specific features:
    - Includes dependency and version information
 
 4. **Performance optimization**:
-   - Critical CSS extraction
-   - Lazy loading configuration generation
-   - Asset preloading hints
+   - Build-time image optimization (sharp): raster compression + sibling WebP + SVGO
+   - Vendor/WordPress chunk splitting (manualChunks)
    - Resource hints are filter-driven:
      - `stratawp_dns_prefetch_hints`: Array of URLs for DNS prefetch (empty by default)
      - `stratawp_preconnect_hints`: Array of URLs or `['href' => '...', 'crossorigin' => true]` for preconnect (empty by default)
