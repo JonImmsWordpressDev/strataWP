@@ -47,6 +47,7 @@ final class AssetsTest extends TestCase {
         Functions\when('wp_style_add_data')->justReturn(true);
 
         $assets->callEnqueue('stratawp-main', 'src/js/main.ts', 'script');
+        $this->addToAssertionCount(1);
     }
 
     public function test_script_and_css_get_precache_data(): void {
@@ -62,5 +63,6 @@ final class AssetsTest extends TestCase {
         Functions\expect('wp_style_add_data')->once()->with('stratawp-main-0', 'precache', true);
 
         $assets->callEnqueue('stratawp-main', 'src/js/main.ts', 'script');
+        $this->addToAssertionCount(1);
     }
 }

@@ -14,22 +14,31 @@ final class ConditionalStylesTest extends TestCase {
     protected function tearDown(): void { Monkey\tearDown(); parent::tearDown(); }
 
     public function test_non_global_sheet_is_registered_not_enqueued(): void {
-        Functions\when('get_template_directory')->justReturn('/srv/themes/t');
-        Functions\when('get_template_directory_uri')->justReturn('https://example.test/t');
-        // file_exists is a PHP internal — can't mock without patchwork config.
-        // '/srv/themes/t/dist/css/*.css' doesn't exist, so file_exists returns false
-        // and the loop skips all entries. To make the test meaningful we test the
-        // register-not-enqueue contract: wp_enqueue_style must never be called.
-        Functions\when('apply_filters')->returnArg(2); // return the unfiltered value
-        Functions\when('is_singular')->justReturn(true);
-        Functions\when('comments_open')->justReturn(true);
-        Functions\when('is_active_sidebar')->justReturn(false);
+        // Use a REAL temp dir so the unmockable PHP internals file_exists()/filemtime()
+        // see actual files and the loop genuinely reaches the register/enqueue branch.
+        $dir = sys_get_temp_dir() . '/stratawp-cs-' . uniqid();
+        mkdir($dir . '/dist/css', 0777, true);
+        file_put_contents($dir . '/dist/css/comments.css', '');
+        file_put_contents($dir . '/dist/css/sidebar.css', '');
+        file_put_contents($dir . '/dist/css/widgets.css', '');
 
-        // Non-global conditional sheets must be REGISTERED, never enqueued.
-        Functions\expect('wp_register_style')->never();
+        Functions\when('get_template_directory')->justReturn($dir);
+        Functions\when('get_template_directory_uri')->justReturn('https://example.test/t');
+        Functions\when('apply_filters')->returnArg(2);
+        Functions\when('is_singular')->justReturn(false);
+        Functions\when('comments_open')->justReturn(false);
+        Functions\when('is_active_sidebar')->justReturn(false);
+        Functions\when('wp_style_add_data')->justReturn(true);
+
+        // All default sheets are non-global, so each must be REGISTERED, never enqueued.
+        Functions\expect('wp_register_style')->atLeast()->once();
         Functions\expect('wp_enqueue_style')->never();
 
         (new ConditionalStyles())->enqueue_styles();
+
+        array_map('unlink', glob($dir . '/dist/css/*'));
+        rmdir($dir . '/dist/css'); rmdir($dir . '/dist'); rmdir($dir);
+        $this->addToAssertionCount(1);
     }
 
     public function test_preload_emits_onload_swap_for_matching_sheet(): void {

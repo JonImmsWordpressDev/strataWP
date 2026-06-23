@@ -22,6 +22,7 @@ final class ImageSizesTest extends TestCase {
         Filters\expectAdded('wp_calculate_image_sizes')->once();
         Filters\expectAdded('wp_get_attachment_image_attributes')->once();
         (new ImageSizes())->initialize();
+        $this->addToAssertionCount(1);
     }
 
     public function test_content_sizes_full_width_without_sidebar(): void {
