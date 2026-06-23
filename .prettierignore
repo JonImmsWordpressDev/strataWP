@@ -8,3 +8,5 @@ coverage
 # Vendored tooling (WordPress agent-skills, Claude config) — not our source; keep upstream style
 .claude
 .claude-flow
+# Internal AI-workflow planning docs (specs/plans) — not product docs
+docs/superpowers

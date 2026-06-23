@@ -11,6 +11,7 @@
 **Spec:** `docs/superpowers/specs/2026-06-22-performance-design.md` (WS1). **Branch:** `feat/performance`.
 
 **Conventions:**
+
 - All paths under `packages/core`. Run PHP commands from `packages/core` (e.g. `composer test`, `composer phpcs`).
 - Tests live in `packages/core/tests/Unit/`. Follow the existing Brain Monkey pattern (see `tests/Unit/UpdatesTest.php`): `Monkey\setUp()`/`tearDown()`, `Brain\Monkey\Functions\when(...)->justReturn(...)`, `Brain\Monkey\Filters\expectAdded(...)`, `Brain\Monkey\Actions\expectAdded(...)`.
 - After each task: `composer test` green, then `composer phpcs` (auto-`phpcbf` mechanical issues), then commit. The Phase-1 CI gate must stay green.
@@ -23,12 +24,14 @@
 **Problem:** `Assets::enqueue_from_manifest()` only enqueues a manifest entry's `css[]` siblings in the **style** branch. The main bundle is enqueued as a **script** (`enqueue_from_manifest('stratawp-main','src/js/main.ts')`), so its `css[]` (the compiled `dist/css/main.*.css`) is never enqueued — the theme ships JS but not its own CSS.
 
 **Files:**
+
 - Modify: `src/Components/Assets.php` (the `'script'` branch of `enqueue_from_manifest`, ~lines 105-117)
 - Test: `tests/Unit/AssetsTest.php` (create)
 
 - [ ] **Step 1: Write the failing test**
 
 Create `tests/Unit/AssetsTest.php`. Use a subclass to inject a fake manifest (mirrors `ExposedUpdates` in `UpdatesTest`):
+
 ```php
 <?php
 
@@ -85,12 +88,15 @@ Expected: FAIL — `wp_enqueue_style` expected once but called 0 times.
 - [ ] **Step 3: Implement — enqueue css[] in the script branch**
 
 In `src/Components/Assets.php`, change the `'script'` branch so a script entry also enqueues its associated CSS. Replace:
+
 ```php
 		if ( 'script' === $type ) {
 			wp_enqueue_script( $handle, $url, $deps, $version, true );
 		} else {
 ```
+
 with:
+
 ```php
 		if ( 'script' === $type ) {
 			wp_enqueue_script( $handle, $url, $deps, $version, true );
@@ -124,15 +130,17 @@ git commit -m "fix(core): enqueue a script entry's CSS siblings so the theme sty
 
 ## Task 2: Make non-critical conditional CSS non-render-blocking (ConditionalStyles)
 
-**Problem:** `ConditionalStyles::enqueue_styles()` *enqueues* every conditional sheet (render-blocking) and `preload_styles()` adds a plain `rel=preload` with no `onload` swap — so sheets are both render-blocking AND redundantly preloaded. Port the Triple XXX pattern (`/tmp/repo-analysis/wprig/inc/Styles/Component.php`): **register** (don't enqueue) non-global sheets, then emit `rel=preload as=style onload="this.rel='stylesheet'"` with a `<noscript>` fallback. Add `precache` data.
+**Problem:** `ConditionalStyles::enqueue_styles()` _enqueues_ every conditional sheet (render-blocking) and `preload_styles()` adds a plain `rel=preload` with no `onload` swap — so sheets are both render-blocking AND redundantly preloaded. Port the Triple XXX pattern (`/tmp/repo-analysis/wprig/inc/Styles/Component.php`): **register** (don't enqueue) non-global sheets, then emit `rel=preload as=style onload="this.rel='stylesheet'"` with a `<noscript>` fallback. Add `precache` data.
 
 **Files:**
+
 - Modify: `src/Components/ConditionalStyles.php` (`enqueue_styles`, `preload_styles`; extend `get_css_files` entries with a `global` default)
 - Test: `tests/Unit/ConditionalStylesTest.php` (create)
 
 - [ ] **Step 1: Write the failing tests**
 
 Create `tests/Unit/ConditionalStylesTest.php`:
+
 ```php
 <?php
 
@@ -198,6 +206,7 @@ Expected: FAIL (current code enqueues instead of registers; preload has no `onlo
 In `src/Components/ConditionalStyles.php`:
 
 (a) In `get_css_files()`, ensure each returned entry has a `global` key default. After building `$css_files` (before the `apply_filters` return), the entries currently lack `global`; add it. Replace the `return apply_filters( 'stratawp_conditional_css_files', $css_files );` with:
+
 ```php
 		$css_files = apply_filters( 'stratawp_conditional_css_files', $css_files );
 
@@ -216,6 +225,7 @@ In `src/Components/ConditionalStyles.php`:
 ```
 
 (b) Rewrite `enqueue_styles()` so non-global sheets are **registered** (not enqueued), global sheets are enqueued, and all get `precache` data:
+
 ```php
 	public function enqueue_styles(): void {
 		$css_files = $this->get_css_files();
@@ -245,6 +255,7 @@ In `src/Components/ConditionalStyles.php`:
 ```
 
 (c) Rewrite `preload_styles()` to emit the onload swap + `<noscript>` fallback:
+
 ```php
 	public function preload_styles(): void {
 		if ( ! apply_filters( 'stratawp_preloading_styles_enabled', true ) ) {
@@ -304,6 +315,7 @@ git commit -m "feat(core): non-render-blocking conditional CSS via preload/onloa
 ## Task 3: Ship ConditionalStyles + a new ImageSizes component by default
 
 **Files:**
+
 - Create: `src/Components/ImageSizes.php`
 - Modify: `src/Theme.php` (`get_default_components`)
 - Test: `tests/Unit/ImageSizesTest.php` (create), `tests/Unit/ThemeDefaultsTest.php` (create)
@@ -311,6 +323,7 @@ git commit -m "feat(core): non-render-blocking conditional CSS via preload/onloa
 - [ ] **Step 1: Write the ImageSizes failing test**
 
 Create `tests/Unit/ImageSizesTest.php`:
+
 ```php
 <?php
 
@@ -358,6 +371,7 @@ Expected: FAIL (class not found).
 - [ ] **Step 3: Implement ImageSizes** (port of Triple XXX `inc/Image_Sizes/Component.php`, using `is_active_sidebar('sidebar-1')`)
 
 Create `src/Components/ImageSizes.php`:
+
 ```php
 <?php
 /**
@@ -426,11 +440,13 @@ class ImageSizes implements ComponentInterface {
 	}
 }
 ```
+
 (Note: signature kept to one required param plus WP's extra args are ignored — WordPress passes 3 args but PHP tolerates extra args to a method declaring fewer.)
 
 - [ ] **Step 4: Add both components to the defaults + test**
 
 In `src/Theme.php` `get_default_components()`, add `ConditionalStyles` and `ImageSizes`:
+
 ```php
 	protected function get_default_components(): array {
 		return array(
@@ -446,6 +462,7 @@ In `src/Theme.php` `get_default_components()`, add `ConditionalStyles` and `Imag
 ```
 
 Create `tests/Unit/ThemeDefaultsTest.php`:
+
 ```php
 <?php
 
@@ -490,12 +507,14 @@ git commit -m "feat(core): responsive image sizes component + ship it and Condit
 ## Task 4: Real async (not just defer) for scripts
 
 **Files:**
+
 - Modify: `src/Components/Performance.php` (`add_async_defer`)
 - Test: `tests/Unit/PerformanceTest.php` (create)
 
 - [ ] **Step 1: Write the failing tests**
 
 Create `tests/Unit/PerformanceTest.php`:
+
 ```php
 <?php
 
@@ -544,6 +563,7 @@ Expected: FAIL on the async test.
 - [ ] **Step 3: Implement async + defer**
 
 In `src/Components/Performance.php`, replace `add_async_defer`:
+
 ```php
 	public function add_async_defer( string $tag, string $handle, string $src ): string {
 		$async_scripts = apply_filters( 'stratawp_async_scripts', array() );
@@ -578,6 +598,7 @@ git commit -m "feat(core): support async scripts via stratawp_async_scripts filt
 ## Task 5: PWA precache flags on main assets
 
 **Files:**
+
 - Modify: `src/Components/Assets.php` (`enqueue_from_manifest` — add precache data after enqueue)
 - Test: extend `tests/Unit/AssetsTest.php`
 
@@ -611,6 +632,7 @@ Expected: FAIL (precache data not added).
 - [ ] **Step 4: Run, confirm PASS** — `cd packages/core && composer test -- --filter AssetsTest` → PASS.
 
 - [ ] **Step 5: phpcs + commit**
+
 ```bash
 cd packages/core && composer phpcbf || true && composer phpcs
 git add packages/core/src/Components/Assets.php packages/core/tests/Unit/AssetsTest.php
@@ -622,6 +644,7 @@ git commit -m "feat(core): mark enqueued assets as precache for service-worker c
 ## Task 6: Reconcile docs + full verification
 
 **Files:**
+
 - Modify: `CLAUDE.md` (the `Performance` / default-components descriptions)
 - (No code change — verification task)
 
@@ -633,20 +656,25 @@ git commit -m "feat(core): mark enqueued assets as precache for service-worker c
 - [ ] **Step 2: Full PHP gate**
 
 Run:
+
 ```bash
 cd packages/core && composer phpcs && composer phpstan && composer test
 ```
+
 Expected: all exit 0. (If PHPStan flags the new files, fix types or extend the baseline minimally with a `ratchet` note.)
 
 - [ ] **Step 3: Full repo gate (as CI runs it)**
 
 Run from repo root:
+
 ```bash
 pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test
 ```
+
 Expected: all exit 0. (`format:check` covers `CLAUDE.md` — run `pnpm format` if it flags the edit.)
 
 - [ ] **Step 4: Commit**
+
 ```bash
 git add CLAUDE.md
 git commit -m "docs: align core component descriptions with actual performance behavior"
@@ -658,6 +686,6 @@ git commit -m "docs: align core component descriptions with actual performance b
 
 **Spec coverage (WS1):** CSS enqueue bug → Task 1 · async/non-render-blocking CSS → Task 2 · ship ConditionalStyles by default → Task 3 · responsive `sizes` → Task 3 (ImageSizes) · async+defer → Task 4 · precache → Task 5 · consolidate resource hints → handled by deleting the duplicate generated PHP in **WS2** (Performance.php is already the single filter-driven source; no core change needed now) · doc reconciliation → Task 6.
 
-**Deferred to WS2 (vite-plugin):** removing the orphaned `preload-generated.php` / `lazy-loading-generated.php` generation, and the image pipeline. **Deferred to WS3:** async-ing the *main* stylesheet (needs critical CSS to avoid FOUC).
+**Deferred to WS2 (vite-plugin):** removing the orphaned `preload-generated.php` / `lazy-loading-generated.php` generation, and the image pipeline. **Deferred to WS3:** async-ing the _main_ stylesheet (needs critical CSS to avoid FOUC).
 
 **Placeholder scan:** none — every step has concrete code/commands. **Type consistency:** `get_slug()` returns `image-sizes`; filter names `stratawp_async_scripts`/`stratawp_defer_scripts`/`stratawp_preloading_styles_enabled`/`stratawp_conditional_css_files` match usage; handle suffix `-{index}` matches Assets.
