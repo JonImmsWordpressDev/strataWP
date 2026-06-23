@@ -104,14 +104,34 @@ class Assets implements ComponentInterface {
 
 		if ( 'script' === $type ) {
 			wp_enqueue_script( $handle, $url, $deps, $version, true );
+			wp_script_add_data( $handle, 'precache', true );
+
+			// Vite splits an entry's CSS into the entry's `css` array; enqueue it
+			// so the compiled stylesheet actually loads (it is not a separate
+			// manifest key).
+			if ( ! empty( $entry['css'] ) ) {
+				foreach ( $entry['css'] as $index => $css_file ) {
+					$css_url = get_template_directory_uri() . '/dist/' . $css_file;
+					wp_enqueue_style( $handle . '-' . $index, $css_url, array(), $version );
+					// 'precache' is a PWA service-worker convention, not in core stubs.
+					// @phpstan-ignore-next-line
+					wp_style_add_data( $handle . '-' . $index, 'precache', true );
+				}
+			}
 		} else {
 			wp_enqueue_style( $handle, $url, $deps, $version );
+			// 'precache' is a PWA service-worker convention, not in core stubs.
+			// @phpstan-ignore-next-line
+			wp_style_add_data( $handle, 'precache', true );
 
 			// Enqueue associated CSS files
 			if ( ! empty( $entry['css'] ) ) {
 				foreach ( $entry['css'] as $index => $css_file ) {
 					$css_url = get_template_directory_uri() . '/dist/' . $css_file;
 					wp_enqueue_style( $handle . '-' . $index, $css_url, array(), $version );
+					// 'precache' is a PWA service-worker convention, not in core stubs.
+					// @phpstan-ignore-next-line
+					wp_style_add_data( $handle . '-' . $index, 'precache', true );
 				}
 			}
 		}

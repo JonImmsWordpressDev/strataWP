@@ -82,7 +82,20 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 		 *
 		 * @param array $css_files Associative array of handle => file config.
 		 */
-		return apply_filters( 'stratawp_conditional_css_files', $css_files );
+		$css_files = apply_filters( 'stratawp_conditional_css_files', $css_files );
+
+		$normalized = array();
+		foreach ( $css_files as $handle => $data ) {
+			$normalized[ $handle ] = array_merge(
+				array(
+					'global'           => false,
+					'preload_callback' => null,
+				),
+				$data
+			);
+		}
+
+		return $normalized;
 	}
 
 	/**
@@ -101,21 +114,26 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 			}
 
 			$version = (string) filemtime( $file_path );
+			$src     = $css_uri . $data['file'];
 
-			wp_enqueue_style(
-				$handle,
-				$css_uri . $data['file'],
-				array(),
-				$version
-			);
+			if ( ! empty( $data['global'] ) ) {
+				wp_enqueue_style( $handle, $src, array(), $version );
+			} else {
+				// Register only; preload_styles() injects it asynchronously.
+				wp_register_style( $handle, $src, array(), $version );
+			}
+
+			// 'precache' is a PWA service-worker convention, not in core stubs.
+			// @phpstan-ignore-next-line
+			wp_style_add_data( $handle, 'precache', true );
 		}
 	}
 
 	/**
 	 * Print preload tags for conditional styles
 	 *
-	 * Adds <link rel="preload" as="style"> for stylesheets whose
-	 * preload_callback returns true on this page.
+	 * Emits rel=preload as=style with onload swap + noscript fallback for
+	 * stylesheets whose preload_callback returns true on this page.
 	 */
 	public function preload_styles(): void {
 		if ( ! apply_filters( 'stratawp_preloading_styles_enabled', true ) ) {
@@ -126,7 +144,6 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 		$css_files = $this->get_css_files();
 
 		foreach ( $css_files as $handle => $data ) {
-			// Global styles don't need preload — they're render-blocking already.
 			if ( ! empty( $data['global'] ) ) {
 				continue;
 			}
@@ -143,12 +160,16 @@ class ConditionalStyles implements ComponentInterface, TemplatingComponentInterf
 				continue;
 			}
 
-			$src = $wp_styles->registered[ $handle ]->src;
-			$ver = $wp_styles->registered[ $handle ]->ver;
+			$href = $wp_styles->registered[ $handle ]->src . '?ver=' . $wp_styles->registered[ $handle ]->ver;
 
 			printf(
-				'<link rel="preload" href="%s" as="style">' . "\n",
-				esc_url( $src . '?ver=' . $ver )
+				'<link rel="preload" id="%1$s-preload" href="%2$s" as="style" onload="this.rel=\'stylesheet\'">' . "\n",
+				esc_attr( $handle ),
+				esc_url( $href )
+			);
+			printf(
+				'<noscript><link rel="stylesheet" href="%s"></noscript>' . "\n",
+				esc_url( $href )
 			);
 		}
 	}
