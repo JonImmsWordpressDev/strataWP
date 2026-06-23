@@ -1,38 +1,26 @@
 /**
  * Performance Orchestrator
- *
- * Combines all performance plugins with unified configuration
  */
 import type { Plugin } from 'vite'
 import type { PerformanceOptions } from '../types'
 import { strataWPCriticalCSS } from './critical-css'
-import { strataWPLazyLoading } from './lazy-loading'
-import { strataWPPreload } from './preload'
+import { strataWPImages } from './images'
 
 export function strataWPPerformance(options: PerformanceOptions = {}): Plugin[] {
   const plugins: Plugin[] = []
 
-  // Critical CSS
-  if (options.criticalCSS !== false) {
+  // Critical CSS — OFF by default (WS3 reimplements via beasties). Only added
+  // when a theme explicitly opts in.
+  if (options.criticalCSS === true || typeof options.criticalCSS === 'object') {
     const criticalOptions =
       typeof options.criticalCSS === 'object' ? options.criticalCSS : { enabled: true }
-
     plugins.push(strataWPCriticalCSS(criticalOptions))
   }
 
-  // Lazy Loading
-  if (options.lazyLoading !== false) {
-    const lazyOptions =
-      typeof options.lazyLoading === 'object' ? options.lazyLoading : { enabled: true }
-
-    plugins.push(strataWPLazyLoading(lazyOptions))
-  }
-
-  // Preload
-  if (options.preload !== false) {
-    const preloadOptions = typeof options.preload === 'object' ? options.preload : { enabled: true }
-
-    plugins.push(strataWPPreload(preloadOptions))
+  // Image pipeline — ON by default.
+  if (options.images !== false) {
+    const imageOptions = typeof options.images === 'object' ? options.images : {}
+    plugins.push(strataWPImages(imageOptions))
   }
 
   return plugins

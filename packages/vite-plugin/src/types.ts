@@ -225,16 +225,10 @@ export interface PerformanceOptions {
   criticalCSS?: boolean | CriticalCSSOptions
 
   /**
-   * Lazy loading options
+   * Build-time image optimization (sharp + webp + svgo)
    * @default true
    */
-  lazyLoading?: boolean | LazyLoadingOptions
-
-  /**
-   * Asset preloading options
-   * @default true
-   */
-  preload?: boolean | PreloadOptions
+  images?: boolean | ImageOptions
 }
 
 /**
@@ -314,6 +308,44 @@ export interface LazyLoadingOptions {
    * @default 'none'
    */
   placeholder?: 'blur' | 'color' | 'none'
+}
+
+/**
+ * Image Pipeline Options
+ */
+export interface ImageOptions {
+  /**
+   * Enable the build-time image pipeline
+   * @default true
+   */
+  enabled?: boolean
+
+  /**
+   * Source images directory (relative to project root)
+   * @default 'src/images'
+   */
+  src?: string
+
+  /**
+   * Output directory (relative to project root)
+   * @default 'dist/images'
+   */
+  dest?: string
+
+  /**
+   * Emit sibling .webp for jpg/png
+   * @default true
+   */
+  webp?: boolean
+
+  /**
+   * Per-format quality (0-100)
+   */
+  quality?: {
+    jpeg?: number
+    png?: number
+    webp?: number
+  }
 }
 
 /**
