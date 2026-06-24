@@ -25,6 +25,7 @@ use StrataWP\Components\Blocks;
 use StrataWP\Components\Performance;
 use StrataWP\Components\Accessibility;
 use StrataWP\Components\ConditionalStyles;
+use StrataWP\Components\CriticalCss;
 use StrataWP\Components\Fonts;
 use StrataWP\Components\Icons;
 use StrataWP\Components\Updates;
@@ -43,6 +44,7 @@ function strata_basic_init(): void {
         new Performance(),
         new Accessibility(),
         new ConditionalStyles(),
+        new CriticalCss(),
         new Fonts(),
         new Icons(),
         new Updates( 'JonImmsWordpressDev/strataWP', 'strata-basic.zip' ),
