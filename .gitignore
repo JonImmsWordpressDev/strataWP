@@ -67,3 +67,6 @@ DEVELOPMENT_NOTES.md
 
 # Worktrees
 .worktrees/
+
+# Lighthouse CI results
+.lighthouseci/

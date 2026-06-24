@@ -1,0 +1,6 @@
+{
+  "themes": ["./examples/basic-theme"],
+  "config": {
+    "WP_DEBUG": false
+  }
+}
