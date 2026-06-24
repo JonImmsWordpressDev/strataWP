@@ -1,0 +1,64 @@
+name: Performance (Lighthouse)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse budget (wp-env)
+    runs-on: ubuntu-latest
+    # NON-BLOCKING while we calibrate against real CI numbers. Once scores are
+    # stable across runs, remove continue-on-error and make this a required
+    # check — the enforced budget the comparison target never actually runs.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the Vite plugin (the theme's framework build dependency)
+        run: pnpm --filter @stratawp/vite-plugin build
+
+      - name: Prepare example theme (copy core into vendor, build assets)
+        working-directory: examples/basic-theme
+        env:
+          # Copy the path-repo `stratawp/core` into vendor/ instead of
+          # symlinking, so it resolves inside the wp-env container.
+          COMPOSER_MIRROR_PATH_REPOS: '1'
+        run: |
+          composer install --no-interaction --no-progress
+          pnpm build
+
+      - name: Start WordPress (wp-env)
+        run: pnpm exec wp-env start
+
+      - name: Activate the example theme
+        run: pnpm exec wp-env run cli wp theme activate basic-theme
+
+      - name: Run the Lighthouse budget
+        run: pnpm test:perf
