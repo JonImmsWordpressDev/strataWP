@@ -11,10 +11,10 @@
 	<!-- wp:group {"align":"wide","layout":{"type":"flex","allowOrientation":false,"justifyContent":"space-between"}} -->
 	<div class="wp-block-group alignwide">
 		<!-- wp:paragraph -->
-		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html__( 'Your Company LLC', 'frost' ); ?> · <a href="#"><?php echo esc_html__( 'Contact Us', 'frost' ); ?></a></p>
+		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html__( 'Your Company LLC', 'strata-basic' ); ?> · <a href="#"><?php echo esc_html__( 'Contact Us', 'strata-basic' ); ?></a></p>
 		<!-- /wp:paragraph -->
 		<!-- wp:paragraph -->
-		<p><a href="#"><?php echo esc_html__( 'Facebook', 'frost' ); ?></a> · <a href="#"><?php echo esc_html__( 'LinkedIn', 'frost' ); ?></a> · <a href="#"><?php echo esc_html__( 'Instagram', 'frost' ); ?></a></p>
+		<p><a href="#"><?php echo esc_html__( 'Facebook', 'strata-basic' ); ?></a> · <a href="#"><?php echo esc_html__( 'LinkedIn', 'strata-basic' ); ?></a> · <a href="#"><?php echo esc_html__( 'Instagram', 'strata-basic' ); ?></a></p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->

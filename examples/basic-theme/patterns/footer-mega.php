@@ -12,15 +12,15 @@
 	<div class="wp-block-columns alignwide has-link-color">
 		<!-- wp:column {"width":"55%"} -->
 		<div class="wp-block-column" style="flex-basis:55%"><!-- wp:heading {"level":4,"anchor":"our-company","className":"wp-block-heading"} -->
-			<h4 class="wp-block-heading" id="our-company"><?php echo esc_html__( 'Our Company', 'frost' ); ?></h4>
+			<h4 class="wp-block-heading" id="our-company"><?php echo esc_html__( 'Our Company', 'strata-basic' ); ?></h4>
 			<!-- /wp:heading -->
 			<!-- wp:paragraph -->
-			<p><?php echo esc_html__( 'With its clean, minimal design and powerful feature set, Frost enables agencies to build stylish and sophisticated WordPress websites.', 'frost' ); ?></p>
+			<p><?php echo esc_html__( 'With its clean, minimal design and powerful feature set, Frost enables agencies to build stylish and sophisticated WordPress websites.', 'strata-basic' ); ?></p>
 			<!-- /wp:paragraph -->
 			<!-- wp:buttons -->
 			<div class="wp-block-buttons">
 				<!-- wp:button {"style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
-				<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Learn More', 'frost' ); ?></a></div>
+				<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Learn More', 'strata-basic' ); ?></a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
@@ -29,24 +29,24 @@
 		<!-- wp:column {"width":"15%"} -->
 		<div class="wp-block-column" style="flex-basis:15%">
 			<!-- wp:heading {"level":4,"anchor":"about-us","className":"wp-block-heading"} -->
-			<h4 class="wp-block-heading" id="about-us"><?php echo esc_html__( 'About Us', 'frost' ); ?></h4>
+			<h4 class="wp-block-heading" id="about-us"><?php echo esc_html__( 'About Us', 'strata-basic' ); ?></h4>
 			<!-- /wp:heading -->
 			<!-- wp:list -->
 			<ul>
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Start Here', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Start Here', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Our Mission', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Our Mission', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Brand Guide', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Brand Guide', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Newsletter', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Newsletter', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Accessibility', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Accessibility', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 			</ul>
 			<!-- /wp:list -->
@@ -55,24 +55,24 @@
 		<!-- wp:column {"width":"15%"} -->
 		<div class="wp-block-column" style="flex-basis:15%">
 			<!-- wp:heading {"level":4,"anchor":"services","className":"wp-block-heading"} -->
-			<h4 class="wp-block-heading" id="services"><?php echo esc_html__( 'Services', 'frost' ); ?></h4>
+			<h4 class="wp-block-heading" id="services"><?php echo esc_html__( 'Services', 'strata-basic' ); ?></h4>
 			<!-- /wp:heading -->
 			<!-- wp:list -->
 			<ul>
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Web Design', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Web Design', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Development', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Development', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Copywriting', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Copywriting', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Marketing', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Marketing', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Social Media', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Social Media', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 			</ul>
 			<!-- /wp:list -->
@@ -81,24 +81,24 @@
 		<!-- wp:column {"width":"15%"} -->
 		<div class="wp-block-column" style="flex-basis:15%">
 			<!-- wp:heading {"level":4,"anchor":"connect","className":"wp-block-heading"} -->
-			<h4 class="wp-block-heading" id="connect"><?php echo esc_html__( 'Connect', 'frost' ); ?></h4>
+			<h4 class="wp-block-heading" id="connect"><?php echo esc_html__( 'Connect', 'strata-basic' ); ?></h4>
 			<!-- /wp:heading -->
 			<!-- wp:list -->
 			<ul>
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Facebook', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Facebook', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Instagram', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Instagram', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Twitter', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Twitter', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'LinkedIn', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'LinkedIn', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 				<!-- wp:list-item -->
-				<li><a href="#"><?php echo esc_html__( 'Dribbble', 'frost' ); ?></a></li>
+				<li><a href="#"><?php echo esc_html__( 'Dribbble', 'strata-basic' ); ?></a></li>
 				<!-- /wp:list-item -->
 			</ul>
 			<!-- /wp:list -->

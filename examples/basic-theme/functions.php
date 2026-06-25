@@ -153,3 +153,20 @@ function strata_basic_activate(): void {
 }
 
 add_action( 'after_switch_theme', 'strata_basic_activate' );
+
+/**
+ * Register block pattern categories used by this theme.
+ */
+add_action(
+	'init',
+	function () {
+		register_block_pattern_category(
+			'frost-page',
+			array( 'label' => __( 'Pages', 'strata-basic' ) )
+		);
+		register_block_pattern_category(
+			'frost-pricing',
+			array( 'label' => __( 'Pricing', 'strata-basic' ) )
+		);
+	}
+);

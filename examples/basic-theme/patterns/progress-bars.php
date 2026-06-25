@@ -14,10 +14,10 @@
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"fontSize":"small"} -->
 			<div class="wp-block-group has-small-font-size">
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( 'Item #1', 'frost' ); ?></p>
+				<p><?php echo esc_html__( 'Item #1', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( '100%', 'frost' ); ?></p>
+				<p><?php echo esc_html__( '100%', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
@@ -50,10 +50,10 @@
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"fontSize":"small"} -->
 			<div class="wp-block-group has-small-font-size">
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( 'Item #2', 'frost' ); ?></p>
+				<p><?php echo esc_html__( 'Item #2', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( '90%', 'frost' ); ?></p>
+				<p><?php echo esc_html__( '90%', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
@@ -86,10 +86,10 @@
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"fontSize":"small"} -->
 			<div class="wp-block-group has-small-font-size">
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( 'Item #3', 'frost' ); ?></p>
+				<p><?php echo esc_html__( 'Item #3', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( '80%', 'frost' ); ?></p>
+				<p><?php echo esc_html__( '80%', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
@@ -122,10 +122,10 @@
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"fontSize":"small"} -->
 			<div class="wp-block-group has-small-font-size">
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( 'Item #4', 'frost' ); ?></p>
+				<p><?php echo esc_html__( 'Item #4', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( '70%', 'frost' ); ?></p>
+				<p><?php echo esc_html__( '70%', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
@@ -158,10 +158,10 @@
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"fontSize":"small"} -->
 			<div class="wp-block-group has-small-font-size">
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( 'Item #5', 'frost' ); ?></p>
+				<p><?php echo esc_html__( 'Item #5', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( '60%', 'frost' ); ?></p>
+				<p><?php echo esc_html__( '60%', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
@@ -194,10 +194,10 @@
 			<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"fontSize":"small"} -->
 			<div class="wp-block-group has-small-font-size">
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( 'Item #6', 'frost' ); ?></p>
+				<p><?php echo esc_html__( 'Item #6', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph -->
-				<p><?php echo esc_html__( '50%', 'frost' ); ?></p>
+				<p><?php echo esc_html__( '50%', 'strata-basic' ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
