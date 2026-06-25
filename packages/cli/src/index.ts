@@ -46,8 +46,7 @@ program
 // Generate block
 program
   .command('block:new <name>')
-  .description('Create a new Gutenberg block')
-  .option('-t, --type <type>', 'Block type (static|dynamic)', 'dynamic')
+  .description('Create a new Gutenberg block (dynamic, server-rendered via render.php)')
   .option('--category <category>', 'Block category', 'common')
   .option('--styleFramework <framework>', 'Style framework (none|tailwind|unocss)', 'none')
   .action(blockCommand)

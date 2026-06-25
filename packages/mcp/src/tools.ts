@@ -69,16 +69,13 @@ export function registerTools(server: McpServer): void {
     {
       title: 'Scaffold a Gutenberg block',
       description:
-        'Generates a custom Gutenberg block (block.json, edit.tsx, style.css, and render.php for dynamic blocks) under src/blocks/<slug> in the target theme.',
+        'Generates a custom dynamic Gutenberg block (block.json, edit.tsx, render.php, style.css) under src/blocks/<slug> in the target theme. All StrataWP blocks are dynamic — they render on the front end via a server-side render.php callback; there is no static/save.js variant.',
       inputSchema: {
         targetDir,
         name: z.string().describe('Human-readable block name, e.g. "Hero"'),
         namespace: z
           .string()
           .describe('Block namespace, usually the theme slug, e.g. "strata-basic"'),
-        type: z
-          .enum(['static', 'dynamic'])
-          .describe('Static (save.js) or dynamic (render.php) block'),
         category: z.string().default('common').describe('Block category, e.g. "common", "media"'),
         styleFramework: z
           .enum(['none', 'tailwind', 'unocss'])
@@ -87,8 +84,8 @@ export function registerTools(server: McpServer): void {
       },
       outputSchema,
     },
-    async ({ targetDir, name, namespace, type, category, styleFramework }) => {
-      const generated = generateBlock({ name, namespace, type, category, styleFramework })
+    async ({ targetDir, name, namespace, category, styleFramework }) => {
+      const generated = generateBlock({ name, namespace, category, styleFramework })
       return writeAndReport(targetDir, generated)
     }
   )

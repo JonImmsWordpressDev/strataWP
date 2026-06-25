@@ -5,7 +5,6 @@ import path from 'path'
 import { generateBlock } from '../generators/block'
 
 interface BlockOptions {
-  type: 'static' | 'dynamic'
   category: string
   styleFramework?: 'none' | 'tailwind' | 'unocss'
 }
@@ -13,7 +12,6 @@ interface BlockOptions {
 export async function blockCommand(name: string, options: BlockOptions) {
   console.log(chalk.bold.cyan('⚒️  Creating Block\n'))
   console.log(chalk.dim(`Name: ${name}`))
-  console.log(chalk.dim(`Type: ${options.type}`))
   console.log(chalk.dim(`Category: ${options.category}\n`))
 
   const spinner = ora('Generating block...').start()
@@ -34,7 +32,6 @@ export async function blockCommand(name: string, options: BlockOptions) {
     const result = generateBlock({
       name,
       namespace,
-      type: options.type,
       category: options.category,
       styleFramework: options.styleFramework ?? 'none',
     })

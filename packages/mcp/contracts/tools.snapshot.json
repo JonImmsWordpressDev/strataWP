@@ -1,7 +1,7 @@
 [
   {
     "name": "scaffold_block",
-    "description": "Generates a custom Gutenberg block (block.json, edit.tsx, style.css, and render.php for dynamic blocks) under src/blocks/<slug> in the target theme.",
+    "description": "Generates a custom dynamic Gutenberg block (block.json, edit.tsx, render.php, style.css) under src/blocks/<slug> in the target theme. All StrataWP blocks are dynamic — they render on the front end via a server-side render.php callback; there is no static/save.js variant.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -17,11 +17,6 @@
           "type": "string",
           "description": "Block namespace, usually the theme slug, e.g. \"strata-basic\""
         },
-        "type": {
-          "type": "string",
-          "enum": ["static", "dynamic"],
-          "description": "Static (save.js) or dynamic (render.php) block"
-        },
         "category": {
           "type": "string",
           "default": "common",
@@ -34,7 +29,7 @@
           "description": "CSS utility framework to scaffold against"
         }
       },
-      "required": ["targetDir", "name", "namespace", "type"],
+      "required": ["targetDir", "name", "namespace"],
       "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },

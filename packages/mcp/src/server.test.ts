@@ -95,7 +95,7 @@ describe('@stratawp/mcp server tools', () => {
     const targetDir = await tempDir()
     const result = await client.callTool({
       name: 'scaffold_block',
-      arguments: { targetDir, name: 'hero', namespace: 'strata-basic', type: 'dynamic' },
+      arguments: { targetDir, name: 'hero', namespace: 'strata-basic' },
     })
 
     const written = (result.structuredContent as { written: string[] }).written
@@ -153,7 +153,7 @@ describe('@stratawp/mcp server tools', () => {
   it('returns an error result when a required field (targetDir) is missing', async () => {
     const result = await client.callTool({
       name: 'scaffold_block',
-      arguments: { name: 'hero', namespace: 'strata-basic', type: 'dynamic' },
+      arguments: { name: 'hero', namespace: 'strata-basic' },
     })
     expect(result.isError).toBe(true)
     expect(result.structuredContent).toBeUndefined()
@@ -165,7 +165,7 @@ describe('@stratawp/mcp server tools', () => {
     const result = await client.callTool({
       name: 'scaffold_block',
       // targetDir must be a string
-      arguments: { targetDir: 123, name: 'hero', namespace: 'strata-basic', type: 'dynamic' },
+      arguments: { targetDir: 123, name: 'hero', namespace: 'strata-basic' },
     })
     expect(result.isError).toBe(true)
     const text = (result.content as Array<{ text: string }>)[0]?.text ?? ''
