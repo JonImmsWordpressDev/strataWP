@@ -1,0 +1,8 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "strata-basic/hero",
+  "title": "Hero Section",
+  "category": "design",
+  "description": "A well-formed block used as a passing fixture"
+}

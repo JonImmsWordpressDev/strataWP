@@ -10,3 +10,5 @@ coverage
 .claude-flow
 # Internal AI-workflow planning docs (specs/plans) — not product docs
 docs/superpowers
+# Vendored JSON schemas — pinned upstream files; keep original tab-indented style
+packages/vite-plugin/schemas
