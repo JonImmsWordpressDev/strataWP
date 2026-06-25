@@ -11,5 +11,13 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', '@wordpress/*', '@playwright/test', 'playwright', 'playwright-core', '@axe-core/playwright'],
+  external: [
+    'react',
+    'react-dom',
+    '@wordpress/*',
+    '@playwright/test',
+    'playwright',
+    'playwright-core',
+    '@axe-core/playwright',
+  ],
 })
