@@ -29,22 +29,22 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Settings', 'forge-basic')}>
+        <PanelBody title={__('Settings', 'strata-store')}>
           <MediaUpload
             onSelect={(media: any) => setAttributes({ backgroundImage: media.url })}
             allowedTypes={['image']}
             render={({ open }) => (
               <Button onClick={open} variant="secondary">
                 {attributes.backgroundImage
-                  ? __('Change Background', 'forge-basic')
-                  : __('Set Background', 'forge-basic')}
+                  ? __('Change Background', 'strata-store')
+                  : __('Set Background', 'strata-store')}
               </Button>
             )}
           />
           {attributes.backgroundImage && (
             <>
               <RangeControl
-                label={__('Overlay Opacity', 'forge-basic')}
+                label={__('Overlay Opacity', 'strata-store')}
                 value={attributes.overlayOpacity}
                 onChange={(value) => setAttributes({ overlayOpacity: value ?? 0.5 })}
                 min={0}
@@ -56,7 +56,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                 isDestructive
                 variant="secondary"
               >
-                {__('Remove Background', 'forge-basic')}
+                {__('Remove Background', 'strata-store')}
               </Button>
             </>
           )}
@@ -73,14 +73,14 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
             className="hero-title"
             value={attributes.title}
             onChange={(title) => setAttributes({ title })}
-            placeholder={__('Hero Title...', 'forge-basic')}
+            placeholder={__('Hero Title...', 'strata-store')}
           />
           <RichText
             tagName="p"
             className="hero-description"
             value={attributes.description}
             onChange={(description) => setAttributes({ description })}
-            placeholder={__('Hero description...', 'forge-basic')}
+            placeholder={__('Hero description...', 'strata-store')}
           />
           <div className="hero-button-wrapper">
             <RichText
@@ -88,7 +88,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
               className="hero-button"
               value={attributes.buttonText}
               onChange={(buttonText) => setAttributes({ buttonText })}
-              placeholder={__('Button text...', 'forge-basic')}
+              placeholder={__('Button text...', 'strata-store')}
             />
           </div>
         </div>

@@ -22,9 +22,9 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Icon Settings', 'forge-basic')}>
+        <PanelBody title={__('Icon Settings', 'strata-store')}>
           <TextControl
-            label={__('Icon (emoji or text)', 'forge-basic')}
+            label={__('Icon (emoji or text)', 'strata-store')}
             value={attributes.icon}
             onChange={(icon) => setAttributes({ icon })}
           />
@@ -44,14 +44,14 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
           className="feature-title"
           value={attributes.title}
           onChange={(title) => setAttributes({ title })}
-          placeholder={__('Feature title...', 'forge-basic')}
+          placeholder={__('Feature title...', 'strata-store')}
         />
         <RichText
           tagName="p"
           className="feature-description"
           value={attributes.description}
           onChange={(description) => setAttributes({ description })}
-          placeholder={__('Feature description...', 'forge-basic')}
+          placeholder={__('Feature description...', 'strata-store')}
         />
       </div>
     </>

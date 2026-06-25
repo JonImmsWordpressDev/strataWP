@@ -9,7 +9,7 @@ export default defineConfig({
       blocks: {
         dir: 'src/blocks',
         autoRegister: true,
-        namespace: 'forge-basic',
+        namespace: 'strata-advanced',
       },
       phpHmr: {
         enabled: true,

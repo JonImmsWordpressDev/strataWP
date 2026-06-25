@@ -25,7 +25,7 @@
 					<?php
 					printf(
 						/* translators: %s: Author name */
-						esc_html__( 'by %s', 'forge-basic' ),
+						esc_html__( 'by %s', 'strata-store' ),
 						'<a href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' .
 						esc_html( get_the_author() ) .
 						'</a>'
@@ -72,7 +72,7 @@
 					<?php
 					printf(
 						/* translators: %s: Category list */
-						esc_html__( 'Posted in %s', 'forge-basic' ),
+						esc_html__( 'Posted in %s', 'strata-store' ),
 						$categories // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					);
 					?>
@@ -87,7 +87,7 @@
 					<?php
 					printf(
 						/* translators: %s: Tag list */
-						esc_html__( 'Tagged %s', 'forge-basic' ),
+						esc_html__( 'Tagged %s', 'strata-store' ),
 						$tags // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					);
 					?>
