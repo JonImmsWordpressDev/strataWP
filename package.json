@@ -31,10 +31,13 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo build && changeset publish",
-    "contracts:check": "node scripts/check-contracts.mjs"
+    "contracts:check": "node scripts/check-contracts.mjs",
+    "contracts:validate": "node scripts/validate-contracts.mjs",
+    "contracts:types:check": "node scripts/check-types-drift.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
+    "ajv": "^8.17.1",
     "@eslint/js": "^9.39.0",
     "@lhci/cli": "^0.14",
     "@types/node": "^20.10.5",

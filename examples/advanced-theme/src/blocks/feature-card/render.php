@@ -13,7 +13,7 @@ $icon_background_color = $attributes['iconBackgroundColor'] ?? '#3b82f6';
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
-		'class' => 'wp-block-forge-basic-feature-card',
+		'class' => 'wp-block-strata-advanced-feature-card',
 	)
 );
 ?>

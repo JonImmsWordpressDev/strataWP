@@ -12,7 +12,7 @@
 				<?php
 				printf(
 					/* translators: 1: Theme name, 2: Theme author link */
-					esc_html__( '%1$s by %2$s', 'strata-basic' ),
+					esc_html__( '%1$s by %2$s', 'strata-advanced' ),
 					'<a href="' . esc_url( 'https://github.com/JonImmsWordpressDev/StrataWP' ) . '">StrataWP</a>',
 					'<a href="' . esc_url( 'https://github.com/JonImmsWordpressDev' ) . '">Jon Imms</a>'
 				);
@@ -26,7 +26,7 @@
 		<?php
 		if ( has_nav_menu( 'footer' ) ) :
 			?>
-			<nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer Navigation', 'strata-basic' ); ?>">
+			<nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer Navigation', 'strata-advanced' ); ?>">
 				<?php
 				wp_nav_menu(
 					array(

@@ -23,6 +23,9 @@ importers:
       '@wordpress/env':
         specifier: ^10
         version: 10.39.0(@types/node@20.19.25)
+      ajv:
+        specifier: ^8.17.1
+        version: 8.18.0
       beasties:
         specifier: ^0.1
         version: 0.1.0

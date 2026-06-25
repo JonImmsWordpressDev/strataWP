@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "strata-basic/hero",
+  "name": "strata-store/hero",
   "title": "Hero Section",
   "category": "design",
   "icon": "cover-image",

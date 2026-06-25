@@ -1,24 +1,13 @@
 import { useBlockProps, RichText, MediaUpload, InspectorControls } from '@wordpress/block-editor'
 import { PanelBody, RangeControl, Button } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
+import type { BlockEditProps } from '@wordpress/blocks'
+// Attribute types are generated from block.json by @stratawp/vite-plugin.
+import type { HeroAttributes } from './block-attributes'
 
-interface HeroAttributes {
-  title: string
-  description: string
-  buttonText: string
-  buttonUrl: string
-  backgroundImage?: string
-  overlayOpacity: number
-}
-
-interface EditProps {
-  attributes: HeroAttributes
-  setAttributes: (attrs: Partial<HeroAttributes>) => void
-}
-
-export default function Edit({ attributes, setAttributes }: EditProps) {
+export default function Edit({ attributes, setAttributes }: BlockEditProps<HeroAttributes>) {
   const blockProps = useBlockProps({
-    className: 'wp-block-forge-basic-hero',
+    className: 'wp-block-strata-basic-hero',
     style: {
       backgroundImage: attributes.backgroundImage
         ? `url(${attributes.backgroundImage})`
@@ -29,22 +18,22 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Settings', 'forge-basic')}>
+        <PanelBody title={__('Settings', 'strata-basic')}>
           <MediaUpload
             onSelect={(media: any) => setAttributes({ backgroundImage: media.url })}
             allowedTypes={['image']}
             render={({ open }) => (
               <Button onClick={open} variant="secondary">
                 {attributes.backgroundImage
-                  ? __('Change Background', 'forge-basic')
-                  : __('Set Background', 'forge-basic')}
+                  ? __('Change Background', 'strata-basic')
+                  : __('Set Background', 'strata-basic')}
               </Button>
             )}
           />
           {attributes.backgroundImage && (
             <>
               <RangeControl
-                label={__('Overlay Opacity', 'forge-basic')}
+                label={__('Overlay Opacity', 'strata-basic')}
                 value={attributes.overlayOpacity}
                 onChange={(value) => setAttributes({ overlayOpacity: value ?? 0.5 })}
                 min={0}
@@ -56,7 +45,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
                 isDestructive
                 variant="secondary"
               >
-                {__('Remove Background', 'forge-basic')}
+                {__('Remove Background', 'strata-basic')}
               </Button>
             </>
           )}
@@ -73,14 +62,14 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
             className="hero-title"
             value={attributes.title}
             onChange={(title) => setAttributes({ title })}
-            placeholder={__('Hero Title...', 'forge-basic')}
+            placeholder={__('Hero Title...', 'strata-basic')}
           />
           <RichText
             tagName="p"
             className="hero-description"
             value={attributes.description}
             onChange={(description) => setAttributes({ description })}
-            placeholder={__('Hero description...', 'forge-basic')}
+            placeholder={__('Hero description...', 'strata-basic')}
           />
           <div className="hero-button-wrapper">
             <RichText
@@ -88,7 +77,7 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
               className="hero-button"
               value={attributes.buttonText}
               onChange={(buttonText) => setAttributes({ buttonText })}
-              placeholder={__('Button text...', 'forge-basic')}
+              placeholder={__('Button text...', 'strata-basic')}
             />
           </div>
         </div>

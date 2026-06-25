@@ -4,6 +4,7 @@ import { readFile, writeFile } from 'fs/promises'
 import { join, dirname, relative } from 'path'
 import pc from 'picocolors'
 import type { BlockOptions, BlockMetadata } from '../types'
+import { generateBlockAttributeTypes } from './block-types'
 
 /**
  * Auto-discover and register WordPress blocks
@@ -72,6 +73,38 @@ export function strataWPBlocks(options: BlockOptions = {}): Plugin {
       await writeFile(outputPath, phpCode, 'utf-8')
 
       console.log(pc.green(`  ✓ Generated block registration: inc/blocks-generated.php`))
+
+      // Generate committed TypeScript attribute types next to each block.
+      // These live in src/blocks/<block>/block-attributes.ts (NOT in dist/),
+      // are consumed by each block's edit.tsx, and are verified by the
+      // contracts:types:check drift gate.
+      let typesWritten = 0
+      for (const block of blocks) {
+        const blockData = block as BlockMetadata & { _dir: string }
+        try {
+          const { fileName, content } = generateBlockAttributeTypes(block)
+          const typesPath = join(rootDir, blockData._dir, fileName)
+
+          // Only write when content changes to avoid needless churn / watcher loops.
+          let existing: string | null = null
+          try {
+            existing = await readFile(typesPath, 'utf-8')
+          } catch {
+            existing = null
+          }
+
+          if (existing !== content) {
+            await writeFile(typesPath, content, 'utf-8')
+            typesWritten++
+          }
+        } catch {
+          this.warn(`Failed to generate attribute types for ${block.name}`)
+        }
+      }
+
+      if (typesWritten > 0) {
+        console.log(pc.green(`  ✓ Generated block attribute types: ${typesWritten} file(s)`))
+      }
     },
 
     // Hot reload blocks during development

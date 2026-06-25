@@ -38,7 +38,7 @@ class Customizer implements ComponentInterface {
 		$wp_customize->add_section(
 			'strata_basic_theme_options',
 			array(
-				'title'    => __( 'Theme Options', 'strata-basic' ),
+				'title'    => __( 'Theme Options', 'strata-store' ),
 				'priority' => 30,
 			)
 		);
@@ -58,7 +58,7 @@ class Customizer implements ComponentInterface {
 				$wp_customize,
 				'strata_basic_header_color',
 				array(
-					'label'   => __( 'Header Text Color', 'strata-basic' ),
+					'label'   => __( 'Header Text Color', 'strata-store' ),
 					'section' => 'strata_basic_theme_options',
 				)
 			)
@@ -76,7 +76,7 @@ class Customizer implements ComponentInterface {
 		$wp_customize->add_control(
 			'strata_basic_show_tagline',
 			array(
-				'label'   => __( 'Show Site Tagline', 'strata-basic' ),
+				'label'   => __( 'Show Site Tagline', 'strata-store' ),
 				'section' => 'strata_basic_theme_options',
 				'type'    => 'checkbox',
 			)

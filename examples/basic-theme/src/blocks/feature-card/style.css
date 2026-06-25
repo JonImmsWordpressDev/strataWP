@@ -1,15 +1,15 @@
-.wp-block-forge-basic-feature-card {
+.wp-block-strata-basic-feature-card {
   padding: 2rem;
   border: 1px solid #eeeeee;
   text-align: center;
   transition: box-shadow 0.2s;
 }
 
-.wp-block-forge-basic-feature-card:hover {
+.wp-block-strata-basic-feature-card:hover {
   box-shadow: 0 0 50px rgba(10, 10, 10, 0.1);
 }
 
-.wp-block-forge-basic-feature-card .feature-icon {
+.wp-block-strata-basic-feature-card .feature-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -18,18 +18,18 @@
   margin: 0 auto 1rem;
 }
 
-.wp-block-forge-basic-feature-card .feature-icon-content {
+.wp-block-strata-basic-feature-card .feature-icon-content {
   font-size: 2rem;
 }
 
-.wp-block-forge-basic-feature-card .feature-title {
+.wp-block-strata-basic-feature-card .feature-title {
   font-size: 1.5rem;
   font-weight: 400;
   margin: 0 0 0.5rem;
   color: #000000;
 }
 
-.wp-block-forge-basic-feature-card .feature-description {
+.wp-block-strata-basic-feature-card .feature-description {
   color: #000000;
   opacity: 0.7;
   margin: 0;

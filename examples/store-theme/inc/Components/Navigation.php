@@ -33,8 +33,8 @@ class Navigation implements ComponentInterface {
 	public function register_menus(): void {
 		register_nav_menus(
 			array(
-				'primary' => __( 'Primary Menu', 'strata-basic' ),
-				'footer'  => __( 'Footer Menu', 'strata-basic' ),
+				'primary' => __( 'Primary Menu', 'strata-store' ),
+				'footer'  => __( 'Footer Menu', 'strata-store' ),
 			)
 		);
 	}

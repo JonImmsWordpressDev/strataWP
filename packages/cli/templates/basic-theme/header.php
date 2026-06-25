@@ -19,7 +19,7 @@
 
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary">
-		<?php esc_html_e( 'Skip to content', 'forge-basic' ); ?>
+		<?php esc_html_e( 'Skip to content', 'strata-basic' ); ?>
 	</a>
 
 	<header id="masthead" class="site-header">
@@ -50,11 +50,11 @@
 		</div>
 
 		<?php if ( has_nav_menu( 'primary' ) ) : ?>
-			<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'forge-basic' ); ?>">
+			<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'strata-basic' ); ?>">
 				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">
 					<span class="menu-toggle-icon"></span>
 					<span class="screen-reader-text">
-						<?php esc_html_e( 'Menu', 'forge-basic' ); ?>
+						<?php esc_html_e( 'Menu', 'strata-basic' ); ?>
 					</span>
 				</button>
 				<?php

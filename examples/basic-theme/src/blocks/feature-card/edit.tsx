@@ -1,30 +1,21 @@
 import { useBlockProps, RichText, InspectorControls } from '@wordpress/block-editor'
 import { PanelBody, TextControl, ColorPicker } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
+import type { BlockEditProps } from '@wordpress/blocks'
+// Attribute types are generated from block.json by @stratawp/vite-plugin.
+import type { FeatureCardAttributes } from './block-attributes'
 
-interface FeatureCardAttributes {
-  title: string
-  description: string
-  icon: string
-  iconBackgroundColor: string
-}
-
-interface EditProps {
-  attributes: FeatureCardAttributes
-  setAttributes: (attrs: Partial<FeatureCardAttributes>) => void
-}
-
-export default function Edit({ attributes, setAttributes }: EditProps) {
+export default function Edit({ attributes, setAttributes }: BlockEditProps<FeatureCardAttributes>) {
   const blockProps = useBlockProps({
-    className: 'wp-block-forge-basic-feature-card',
+    className: 'wp-block-strata-basic-feature-card',
   })
 
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Icon Settings', 'forge-basic')}>
+        <PanelBody title={__('Icon Settings', 'strata-basic')}>
           <TextControl
-            label={__('Icon (emoji or text)', 'forge-basic')}
+            label={__('Icon (emoji or text)', 'strata-basic')}
             value={attributes.icon}
             onChange={(icon) => setAttributes({ icon })}
           />
@@ -44,14 +35,14 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
           className="feature-title"
           value={attributes.title}
           onChange={(title) => setAttributes({ title })}
-          placeholder={__('Feature title...', 'forge-basic')}
+          placeholder={__('Feature title...', 'strata-basic')}
         />
         <RichText
           tagName="p"
           className="feature-description"
           value={attributes.description}
           onChange={(description) => setAttributes({ description })}
-          placeholder={__('Feature description...', 'forge-basic')}
+          placeholder={__('Feature description...', 'strata-basic')}
         />
       </div>
     </>

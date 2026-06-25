@@ -87,6 +87,10 @@ jobs:
       - run: pnpm build
       - name: MCP tool-contract snapshot is in sync
         run: pnpm contracts:check
+      - name: Declaration files validate against schema
+        run: pnpm contracts:validate
+      - name: Generated block types are in sync
+        run: pnpm contracts:types:check
 
   php-themes:
     name: PHP themes (WPCS)
