@@ -14,7 +14,7 @@
 		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Your Company LLC · <a href="#">Contact Us</a></p>
 		<!-- /wp:paragraph -->
 		<!-- wp:paragraph -->
-		<p><a href="#"><?php echo esc_html__( 'Facebook', 'frost' ); ?></a> · <a href="#"><?php echo esc_html__( 'LinkedIn', 'frost' ); ?></a> · <a href="#"><?php echo esc_html__( 'Instagram', 'frost' ); ?></a></p>
+		<p><a href="#"><?php echo esc_html__( 'Facebook', 'strata-basic' ); ?></a> · <a href="#"><?php echo esc_html__( 'LinkedIn', 'strata-basic' ); ?></a> · <a href="#"><?php echo esc_html__( 'Instagram', 'strata-basic' ); ?></a></p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->

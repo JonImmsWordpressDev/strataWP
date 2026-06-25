@@ -1,0 +1,81 @@
+name: Accessibility (axe)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  axe:
+    name: axe WCAG 2.1 A/AA (wp-env)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the Vite plugin (theme build dependency)
+        run: pnpm --filter @stratawp/vite-plugin build
+
+      - name: Build the testing package (axe fixture)
+        run: pnpm --filter @stratawp/testing build
+
+      - name: Prepare example theme (copy core into vendor, build assets)
+        working-directory: examples/basic-theme
+        env:
+          # Copy the path-repo core into vendor/ so it resolves in the container.
+          COMPOSER_MIRROR_PATH_REPOS: '1'
+        run: |
+          composer install --no-interaction --no-progress
+          pnpm build
+
+      - name: Start WordPress (wp-env)
+        run: pnpm exec wp-env start
+
+      - name: Activate theme + enable pretty permalinks
+        run: |
+          pnpm exec wp-env run cli wp theme activate basic-theme
+          pnpm exec wp-env run cli wp rewrite structure '/%postname%/' --hard
+          pnpm exec wp-env run cli wp rewrite flush --hard
+
+      - name: Install Playwright chromium
+        working-directory: examples/basic-theme
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Wait for WordPress to be ready
+        run: node scripts/wait-for-http.mjs http://localhost:8888/ 120000
+
+      - name: Run axe accessibility scan (WCAG 2.1 A/AA)
+        working-directory: examples/basic-theme
+        run: pnpm exec playwright test --config playwright.a11y.config.ts
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-a11y-report
+          path: examples/basic-theme/playwright-report
+          retention-days: 7

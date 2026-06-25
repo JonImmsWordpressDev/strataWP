@@ -137,9 +137,11 @@ Located in `packages/core/src/Components/Accessibility.php`. Included in default
 
 Features:
 
-- **Skip link focus fix**: Inlined JavaScript in footer for IE/Edge focus management
-- **aria-current="page"**: Automatically added to current navigation menu items via `nav_menu_link_attributes` and `page_menu_link_attributes` filters
+- **Skip link focus fix**: Inlined JavaScript in footer for older-browser focus management
+- **aria-current="page"**: Added to current items in classic `wp_nav_menu`/`page_menu` navigation via `nav_menu_link_attributes` and `page_menu_link_attributes` filters (the `core/navigation` block sets `aria-current` on the active item itself)
 - **Screen reader styles**: Inlined `.screen-reader-text` CSS utility (available before stylesheets load)
+
+Front-end accessibility is enforced in CI: the `a11y.yml` workflow runs axe-core via Playwright against the built `examples/basic-theme` on wp-env and fails on any WCAG 2.1 A/AA violation (run locally with `pnpm test:e2e`).
 
 ### Conditional Styles Component
 
@@ -480,10 +482,8 @@ stratawp part:new sidebar --type=sidebar
 # Run unit tests
 pnpm test
 
-# Run with coverage
-pnpm test:coverage
-
-# Run E2E tests (Playwright)
+# Run accessibility e2e (axe-core + Playwright, WCAG 2.1 A/AA)
+# Requires a running wp-env: pnpm exec wp-env start && pnpm exec wp-env run cli wp theme activate basic-theme
 pnpm test:e2e
 ```
 

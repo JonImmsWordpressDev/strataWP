@@ -24,6 +24,9 @@
     "typecheck": {
       "dependsOn": ["^build"],
       "outputs": []
+    },
+    "e2e": {
+      "cache": false
     }
   }
 }

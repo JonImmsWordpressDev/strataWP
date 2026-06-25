@@ -8,6 +8,8 @@ vendor/
 coverage/
 .nyc_output/
 *.lcov
+playwright-report/
+test-results/
 
 # Build outputs
 dist/
