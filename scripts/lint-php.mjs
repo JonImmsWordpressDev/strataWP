@@ -11,7 +11,10 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const phpcs = resolve(root, 'packages/core/vendor/bin/phpcs')
 
 // Locations are appended as each is cleaned. Final state: all six.
-const LOCATIONS = ['packages/cli/templates/basic-theme']
+const LOCATIONS = [
+  'packages/cli/templates/basic-theme',
+  'examples/basic-theme',
+]
 
 if (!existsSync(phpcs)) {
   console.error(`phpcs not found at ${phpcs}. Run "composer install" in packages/core first.`)
@@ -21,6 +24,11 @@ if (!existsSync(phpcs)) {
 let failed = false
 for (const loc of LOCATIONS) {
   const dir = resolve(root, loc)
+  if (!existsSync(dir)) {
+    console.error(`Location not found: ${loc}`)
+    failed = true
+    continue
+  }
   process.stdout.write(`\n=== phpcs: ${loc} ===\n`)
   try {
     execFileSync(phpcs, ['--standard=phpcs.xml.dist'], { cwd: dir, stdio: 'inherit' })
