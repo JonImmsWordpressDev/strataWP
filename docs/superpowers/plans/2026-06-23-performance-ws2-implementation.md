@@ -4,7 +4,7 @@
 
 **Goal:** Give `@stratawp/vite-plugin` a real build-time image pipeline (`sharp` optimize + `.webp` siblings + `svgo`) — the single biggest concrete gap vs the comparison target (codename **Triple XXX**) — and stop the plugin emitting orphaned, never-`require()`d perf PHP, while preserving the one genuinely useful build optimization (`manualChunks`).
 
-**Architecture:** All changes in `packages/vite-plugin`. New `strataWPImages` Vite plugin (build-time `closeBundle`, ported 1:1 from Triple XXX `/tmp/repo-analysis/wprig/scripts/tasks/images.js`). The orphaned generators (`preload.ts`, `lazy-loading.ts`'s PHP writer, `critical-css.ts`'s PHP loader) get removed/disabled; `manualChunks` moves into the core plugin so it survives. Critical CSS proper is **WS3** (a separate plan, via `beasties`) — here we just stop the dead version from emitting PHP.
+**Architecture:** All changes in `packages/vite-plugin`. New `strataWPImages` Vite plugin (build-time `closeBundle`, ported 1:1 from Triple XXX `/tmp/repo-analysis/triple-xxx/scripts/tasks/images.js`). The orphaned generators (`preload.ts`, `lazy-loading.ts`'s PHP writer, `critical-css.ts`'s PHP loader) get removed/disabled; `manualChunks` moves into the core plugin so it survives. Critical CSS proper is **WS3** (a separate plan, via `beasties`) — here we just stop the dead version from emitting PHP.
 
 **Tech Stack:** Vite 5 plugin (TS), `sharp` (raster + webp), `svgo` (svg), `fast-glob` (already a dep), `node:fs/promises`. Vitest for tests.
 
@@ -40,7 +40,7 @@ Create `src/plugins/images.ts`:
  * StrataWP Images Plugin
  *
  * Build-time raster optimization (sharp), SVG optimization (svgo), and
- * sibling .webp generation. Ported from the WP Rig image task. Runs in
+ * sibling .webp generation. Ported from the Triple XXX image task. Runs in
  * `closeBundle` so it operates on the theme's source images independently
  * of Vite's import graph.
  */

@@ -69,7 +69,7 @@ All patterns from Frost theme, plus store-specific patterns:
 
 - TypeScript + Vite build system
 - Hot Module Replacement (HMR) with instant updates
-- Modular SCSS architecture (wp-rig inspired)
+- Modular SCSS architecture
 - Custom Gutenberg blocks
 - PHP Hot Reload
 - WooCommerce-specific styles with Sass variables
@@ -221,7 +221,7 @@ store-theme/
 │   └── ... (52+ more patterns)
 ├── src/
 │   ├── blocks/            # Custom Gutenberg blocks
-│   ├── scss/              # Modular SCSS (wp-rig inspired)
+│   ├── scss/              # Modular SCSS
 │   │   ├── main.scss      # Main entry point
 │   │   ├── _variables.scss
 │   │   ├── _woocommerce.scss  # WooCommerce styles
@@ -321,7 +321,7 @@ Edit `functions.php` to customize:
 - **Design System**: Built on [Frost](https://frostwp.com/) by WP Engine
 - **Framework**: StrataWP by Jon Imms
 - **E-Commerce**: WooCommerce
-- **Inspired by**: wp-rig, Next.js, Vite, Shopify themes
+- **Inspired by**: a prior-art WordPress starter theme (GPL), Next.js, Vite, Shopify themes
 
 ## License
 

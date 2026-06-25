@@ -24,7 +24,7 @@ What actually reaches the browser today (basic theme, production) is only: emoji
 - **No Lighthouse CI** — no `.lighthouserc`, no `@lhci/cli`, no `test:perf`, nothing gates perf.
 - **Split-brain resource hints:** a filter-driven implementation in `core/Components/Performance.php` and a second hardcoded one in the dead generated PHP — only the (empty-by-default) PHP one runs.
 
-Triple XXX target (`/tmp/repo-analysis/wprig`): CSS `rel=preload`/onload swap with per-template `preload_callback` gating (`inc/Styles`), per-handle async/defer via `wp_script_add_data`, responsive `sizes` tuning (`inc/Image_Sizes`), a build-time `sharp` pipeline (jpeg mozjpeg q75 progressive; png q80 level9 adaptive; svgo multipass `removeViewBox:false`) that also emits parallel `.webp`, PWA precache flags, and `.lighthouserc.cjs` (`perf/a11y/bp/seo ≥0.9`, LCP≤2500, CLS≤0.1, TBT≤300, 3 runs) — **not enforced in their CI**.
+Triple XXX target (`/tmp/repo-analysis/triple-xxx`): CSS `rel=preload`/onload swap with per-template `preload_callback` gating (`inc/Styles`), per-handle async/defer via `wp_script_add_data`, responsive `sizes` tuning (`inc/Image_Sizes`), a build-time `sharp` pipeline (jpeg mozjpeg q75 progressive; png q80 level9 adaptive; svgo multipass `removeViewBox:false`) that also emits parallel `.webp`, PWA precache flags, and `.lighthouserc.cjs` (`perf/a11y/bp/seo ≥0.9`, LCP≤2500, CLS≤0.1, TBT≤300, 3 runs) — **not enforced in their CI**.
 
 ## 3. Scope
 

@@ -4,7 +4,7 @@
 
 **Goal:** Make `packages/core`'s performance behavior real on the rendered page — fix the bug that drops the theme's own CSS, make non-critical CSS non-render-blocking, add responsive `sizes`, real async/defer, PWA precache, and consolidated resource hints — all unit-tested with Brain Monkey.
 
-**Architecture:** All changes are in the `stratawp/core` PHP package and its PHPUnit suite. We port two mechanisms from the comparison target (codename **Triple XXX**, cloned at `/tmp/repo-analysis/wprig`): the CSS `rel=preload … onload="this.rel='stylesheet'"` swap (`inc/Styles/Component.php`) and responsive `sizes` filters (`inc/Image_Sizes/Component.php`). The main stylesheet stays render-blocking (async-ing it without critical CSS causes FOUC — that pairs with WS3). The Vite-side removal of orphaned generated PHP is **WS2** (it lives in `packages/vite-plugin`).
+**Architecture:** All changes are in the `stratawp/core` PHP package and its PHPUnit suite. We port two mechanisms from the comparison target (codename **Triple XXX**, cloned at `/tmp/repo-analysis/triple-xxx`): the CSS `rel=preload … onload="this.rel='stylesheet'"` swap (`inc/Styles/Component.php`) and responsive `sizes` filters (`inc/Image_Sizes/Component.php`). The main stylesheet stays render-blocking (async-ing it without critical CSS causes FOUC — that pairs with WS3). The Vite-side removal of orphaned generated PHP is **WS2** (it lives in `packages/vite-plugin`).
 
 **Tech Stack:** PHP 8.1+, WordPress hooks, PHPUnit 10 + Brain Monkey 2.7 (already set up in `packages/core` from Phase 1).
 
@@ -130,7 +130,7 @@ git commit -m "fix(core): enqueue a script entry's CSS siblings so the theme sty
 
 ## Task 2: Make non-critical conditional CSS non-render-blocking (ConditionalStyles)
 
-**Problem:** `ConditionalStyles::enqueue_styles()` _enqueues_ every conditional sheet (render-blocking) and `preload_styles()` adds a plain `rel=preload` with no `onload` swap — so sheets are both render-blocking AND redundantly preloaded. Port the Triple XXX pattern (`/tmp/repo-analysis/wprig/inc/Styles/Component.php`): **register** (don't enqueue) non-global sheets, then emit `rel=preload as=style onload="this.rel='stylesheet'"` with a `<noscript>` fallback. Add `precache` data.
+**Problem:** `ConditionalStyles::enqueue_styles()` _enqueues_ every conditional sheet (render-blocking) and `preload_styles()` adds a plain `rel=preload` with no `onload` swap — so sheets are both render-blocking AND redundantly preloaded. Port the Triple XXX pattern (`/tmp/repo-analysis/triple-xxx/inc/Styles/Component.php`): **register** (don't enqueue) non-global sheets, then emit `rel=preload as=style onload="this.rel='stylesheet'"` with a `<noscript>` fallback. Add `precache` data.
 
 **Files:**
 

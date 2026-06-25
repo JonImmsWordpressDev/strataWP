@@ -2,7 +2,7 @@
 /**
  * Accessibility Component
  *
- * Provides accessibility enhancements inspired by WPRig:
+ * Provides accessibility enhancements inspired by a prior-art WordPress starter theme (GPL):
  * - Skip link focus fix for older browsers
  * - aria-current="page" on navigation items
  * - Screen reader text CSS class

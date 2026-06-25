@@ -2,7 +2,8 @@
  * StrataWP Images Plugin
  *
  * Build-time raster optimization (sharp), SVG optimization (svgo), and
- * sibling .webp generation. Ported from the WP Rig image task. Runs in
+ * sibling .webp generation. Ported from a prior-art WordPress starter theme's image
+ * task. Runs in
  * `closeBundle` so it operates on the theme's source images independently
  * of Vite's import graph.
  */

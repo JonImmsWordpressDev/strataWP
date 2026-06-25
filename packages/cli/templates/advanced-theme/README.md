@@ -31,7 +31,7 @@ A professional Block Theme (FSE) built on the Frost design system, showcasing th
 
 - TypeScript + Vite build system
 - Hot Module Replacement (HMR) with instant updates
-- Modular SCSS architecture (wp-rig inspired)
+- Modular SCSS architecture
 - Custom Gutenberg blocks
 - PHP Hot Reload
 
@@ -168,7 +168,7 @@ basic-theme/
 │   └── ... (48 more patterns)
 ├── src/
 │   ├── blocks/            # Custom Gutenberg blocks
-│   ├── scss/              # Modular SCSS (wp-rig inspired)
+│   ├── scss/              # Modular SCSS
 │   │   ├── main.scss      # Main entry point
 │   │   ├── _variables.scss
 │   │   ├── _reset.scss
@@ -222,7 +222,7 @@ Edit `theme.json` to customize the color palette:
 
 - **Design System**: Built on [Frost](https://frostwp.com/) by WP Engine
 - **Framework**: StrataWP by Jon Imms
-- **Inspired by**: wp-rig, Next.js, Vite
+- **Inspired by**: a prior-art WordPress starter theme (GPL), Next.js, Vite
 
 ## License
 
