@@ -99,7 +99,7 @@ Implements performance optimizations:
 
 ## Architecture
 
-StrataWP uses a component-based architecture inspired by WPRig but modernized:
+StrataWP uses a component-based architecture inspired by a prior-art WordPress starter theme (GPL), modernized:
 
 ```
 Theme

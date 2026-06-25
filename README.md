@@ -215,7 +215,7 @@ GPL-3.0-or-later - just like WordPress itself.
 
 Inspired by:
 
-- [WPRig](https://wprig.io/) - For the excellent component architecture
+- A prior-art WordPress starter theme (GPL) - for the component architecture
 - [Next.js](https://nextjs.org/) - For modern DX patterns
 - [Vite](https://vitejs.dev/) - For the incredible build tool
 

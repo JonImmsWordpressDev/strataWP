@@ -8,7 +8,7 @@
 
 **Tech Stack:** pnpm 8 + Turborepo, TypeScript 5 + Vitest, ESLint 9 (flat) + typescript-eslint 8, Prettier 3; PHP 8.1+ with PHPUnit 10 + Brain Monkey, WPCS 3 (PHPCS), PHPStan 1 + WordPress stubs; GitHub Actions.
 
-**Spec:** `docs/superpowers/specs/2026-06-21-foundation-design.md`. **Branch:** `feat/surpass-wprig`.
+**Spec:** `docs/superpowers/specs/2026-06-21-foundation-design.md`. **Branch:** `feat/surpass-triple-xxx`.
 
 **Conventions for this plan:**
 
@@ -1109,7 +1109,7 @@ Expected: every command exits 0.
 Run:
 
 ```bash
-git push -u origin feat/surpass-wprig
+git push -u origin feat/surpass-triple-xxx
 gh pr create --fill --title "Foundation: focus cleanup + enforced CI/quality gates" --base main
 ```
 

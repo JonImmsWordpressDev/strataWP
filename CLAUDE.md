@@ -82,7 +82,7 @@ pnpm dev           # Start Vite dev server on port 3000
 
 ### PHP Component Architecture
 
-StrataWP uses a component-based architecture inspired by WPRig:
+StrataWP uses a component-based architecture inspired by a prior-art WordPress starter theme (GPL):
 
 1. **Theme class** (`packages/core/src/Theme.php`):
    - Singleton pattern managing all components
