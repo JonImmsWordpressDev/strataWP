@@ -82,7 +82,7 @@ export function strataWPBlocks(options: BlockOptions = {}): Plugin {
       for (const block of blocks) {
         const blockData = block as BlockMetadata & { _dir: string }
         try {
-          const { fileName, content } = await generateBlockAttributeTypes(block)
+          const { fileName, content } = generateBlockAttributeTypes(block)
           const typesPath = join(rootDir, blockData._dir, fileName)
 
           // Only write when content changes to avoid needless churn / watcher loops.
@@ -97,7 +97,7 @@ export function strataWPBlocks(options: BlockOptions = {}): Plugin {
             await writeFile(typesPath, content, 'utf-8')
             typesWritten++
           }
-        } catch (error) {
+        } catch {
           this.warn(`Failed to generate attribute types for ${block.name}`)
         }
       }

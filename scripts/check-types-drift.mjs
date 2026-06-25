@@ -91,7 +91,7 @@ async function regenerate(generateBlockAttributeTypes) {
   let written = 0
   for (const blockJsonPath of files) {
     const blockJson = JSON.parse(await readFile(blockJsonPath, 'utf-8'))
-    const { fileName, content } = await generateBlockAttributeTypes(blockJson)
+    const { fileName, content } = generateBlockAttributeTypes(blockJson)
     const outPath = join(dirname(blockJsonPath), fileName)
 
     let existing = null
