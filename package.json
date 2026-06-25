@@ -20,6 +20,7 @@
     "test": "turbo test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "lint:php": "node scripts/lint-php.mjs",
     "typecheck": "turbo typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",

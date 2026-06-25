@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<ruleset name="StrataWP Basic Theme">
+  <description>WordPress coding standards for the StrataWP basic theme.</description>
+
+  <file>.</file>
+
+  <arg name="extensions" value="php"/>
+  <arg name="colors"/>
+  <arg value="sp"/>
+  <arg name="parallel" value="8"/>
+
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/dist/*</exclude-pattern>
+  <exclude-pattern>*-generated.php</exclude-pattern>
+
+  <config name="testVersion" value="8.1-"/>
+  <config name="minimum_wp_version" value="6.5"/>
+
+  <rule ref="WordPress-Extra"/>
+
+  <!-- ratchet: PSR-4 theme classes use PascalCase file names for Composer autoloading; WP file-naming is not applicable to autoloaded class files -->
+  <rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+    <severity>0</severity>
+  </rule>
+  <rule ref="WordPress.Files.FileName.InvalidClassFileName">
+    <severity>0</severity>
+  </rule>
+</ruleset>

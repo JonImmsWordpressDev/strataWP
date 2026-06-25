@@ -70,3 +70,34 @@ jobs:
 
       - name: PHPUnit
         run: composer test
+
+  php-themes:
+    name: PHP themes (WPCS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install the core QA toolchain (provides phpcs + WPCS)
+        working-directory: packages/core
+        run: composer install --no-interaction --no-progress
+
+      - name: WPCS across all theme PHP
+        run: pnpm lint:php
