@@ -16,6 +16,8 @@ const LOCATIONS = [
   'examples/basic-theme',
   'packages/cli/templates/store-theme',
   'examples/store-theme',
+  'packages/cli/templates/advanced-theme',
+  'examples/advanced-theme',
 ]
 
 if (!existsSync(phpcs)) {
