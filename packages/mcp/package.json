@@ -17,7 +17,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "snapshot": "node ./dist/snapshot.js"
+    "snapshot": "node ./dist/snapshot.js && prettier --write contracts/tools.snapshot.json"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

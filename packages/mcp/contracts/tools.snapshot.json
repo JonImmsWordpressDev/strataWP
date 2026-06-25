@@ -1,0 +1,218 @@
+[
+  {
+    "name": "scaffold_block",
+    "description": "Generates a custom Gutenberg block (block.json, edit.tsx, style.css, and render.php for dynamic blocks) under src/blocks/<slug> in the target theme.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "targetDir": {
+          "type": "string",
+          "description": "Absolute path to the theme directory to write files into"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable block name, e.g. \"Hero\""
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Block namespace, usually the theme slug, e.g. \"strata-basic\""
+        },
+        "type": {
+          "type": "string",
+          "enum": ["static", "dynamic"],
+          "description": "Static (save.js) or dynamic (render.php) block"
+        },
+        "category": {
+          "type": "string",
+          "default": "common",
+          "description": "Block category, e.g. \"common\", \"media\""
+        },
+        "styleFramework": {
+          "type": "string",
+          "enum": ["none", "tailwind", "unocss"],
+          "default": "none",
+          "description": "CSS utility framework to scaffold against"
+        }
+      },
+      "required": ["targetDir", "name", "namespace", "type"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["written", "messages"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "scaffold_component",
+    "description": "Generates a StrataWP PHP component class implementing ComponentInterface under inc/Components/<Name>.php.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "targetDir": {
+          "type": "string",
+          "description": "Absolute path to the theme directory to write files into"
+        },
+        "name": {
+          "type": "string",
+          "description": "PascalCase component name, e.g. \"Analytics\""
+        },
+        "type": {
+          "type": "string",
+          "enum": ["service", "feature", "integration", "custom"],
+          "description": "Component archetype"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "PHP root namespace, e.g. \"StrataBasic\""
+        }
+      },
+      "required": ["targetDir", "name", "type", "namespace"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["written", "messages"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "scaffold_part",
+    "description": "Generates a reusable FSE template part under parts/<slug>.(html|php).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "targetDir": {
+          "type": "string",
+          "description": "Absolute path to the theme directory to write files into"
+        },
+        "name": {
+          "type": "string",
+          "description": "Part name, e.g. \"Sidebar\""
+        },
+        "type": {
+          "type": "string",
+          "enum": ["header", "footer", "sidebar", "content", "custom"],
+          "description": "Template part area"
+        },
+        "markup": {
+          "type": "string",
+          "enum": ["html", "php"],
+          "description": "Emit an HTML part or a PHP part"
+        },
+        "themeSlug": {
+          "type": "string",
+          "description": "Theme slug used as the @package annotation for PHP parts"
+        }
+      },
+      "required": ["targetDir", "name", "type", "markup"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["written", "messages"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "scaffold_template",
+    "description": "Generates a Full Site Editing block template under templates/<slug>.html.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "targetDir": {
+          "type": "string",
+          "description": "Absolute path to the theme directory to write files into"
+        },
+        "name": {
+          "type": "string",
+          "description": "Template name, e.g. \"About\""
+        },
+        "type": {
+          "type": "string",
+          "enum": ["page", "single", "archive", "404", "home", "search", "custom"],
+          "description": "WordPress template type"
+        },
+        "themeSlug": {
+          "type": "string",
+          "description": "Theme slug used for text-domain annotations"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional template description"
+        }
+      },
+      "required": ["targetDir", "name", "type", "themeSlug"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["written", "messages"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  }
+]

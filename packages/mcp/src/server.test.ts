@@ -9,6 +9,10 @@ import { LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createServer } from './server'
 
+// Absolute path to the built bin, resolved relative to this test file.
+const __filename = fileURLToPath(import.meta.url)
+const DIST_BIN = resolve(__filename, '../../dist/index.js')
+
 // Absolute path to the basic-theme example used as a discovery fixture.
 const BASIC_THEME_DIR = resolve(fileURLToPath(import.meta.url), '../../../../examples/basic-theme')
 
@@ -252,5 +256,123 @@ describe('@stratawp/mcp component catalog resources', () => {
     // not an EISDIR placeholder.
     expect(content.text as string).toContain('apiVersion')
     expect(content.text as string).not.toContain('Unable to read source file')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// JSON-Schema dialect tripwire
+// ---------------------------------------------------------------------------
+// Asserts the emitted inputSchema for scaffold_block declares draft-07.
+// If zod or the SDK ever silently switches dialect the test fails loudly.
+
+describe('@stratawp/mcp tool schema dialect', () => {
+  it('scaffold_block inputSchema declares JSON Schema draft-07', async () => {
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
+    const server = createServer()
+    const dialectClient = new Client({ name: 'dialect-test-client', version: '0.0.0' })
+    await Promise.all([server.connect(serverTransport), dialectClient.connect(clientTransport)])
+
+    try {
+      const { tools } = await dialectClient.listTools()
+      const scaffoldBlock = tools.find((t) => t.name === 'scaffold_block')
+      expect(scaffoldBlock, 'scaffold_block must be registered').toBeDefined()
+
+      // Tripwire: the $schema value must remain draft-07.
+      // If this assertion fails after a zod/SDK upgrade, update the snapshot
+      // and this test together so the change is intentional and visible in review.
+      const schema = scaffoldBlock!.inputSchema as { $schema?: string }
+      expect(schema.$schema).toBe('http://json-schema.org/draft-07/schema#')
+    } finally {
+      await dialectClient.close()
+    }
+  })
+})
+
+// ---------------------------------------------------------------------------
+// stdout-hygiene test
+// ---------------------------------------------------------------------------
+// Spawns the built bin, sends a valid JSON-RPC initialize request, and asserts
+// that every non-empty line on stdout parses as JSON (no stray console.log).
+//
+// BUILD DEPENDENCY: This test requires `packages/mcp/dist/index.js` to exist.
+// Run `pnpm --filter @stratawp/mcp build` before running tests, or rely on
+// the turbo pipeline which builds before test.
+
+describe('@stratawp/mcp built bin stdout hygiene', () => {
+  it('every stdout line from the bin is valid JSON (no stray console.log)', async () => {
+    const { spawn } = await import('node:child_process')
+
+    // A minimal MCP initialize request (protocol 2025-11-25).
+    const initRequest =
+      JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: {
+          protocolVersion: '2025-11-25',
+          capabilities: {},
+          clientInfo: { name: 'hygiene-test', version: '0.0.0' },
+        },
+      }) + '\n'
+
+    const stdoutLines = await new Promise<string[]>((resolve, reject) => {
+      const child = spawn(process.execPath, [DIST_BIN], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+      })
+
+      const lines: string[] = []
+      let stdout = ''
+
+      child.stdout.on('data', (chunk: Buffer) => {
+        stdout += chunk.toString()
+        // Collect complete lines as they arrive.
+        const parts = stdout.split('\n')
+        // The last part may be incomplete; keep it in the buffer.
+        stdout = parts.pop() ?? ''
+        for (const line of parts) {
+          if (line.trim()) lines.push(line)
+        }
+      })
+
+      child.stderr.on('data', () => {
+        // Ignore stderr — diagnostics are expected there.
+      })
+
+      child.on('error', reject)
+
+      // Write the initialize request then wait up to 3 seconds for a response.
+      child.stdin.write(initRequest)
+
+      const timer = setTimeout(() => {
+        child.kill()
+        if (stdout.trim()) lines.push(stdout.trim())
+        resolve(lines)
+      }, 3000)
+
+      // Resolve early on the first complete JSON-RPC response line, then kill.
+      child.stdout.on('data', () => {
+        const allLines = (stdout + lines.join('\n')).split('\n').filter(Boolean)
+        if (allLines.length > 0) {
+          clearTimeout(timer)
+          child.kill()
+          if (stdout.trim()) lines.push(stdout.trim())
+          resolve(lines)
+        }
+      })
+    })
+
+    expect(stdoutLines.length).toBeGreaterThan(0)
+
+    for (const line of stdoutLines) {
+      let parsed: unknown
+      try {
+        parsed = JSON.parse(line)
+      } catch {
+        throw new Error(
+          `stdout line is not valid JSON — stray console.log?\nLine: ${JSON.stringify(line)}`
+        )
+      }
+      expect(parsed).toBeTruthy()
+    }
   })
 })
