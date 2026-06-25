@@ -234,4 +234,23 @@ describe('@stratawp/mcp component catalog resources', () => {
     expect(hasComponentById).toBe(true)
     expect(hasComponentSource).toBe(true)
   })
+
+  it('source of a block component returns its block.json (dir-based path resolves to the contract)', async () => {
+    const catalog = await resourceClient.readResource({ uri: 'stratawp://components' })
+    const raw = catalog.contents[0]
+    if (!('text' in raw)) throw new Error('Expected text content from catalog resource')
+    const components = JSON.parse(raw.text as string) as Array<{ id: string; type: string }>
+    const block = components.find((c) => c.type === 'block')
+    expect(block, 'basic-theme should expose at least one block').toBeTruthy()
+
+    const src = await resourceClient.readResource({
+      uri: `stratawp://components/${encodeURIComponent(block!.id)}/source`,
+    })
+    const content = src.contents[0]
+    if (!('text' in content)) throw new Error('Expected text content from source resource')
+    // A block's path is a directory; the handler surfaces block.json (the canonical contract),
+    // not an EISDIR placeholder.
+    expect(content.text as string).toContain('apiVersion')
+    expect(content.text as string).not.toContain('Unable to read source file')
+  })
 })

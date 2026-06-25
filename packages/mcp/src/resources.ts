@@ -12,7 +12,8 @@
  *   stratawp://components/{id}          - single component by id
  *   stratawp://components/{id}/source   - source file path for a component
  */
-import { readFile } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
+import { join } from 'node:path'
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { ComponentDiscovery } from '@stratawp/explorer'
@@ -164,7 +165,11 @@ export function registerResources(server: McpServer, rootDir: string = process.c
 
       let source: string
       try {
-        source = await readFile(component.path, 'utf-8')
+        // Block components resolve to a directory; surface block.json (the
+        // canonical contract) rather than failing on EISDIR.
+        const stats = await stat(component.path)
+        const sourcePath = stats.isDirectory() ? join(component.path, 'block.json') : component.path
+        source = await readFile(sourcePath, 'utf-8')
       } catch (err) {
         console.error(`[stratawp/mcp] Failed to read source for '${id}':`, err)
         source = `Unable to read source file: ${component.path}`
