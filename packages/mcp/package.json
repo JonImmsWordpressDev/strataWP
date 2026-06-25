@@ -1,0 +1,30 @@
+{
+  "name": "@stratawp/mcp",
+  "version": "0.1.0",
+  "description": "StrataWP MCP server — exposes the framework's generators and component catalog to AI agents",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "bin": { "stratawp-mcp": "./dist/index.js" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "snapshot": "node ./dist/snapshot.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@stratawp/cli": "workspace:*",
+    "@stratawp/explorer": "workspace:*",
+    "zod": "^3.25"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "engines": { "node": ">=18.18" }
+}
