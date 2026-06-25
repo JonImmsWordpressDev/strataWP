@@ -1,13 +1,17 @@
 /**
  * Pure block generator core.
  * No process.exit, console.*, ora, fs, or process.cwd() calls.
+ *
+ * Every StrataWP block is dynamic: it renders on the front end via a
+ * server-side `render.php` callback (declared as `render` in block.json). The
+ * framework ships no static (save.js / save.tsx) blocks, so the generator
+ * always emits a render.php and never a save component.
  */
 import type { GeneratedFile, GenerateResult } from './types'
 
 export interface GenerateBlockOptions {
   name: string
   namespace: string
-  type: 'static' | 'dynamic'
   category: string
   styleFramework: 'none' | 'tailwind' | 'unocss'
 }
@@ -16,13 +20,7 @@ export interface GenerateBlockOptions {
 // Internal content builders (no I/O)
 // ---------------------------------------------------------------------------
 
-function buildBlockConfig(
-  name: string,
-  slug: string,
-  namespace: string,
-  type: 'static' | 'dynamic',
-  category: string
-): string {
+function buildBlockConfig(name: string, slug: string, namespace: string, category: string): string {
   const config: Record<string, unknown> = {
     $schema: 'https://schemas.wp.org/trunk/block.json',
     apiVersion: 3,
@@ -37,7 +35,7 @@ function buildBlockConfig(
     },
     attributes: {},
     editorScript: 'file:./edit.tsx',
-    ...(type === 'dynamic' ? { render: 'file:./render.php' } : {}),
+    render: 'file:./render.php',
     style: 'file:./style.css',
   }
   return JSON.stringify(config, null, 2)
@@ -122,7 +120,7 @@ function buildBlockStyles(slug: string, namespace: string, framework: string): s
 // ---------------------------------------------------------------------------
 
 export function generateBlock(options: GenerateBlockOptions): GenerateResult {
-  const { name, namespace, type, category, styleFramework } = options
+  const { name, namespace, category, styleFramework } = options
 
   const slug = name.toLowerCase().replace(/\s+/g, '-')
   const dir = `src/blocks/${slug}`
@@ -130,11 +128,15 @@ export function generateBlock(options: GenerateBlockOptions): GenerateResult {
   const files: GeneratedFile[] = [
     {
       path: `${dir}/block.json`,
-      content: buildBlockConfig(name, slug, namespace, type, category),
+      content: buildBlockConfig(name, slug, namespace, category),
     },
     {
       path: `${dir}/edit.tsx`,
       content: buildBlockEdit(name, styleFramework),
+    },
+    {
+      path: `${dir}/render.php`,
+      content: buildBlockRender(name, namespace, styleFramework),
     },
     {
       path: `${dir}/style.css`,
@@ -142,18 +144,11 @@ export function generateBlock(options: GenerateBlockOptions): GenerateResult {
     },
   ]
 
-  if (type === 'dynamic') {
-    files.push({
-      path: `${dir}/render.php`,
-      content: buildBlockRender(name, namespace, styleFramework),
-    })
-  }
-
   const messages = [
     `Block "${name}" created!`,
     `  ${dir}/block.json`,
     `  ${dir}/edit.tsx`,
-    ...(type === 'dynamic' ? [`  ${dir}/render.php`] : []),
+    `  ${dir}/render.php`,
     `  ${dir}/style.css`,
   ]
 

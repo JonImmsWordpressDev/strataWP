@@ -2,47 +2,49 @@ import { describe, it, expect } from 'vitest'
 import { generateBlock } from './block'
 
 describe('generateBlock', () => {
-  it('always emits block.json, edit.tsx, and style.css', () => {
+  it('emits block.json, edit.tsx, render.php, and style.css', () => {
     const result = generateBlock({
       name: 'Hero',
       namespace: 'my-theme',
-      type: 'static',
       category: 'common',
       styleFramework: 'none',
     })
     const paths = result.files.map((f) => f.path)
     expect(paths).toContain('src/blocks/hero/block.json')
     expect(paths).toContain('src/blocks/hero/edit.tsx')
+    expect(paths).toContain('src/blocks/hero/render.php')
     expect(paths).toContain('src/blocks/hero/style.css')
   })
 
-  it('emits render.php only when type is dynamic', () => {
-    const dynamic = generateBlock({
+  it('block.json declares a dynamic render callback (render.php) — every block is dynamic', () => {
+    const result = generateBlock({
       name: 'Hero',
       namespace: 'my-theme',
-      type: 'dynamic',
       category: 'common',
       styleFramework: 'none',
     })
-    const paths = dynamic.files.map((f) => f.path)
-    expect(paths).toContain('src/blocks/hero/render.php')
+    const blockJson = result.files.find((f) => f.path.endsWith('block.json'))!
+    const parsed = JSON.parse(blockJson.content)
+    expect(parsed.render).toBe('file:./render.php')
+  })
 
-    const staticResult = generateBlock({
+  it('render.php is a functional dynamic template (wrapper attributes + escaped, text-domained output)', () => {
+    const result = generateBlock({
       name: 'Hero',
       namespace: 'my-theme',
-      type: 'static',
       category: 'common',
       styleFramework: 'none',
     })
-    const staticPaths = staticResult.files.map((f) => f.path)
-    expect(staticPaths).not.toContain('src/blocks/hero/render.php')
+    const render = result.files.find((f) => f.path.endsWith('render.php'))!
+    expect(render.content).toContain('<?php')
+    expect(render.content).toContain('get_block_wrapper_attributes()')
+    expect(render.content).toContain("esc_html__( 'Hero', 'my-theme' )")
   })
 
   it('block.json uses apiVersion 3', () => {
     const result = generateBlock({
       name: 'Testimonial',
       namespace: 'demo',
-      type: 'static',
       category: 'text',
       styleFramework: 'none',
     })
@@ -55,7 +57,6 @@ describe('generateBlock', () => {
     const result = generateBlock({
       name: 'Call To Action',
       namespace: 'my-theme',
-      type: 'static',
       category: 'common',
       styleFramework: 'none',
     })
@@ -68,7 +69,6 @@ describe('generateBlock', () => {
     const result = generateBlock({
       name: 'Banner',
       namespace: 'forge-basic',
-      type: 'static',
       category: 'media',
       styleFramework: 'none',
     })
@@ -81,7 +81,6 @@ describe('generateBlock', () => {
     const result = generateBlock({
       name: 'Card',
       namespace: 'my-theme',
-      type: 'static',
       category: 'common',
       styleFramework: 'none',
     })
@@ -94,7 +93,6 @@ describe('generateBlock', () => {
     const result = generateBlock({
       name: 'Hero',
       namespace: 'test',
-      type: 'static',
       category: 'common',
       styleFramework: 'none',
     })
@@ -107,7 +105,6 @@ describe('generateBlock', () => {
       generateBlock({
         name: 'Safe',
         namespace: 'test',
-        type: 'static',
         category: 'common',
         styleFramework: 'none',
       })
