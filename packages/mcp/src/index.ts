@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * @stratawp/mcp stdio entry point.
  *
