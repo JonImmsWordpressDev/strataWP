@@ -32,7 +32,8 @@
     "version-packages": "changeset version",
     "release": "turbo build && changeset publish",
     "contracts:check": "node scripts/check-contracts.mjs",
-    "contracts:validate": "node scripts/validate-contracts.mjs"
+    "contracts:validate": "node scripts/validate-contracts.mjs",
+    "contracts:types:check": "node scripts/check-types-drift.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

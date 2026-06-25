@@ -1,22 +1,11 @@
 import { useBlockProps, RichText, MediaUpload, InspectorControls } from '@wordpress/block-editor'
 import { PanelBody, RangeControl, Button } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
+import type { BlockEditProps } from '@wordpress/blocks'
+// Attribute types are generated from block.json by @stratawp/vite-plugin.
+import type { HeroAttributes } from './block-attributes'
 
-interface HeroAttributes {
-  title: string
-  description: string
-  buttonText: string
-  buttonUrl: string
-  backgroundImage?: string
-  overlayOpacity: number
-}
-
-interface EditProps {
-  attributes: HeroAttributes
-  setAttributes: (attrs: Partial<HeroAttributes>) => void
-}
-
-export default function Edit({ attributes, setAttributes }: EditProps) {
+export default function Edit({ attributes, setAttributes }: BlockEditProps<HeroAttributes>) {
   const blockProps = useBlockProps({
     className: 'wp-block-strata-basic-hero',
     style: {

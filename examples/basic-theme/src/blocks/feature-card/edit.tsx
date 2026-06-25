@@ -1,20 +1,11 @@
 import { useBlockProps, RichText, InspectorControls } from '@wordpress/block-editor'
 import { PanelBody, TextControl, ColorPicker } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
+import type { BlockEditProps } from '@wordpress/blocks'
+// Attribute types are generated from block.json by @stratawp/vite-plugin.
+import type { FeatureCardAttributes } from './block-attributes'
 
-interface FeatureCardAttributes {
-  title: string
-  description: string
-  icon: string
-  iconBackgroundColor: string
-}
-
-interface EditProps {
-  attributes: FeatureCardAttributes
-  setAttributes: (attrs: Partial<FeatureCardAttributes>) => void
-}
-
-export default function Edit({ attributes, setAttributes }: EditProps) {
+export default function Edit({ attributes, setAttributes }: BlockEditProps<FeatureCardAttributes>) {
   const blockProps = useBlockProps({
     className: 'wp-block-strata-basic-feature-card',
   })

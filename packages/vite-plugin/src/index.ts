@@ -155,3 +155,9 @@ export {
 }
 export { strataWPTailwindPreset } from './integrations/tailwind-preset'
 export { strataWPUnoPreset } from './integrations/unocss-preset'
+export { generateBlockAttributeTypes } from './plugins/block-types'
+export type {
+  BlockJsonInput,
+  BlockAttributeSchema,
+  GeneratedBlockTypes,
+} from './plugins/block-types'
