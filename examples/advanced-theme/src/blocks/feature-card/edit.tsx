@@ -16,7 +16,7 @@ interface EditProps {
 
 export default function Edit({ attributes, setAttributes }: EditProps) {
   const blockProps = useBlockProps({
-    className: 'wp-block-forge-basic-feature-card',
+    className: 'wp-block-strata-advanced-feature-card',
   })
 
   return (

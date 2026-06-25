@@ -18,7 +18,7 @@ interface EditProps {
 
 export default function Edit({ attributes, setAttributes }: EditProps) {
   const blockProps = useBlockProps({
-    className: 'wp-block-forge-basic-hero',
+    className: 'wp-block-strata-basic-hero',
     style: {
       backgroundImage: attributes.backgroundImage
         ? `url(${attributes.backgroundImage})`

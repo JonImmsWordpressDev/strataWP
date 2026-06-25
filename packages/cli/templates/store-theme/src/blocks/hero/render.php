@@ -15,7 +15,7 @@ $overlay_opacity  = $attributes['overlayOpacity'] ?? 0.5;
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
-		'class' => 'wp-block-strata-basic-hero',
+		'class' => 'wp-block-strata-store-hero',
 		'style' => $background_image ? 'background-image: url(' . esc_url( $background_image ) . ');' : '',
 	)
 );

@@ -1,4 +1,4 @@
-.wp-block-forge-basic-hero {
+.wp-block-strata-basic-hero {
   position: relative;
   display: flex;
   align-items: center;
@@ -11,7 +11,7 @@
   text-align: center;
 }
 
-.wp-block-forge-basic-hero .hero-overlay {
+.wp-block-strata-basic-hero .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -21,27 +21,27 @@
   z-index: 1;
 }
 
-.wp-block-forge-basic-hero .hero-content {
+.wp-block-strata-basic-hero .hero-content {
   position: relative;
   z-index: 2;
   max-width: 800px;
 }
 
-.wp-block-forge-basic-hero .hero-title {
+.wp-block-strata-basic-hero .hero-title {
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 400;
   margin: 0 0 1rem;
   line-height: 1.1;
 }
 
-.wp-block-forge-basic-hero .hero-description {
+.wp-block-strata-basic-hero .hero-description {
   font-size: clamp(1rem, 2vw, 1.25rem);
   margin: 0 0 2rem;
   opacity: 0.9;
   line-height: 1.75;
 }
 
-.wp-block-forge-basic-hero .hero-button {
+.wp-block-strata-basic-hero .hero-button {
   display: inline-block;
   padding: 15px 30px;
   background-color: #0000ff;
@@ -53,6 +53,6 @@
   transition: background-color 0.2s;
 }
 
-.wp-block-forge-basic-hero .hero-button:hover {
+.wp-block-strata-basic-hero .hero-button:hover {
   background-color: #000099;
 }
