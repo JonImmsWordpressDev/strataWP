@@ -14,6 +14,8 @@ const phpcs = resolve(root, 'packages/core/vendor/bin/phpcs')
 const LOCATIONS = [
   'packages/cli/templates/basic-theme',
   'examples/basic-theme',
+  'packages/cli/templates/store-theme',
+  'examples/store-theme',
 ]
 
 if (!existsSync(phpcs)) {

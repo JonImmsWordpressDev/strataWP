@@ -15,170 +15,173 @@ use StrataWP\ComponentInterface;
  * WooCommerce Integration Manager
  */
 class WooCommerceIntegration implements ComponentInterface {
-    /**
-     * {@inheritdoc}
-     */
-    public function get_slug(): string {
-        return 'woocommerce-integration';
-    }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_slug(): string {
+		return 'woocommerce-integration';
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function initialize(): void {
-        // Theme support hooks
-        add_action( 'after_setup_theme', [ $this, 'add_woocommerce_support' ] );
+	/**
+	 * {@inheritdoc}
+	 */
+	public function initialize(): void {
+		// Theme support hooks
+		add_action( 'after_setup_theme', array( $this, 'add_woocommerce_support' ) );
 
-        // Customization hooks
-        add_filter( 'woocommerce_product_thumbnails_columns', [ $this, 'thumbnail_columns' ] );
-        add_filter( 'woocommerce_product_related_products_args', [ $this, 'related_products_args' ] );
+		// Customization hooks
+		add_filter( 'woocommerce_product_thumbnails_columns', array( $this, 'thumbnail_columns' ) );
+		add_filter( 'woocommerce_product_related_products_args', array( $this, 'related_products_args' ) );
 
-        // Product loop customization
-        add_filter( 'loop_shop_columns', [ $this, 'loop_columns' ] );
-        add_filter( 'loop_shop_per_page', [ $this, 'products_per_page' ] );
+		// Product loop customization
+		add_filter( 'loop_shop_columns', array( $this, 'loop_columns' ) );
+		add_filter( 'loop_shop_per_page', array( $this, 'products_per_page' ) );
 
-        // Cart customization
-        add_action( 'woocommerce_before_cart', [ $this, 'cart_notice' ] );
+		// Cart customization
+		add_action( 'woocommerce_before_cart', array( $this, 'cart_notice' ) );
 
-        // Checkout customization
-        add_filter( 'woocommerce_checkout_fields', [ $this, 'customize_checkout_fields' ] );
+		// Checkout customization
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'customize_checkout_fields' ) );
 
-        // Enqueue WooCommerce styles
-        add_action( 'wp_enqueue_scripts', [ $this, 'woocommerce_scripts' ], 20 );
-    }
+		// Enqueue WooCommerce styles
+		add_action( 'wp_enqueue_scripts', array( $this, 'woocommerce_scripts' ), 20 );
+	}
 
-    /**
-     * Add WooCommerce theme support
-     */
-    public function add_woocommerce_support(): void {
-        add_theme_support( 'woocommerce', [
-            'thumbnail_image_width' => 600,
-            'single_image_width'    => 800,
-            'product_grid'          => [
-                'default_rows'    => 4,
-                'min_rows'        => 2,
-                'max_rows'        => 8,
-                'default_columns' => 3,
-                'min_columns'     => 2,
-                'max_columns'     => 5,
-            ],
-        ] );
+	/**
+	 * Add WooCommerce theme support
+	 */
+	public function add_woocommerce_support(): void {
+		add_theme_support(
+			'woocommerce',
+			array(
+				'thumbnail_image_width' => 600,
+				'single_image_width'    => 800,
+				'product_grid'          => array(
+					'default_rows'    => 4,
+					'min_rows'        => 2,
+					'max_rows'        => 8,
+					'default_columns' => 3,
+					'min_columns'     => 2,
+					'max_columns'     => 5,
+				),
+			)
+		);
 
-        // Product gallery features
-        add_theme_support( 'wc-product-gallery-zoom' );
-        add_theme_support( 'wc-product-gallery-lightbox' );
-        add_theme_support( 'wc-product-gallery-slider' );
-    }
+		// Product gallery features
+		add_theme_support( 'wc-product-gallery-zoom' );
+		add_theme_support( 'wc-product-gallery-lightbox' );
+		add_theme_support( 'wc-product-gallery-slider' );
+	}
 
-    /**
-     * Set thumbnail columns
-     *
-     * @return int Number of columns.
-     */
-    public function thumbnail_columns(): int {
-        return 4;
-    }
+	/**
+	 * Set thumbnail columns
+	 *
+	 * @return int Number of columns.
+	 */
+	public function thumbnail_columns(): int {
+		return 4;
+	}
 
-    /**
-     * Modify related products arguments
-     *
-     * @param array $args Related products args.
-     * @return array Modified args.
-     */
-    public function related_products_args( array $args ): array {
-        $args['posts_per_page'] = 4;
-        $args['columns']        = 4;
-        return $args;
-    }
+	/**
+	 * Modify related products arguments
+	 *
+	 * @param array $args Related products args.
+	 * @return array Modified args.
+	 */
+	public function related_products_args( array $args ): array {
+		$args['posts_per_page'] = 4;
+		$args['columns']        = 4;
+		return $args;
+	}
 
-    /**
-     * Set product loop columns
-     *
-     * @return int Number of columns.
-     */
-    public function loop_columns(): int {
-        return 3;
-    }
+	/**
+	 * Set product loop columns
+	 *
+	 * @return int Number of columns.
+	 */
+	public function loop_columns(): int {
+		return 3;
+	}
 
-    /**
-     * Set products per page
-     *
-     * @return int Products per page.
-     */
-    public function products_per_page(): int {
-        return 12;
-    }
+	/**
+	 * Set products per page
+	 *
+	 * @return int Products per page.
+	 */
+	public function products_per_page(): int {
+		return 12;
+	}
 
-    /**
-     * Display cart notice
-     */
-    public function cart_notice(): void {
-        if ( is_cart() && WC()->cart->get_cart_contents_count() === 0 ) {
-            return;
-        }
+	/**
+	 * Display cart notice
+	 */
+	public function cart_notice(): void {
+		if ( is_cart() && WC()->cart->get_cart_contents_count() === 0 ) {
+			return;
+		}
 
-        $free_shipping_threshold = 100; // Set your threshold
-        $current_total = WC()->cart->get_subtotal();
-        $remaining = $free_shipping_threshold - $current_total;
+		$free_shipping_threshold = 100; // Set your threshold
+		$current_total           = WC()->cart->get_subtotal();
+		$remaining               = $free_shipping_threshold - $current_total;
 
-        if ( $remaining > 0 ) {
-            wc_print_notice(
-                sprintf(
-                    /* translators: %s: Remaining amount for free shipping */
-                    __( 'Add %s more to get FREE shipping!', 'strata-store' ),
-                    wc_price( $remaining )
-                ),
-                'notice'
-            );
-        } else {
-            wc_print_notice(
-                __( 'You qualify for FREE shipping!', 'strata-store' ),
-                'success'
-            );
-        }
-    }
+		if ( $remaining > 0 ) {
+			wc_print_notice(
+				sprintf(
+					/* translators: %s: Remaining amount for free shipping */
+					__( 'Add %s more to get FREE shipping!', 'strata-store' ),
+					wc_price( $remaining )
+				),
+				'notice'
+			);
+		} else {
+			wc_print_notice(
+				__( 'You qualify for FREE shipping!', 'strata-store' ),
+				'success'
+			);
+		}
+	}
 
-    /**
-     * Customize checkout fields
-     *
-     * @param array $fields Checkout fields.
-     * @return array Modified fields.
-     */
-    public function customize_checkout_fields( array $fields ): array {
-        // Make phone optional
-        $fields['billing']['billing_phone']['required'] = false;
+	/**
+	 * Customize checkout fields
+	 *
+	 * @param array $fields Checkout fields.
+	 * @return array Modified fields.
+	 */
+	public function customize_checkout_fields( array $fields ): array {
+		// Make phone optional
+		$fields['billing']['billing_phone']['required'] = false;
 
-        // Add placeholder text
-        $fields['billing']['billing_email']['placeholder'] = __( 'you@example.com', 'strata-store' );
+		// Add placeholder text
+		$fields['billing']['billing_email']['placeholder'] = __( 'you@example.com', 'strata-store' );
 
-        // Reorder fields (optional)
-        $fields['billing']['billing_email']['priority'] = 25;
+		// Reorder fields (optional)
+		$fields['billing']['billing_email']['priority'] = 25;
 
-        return $fields;
-    }
+		return $fields;
+	}
 
-    /**
-     * Enqueue WooCommerce styles
-     */
-    public function woocommerce_scripts(): void {
-        if ( ! class_exists( 'WooCommerce' ) ) {
-            return;
-        }
+	/**
+	 * Enqueue WooCommerce styles
+	 */
+	public function woocommerce_scripts(): void {
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
 
-        // Add custom WooCommerce styles
-        $custom_css = $this->get_custom_woocommerce_css();
-        if ( ! empty( $custom_css ) ) {
-            wp_add_inline_style( 'woocommerce-general', $custom_css );
-        }
-    }
+		// Add custom WooCommerce styles
+		$custom_css = $this->get_custom_woocommerce_css();
+		if ( ! empty( $custom_css ) ) {
+			wp_add_inline_style( 'woocommerce-general', $custom_css );
+		}
+	}
 
-    /**
-     * Get custom WooCommerce CSS
-     *
-     * @return string Custom CSS.
-     */
-    private function get_custom_woocommerce_css(): string {
-        return '
+	/**
+	 * Get custom WooCommerce CSS
+	 *
+	 * @return string Custom CSS.
+	 */
+	private function get_custom_woocommerce_css(): string {
+		return '
             /* Product Grid Enhancements */
             .woocommerce ul.products li.product {
                 transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -253,50 +256,50 @@ class WooCommerceIntegration implements ComponentInterface {
                 }
             }
         ';
-    }
+	}
 
-    /**
-     * Get product count by category
-     *
-     * @param string $category_slug Category slug.
-     * @return int Product count.
-     */
-    public static function get_category_product_count( string $category_slug ): int {
-        $term = get_term_by( 'slug', $category_slug, 'product_cat' );
-        return $term ? $term->count : 0;
-    }
+	/**
+	 * Get product count by category
+	 *
+	 * @param string $category_slug Category slug.
+	 * @return int Product count.
+	 */
+	public static function get_category_product_count( string $category_slug ): int {
+		$term = get_term_by( 'slug', $category_slug, 'product_cat' );
+		return $term ? $term->count : 0;
+	}
 
-    /**
-     * Check if product is on sale
-     *
-     * @param int $product_id Product ID.
-     * @return bool Whether product is on sale.
-     */
-    public static function is_on_sale( int $product_id ): bool {
-        $product = wc_get_product( $product_id );
-        return $product ? $product->is_on_sale() : false;
-    }
+	/**
+	 * Check if product is on sale
+	 *
+	 * @param int $product_id Product ID.
+	 * @return bool Whether product is on sale.
+	 */
+	public static function is_on_sale( int $product_id ): bool {
+		$product = wc_get_product( $product_id );
+		return $product ? $product->is_on_sale() : false;
+	}
 
-    /**
-     * Get featured products
-     *
-     * @param int $limit Number of products to get.
-     * @return array Product IDs.
-     */
-    public static function get_featured_products( int $limit = 8 ): array {
-        $args = [
-            'post_type'      => 'product',
-            'posts_per_page' => $limit,
-            'tax_query'      => [
-                [
-                    'taxonomy' => 'product_visibility',
-                    'field'    => 'name',
-                    'terms'    => 'featured',
-                ],
-            ],
-        ];
+	/**
+	 * Get featured products
+	 *
+	 * @param int $limit Number of products to get.
+	 * @return array Product IDs.
+	 */
+	public static function get_featured_products( int $limit = 8 ): array {
+		$args = array(
+			'post_type'      => 'product',
+			'posts_per_page' => $limit,
+			'tax_query'      => array(
+				array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'name',
+					'terms'    => 'featured',
+				),
+			),
+		);
 
-        $query = new \WP_Query( $args );
-        return wp_list_pluck( $query->posts, 'ID' );
-    }
+		$query = new \WP_Query( $args );
+		return wp_list_pluck( $query->posts, 'ID' );
+	}
 }

@@ -9,10 +9,10 @@
 
 // Minimum PHP version check
 if ( version_compare( PHP_VERSION, '8.1', '<' ) ) {
-    wp_die(
-        esc_html__( 'This theme requires PHP 8.1 or higher.', 'strata-store' ),
-        esc_html__( 'PHP Version Error', 'strata-store' )
-    );
+	wp_die(
+		esc_html__( 'This theme requires PHP 8.1 or higher.', 'strata-store' ),
+		esc_html__( 'PHP Version Error', 'strata-store' )
+	);
 }
 
 // Load Composer autoloader
@@ -32,23 +32,25 @@ use StrataBasic\Components\WooCommerceIntegration;
  * Initialize the theme
  */
 function strata_store_init(): void {
-    // Create theme with custom components
-    $theme = new Theme([
-        new Setup(),
-        new Assets(),
-        new Blocks(),
-        new Performance(),
-        new Fonts(),
-        new Navigation(),
-        new Customizer(),
-        new WooCommerceIntegration(),
-    ]);
+	// Create theme with custom components
+	$theme = new Theme(
+		array(
+			new Setup(),
+			new Assets(),
+			new Blocks(),
+			new Performance(),
+			new Fonts(),
+			new Navigation(),
+			new Customizer(),
+			new WooCommerceIntegration(),
+		)
+	);
 
-    // Initialize theme
-    $theme->initialize();
+	// Initialize theme
+	$theme->initialize();
 
-    // Store in global for easy access
-    $GLOBALS['strata_store_theme'] = $theme;
+	// Store in global for easy access
+	$GLOBALS['strata_store_theme'] = $theme;
 }
 
 add_action( 'after_setup_theme', 'strata_store_init', 1 );
@@ -59,29 +61,31 @@ add_action( 'after_setup_theme', 'strata_store_init', 1 );
  * @return Theme
  */
 function strata_store(): Theme {
-    return $GLOBALS['strata_store_theme'] ?? Theme::instance();
+	return $GLOBALS['strata_store_theme'] ?? Theme::instance();
 }
 
 /**
  * Load Vite dev server in development
  */
 function strata_store_vite_dev_server(): void {
-    if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || 'local' !== WP_ENVIRONMENT_TYPE ) {
-        return;
-    }
+	if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || 'local' !== WP_ENVIRONMENT_TYPE ) {
+		return;
+	}
 
-    // In local development, always inject Vite client
-    // Browser will connect to localhost:3000
-    $vite_server = 'http://localhost:3000';
+	// In local development, always inject Vite client
+	// Browser will connect to localhost:3000
+	$vite_server = 'http://localhost:3000';
 
-    echo sprintf(
-        '<script type="module" src="%s/@vite/client"></script>',
-        esc_url( $vite_server )
-    );
-    echo sprintf(
-        '<script type="module" src="%s/src/js/main.ts"></script>',
-        esc_url( $vite_server )
-    );
+	// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Vite dev client requires direct <script type="module"> injection; wp_enqueue_script() does not support type="module" or dynamic TS entry paths.
+	printf(
+		'<script type="module" src="%s/@vite/client"></script>',
+		esc_url( $vite_server )
+	);
+	printf(
+		'<script type="module" src="%s/src/js/main.ts"></script>',
+		esc_url( $vite_server )
+	);
+	// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
 }
 
 add_action( 'wp_head', 'strata_store_vite_dev_server', 1 );
@@ -90,13 +94,13 @@ add_action( 'wp_head', 'strata_store_vite_dev_server', 1 );
  * Theme activation
  */
 function strata_store_activate(): void {
-    // Set default theme mods
-    if ( ! get_theme_mod( 'strata_store_setup_complete' ) ) {
-        set_theme_mod( 'strata_store_setup_complete', true );
+	// Set default theme mods
+	if ( ! get_theme_mod( 'strata_store_setup_complete' ) ) {
+		set_theme_mod( 'strata_store_setup_complete', true );
 
-        // Flush rewrite rules
-        flush_rewrite_rules();
-    }
+		// Flush rewrite rules
+		flush_rewrite_rules();
+	}
 }
 
 add_action( 'after_switch_theme', 'strata_store_activate' );
