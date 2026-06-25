@@ -20,10 +20,9 @@
  */
 
 import Ajv from 'ajv'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { resolve, dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { glob } from 'node:fs/promises'
 
 // ---------------------------------------------------------------------------
 // Paths
@@ -128,7 +127,7 @@ export function validateBlockJson(obj, expectedPrefix, blockDir = null) {
     const prefix = slash !== -1 ? obj.name.slice(0, slash) : obj.name
     if (prefix !== expectedPrefix) {
       errors.push(
-        `Superset: block name prefix "${prefix}" does not match theme slug "${expectedPrefix}"`,
+        `Superset: block name prefix "${prefix}" does not match theme slug "${expectedPrefix}"`
       )
     }
   }
@@ -144,7 +143,9 @@ export function validateBlockJson(obj, expectedPrefix, blockDir = null) {
     // Dynamic blocks must have render.php
     const renderPhp = join(blockDir, 'render.php')
     if (!existsSync(renderPhp)) {
-      errors.push(`Superset: dynamic block declares render but render.php not found at ${renderPhp}`)
+      errors.push(
+        `Superset: dynamic block declares render but render.php not found at ${renderPhp}`
+      )
     }
   }
 
@@ -176,36 +177,50 @@ export function validateThemeJson(obj) {
  * @returns {Promise<string[]>}  Absolute paths to every block.json under
  *   examples/ and packages/cli/templates/ (excluding node_modules)
  */
+/** Subdirectories of `parent` (absolute paths); [] if parent is absent. */
+function listDirs(parent) {
+  if (!existsSync(parent)) return []
+  return readdirSync(parent, { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .map((e) => join(parent, e.name))
+}
+
+const SKIP_DIRS = new Set(['node_modules', 'dist', '.turbo', 'vendor'])
+
+/** Recursively collect files named `targetName` under `startDir`. */
+function findFilesByName(startDir, targetName, results = []) {
+  if (!existsSync(startDir)) return results
+  for (const entry of readdirSync(startDir, { withFileTypes: true })) {
+    if (SKIP_DIRS.has(entry.name)) continue
+    const full = join(startDir, entry.name)
+    if (entry.isDirectory()) findFilesByName(full, targetName, results)
+    else if (entry.name === targetName) results.push(full)
+  }
+  return results
+}
+
+/** Theme roots: examples/* and packages/cli/templates/*. */
+function themeRoots() {
+  return [...listDirs(join(ROOT, 'examples')), ...listDirs(join(ROOT, 'packages/cli/templates'))]
+}
+
+// Portable discovery (no node:fs/promises `glob`, which only exists on Node 22+).
 async function discoverBlockJsonFiles() {
-  const patterns = [
-    'examples/*/src/blocks/**/block.json',
-    'packages/cli/templates/*/src/blocks/**/block.json',
-  ]
   const files = []
-  for (const pattern of patterns) {
-    for await (const f of glob(pattern, { cwd: ROOT })) {
-      files.push(join(ROOT, f))
-    }
+  for (const theme of themeRoots()) {
+    findFilesByName(join(theme, 'src', 'blocks'), 'block.json', files)
   }
   return files
 }
 
 /**
  * @returns {Promise<string[]>}  Absolute paths to every theme.json under
- *   examples/ and packages/cli/templates/ (excluding node_modules)
+ *   examples/ and packages/cli/templates/ (top level, excluding node_modules)
  */
 async function discoverThemeJsonFiles() {
-  const patterns = [
-    'examples/*/theme.json',
-    'packages/cli/templates/*/theme.json',
-  ]
-  const files = []
-  for (const pattern of patterns) {
-    for await (const f of glob(pattern, { cwd: ROOT })) {
-      files.push(join(ROOT, f))
-    }
-  }
-  return files
+  return themeRoots()
+    .map((theme) => join(theme, 'theme.json'))
+    .filter((p) => existsSync(p))
 }
 
 // ---------------------------------------------------------------------------
@@ -275,9 +290,7 @@ export async function main() {
     }
   }
 
-  console.log(
-    `\n[contracts:validate] ${totalFiles} files checked, ${failures} failed.`,
-  )
+  console.log(`\n[contracts:validate] ${totalFiles} files checked, ${failures} failed.`)
 
   if (failures > 0) {
     process.exit(1)
