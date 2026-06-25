@@ -4,8 +4,8 @@
 import path from 'path'
 import chalk from 'chalk'
 import { validatePartName, slugify } from '../utils/validation'
-import { generatePartHTML, generatePartPHP } from '../utils/templates'
 import { createFileWithSpinner, ensureDir } from '../utils/filesystem'
+import { generatePart } from '../generators/part'
 
 interface PartOptions {
   type: 'header' | 'footer' | 'sidebar' | 'content' | 'custom'
@@ -22,7 +22,7 @@ export async function partCommand(name: string, options: PartOptions): Promise<v
     process.exit(1)
   }
 
-  // Generate slug
+  // Generate slug for exists-check
   const slug = slugify(name)
   const cwd = process.cwd()
   const partsDir = path.join(cwd, 'parts')
@@ -44,31 +44,28 @@ export async function partCommand(name: string, options: PartOptions): Promise<v
   try {
     const packageJson = await fs.readJson(path.join(cwd, 'package.json'))
     if (packageJson.name) {
-      themeSlug = packageJson.name
+      themeSlug = packageJson.name as string
     }
   } catch {
     // Use directory name if no package.json
   }
 
-  // Generate part content
-  const partContent =
-    options.markup === 'html'
-      ? generatePartHTML(options.type)
-      : generatePartPHP(options.type, themeSlug)
+  // Generate content via pure core
+  const result = generatePart({ name, type: options.type, markup: options.markup, themeSlug })
 
-  // Create part file
-  await createFileWithSpinner(partPath, partContent, `Creating ${slug}.${ext} template part`)
+  // Write files
+  for (const file of result.files) {
+    await createFileWithSpinner(
+      path.join(cwd, file.path),
+      file.content,
+      `Creating ${slug}.${ext} template part`
+    )
+  }
 
   // Success message
   console.log(chalk.green('\n✓ Template part created successfully!\n'))
-  console.log(chalk.dim(`  Part: parts/${slug}.${ext}`))
-  console.log(chalk.dim(`  Type: ${options.type}`))
-  console.log(chalk.dim(`  Markup: ${options.markup}`))
-
-  console.log(chalk.cyan('\n  Next steps:'))
-  console.log(chalk.dim(`  1. Edit the part in parts/${slug}.${ext}`))
-  console.log(
-    chalk.dim('  2. Use in templates with <!-- wp:template-part {"slug":"' + slug + '"} /-->')
-  )
-  console.log(chalk.dim("  3. Or in PHP with get_template_part('parts/" + slug + "')\n"))
+  for (const msg of result.messages) {
+    console.log(chalk.dim(`  ${msg}`))
+  }
+  console.log()
 }

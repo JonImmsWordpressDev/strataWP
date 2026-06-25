@@ -548,6 +548,8 @@ stratawp registry:publish            # Publish your component
 
 ## v0.4.0 - AI-Assisted Development
 
+> Note: the bundled AI provider package was removed in v2.0. AI assistance is now via the editor's own agent over the @stratawp/mcp server — StrataWP ships no embedded LLM.
+
 **AI-Powered Development Tools**
 
 This release introduces comprehensive AI integration to accelerate your WordPress theme development.

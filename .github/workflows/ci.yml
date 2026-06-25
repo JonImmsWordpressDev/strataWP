@@ -71,6 +71,23 @@ jobs:
       - name: PHPUnit
         run: composer test
 
+  contracts:
+    name: Contracts (MCP tool schema)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: MCP tool-contract snapshot is in sync
+        run: pnpm contracts:check
+
   php-themes:
     name: PHP themes (WPCS)
     runs-on: ubuntu-latest

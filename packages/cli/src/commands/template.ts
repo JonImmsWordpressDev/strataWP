@@ -4,8 +4,8 @@
 import path from 'path'
 import chalk from 'chalk'
 import { validateTemplateName, slugify } from '../utils/validation'
-import { generateTemplateHTML } from '../utils/templates'
 import { createFileWithSpinner, ensureDir } from '../utils/filesystem'
+import { generateTemplate } from '../generators/template'
 
 interface TemplateOptions {
   type: 'page' | 'single' | 'archive' | '404' | 'home' | 'search' | 'custom'
@@ -22,7 +22,7 @@ export async function templateCommand(name: string, options: TemplateOptions): P
     process.exit(1)
   }
 
-  // Generate slug
+  // Generate slug for exists-check
   const slug = slugify(name)
   const cwd = process.cwd()
   const templatesDir = path.join(cwd, 'templates')
@@ -43,29 +43,33 @@ export async function templateCommand(name: string, options: TemplateOptions): P
   try {
     const packageJson = await fs.readJson(path.join(cwd, 'package.json'))
     if (packageJson.name) {
-      themeSlug = packageJson.name
+      themeSlug = packageJson.name as string
     }
   } catch {
     // Use directory name if no package.json
   }
 
-  // Generate template content
-  const templateContent = generateTemplateHTML(options.type, themeSlug)
+  // Generate content via pure core
+  const result = generateTemplate({
+    name,
+    type: options.type,
+    themeSlug,
+    description: options.description,
+  })
 
-  // Create template file
-  await createFileWithSpinner(templatePath, templateContent, `Creating ${slug}.html template`)
+  // Write files
+  for (const file of result.files) {
+    await createFileWithSpinner(
+      path.join(cwd, file.path),
+      file.content,
+      `Creating ${slug}.html template`
+    )
+  }
 
   // Success message
   console.log(chalk.green('\n✓ Template created successfully!\n'))
-  console.log(chalk.dim(`  Template: templates/${slug}.html`))
-  console.log(chalk.dim(`  Type: ${options.type}`))
-
-  if (options.description) {
-    console.log(chalk.dim(`  Description: ${options.description}`))
+  for (const msg of result.messages) {
+    console.log(chalk.dim(`  ${msg}`))
   }
-
-  console.log(chalk.cyan('\n  Next steps:'))
-  console.log(chalk.dim('  1. Edit the template in templates/' + slug + '.html'))
-  console.log(chalk.dim('  2. Add your custom blocks and content'))
-  console.log(chalk.dim('  3. The template will be available in WordPress theme editor\n'))
+  console.log()
 }

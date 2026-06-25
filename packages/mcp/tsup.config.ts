@@ -3,8 +3,7 @@ import { defineConfig } from 'tsup'
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
-    create: 'src/create.ts',
-    'generators/index': 'src/generators/index.ts',
+    snapshot: 'src/snapshot.ts',
   },
   format: ['esm'],
   dts: true,
@@ -13,4 +12,5 @@ export default defineConfig({
   banner: {
     js: '#!/usr/bin/env node',
   },
+  external: ['@modelcontextprotocol/sdk'],
 })

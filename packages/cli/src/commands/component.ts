@@ -4,8 +4,8 @@
 import path from 'path'
 import chalk from 'chalk'
 import { validateComponentName, toPascalCase, validateNamespace } from '../utils/validation'
-import { generateComponentClass } from '../utils/templates'
 import { createFileWithSpinner, ensureDir } from '../utils/filesystem'
+import { generateComponent } from '../generators/component'
 
 interface ComponentOptions {
   type: 'service' | 'feature' | 'integration' | 'custom'
@@ -69,27 +69,25 @@ export async function componentCommand(name: string, options: ComponentOptions):
     process.exit(1)
   }
 
+  // Generate content via pure core
+  const result = generateComponent({ name: className, type: options.type, namespace })
+
   // Create components directory if it doesn't exist
   await ensureDir(componentsDir)
 
-  // Generate component class
-  const componentContent = generateComponentClass(className, namespace, options.type)
-
-  // Create component file
-  await createFileWithSpinner(
-    componentPath,
-    componentContent,
-    `Creating ${className}.php component`
-  )
+  // Write files
+  for (const file of result.files) {
+    await createFileWithSpinner(
+      path.join(cwd, file.path),
+      file.content,
+      `Creating ${className}.php component`
+    )
+  }
 
   // Success message
   console.log(chalk.green('\n✓ Component created successfully!\n'))
-  console.log(chalk.dim(`  Component: inc/Components/${className}.php`))
-  console.log(chalk.dim(`  Namespace: ${namespace}\\Components`))
-  console.log(chalk.dim(`  Type: ${options.type}`))
-
-  console.log(chalk.cyan('\n  Next steps:'))
-  console.log(chalk.dim('  1. Add your component logic to the class'))
-  console.log(chalk.dim('  2. Register in functions.php:'))
-  console.log(chalk.dim(`     new ${namespace}\\Components\\${className}(),\n`))
+  for (const msg of result.messages) {
+    console.log(chalk.dim(`  ${msg}`))
+  }
+  console.log()
 }
