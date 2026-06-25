@@ -18,6 +18,8 @@
     "@wordpress/i18n": "^4.51.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@stratawp/testing": "workspace:*",
     "@stratawp/vite-plugin": "workspace:*",
     "@vitejs/plugin-react": "^4.2.1",
     "sass": "^1.94.2",
