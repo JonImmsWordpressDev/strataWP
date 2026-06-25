@@ -60,5 +60,8 @@ jobs:
       - name: Activate the example theme
         run: pnpm exec wp-env run cli wp theme activate basic-theme
 
+      - name: Extract critical CSS from the rendered page
+        run: node scripts/extract-critical.mjs http://localhost:8888/ examples/basic-theme/dist
+
       - name: Run the Lighthouse budget
         run: pnpm test:perf

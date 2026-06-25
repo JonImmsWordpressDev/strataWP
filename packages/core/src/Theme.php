@@ -160,6 +160,7 @@ class Theme {
 			new Components\Accessibility(),
 			new Components\ConditionalStyles(),
 			new Components\ImageSizes(),
+			new Components\CriticalCss(),
 		);
 	}
 }

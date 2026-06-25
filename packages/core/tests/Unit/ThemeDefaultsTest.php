@@ -19,5 +19,6 @@ final class ThemeDefaultsTest extends TestCase {
         $slugs = array_keys($theme->components());
         $this->assertContains('conditional-styles', $slugs);
         $this->assertContains('image-sizes', $slugs);
+        $this->assertContains('critical-css', $slugs);
     }
 }
