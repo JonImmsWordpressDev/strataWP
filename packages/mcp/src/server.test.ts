@@ -1,12 +1,16 @@
 import { mkdtemp, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js'
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
 import { LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createServer } from './server'
+
+// Absolute path to the basic-theme example used as a discovery fixture.
+const BASIC_THEME_DIR = resolve(fileURLToPath(import.meta.url), '../../../../examples/basic-theme')
 
 /**
  * Connects an in-process client to a fresh server over a linked pair of
@@ -19,7 +23,9 @@ import { createServer } from './server'
  * (client/index.js -> `if (transport.setProtocolVersion) ...`). We wrap that
  * callback to capture the real negotiated value rather than asserting a guess.
  */
-async function connect(): Promise<{ client: Client; negotiatedVersion: string | undefined }> {
+async function connect(
+  rootDir?: string
+): Promise<{ client: Client; negotiatedVersion: string | undefined }> {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
 
   // `setProtocolVersion` is an optional member on the Transport interface that
@@ -32,7 +38,7 @@ async function connect(): Promise<{ client: Client; negotiatedVersion: string | 
     originalSet?.(version)
   }
 
-  const server = createServer()
+  const server = createServer(rootDir)
   const client = new Client({ name: 'test-client', version: '0.0.0' })
 
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)])
@@ -43,6 +49,7 @@ async function connect(): Promise<{ client: Client; negotiatedVersion: string | 
 let client: Client
 
 beforeEach(async () => {
+  // Default server: tools only tests use process.cwd() for discovery (empty dir is fine).
   const connected = await connect()
   client = connected.client
 })
@@ -159,5 +166,72 @@ describe('@stratawp/mcp server tools', () => {
     expect(result.isError).toBe(true)
     const text = (result.content as Array<{ text: string }>)[0]?.text ?? ''
     expect(text).toContain('targetDir')
+  })
+})
+
+describe('@stratawp/mcp component catalog resources', () => {
+  let resourceClient: Client
+
+  beforeEach(async () => {
+    const connected = await connect(BASIC_THEME_DIR)
+    resourceClient = connected.client
+  })
+
+  afterEach(async () => {
+    await resourceClient.close()
+  })
+
+  it('listResources includes the stratawp://components catalog resource', async () => {
+    const { resources } = await resourceClient.listResources()
+    const uris = resources.map((r) => r.uri)
+    expect(uris).toContain('stratawp://components')
+  })
+
+  it('reading stratawp://components returns valid JSON that parses to a non-empty array', async () => {
+    const result = await resourceClient.readResource({ uri: 'stratawp://components' })
+    expect(result.contents).toHaveLength(1)
+    const content = result.contents[0]
+    expect(content.uri).toBe('stratawp://components')
+    expect(content.mimeType).toBe('application/json')
+    // Narrow the union: our handler always sets `text`, not `blob`.
+    if (!('text' in content)) throw new Error('Expected text content from catalog resource')
+    const parsed = JSON.parse(content.text)
+    expect(Array.isArray(parsed)).toBe(true)
+    // basic-theme has blocks, patterns, and parts — expect at least one component.
+    expect((parsed as unknown[]).length).toBeGreaterThan(0)
+  })
+
+  it('each component in the catalog has the required fields (id, name, title, type, path)', async () => {
+    const result = await resourceClient.readResource({ uri: 'stratawp://components' })
+    const raw = result.contents[0]
+    if (!('text' in raw)) throw new Error('Expected text content from catalog resource')
+    const components = JSON.parse(raw.text) as Array<{
+      id: string
+      name: string
+      title: string
+      type: string
+      path: string
+    }>
+    for (const c of components) {
+      expect(c).toHaveProperty('id')
+      expect(c).toHaveProperty('name')
+      expect(c).toHaveProperty('title')
+      expect(c).toHaveProperty('type')
+      expect(c).toHaveProperty('path')
+    }
+  })
+
+  it('listResources also includes resource templates for component-by-id and component-source', async () => {
+    // ResourceTemplate entries show up in listResources once a list callback provides them.
+    // Both templates supply a list callback that returns one entry per discovered component.
+    const { resources } = await resourceClient.listResources()
+    const uris = resources.map((r) => r.uri)
+    // At least one component URI matching the template should appear.
+    const hasComponentById = uris.some(
+      (u) => u.startsWith('stratawp://components/') && !u.endsWith('/source')
+    )
+    const hasComponentSource = uris.some((u) => u.endsWith('/source'))
+    expect(hasComponentById).toBe(true)
+    expect(hasComponentSource).toBe(true)
   })
 })
