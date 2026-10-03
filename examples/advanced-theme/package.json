@@ -10,7 +10,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json"
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "lint:css": "stylelint \"src/**/*.{css,scss}\""
   },
   "dependencies": {
     "@wordpress/block-editor": "^12.19.0",
@@ -20,9 +21,11 @@
     "@wordpress/i18n": "^4.51.0"
   },
   "devDependencies": {
+    "@stratawp/stylelint-config": "workspace:*",
     "@stratawp/vite-plugin": "workspace:*",
     "@vitejs/plugin-react": "^4.2.1",
     "sass": "^1.94.2",
+    "stylelint": "^16.0.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"
   }

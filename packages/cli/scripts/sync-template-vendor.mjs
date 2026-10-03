@@ -33,21 +33,31 @@ for (const template of templates) {
   console.log(`sync-template-vendor: refreshed ${template}/vendor/stratawp/core`)
 }
 
-// Stamp the @stratawp/vite-plugin version into the cli's templateDependencies.
-// Templates declare workspace:*, which only resolves inside this monorepo;
-// customize-theme.ts rewrites it on scaffold using this field, so the pin must
-// track packages/vite-plugin instead of being hardcoded.
+// Stamp the versions of the workspace packages templates depend on into the
+// cli's templateDependencies. Templates declare workspace:*, which only
+// resolves inside this monorepo; customize-theme.ts rewrites it on scaffold
+// using this field, so each pin must track its package instead of being
+// hardcoded.
 const cliPkgPath = join(cliRoot, 'package.json')
 const cliPkg = JSON.parse(await readFile(cliPkgPath, 'utf8'))
-const vitePluginPkg = JSON.parse(
-  await readFile(join(cliRoot, '..', 'vite-plugin', 'package.json'), 'utf8')
-)
-const wanted = `^${vitePluginPkg.version}`
-if (cliPkg.templateDependencies?.['@stratawp/vite-plugin'] !== wanted) {
-  cliPkg.templateDependencies = {
-    ...cliPkg.templateDependencies,
-    '@stratawp/vite-plugin': wanted,
+const templatePackages = {
+  '@stratawp/vite-plugin': 'vite-plugin',
+  '@stratawp/stylelint-config': 'stylelint-config',
+  '@stratawp/testing': 'testing',
+}
+
+let changed = false
+const stamped = { ...cliPkg.templateDependencies }
+for (const [name, dir] of Object.entries(templatePackages)) {
+  const pkg = JSON.parse(await readFile(join(cliRoot, '..', dir, 'package.json'), 'utf8'))
+  const wanted = `^${pkg.version}`
+  if (stamped[name] !== wanted) {
+    stamped[name] = wanted
+    changed = true
+    console.log(`sync-template-vendor: pinned ${name} ${wanted} in templateDependencies`)
   }
+}
+if (changed) {
+  cliPkg.templateDependencies = stamped
   await writeFile(cliPkgPath, JSON.stringify(cliPkg, null, 2) + '\n')
-  console.log(`sync-template-vendor: pinned @stratawp/vite-plugin ${wanted} in templateDependencies`)
 }
