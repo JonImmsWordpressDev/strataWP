@@ -45,6 +45,7 @@ describe.each(TEMPLATES)('%s quality gates', (templateName) => {
       configBasedir: templatePath,
       ignorePattern: ['**/dist/**', '**/vendor/**', '**/node_modules/**'],
     })
+    expect(result.results.length).toBeGreaterThan(0)
     const problems = result.results.flatMap((r) =>
       r.warnings.map((w) => `${path.relative(templatePath, r.source ?? '')}: ${w.rule}`)
     )
