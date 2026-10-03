@@ -13,11 +13,13 @@ export { default } from '@stratawp/stylelint-config'
 
 ## Rules
 
-| Rule                       | Default                       | Why                                                  |
-| -------------------------- | ----------------------------- | ---------------------------------------------------- |
+| Rule                       | Default                                        | Why                                                  |
+| -------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
 | `max-nesting-depth`        | 3 levels (pseudo-classes and at-rules ignored) | Deep nesting compiles to long, brittle selectors     |
-| `selector-max-specificity` | `0,3,1`                       | Low specificity keeps overrides cheap; blocks ids    |
-| `custom-property-pattern`  | kebab-case, WordPress `--` ok | Consistent token names, compatible with `theme.json` |
+| `selector-max-specificity` | `0,3,1`                                        | Low specificity keeps overrides cheap; blocks ids    |
+| `custom-property-pattern`  | kebab-case, WordPress `--` ok                  | Consistent token names, compatible with `theme.json` |
+
+Nested selectors are resolved before `selector-max-specificity` is applied, so a deeply nested rule can trigger both rules.
 
 `.scss` files are parsed with `postcss-scss`.
 

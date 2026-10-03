@@ -39,9 +39,17 @@ describe('max-nesting-depth', () => {
     expect(rulesOf(await lint(code, 'pseudo.scss'))).not.toContain('max-nesting-depth')
   })
 
-  it('does not count at-rules (like @media) against the limit', async () => {
-    const code = '.a { .b { .c { @media (min-width: 1px) { .d { color: red; } } } } }'
-    expect(rulesOf(await lint(code, 'media.scss'))).not.toContain('max-nesting-depth')
+  it.each([
+    { name: '@media', rule: '@media (min-width: 1px)' },
+    { name: '@supports', rule: '@supports (display: grid)' },
+    { name: '@container', rule: '@container (min-width: 1px)' },
+    { name: '@include', rule: '@include m' },
+  ])('does not count $name nesting against the limit', async ({ rule }) => {
+    // Mixin definition comes first, then the test code with @include at 4th level
+    const mixin = '@mixin m { color: red; }'
+    const code = `.a { .b { .c { .d { ${rule} { color: red; } } } } }`
+    const fullCode = rule === '@include m' ? `${mixin}\n${code}` : code
+    expect(rulesOf(await lint(fullCode, 'x.scss'))).not.toContain('max-nesting-depth')
   })
 })
 
@@ -57,6 +65,15 @@ describe('selector-max-specificity', () => {
 
   it('fails on an id selector', async () => {
     expect(rulesOf(await lint('#main { color: red; }'))).toContain('selector-max-specificity')
+  })
+
+  it('passes with type selector at the limit', async () => {
+    expect(rulesOf(await lint('.a .b .c div { color: red; }'))).not.toContain('selector-max-specificity')
+  })
+
+  it('fails with type selector above the cap', async () => {
+    const warnings = await lint('.a .b .c div span { color: red; }')
+    expect(rulesOf(warnings)).toContain('selector-max-specificity')
   })
 })
 
