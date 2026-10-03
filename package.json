@@ -23,6 +23,7 @@
     "lint:php": "node scripts/lint-php.mjs",
     "lint:css": "stylelint --config stylelint.config.js \"examples/*/src/**/*.{css,scss}\" \"packages/cli/templates/*/src/**/*.{css,scss}\"",
     "test:e2e": "cd examples/basic-theme && pnpm exec playwright test --config playwright.a11y.config.ts",
+    "test:smoke": "cd examples/basic-theme && pnpm exec playwright test --config playwright.smoke.config.ts",
     "typecheck": "turbo typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
