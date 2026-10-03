@@ -7,13 +7,21 @@ StrataWP ships three gates that apply to the monorepo and to every theme generat
 `@stratawp/vite-plugin` writes sibling files next to each optimized raster image: `hero.jpg` produces `hero.avif` and `hero.webp`.
 
 ```ts
-stratawp({
-  performance: {
-    images: {
-      formats: ['avif', 'webp'], // default
-      quality: { avif: 50 }, // default
-    },
-  },
+// vite.config.ts
+import { defineConfig } from 'vite'
+import { strataWP } from '@stratawp/vite-plugin'
+
+export default defineConfig({
+  plugins: [
+    strataWP({
+      performance: {
+        images: {
+          formats: ['avif', 'webp'], // default
+          quality: { avif: 50 }, // default
+        },
+      },
+    }),
+  ],
 })
 ```
 
@@ -115,7 +123,7 @@ export default {
 
 ## Smoke tests
 
-`@stratawp/testing/config` exports `createSmokeConfig`, `resolveBrowsers` and `checkSiteReachable`.
+`@stratawp/testing/config` exports `createSmokeConfig` and the `SmokeConfigOptions` and `SmokeBrowser` types.
 
 ```ts
 // playwright.smoke.config.ts
@@ -124,7 +132,7 @@ import { createSmokeConfig } from '@stratawp/testing/config'
 export default createSmokeConfig({ testDir: './e2e/smoke' })
 ```
 
-Options: `testDir` (required), `baseURL` (optional), `browsers` (optional).
+Options: `testDir` (required), `baseURL` (optional), `browsers` (optional, `'chromium' | 'firefox' | 'webkit'`).
 
 Environment variables:
 
