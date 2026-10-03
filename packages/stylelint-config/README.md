@@ -21,6 +21,8 @@ export { default } from '@stratawp/stylelint-config'
 
 Nested selectors are resolved before `selector-max-specificity` is applied, so a deeply nested rule can trigger both rules.
 
+Files matching `*woocommerce*.{css,scss}` use a higher `selector-max-specificity` cap of `0,5,2`. Overrides of WooCommerce core selectors must match WooCommerce's own specificity to win the cascade, so they cannot stay under the global cap. The exception applies only to those files.
+
 `.scss` files are parsed with `postcss-scss`.
 
 ## Overriding

@@ -12,6 +12,12 @@ export const thresholds = {
   maxSpecificity: '0,3,1',
 }
 
+// Overrides of WooCommerce core selectors (e.g. `.woocommerce table.cart
+// .actions .coupon input[type="text"]`) must match WooCommerce's own
+// specificity to win, so WooCommerce override files get a higher cap.
+// Measured maximum across the shipped store theme stylesheets.
+const woocommerceMaxSpecificity = '0,5,2'
+
 export default {
   rules: {
     'max-nesting-depth': [
@@ -33,6 +39,10 @@ export default {
     {
       files: ['**/*.scss'],
       customSyntax: postcssScss,
+    },
+    {
+      files: ['**/*woocommerce*.{css,scss}'],
+      rules: { 'selector-max-specificity': woocommerceMaxSpecificity },
     },
   ],
 }

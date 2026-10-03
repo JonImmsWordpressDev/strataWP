@@ -77,6 +77,24 @@ describe('selector-max-specificity', () => {
   })
 })
 
+describe('selector-max-specificity WooCommerce exception', () => {
+  // 0,5,2: five classes, two types (matches `.woocommerce table.cart .actions .coupon input[type="text"]`)
+  const atMax = '.a .b .c .d .e f g { color: red; }'
+  const aboveMax = '.a .b .c .d .e f g h { color: red; }'
+
+  it('allows the measured maximum in a WooCommerce override file', async () => {
+    expect(rulesOf(await lint(atMax, '_woocommerce.scss'))).not.toContain('selector-max-specificity')
+  })
+
+  it('fails one step above the maximum in a WooCommerce override file', async () => {
+    expect(rulesOf(await lint(aboveMax, '_woocommerce.scss'))).toContain('selector-max-specificity')
+  })
+
+  it('still enforces the default cap in other files', async () => {
+    expect(rulesOf(await lint(atMax, '_forms.scss'))).toContain('selector-max-specificity')
+  })
+})
+
 describe('custom-property-pattern', () => {
   it('accepts project and WordPress-generated names', async () => {
     const code = ':root { --spacing-md: 1rem; --wp--preset--color--primary: #000; }'
