@@ -17,7 +17,8 @@ export default {
     'max-nesting-depth': [
       thresholds.maxNestingDepth,
       {
-        ignore: ['blockless-at-rules'],
+        ignore: ['blockless-at-rules', 'pseudo-classes'],
+        ignoreAtRules: ['media', 'supports', 'container', 'include'],
       },
     ],
     'selector-max-specificity': thresholds.maxSpecificity,

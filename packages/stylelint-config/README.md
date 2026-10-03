@@ -15,7 +15,7 @@ export { default } from '@stratawp/stylelint-config'
 
 | Rule                       | Default                       | Why                                                  |
 | -------------------------- | ----------------------------- | ---------------------------------------------------- |
-| `max-nesting-depth`        | 3 (blockless-at-rules ignored) | Deep nesting compiles to long, brittle selectors     |
+| `max-nesting-depth`        | 3 levels (pseudo-classes and at-rules ignored) | Deep nesting compiles to long, brittle selectors     |
 | `selector-max-specificity` | `0,3,1`                       | Low specificity keeps overrides cheap; blocks ids    |
 | `custom-property-pattern`  | kebab-case, WordPress `--` ok | Consistent token names, compatible with `theme.json` |
 

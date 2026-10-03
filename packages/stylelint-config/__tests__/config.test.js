@@ -25,18 +25,23 @@ describe('thresholds', () => {
 
 describe('max-nesting-depth', () => {
   it('passes at the limit', async () => {
-    const code = '.a { .b { .c { color: red; } } }'
+    const code = '.a { .b { .c { .d { color: red; } } } }'
     expect(rulesOf(await lint(code, 'ok.scss'))).not.toContain('max-nesting-depth')
   })
 
   it('fails past the limit', async () => {
-    const code = '.a { .b { .c { .d { color: red; } } } }'
+    const code = '.a { .b { .c { .d { .e { color: red; } } } } }'
     expect(rulesOf(await lint(code, 'bad.scss'))).toContain('max-nesting-depth')
   })
 
   it('does not count pseudo-class nesting against the limit', async () => {
-    const code = '.a { .b { .c { &:hover { color: red; } } } }'
+    const code = '.a { .b { .c { .d { &:hover { color: red; } } } } }'
     expect(rulesOf(await lint(code, 'pseudo.scss'))).not.toContain('max-nesting-depth')
+  })
+
+  it('does not count at-rules (like @media) against the limit', async () => {
+    const code = '.a { .b { .c { @media (min-width: 1px) { .d { color: red; } } } } }'
+    expect(rulesOf(await lint(code, 'media.scss'))).not.toContain('max-nesting-depth')
   })
 })
 
