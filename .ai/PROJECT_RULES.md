@@ -58,3 +58,9 @@ Entry format:
 - **Decision:** What was done and where.
 - **Key Learning:** The reusable insight for future work.
 -->
+
+### 📅 2026-10-03 - Quality gates (AVIF, Stylelint, cross-browser smoke)
+
+- **Context:** Generated themes and the monorepo needed a stricter, shared performance and quality bar.
+- **Decision:** New gates are blocking in CI from day one. Each gate lives in its owning package: AVIF in `@stratawp/vite-plugin` and core `ImageSizes`, rules in the new `@stratawp/stylelint-config`, smoke preset in `@stratawp/testing/config`. The Stylelint preset enforces `max-nesting-depth` 3, `selector-max-specificity` `0,3,1` and kebab-case custom properties (WordPress `--` segments allowed). Smoke tests run on Chromium, Firefox and WebKit in CI (`smoke.yml`); the axe gate stays Chromium-only. A scoped exception raises the specificity cap to `0,5,2` for `**/*woocommerce*.{css,scss}` files; the global cap stays `0,3,1`. See `docs/quality-gates.md`.
+- **Key Learning:** Stylelint counts nesting levels inside the root rule, so depth 3 passes four selectors deep and fails five; pseudo-classes and at-rules do not count. Nested selectors are resolved before the specificity rule runs, so one rule can trigger both. WooCommerce overrides must match core specificity to win, hence the scoped exception. `@stratawp/stylelint-config` is a new package: add its npm trusted-publisher entry (repo + `publish-npm.yml`) and publish it before generated themes can install it.

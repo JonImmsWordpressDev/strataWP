@@ -42,9 +42,9 @@ Gaps this spec closes:
 
 ### 2. `@stratawp/stylelint-config` (new package)
 
-- Pure-data preset: nesting depth limit, specificity cap, custom-property validation (no `var()` references to undefined project tokens, naming convention).
+- Pure-data preset: nesting depth limit, specificity cap, custom-property naming convention (kebab-case, WordPress `--` segments allowed). Unknown-reference checking is out of scope: `theme.json` generates `--wp--preset--*` tokens that Stylelint cannot be seeded with, so such a rule would flag all of them. Depth 3 means three nesting levels inside the root rule: four selectors deep passes, five fails; pseudo-classes and at-rules do not count. A scoped exception raises the specificity cap to `0,5,2` for files matching `**/*woocommerce*.{css,scss}`, because overrides of WooCommerce core selectors must match their specificity to win; the global cap stays `0,3,1`.
 - Thresholds are overridable per theme and each rule documents its rationale.
-- Violation output names the rule and the measured value (depth or specificity).
+- Violation output names the rule and location; the specificity rule also names the offending selector.
 - Initial thresholds (depth 3, specificity cap) are proposals. They are confirmed by running the preset against the examples before being committed; if cleanup is large, thresholds are revisited with the maintainer first.
 - Example themes' CSS/SCSS is fixed to pass.
 
@@ -55,13 +55,14 @@ Gaps this spec closes:
 - Reconcile with the existing `@stratawp/testing` preset: the preset's project list is reduced to the three desktop engines the smoke config uses, or the smoke config extends the preset. The implementation plan picks whichever leaves one source of truth.
 - `baseURL` from an env var, defaulting to the wp-env URL (`:8888`). Global setup fails fast with one clear message if the site is unreachable.
 - Retries on in CI and off locally. Traces kept on failure. Browser binaries are cached where Playwright's guidance allows; otherwise the extra install time is accepted and measured.
-- New front-end smoke tests: navigation (including mobile menu) and pattern rendering. Editor coverage: wire the existing `block-editor.spec.ts` into the smoke run if it can run unauthenticated-setup-free on wp-env; otherwise leave it out and say so in the plan.
+- New front-end smoke tests: navigation (including mobile menu) and pattern rendering. `block-editor.spec.ts` stays out of CI: it needs an authenticated wp-env session and would roughly double job time. The navigation and layout specs for `basic-theme` are written from the theme's real markup and were first verified by CI (no local Docker).
 
 ### 4. Generated themes (`create-stratawp`)
 
 - All templates depend on `@stratawp/stylelint-config` and the `@stratawp/testing` preset.
 - Templates gain `lint:css` and `test:e2e` scripts and the config files that wire them up.
 - Example themes and their `packages/cli/templates/*` twins are kept in sync by hand, as established in the earlier spec.
+- Navigation smoke specs ship only in `examples/basic-theme`; templates get a generic layout spec.
 
 ### 5. CI and docs
 
