@@ -45,7 +45,11 @@ Warnings:
 Both return an empty result for unsafe paths (traversal, absolute paths, NUL bytes) or a missing original. `render_picture()` drops attributes whose names are not lowercase `[a-z][a-z0-9-]*`, that start with `on`, or that are `src`, `srcset`, `alt` or `type`.
 
 ```php
-$image_sizes = \StrataWP\Theme::instance()->component( 'image-sizes' );
+try {
+	$image_sizes = \StrataWP\Theme::instance()->component( 'image-sizes' );
+} catch ( \InvalidArgumentException $e ) {
+	$image_sizes = null;
+}
 
 if ( $image_sizes instanceof \StrataWP\Components\ImageSizes ) {
 	echo $image_sizes->render_picture(
@@ -55,6 +59,8 @@ if ( $image_sizes instanceof \StrataWP\Components\ImageSizes ) {
 	);
 }
 ```
+
+`Theme::component()` throws `InvalidArgumentException` for an unknown slug, for example when a child theme removed the component through `stratawp_theme_components`, so the lookup is wrapped in a `try`/`catch`.
 
 Output (AVIF and WebP `<source>` elements appear only when the files exist):
 

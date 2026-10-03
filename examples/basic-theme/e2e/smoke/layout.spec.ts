@@ -18,7 +18,8 @@ for (const route of routes) {
 }
 
 // The front-page hero pattern uses an h2; the page's single h1 is the site
-// title, which the header renders as an h1 only on the front page.
+// title; core/site-title defaults to level 1 (the header pattern sets no
+// level), so it renders as an h1 on every page, not only the front page.
 test('home has exactly one h1', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' })
   const heading = page.locator('h1')

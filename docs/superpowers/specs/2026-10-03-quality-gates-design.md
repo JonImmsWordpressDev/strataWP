@@ -35,7 +35,7 @@ Gaps this spec closes:
 
 ### 1. AVIF output (`@stratawp/vite-plugin`, core)
 
-- `images.ts` emits `*.avif` alongside `*.webp` and the original. Config: `images.formats` (default `['avif', 'webp']`); a subset opts out.
+- `images.ts` emits `*.avif` alongside `*.webp` and the original. Config: `performance.images.formats` (default `['avif', 'webp']`); a subset opts out.
 - Encoding failure for a file warns and skips that format for that file. The build never fails on it and never leaves a partial file.
 - Output is deterministic so cached builds are stable.
 - PHP helper in `packages/core/src/Components/ImageSizes.php` emits `<picture>` sources ordered AVIF, WebP, original. A `<source>` is emitted only when the sibling file exists on disk.

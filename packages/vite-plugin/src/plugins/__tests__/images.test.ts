@@ -74,7 +74,17 @@ describe('strataWPImages', () => {
   })
 
   it('does not throw or leave partial siblings for a corrupt source', async () => {
-    await writeFile(path.join(dir, 'src/images/broken.png'), 'not really a png')
+    // A valid PNG header with the body cut off, as an interrupted copy would leave.
+    const whole = await sharp({
+      create: { width: 256, height: 256, channels: 3, background: { r: 10, g: 120, b: 200 } },
+      noise: { type: 'gaussian', mean: 128, sigma: 60 },
+    } as sharp.SharpOptions)
+      .png()
+      .toBuffer()
+    await writeFile(
+      path.join(dir, 'src/images/broken.png'),
+      whole.subarray(0, Math.floor(whole.length * 0.6))
+    )
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     await expect(run({ dest: 'dist/images-corrupt' })).resolves.toBeUndefined()
     const out = await readdir(path.join(dir, 'dist/images-corrupt'))
