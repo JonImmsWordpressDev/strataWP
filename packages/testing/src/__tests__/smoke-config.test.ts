@@ -22,6 +22,13 @@ describe('resolveBrowsers', () => {
     expect(resolveBrowsers({ STRATAWP_E2E_BROWSERS: 'edge,safari' })).toEqual(['chromium'])
   })
 
+  it('dedupes repeated names, preserving first-seen order', () => {
+    expect(resolveBrowsers({ STRATAWP_E2E_BROWSERS: 'chromium,chromium,firefox' })).toEqual([
+      'chromium',
+      'firefox',
+    ])
+  })
+
   it('uses explicit browsers when no env override is set', () => {
     expect(resolveBrowsers({}, ['webkit'])).toEqual(['webkit'])
   })
@@ -48,6 +55,21 @@ describe('checkSiteReachable', () => {
     await expect(checkSiteReachable('http://localhost:8888', refused)).rejects.toThrow(
       /not reachable \(fetch failed, ECONNREFUSED\)/
     )
+  })
+})
+
+describe('checkSiteReachable with non-Error throws', () => {
+  it.each([
+    ['null', null],
+    ['undefined', undefined],
+    ['a string', 'boom'],
+  ])('still throws the one clear error when fetch throws %s', async (_label, thrown) => {
+    const bad = (async () => {
+      throw thrown
+    }) as unknown as typeof fetch
+    const result = checkSiteReachable('http://localhost:8888', bad)
+    await expect(result).rejects.toThrow(/is not reachable/)
+    await expect(result).rejects.not.toBeInstanceOf(TypeError)
   })
 })
 

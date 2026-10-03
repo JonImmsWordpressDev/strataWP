@@ -17,7 +17,7 @@ export async function checkSiteReachable(
     detail = `HTTP ${response.status}`
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    const code = (error as { cause?: { code?: string } }).cause?.code
+    const code = (error as { cause?: { code?: string } } | null)?.cause?.code
     detail = code ? `${message}, ${code}` : message
   }
   throw new Error(

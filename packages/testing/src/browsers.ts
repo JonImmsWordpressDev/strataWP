@@ -17,7 +17,7 @@ export function resolveBrowsers(
       .map((name) => name.trim())
       .filter((name): name is SmokeBrowser => ALL_BROWSERS.includes(name as SmokeBrowser))
     if (valid.length > 0) {
-      return valid
+      return [...new Set(valid)]
     }
   }
   if (explicit && explicit.length > 0) {
