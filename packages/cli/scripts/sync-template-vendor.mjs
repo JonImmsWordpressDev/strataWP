@@ -11,6 +11,7 @@
 import { cp, rm, access, readFile, writeFile } from 'fs/promises'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { assertPublishableVersion } from './template-deps.mjs'
 
 const cliRoot = dirname(dirname(fileURLToPath(import.meta.url)))
 const coreRoot = join(cliRoot, '..', 'core')
@@ -50,6 +51,12 @@ let changed = false
 const stamped = { ...cliPkg.templateDependencies }
 for (const [name, dir] of Object.entries(templatePackages)) {
   const pkg = JSON.parse(await readFile(join(cliRoot, '..', dir, 'package.json'), 'utf8'))
+  try {
+    assertPublishableVersion(name, pkg.version)
+  } catch (error) {
+    console.error(`sync-template-vendor: ${error.message}`)
+    process.exit(1)
+  }
   const wanted = `^${pkg.version}`
   if (stamped[name] !== wanted) {
     stamped[name] = wanted
