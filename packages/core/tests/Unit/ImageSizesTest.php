@@ -98,7 +98,7 @@ final class ImageSizesTest extends TestCase {
     }
 
     public function test_traversal_paths_return_nothing_even_if_the_file_exists(): void {
-        $this->make_theme(['secret.png', 'dist/images/placeholder.png']);
+        $this->make_theme(['secret.png', 'secret.avif', 'secret.webp', 'dist/images/placeholder.png']);
         $component = new ImageSizes();
         $this->assertSame([], $component->get_picture_sources('dist/../secret.png'));
         $this->assertSame('', $component->render_picture('dist/../secret.png', 'x'));
