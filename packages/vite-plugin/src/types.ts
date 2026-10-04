@@ -333,10 +333,17 @@ export interface ImageOptions {
   dest?: string
 
   /**
-   * Emit sibling .webp for jpg/png
+   * Emit sibling .webp for jpg/png. Kept for backwards compatibility:
+   * `false` removes 'webp' from `formats`.
    * @default true
    */
   webp?: boolean
+
+  /**
+   * Sibling formats emitted next to jpg/png sources.
+   * @default ['avif', 'webp']
+   */
+  formats?: Array<'avif' | 'webp'>
 
   /**
    * Per-format quality (0-100)
@@ -344,6 +351,7 @@ export interface ImageOptions {
   quality?: {
     jpeg?: number
     png?: number
+    avif?: number
     webp?: number
   }
 }

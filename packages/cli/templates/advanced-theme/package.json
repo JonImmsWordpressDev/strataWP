@@ -10,7 +10,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "ai:setup": "node scripts/ai-setup.mjs",
-    "ai:check": "pnpm build"
+    "ai:check": "pnpm build",
+    "lint:css": "stylelint \"src/**/*.{css,scss}\"",
+    "test:e2e": "playwright test --config playwright.smoke.config.ts"
   },
   "dependencies": {
     "@wordpress/block-editor": "^12.19.0",
@@ -23,9 +25,13 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@stratawp/stylelint-config": "workspace:*",
+    "@stratawp/testing": "workspace:*",
     "@stratawp/vite-plugin": "workspace:*",
     "@vitejs/plugin-react": "^4.2.1",
     "sass": "^1.94.2",
+    "stylelint": "^16.0.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"
   }

@@ -31,6 +31,10 @@
     "./playwright": {
       "types": "./dist/playwright.d.ts",
       "import": "./dist/playwright.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
     }
   },
   "files": [
@@ -65,7 +69,13 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
+    "@playwright/test": ">=1.40.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    }
   }
 }

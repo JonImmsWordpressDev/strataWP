@@ -2,8 +2,7 @@
  * StrataWP Images Plugin
  *
  * Build-time raster optimization (sharp), SVG optimization (svgo), and
- * sibling .webp generation. Ported from a prior-art WordPress starter theme's image
- * task. Runs in
+ * sibling .avif/.webp generation. Runs in
  * `closeBundle` so it operates on the theme's source images independently
  * of Vite's import graph.
  */
@@ -23,9 +22,12 @@ export function strataWPImages(options: ImageOptions = {}): Plugin {
     webp = true,
     quality = {},
   } = options
+  const formats = (options.formats ?? ['avif', 'webp']).filter(
+    (format) => !(format === 'webp' && webp === false)
+  )
   const jpegQuality = quality.jpeg ?? 75
   const pngQuality = quality.png ?? 80
-  const webpQuality = quality.webp ?? 75
+  const siblingQuality = { avif: quality.avif ?? 50, webp: quality.webp ?? 75 }
 
   let root = process.cwd()
 
@@ -88,16 +90,29 @@ export function strataWPImages(options: ImageOptions = {}): Plugin {
           }
         }
 
-        // Sibling .webp for raster photos.
-        if (webp && (ext === '.jpg' || ext === '.jpeg' || ext === '.png')) {
-          const webpFile = destFile.replace(/\.[^.]+$/i, '.webp')
-          if (await isNewer(srcFile, webpFile)) {
+        // Sibling .avif / .webp for raster photos.
+        if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') {
+          for (const format of formats) {
+            const siblingFile = destFile.replace(/\.[^.]+$/i, `.${format}`)
+            if (!(await isNewer(srcFile, siblingFile))) {
+              continue
+            }
             try {
-              await sharp(srcFile, { sequentialRead: true })
-                .webp({ quality: webpQuality })
-                .toFile(webpFile)
-            } catch {
-              // Skip webp for this file on failure; don't break the build.
+              const pipeline = sharp(srcFile, { sequentialRead: true })
+              const buffer = await (
+                format === 'avif'
+                  ? pipeline.avif({ quality: siblingQuality.avif })
+                  : pipeline.webp({ quality: siblingQuality.webp })
+              ).toBuffer()
+              // Encode fully in memory first so a failed encode never leaves
+              // a partial file on disk.
+              await writeFile(siblingFile, buffer)
+            } catch (error) {
+              console.warn(
+                `[stratawp:images] skipped ${format} for ${rel}: ${
+                  error instanceof Error ? error.message : String(error)
+                }`
+              )
             }
           }
         }

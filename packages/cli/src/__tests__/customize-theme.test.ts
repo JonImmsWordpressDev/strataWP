@@ -3,6 +3,8 @@ import fs from 'fs-extra'
 import path from 'path'
 import os from 'os'
 import { fileURLToPath } from 'url'
+import stylelint from 'stylelint'
+import stylelintConfig from '@stratawp/stylelint-config'
 import { customizeTheme, type ThemeConfig } from '../customize-theme.js'
 import { SKIP_DIRS } from '../utils/theme-tokens.js'
 
@@ -81,5 +83,37 @@ describe('customizeTheme', () => {
   it('namespaces the bundled block under the slug', async () => {
     const blockJson = await fs.readJson(path.join(themePath, 'src/blocks/hero/block.json'))
     expect(blockJson.name).toBe('issue31-theme/hero')
+  })
+
+  describe('quality gate dependencies', () => {
+    const GATE_PACKAGES = [
+      '@stratawp/vite-plugin',
+      '@stratawp/stylelint-config',
+      '@stratawp/testing',
+    ]
+
+    it.each(GATE_PACKAGES)('pins %s from templateDependencies', async (name) => {
+      const cliPkg = await fs.readJson(path.join(__dirname, '..', '..', 'package.json'))
+      const pkg = await fs.readJson(path.join(themePath, 'package.json'))
+      // A missing templateDependencies key silently falls back to 'latest'.
+      expect(cliPkg.templateDependencies[name]).toBeTruthy()
+      expect(pkg.devDependencies[name]).toBe(cliPkg.templateDependencies[name])
+      expect(pkg.devDependencies[name]).not.toMatch(/^workspace:/)
+      expect(pkg.devDependencies[name]).not.toBe('latest')
+    })
+  })
+
+  it('scaffolds CSS that passes the shipped Stylelint preset', async () => {
+    const result = await stylelint.lint({
+      files: path.join(themePath, 'src/**/*.{css,scss}'),
+      config: stylelintConfig,
+      configBasedir: themePath,
+      ignorePattern: ['**/dist/**', '**/vendor/**', '**/node_modules/**'],
+    })
+    expect(result.results.length).toBeGreaterThan(0)
+    const problems = result.results.flatMap((r) =>
+      r.warnings.map((w) => `${path.relative(themePath, r.source ?? '')}: ${w.rule}`)
+    )
+    expect(problems).toEqual([])
   })
 })

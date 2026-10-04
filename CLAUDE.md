@@ -75,6 +75,7 @@ pnpm dev           # Start Vite dev server on port 3000
 - **packages/core**: PHP framework with component architecture
 - **packages/explorer**: Interactive component browser (Storybook-like)
 - **packages/sync**: Environment sync, snapshots, and rollback
+- **packages/stylelint-config**: Shared Stylelint preset (nesting, specificity, custom-property rules)
 - **packages/testing**: Vitest and Playwright testing utilities
 - **packages/headless**: REST API client, React hooks, Next.js utilities
 - **packages/create-stratawp**: Theme creation CLI (bundled templates)
@@ -224,7 +225,7 @@ The `@stratawp/vite-plugin` provides WordPress-specific features:
    - Includes dependency and version information
 
 4. **Performance optimization**:
-   - Build-time image optimization (sharp): raster compression + sibling WebP + SVGO
+   - Build-time image optimization (sharp): raster compression + sibling AVIF/WebP + SVGO
    - Vendor/WordPress chunk splitting (manualChunks)
    - Resource hints are filter-driven:
      - `stratawp_dns_prefetch_hints`: Array of URLs for DNS prefetch (empty by default)
@@ -485,6 +486,12 @@ pnpm test
 # Run accessibility e2e (axe-core + Playwright, WCAG 2.1 A/AA)
 # Requires a running wp-env: pnpm exec wp-env start && pnpm exec wp-env run cli wp theme activate basic-theme
 pnpm test:e2e
+
+# Stylelint gate (nesting depth, specificity, custom-property naming)
+pnpm lint:css
+
+# Cross-browser smoke tests on wp-env (Chromium locally; all three engines in CI)
+pnpm test:smoke
 ```
 
 ### Component Explorer
@@ -598,6 +605,7 @@ Published packages:
 - `@stratawp/vite-plugin` - Vite plugin
 - `@stratawp/sync` - Environment sync, snapshots, and rollback
 - `@stratawp/testing` - Testing utilities
+- `@stratawp/stylelint-config` - Shared Stylelint preset
 - `@stratawp/explorer` - Component browser
 - `@stratawp/headless` - Headless WordPress utilities
 - `create-stratawp` - Theme creation CLI

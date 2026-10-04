@@ -5,6 +5,8 @@ export default defineConfig({
     index: 'src/index.ts',
     vitest: 'src/vitest.ts',
     playwright: 'src/playwright.ts',
+    config: 'src/config.ts',
+    'global-setup': 'src/global-setup.ts',
   },
   format: ['esm'],
   dts: true,
