@@ -1,6 +1,6 @@
 {
   "name": "@stratawp/stylelint-config",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Strict, performance-minded Stylelint preset for StrataWP themes",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
