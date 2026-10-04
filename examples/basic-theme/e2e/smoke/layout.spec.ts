@@ -29,7 +29,11 @@ test('home has exactly one h1', async ({ page }) => {
 
 test('home renders the home pattern content', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' })
+  // The home pattern uses this heading text twice (hero and features section),
+  // so take the first match instead of tripping Playwright's strict mode.
   await expect(
-    page.getByRole('heading', { level: 2, name: 'Experience the next generation of WordPress.' })
+    page
+      .getByRole('heading', { level: 2, name: 'Experience the next generation of WordPress.' })
+      .first()
   ).toBeVisible()
 })
