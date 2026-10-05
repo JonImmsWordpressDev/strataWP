@@ -77,6 +77,7 @@ pnpm dev           # Start Vite dev server on port 3000
 - **packages/sync**: Environment sync, snapshots, and rollback
 - **packages/stylelint-config**: Shared Stylelint preset (nesting, specificity, custom-property rules)
 - **packages/testing**: Vitest and Playwright testing utilities
+- **packages/theme-review**: Theme review checks and theme-type detection (`pnpm review`)
 - **packages/headless**: REST API client, React hooks, Next.js utilities
 - **packages/create-stratawp**: Theme creation CLI (bundled templates)
 - **examples/**: Production-ready theme examples (basic, advanced, store)
@@ -605,6 +606,7 @@ Published packages:
 - `@stratawp/vite-plugin` - Vite plugin
 - `@stratawp/sync` - Environment sync, snapshots, and rollback
 - `@stratawp/testing` - Testing utilities
+- `@stratawp/theme-review` - Theme review checks
 - `@stratawp/stylelint-config` - Shared Stylelint preset
 - `@stratawp/explorer` - Component browser
 - `@stratawp/headless` - Headless WordPress utilities
@@ -726,7 +728,8 @@ StrataWP ships a structured, agent-agnostic development protocol so any AI codin
 
 ```bash
 pnpm ai:setup    # Generate instruction files for specific agents (Cursor, Copilot, Gemini, Windsurf)
-pnpm ai:check    # Pre-flight gate: lint + format:check + typecheck + test
+pnpm ai:check    # Pre-flight gate: lint + format:check + typecheck + test + review
+pnpm review      # Theme review (zero errors required on all StrataWP themes)
 pnpm mcp:docs    # Start the docs MCP server (search/read repo documentation over stdio)
 ```
 

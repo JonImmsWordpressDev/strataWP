@@ -74,17 +74,17 @@ Dependency-light (Node built-ins; at most one small glob dependency). Published,
 | THEME-012 | all | `eval(` and `create_function(` are errors; `base64_decode(` is a warning | error / warning |
 | THEME-013 | classic, hybrid | `wp_head()` in `header.php` and `wp_footer()` in `footer.php` | error |
 
-Each rule is a registered unit with an id, severity, applicable types, and a `check(context)` returning findings with file and line. Heuristic rules (008, 009, 011) are warnings so only `--strict` fails on them.
+Each rule is a registered unit with an id, severity, applicable types, and a `check(context)` returning findings with file and line. Heuristic rules (008, 009, 011) are warnings so only `--strict` fails on them. A rule that crashes is reported as an `INTERNAL` warning.
 
 ### A4. Self-check and CI
 
-- Root script `review` runs the checker on all three examples and all three templates. A new blocking CI job runs it. Errors fail; warnings do not.
+- Root script `review` runs the checker on all three examples and all three templates. A new blocking step in the `js` CI job runs it (after the build). Errors fail; warnings do not.
 - The six themes must have **zero errors** before the job is enabled. The plan measures the count first; if cleanup is large, stop and ask the maintainer (same rule as the Stylelint work).
 
 ### A5. Agent layer
 
 - New skills: `.ai/skills/theme-review/SKILL.md` (run the checker, interpret findings, fix, re-run) and, in B, `.ai/skills/visual-checks/SKILL.md`. `SKILLS.md`, `AGENTS.md` pillar 5 (pre-flight) and `agent-code-review` updated to include `pnpm review`.
-- `scripts/ai-setup.mjs`: records `**Theme type**: <type> (auto-detected|override)` in `.ai/agent-state.md` (idempotent); adds a `claude` target (writes `CLAUDE.md` only when absent, pointing at `AGENTS.md`) and a `codex` target (prints that `AGENTS.md` is read natively and creates nothing).
+- The template copies of `scripts/ai-setup.mjs` record `**Theme type**: <type> (detected|override)` in `.ai/agent-state.md` (idempotent). The `claude` target already exists in the template copy and Codex is already listed as native, so no new targets are added; the monorepo root script is unchanged because the root is not a theme.
 - `.ai/developer-directions.md`: replaced with real starter content. For this repository it is drafted from constraints already stated in `CLAUDE.md` and the maintainer's standing instructions, and flagged for the maintainer to review the wording before merge.
 
 ### A6. MCP and CLI
@@ -114,7 +114,7 @@ All three templates gain the `@stratawp/theme-review` dev dependency, a `review`
 
 ## Testing
 
-- **Review rules:** fixture themes under `packages/theme-review/__fixtures__/` (good block, good classic, hybrid, and a broken fixture per rule); a pass and a fail case for every rule; a test that a throwing rule is isolated and reported as an `internal` finding while the others still run; JSON shape snapshot.
+- **Review rules:** test themes built per test in temp directories by a helper (good block, good classic, hybrid, and a broken fixture per rule); a pass and a fail case for every rule; a test that a throwing rule is isolated and reported as an `internal` finding while the others still run; JSON shape snapshot.
 - **Detector:** the three types, the ambiguous case, the override, and an unknown override value.
 - **CLI behavior:** flags, exit codes, `--json`, `--strict`, missing directory.
 - **Self-check:** the six themes review with zero errors, in the blocking CI job.
@@ -130,7 +130,7 @@ PR 2 (ordered commits): capture command; visual factory, spec and `visual.yml`; 
 
 ## Release notes for the maintainer
 
-`@stratawp/theme-review` is a **new published package**. It needs the manual first publish from the maintainer's own Terminal (security-key approval), followed by the trusted-publisher entry with "Allow npm publish" ticked, before the release tag. This is listed in the PR checklist from the start. `@stratawp/mcp` is private and is not published. The CLI cannot be released ahead of `@stratawp/theme-review`, because the templates pin it.
+`@stratawp/theme-review` is a **new published package**. It needs the manual first publish from the maintainer's own Terminal (security-key approval), followed by the trusted-publisher entry with "Allow npm publish" ticked, before the release tag. Until the first release, `templateDependencies` carries a hand-stamped `^0.0.0` placeholder for the package; the release step re-stamps it. This is listed in the PR checklist from the start. `@stratawp/mcp` is private and is not published. The CLI cannot be released ahead of `@stratawp/theme-review`, because the templates pin it.
 
 ## Risks
 

@@ -38,7 +38,7 @@
     "contracts:validate": "node scripts/validate-contracts.mjs",
     "contracts:types:check": "node scripts/check-types-drift.mjs",
     "ai:setup": "node scripts/ai-setup.mjs",
-    "ai:check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test",
+    "ai:check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm review",
     "mcp:docs": "node scripts/mcp-docs-server.mjs"
   },
   "devDependencies": {
