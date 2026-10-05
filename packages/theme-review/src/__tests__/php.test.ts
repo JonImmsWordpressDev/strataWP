@@ -66,6 +66,25 @@ describe('extractCalls', () => {
     expect(calls).toHaveLength(0)
   })
 
+  it('matches a call that follows => without a space', () => {
+    const calls = extractCalls(code(`$a = array('k'=>__( 'x', 'dom' ));`), ['__'])
+    expect(calls).toHaveLength(1)
+    expect(calls[0]?.args).toEqual(["'x'", "'dom'"])
+  })
+
+  it('matches a call that follows a ternary colon, spaced or compact', () => {
+    expect(extractCalls(code(`$c ? 'a' :__( 'b', 'dom' );`), ['__'])).toHaveLength(1)
+    expect(extractCalls(code(`$c?'a':__( 'b', 'dom' );`), ['__'])).toHaveLength(1)
+  })
+
+  it('still skips null-safe, instance and static method calls', () => {
+    const calls = extractCalls(
+      code(`$o?->__( 'a', 'b' ); $o->__( 'a', 'b' ); Foo::__( 'a', 'b' );`),
+      ['__']
+    )
+    expect(calls).toHaveLength(0)
+  })
+
   it('does not match a name that is the tail of a longer identifier', () => {
     expect(extractCalls(code(`esc_html__( 'a', 'd' );`), ['__'])).toHaveLength(0)
   })

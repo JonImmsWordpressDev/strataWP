@@ -13,6 +13,8 @@ function walk(root: string, rel = ''): string[] {
   const out: string[] = []
   for (const entry of readdirSync(join(root, rel), { withFileTypes: true })) {
     const relPath = rel ? `${rel}/${entry.name}` : entry.name
+    // Explicit documentation: withFileTypes Dirents do not follow links, so symlinks are
+    // already neither file nor directory. Do not swap in statSync without keeping this intent.
     if (entry.isSymbolicLink()) continue
     if (entry.isDirectory()) {
       if (!PRUNE.has(entry.name)) out.push(...walk(root, relPath))

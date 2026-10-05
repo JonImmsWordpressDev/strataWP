@@ -4,6 +4,10 @@ const blank = (text: string): string => text.replace(/[^\n]/g, ' ')
  * Returns `source` with everything that is not PHP code replaced by spaces:
  * HTML outside `<?php`/`<?=` tags and all comments. Newlines are kept so line
  * numbers stay stable, and string literals are kept so callers can read them.
+ *
+ * Limitation: heredoc/nowdoc bodies and backtick strings are scanned as code,
+ * so an odd apostrophe in heredoc prose can flip quote parity for the rest of
+ * the file.
  */
 export function phpOnly(source: string): string {
   let out = ''
@@ -139,7 +143,7 @@ function readArgs(code: string, open: number): string[] | undefined {
  * `phpOnly`). Method calls (`->`, `::`) and function declarations are skipped.
  */
 export function extractCalls(code: string, names: readonly string[]): Call[] {
-  const re = new RegExp(`(?<![\\w$>:])(${names.map(escapeRe).join('|')})\\s*\\(`, 'g')
+  const re = new RegExp(`(?<![\\w$])(?<!->)(?<!::)(${names.map(escapeRe).join('|')})\\s*\\(`, 'g')
   const calls: Call[] = []
 
   for (const match of code.matchAll(re)) {
