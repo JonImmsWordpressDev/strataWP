@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "test:smoke": "playwright test --config playwright.smoke.config.ts",
+    "test:visual": "playwright test --config playwright.visual.config.ts",
     "lint:css": "stylelint \"src/**/*.{css,scss}\""
   },
   "dependencies": {

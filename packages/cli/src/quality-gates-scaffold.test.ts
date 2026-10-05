@@ -19,6 +19,8 @@ const REQUIRED_FILES = [
   '.stylelintignore',
   'playwright.smoke.config.ts',
   'e2e/smoke/layout.spec.ts',
+  'playwright.visual.config.ts',
+  'e2e/visual/layout.visual.spec.ts',
 ]
 
 describe.each(TEMPLATES)('%s quality gates', (templateName) => {
@@ -28,10 +30,20 @@ describe.each(TEMPLATES)('%s quality gates', (templateName) => {
     expect(fs.existsSync(path.join(templatePath, file))).toBe(true)
   })
 
+  it('ships the same visual spec and config as the example theme', () => {
+    const exampleDir = path.join(__dirname, '..', '..', '..', 'examples', 'basic-theme')
+    for (const file of ['playwright.visual.config.ts', 'e2e/visual/layout.visual.spec.ts']) {
+      expect(fs.readFileSync(path.join(templatePath, file), 'utf8')).toBe(
+        fs.readFileSync(path.join(exampleDir, file), 'utf8')
+      )
+    }
+  })
+
   it('wires lint:css and test:e2e and declares the gate dependencies', () => {
     const pkg = fs.readJsonSync(path.join(templatePath, 'package.json'))
     expect(pkg.scripts['lint:css']).toBe('stylelint "src/**/*.{css,scss}"')
     expect(pkg.scripts['test:e2e']).toBe('playwright test --config playwright.smoke.config.ts')
+    expect(pkg.scripts['test:visual']).toBe('playwright test --config playwright.visual.config.ts')
     expect(pkg.devDependencies['@stratawp/stylelint-config']).toBeTruthy()
     expect(pkg.scripts['review']).toBe('stratawp-review')
     expect(pkg.scripts['ai:check']).toBe('pnpm build && pnpm review')
