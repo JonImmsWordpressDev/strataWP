@@ -191,6 +191,9 @@ importers:
       '@stratawp/sync':
         specifier: workspace:^
         version: link:../sync
+      '@stratawp/theme-review':
+        specifier: workspace:^
+        version: link:../theme-review
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.16
@@ -377,6 +380,9 @@ importers:
       '@stratawp/explorer':
         specifier: workspace:*
         version: link:../explorer
+      '@stratawp/theme-review':
+        specifier: workspace:*
+        version: link:../theme-review
       zod:
         specifier: ^3.25
         version: 3.25.76

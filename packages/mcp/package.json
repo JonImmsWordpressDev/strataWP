@@ -24,6 +24,7 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@stratawp/cli": "workspace:*",
     "@stratawp/explorer": "workspace:*",
+    "@stratawp/theme-review": "workspace:*",
     "zod": "^3.25"
   },
   "devDependencies": {

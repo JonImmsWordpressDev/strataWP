@@ -1,5 +1,126 @@
 [
   {
+    "name": "detect_theme_type",
+    "description": "Read-only. Classifies a theme directory as block, classic or hybrid (both block templates and PHP templates) and says whether the answer was detected or came from a stratawp.themeType override in package.json.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "themeDir": {
+          "type": "string",
+          "description": "Absolute path to the theme directory"
+        }
+      },
+      "required": ["themeDir"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "themeType": {
+          "type": "string",
+          "enum": ["block", "classic", "hybrid"]
+        },
+        "typeSource": {
+          "type": "string",
+          "enum": ["detected", "override"]
+        }
+      },
+      "required": ["themeType", "typeSource"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
+    "name": "review_theme",
+    "description": "Runs the StrataWP theme review (read-only) on a theme directory and returns structured findings. It approximates the WordPress.org theme guidelines with static checks and is not a certification. `passed` is false when there are errors, or warnings when `strict` is true.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "themeDir": {
+          "type": "string",
+          "description": "Absolute path to the theme directory to review"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["block", "classic", "hybrid"],
+          "description": "Override the detected theme type: block, classic or hybrid"
+        },
+        "strict": {
+          "type": "boolean",
+          "description": "Treat warnings as failures in `passed`"
+        }
+      },
+      "required": ["themeDir"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "themeType": {
+          "type": "string",
+          "enum": ["block", "classic", "hybrid"]
+        },
+        "typeSource": {
+          "type": "string",
+          "enum": ["detected", "override"]
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "summary": {
+          "type": "object",
+          "properties": {
+            "errors": {
+              "type": "number"
+            },
+            "warnings": {
+              "type": "number"
+            },
+            "infos": {
+              "type": "number"
+            }
+          },
+          "required": ["errors", "warnings", "infos"],
+          "additionalProperties": false
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ruleId": {
+                "type": "string"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["error", "warning", "info"]
+              },
+              "message": {
+                "type": "string"
+              },
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": "number"
+              }
+            },
+            "required": ["ruleId", "severity", "message"],
+            "additionalProperties": false
+          }
+        },
+        "disclaimer": {
+          "type": "string"
+        }
+      },
+      "required": ["themeType", "typeSource", "passed", "summary", "findings", "disclaimer"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
     "name": "scaffold_block",
     "description": "Generates a custom dynamic Gutenberg block (block.json, edit.tsx, render.php, style.css) under src/blocks/<slug> in the target theme. All StrataWP blocks are dynamic — they render on the front end via a server-side render.php callback; there is no static/save.js variant.",
     "inputSchema": {
