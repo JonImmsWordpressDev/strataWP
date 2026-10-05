@@ -131,3 +131,32 @@ describe('stripStrings', () => {
     expect(stripStrings(`$m = "oops \\`)).toBeTypeOf('string')
   })
 })
+
+describe('heredoc and nowdoc bodies', () => {
+  it('blanks a heredoc body but keeps the opener and line structure', () => {
+    const src = `<?php\n$js = <<<JS\nwindow.x = eval("1+1");\nJS;\necho 1;`
+    const out = phpOnly(src)
+    expect(out).not.toContain('eval')
+    expect(out).toContain('<<<JS')
+    expect(out).toContain('echo 1;')
+    expect(out.split('\n')).toHaveLength(src.split('\n').length)
+  })
+
+  it('blanks a nowdoc body with an apostrophe so later quotes keep their parity', () => {
+    const src = `<?php\n$a = <<<'EOT'\nit's prose\nEOT;\n$b = 'never call eval( here';\n`
+    const out = stripStrings(phpOnly(src))
+    expect(out).not.toContain('eval')
+    expect(out).not.toContain('prose')
+  })
+
+  it('accepts quoted labels and an indented closing label', () => {
+    const out = phpOnly(`<?php\n$a = <<<"X"\n  body eval(\n  X;\necho 2;`)
+    expect(out).not.toContain('body')
+    expect(out).toContain('echo 2;')
+  })
+
+  it('does not end the body on a label that is only a prefix of a longer word', () => {
+    const out = phpOnly(`<?php\n$a = <<<JS\nJSON eval(\nJS;\n`)
+    expect(out).not.toContain('eval')
+  })
+})

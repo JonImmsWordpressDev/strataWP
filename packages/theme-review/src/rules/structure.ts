@@ -56,31 +56,32 @@ export const THEME_002: Rule = {
   },
 }
 
+const SCREENSHOT_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif']
+
 export const THEME_003: Rule = {
   id: 'THEME-003',
-  description: 'screenshot.png exists and is 1200×900',
+  description: 'a screenshot exists and a PNG one is 1200×900',
   severity: 'error',
   appliesTo: ALL,
   check(ctx) {
-    const bytes = ctx.readBytes('screenshot.png')
-    if (!bytes) {
+    const file = SCREENSHOT_EXTENSIONS.map((ext) => `screenshot.${ext}`).find((name) =>
+      ctx.exists(name)
+    )
+    if (!file) {
       return [{ message: 'screenshot.png is missing', file: 'screenshot.png', severity: 'error' }]
     }
-    const size = readPngSize(bytes)
+    // Dimensions are only checked for PNG; other formats are accepted as-is.
+    if (!file.endsWith('.png')) return []
+
+    const size = readPngSize(ctx.readBytes(file) ?? Buffer.alloc(0))
     if (!size) {
-      return [
-        {
-          message: 'screenshot.png is not a valid PNG file',
-          file: 'screenshot.png',
-          severity: 'warning',
-        },
-      ]
+      return [{ message: `${file} is not a valid PNG file`, file, severity: 'warning' }]
     }
     if (size.width !== 1200 || size.height !== 900) {
       return [
         {
-          message: `screenshot.png is ${size.width}×${size.height}; WordPress.org recommends 1200×900`,
-          file: 'screenshot.png',
+          message: `${file} is ${size.width}×${size.height}; WordPress.org recommends 1200×900`,
+          file,
           severity: 'warning',
         },
       ]
@@ -119,19 +120,24 @@ export const THEME_006: Rule = {
   check(ctx) {
     const findings: RuleResult[] = []
 
-    if (!ctx.exists('templates/index.html')) {
+    const hasIndex = ctx.exists('templates/index.html')
+    const text = ctx.read('theme.json')
+    // A hybrid theme may be classic with a stray template or theme.json: only insist on the
+    // pair once it has started to be a block theme.
+    const enforce = ctx.themeType !== 'hybrid' || hasIndex || text !== undefined
+
+    if (!hasIndex && enforce) {
       findings.push({ message: 'templates/index.html is missing', file: 'templates/index.html' })
     }
 
-    const text = ctx.read('theme.json')
     if (text === undefined) {
-      findings.push({ message: 'theme.json is missing', file: 'theme.json' })
+      if (enforce) findings.push({ message: 'theme.json is missing', file: 'theme.json' })
       return findings
     }
 
     let parsed: unknown
     try {
-      parsed = JSON.parse(text)
+      parsed = JSON.parse(text.replace(/^\uFEFF/, ''))
     } catch {
       findings.push({ message: 'theme.json is not valid JSON', file: 'theme.json' })
       return findings
@@ -143,7 +149,11 @@ export const THEME_006: Rule = {
     const json = parsed as Record<string, unknown>
 
     if (json['$schema'] === undefined) {
-      findings.push({ message: 'theme.json is missing "$schema"', file: 'theme.json' })
+      findings.push({
+        message: 'theme.json is missing "$schema"',
+        file: 'theme.json',
+        severity: 'warning',
+      })
     }
     if (json['version'] === undefined || json['version'] === null) {
       findings.push({ message: 'theme.json is missing "version"', file: 'theme.json' })

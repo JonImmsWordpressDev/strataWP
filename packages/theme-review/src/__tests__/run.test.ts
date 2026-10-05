@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { runCli } from '../run'
-import { cleanupThemes, goodHybridFiles, makeTheme, without } from './helpers'
+import { cleanupThemes, goodClassicFiles, goodHybridFiles, makeTheme, without } from './helpers'
 
 afterEach(cleanupThemes)
 
@@ -80,5 +80,19 @@ describe('runCli', () => {
     const { code, out } = run(['--help'])
     expect(code).toBe(0)
     expect(out).toContain('Usage: stratawp-review')
+  })
+
+  it('exits 2 when --type is the last argument with no value', () => {
+    const { code, err } = run([makeTheme(goodHybridFiles()), '--type'])
+    expect(code).toBe(2)
+    expect(err).toContain('--type needs a value')
+  })
+
+  it('reports an unexpected failure as a message with exit 2, not a throw', () => {
+    const dir = makeTheme({ ...goodClassicFiles(), templates: 'a regular file' })
+    const { code, err } = run([dir])
+    expect(code).toBe(2)
+    expect(err).not.toBe('')
+    expect(err).not.toContain('\n    at ')
   })
 })

@@ -32,25 +32,25 @@ Configure it in the theme's `package.json`:
 }
 ```
 
-Always ignored: `vendor/`, `node_modules/`, `dist/`, and `*-generated.*` files. A rule that crashes is reported as an `INTERNAL` warning and the other rules still run.
+Rule overrides accept `off`, `info`, `warn` or `error`; anything else (or a wrongly shaped `ignore`/`rules`) is a usage error with exit code 2. Always ignored: `vendor/`, `node_modules/`, `dist/`, and `*-generated.*` files. A rule that crashes is reported as an `INTERNAL` warning and the other rules still run.
 
 ### Rules
 
-| Id        | Applies to      | Check                                                                              | Default         |
-| --------- | --------------- | ---------------------------------------------------------------------------------- | --------------- |
-| THEME-001 | all             | `style.css` has Theme Name, Version, License, License URI, Text Domain             | error           |
-| THEME-002 | all             | `style.css` has Tested up to, Requires at least, Requires PHP, Description, Author | warning         |
-| THEME-003 | all             | `screenshot.png` exists and is 1200×900                                            | error / warning |
-| THEME-004 | classic, hybrid | `index.php` exists                                                                 | error           |
-| THEME-005 | all             | `readme.txt` exists                                                                | warning         |
-| THEME-006 | block, hybrid   | `templates/index.html` and a valid `theme.json` with `$schema` and `version`       | error           |
-| THEME-007 | block, hybrid   | pattern headers have Title and a Slug namespaced to the text domain                | warning         |
-| THEME-008 | all             | gettext calls use the declared text domain                                         | warning         |
-| THEME-009 | all             | top-level functions, classes and constants are prefixed or namespaced              | warning         |
-| THEME-010 | all             | no `register_post_type`, `register_taxonomy` or `add_shortcode`                    | warning         |
-| THEME-011 | all             | no remote scripts or styles                                                        | warning         |
-| THEME-012 | all             | no `eval()` / `create_function()` (error); `base64_decode()` (warning)             | error / warning |
-| THEME-013 | classic, hybrid | `wp_head()` and `wp_footer()` are called                                           | error           |
+| Id        | Applies to      | Check                                                                                                                                            | Default         |
+| --------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- |
+| THEME-001 | all             | `style.css` has Theme Name, Version, License, License URI, Text Domain                                                                           | error           |
+| THEME-002 | all             | `style.css` has Tested up to, Requires at least, Requires PHP, Description, Author                                                               | warning         |
+| THEME-003 | all             | a `screenshot.{png,jpg,jpeg,gif,webp,avif}` exists; a PNG is checked for 1200×900                                                                | error / warning |
+| THEME-004 | classic, hybrid | `index.php` exists                                                                                                                               | error           |
+| THEME-005 | all             | `readme.txt` exists                                                                                                                              | warning         |
+| THEME-006 | block, hybrid   | `templates/index.html` and a valid `theme.json` with `version` (a missing `$schema` is a warning); in hybrid themes only once either file exists | error           |
+| THEME-007 | block, hybrid   | pattern headers have Title and a Slug namespaced to the text domain                                                                              | warning         |
+| THEME-008 | all             | gettext calls use the declared text domain                                                                                                       | warning         |
+| THEME-009 | all             | top-level functions, classes and constants are prefixed or namespaced                                                                            | warning         |
+| THEME-010 | all             | no `register_post_type`, `register_taxonomy` or `add_shortcode`                                                                                  | warning         |
+| THEME-011 | all             | no remote scripts or styles                                                                                                                      | warning         |
+| THEME-012 | all             | no `eval()` / `create_function()` (error); `base64_decode()` (warning)                                                                           | error / warning |
+| THEME-013 | classic, hybrid | `wp_head()` and `wp_footer()` are called                                                                                                         | error           |
 
 Output escaping is left to PHPCS, which checks it properly. Heuristic rules are warnings, so only `--strict` fails on them.
 

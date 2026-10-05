@@ -38,7 +38,12 @@ export function runCli(argv: string[], io: Io): number {
     } else if (arg.startsWith('--type=')) {
       typeArg = arg.slice('--type='.length)
     } else if (arg === '--type') {
-      typeArg = argv[++i]
+      const value = argv[++i]
+      if (value === undefined) {
+        io.err(`--type needs a value (block, classic or hybrid)\n\n${USAGE}`)
+        return 2
+      }
+      typeArg = value
     } else if (arg.startsWith('-')) {
       io.err(`Unknown option: ${arg}\n\n${USAGE}`)
       return 2
@@ -60,10 +65,7 @@ export function runCli(argv: string[], io: Io): number {
     io.out(json ? JSON.stringify(report, null, 2) : formatReport(report))
     return exitCodeFor(report, strict)
   } catch (error) {
-    if (error instanceof ReviewError) {
-      io.err(error.message)
-      return 2
-    }
-    throw error
+    io.err(error instanceof Error ? error.message : String(error))
+    return 2
   }
 }

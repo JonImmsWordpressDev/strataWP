@@ -26,7 +26,7 @@ globs: style.css, theme.json, templates/**/*, parts/**/*, patterns/**/*, **/*.ph
 | --------- | ---------------------------------------------------------------------------------- | --------------- |
 | THEME-001 | `style.css` has Theme Name, Version, License, License URI, Text Domain             | error           |
 | THEME-002 | `style.css` has Tested up to, Requires at least, Requires PHP, Description, Author | warning         |
-| THEME-003 | `screenshot.png` exists and is 1200×900                                            | error / warning |
+| THEME-003 | a `screenshot.{png,jpg,jpeg,gif,webp,avif}` exists; a PNG is checked for 1200×900  | error / warning |
 | THEME-004 | `index.php` exists (classic, hybrid)                                               | error           |
 | THEME-005 | `readme.txt` exists                                                                | warning         |
 | THEME-006 | `templates/index.html` and a valid `theme.json` (block, hybrid)                    | error           |

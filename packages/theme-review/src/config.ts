@@ -27,14 +27,17 @@ export function readConfig(themeDir: string): ReviewConfig {
 
   let pkg: any
   try {
-    pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
+    pkg = JSON.parse(readFileSync(pkgPath, 'utf8').replace(/^\uFEFF/, ''))
   } catch {
     throw new ReviewError(`package.json in ${themeDir} is not valid JSON`)
   }
 
   const stratawp = pkg?.stratawp
-  if (!stratawp || typeof stratawp !== 'object') {
+  if (stratawp === undefined || stratawp === null) {
     return config
+  }
+  if (typeof stratawp !== 'object' || Array.isArray(stratawp)) {
+    throw new ReviewError('stratawp in package.json must be an object')
   }
 
   if (stratawp.themeType !== undefined) {
@@ -47,21 +50,36 @@ export function readConfig(themeDir: string): ReviewConfig {
   }
 
   const review = stratawp.review
-  if (review && typeof review === 'object') {
-    if (Array.isArray(review.ignore)) {
-      config.ignore = review.ignore.filter(
-        (glob: unknown): glob is string => typeof glob === 'string'
+  if (review === undefined || review === null) {
+    return config
+  }
+  if (typeof review !== 'object' || Array.isArray(review)) {
+    throw new ReviewError('stratawp.review must be an object')
+  }
+
+  if (review.ignore !== undefined) {
+    if (
+      !Array.isArray(review.ignore) ||
+      !review.ignore.every((g: unknown) => typeof g === 'string')
+    ) {
+      throw new ReviewError('stratawp.review.ignore must be an array of strings')
+    }
+    config.ignore = review.ignore
+  }
+
+  if (review.rules !== undefined) {
+    if (typeof review.rules !== 'object' || review.rules === null || Array.isArray(review.rules)) {
+      throw new ReviewError(
+        'stratawp.review.rules must be an object whose values are off, info, warn or error'
       )
     }
-    if (review.rules && typeof review.rules === 'object') {
-      for (const [id, value] of Object.entries(review.rules)) {
-        if (typeof value !== 'string' || !OVERRIDES.includes(value)) {
-          throw new ReviewError(
-            `Invalid severity "${String(value)}" for rule ${id} in package.json stratawp.review.rules (expected off, info, warn or error)`
-          )
-        }
-        config.rules[id] = value === 'warn' ? 'warning' : (value as SeverityOverride)
+    for (const [id, value] of Object.entries(review.rules)) {
+      if (typeof value !== 'string' || !OVERRIDES.includes(value)) {
+        throw new ReviewError(
+          `Invalid severity "${String(value)}" for rule ${id} in package.json stratawp.review.rules (expected off, info, warn or error)`
+        )
       }
+      config.rules[id] = value === 'warn' ? 'warning' : (value as SeverityOverride)
     }
   }
 

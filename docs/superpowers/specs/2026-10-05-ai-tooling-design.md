@@ -62,10 +62,10 @@ Dependency-light (Node built-ins; at most one small glob dependency). Published,
 | --- | --- | --- | --- |
 | THEME-001 | all | `style.css` has Theme Name, Version, License, License URI, Text Domain | error |
 | THEME-002 | all | `style.css` also has Tested up to, Requires at least, Requires PHP, Description, Author | warning |
-| THEME-003 | all | `screenshot.png` exists; is 1200×900 (PNG header read, no dependency) | error if missing; warning if other size |
+| THEME-003 | all | a `screenshot.{png,jpg,jpeg,gif,webp,avif}` exists; a PNG is 1200×900 (PNG header read, no dependency) | error if missing; warning if a PNG has another size |
 | THEME-004 | classic, hybrid | `index.php` exists | error |
 | THEME-005 | all | `readme.txt` exists | warning |
-| THEME-006 | block, hybrid | `templates/index.html` exists; `theme.json` has `$schema` and `version` | error |
+| THEME-006 | block, hybrid | `templates/index.html` exists; `theme.json` has `version` (missing `$schema` is a warning). Hybrid themes are only checked once `templates/index.html` or `theme.json` exists | error |
 | THEME-007 | block, hybrid | pattern files have Title and Slug headers; slug namespace equals the text domain | warning |
 | THEME-008 | all | gettext calls use the declared text domain | warning |
 | THEME-009 | all | top-level PHP functions, classes and constants are prefixed or namespaced | warning |

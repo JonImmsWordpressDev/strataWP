@@ -57,6 +57,23 @@ describe('THEME-008 text domain', () => {
   })
 })
 
+describe('THEME-009 performance', () => {
+  it('reviews a 20,000 line HTML-heavy PHP file quickly', () => {
+    const html = '<div class="x">\n  <p>text</p>\n</div>\n'.repeat(6667)
+    const files = withFile('inc/big.php', html)
+    const start = performance.now()
+    runRule(THEME_009, files)
+    expect(performance.now() - start).toBeLessThan(2000)
+  })
+
+  it('does not let a namespace declaration be matched across blank lines', () => {
+    const files = withFile('inc/a.php', php(`\n\n\nfunction other_thing() {}`))
+    expect(messages(runRule(THEME_009, files))).toContain(
+      'Function "other_thing" is not prefixed with "fixture_theme_"'
+    )
+  })
+})
+
 describe('THEME-009 prefixing', () => {
   it('passes on a good theme', () => {
     expect(runRule(THEME_009, goodHybridFiles())).toEqual([])
@@ -220,6 +237,19 @@ describe('THEME-012 risky functions', () => {
     const results = runRule(THEME_012, files)
     expect(results).toHaveLength(2)
     expect(results.every((r) => r.severity === 'error')).toBe(true)
+  })
+
+  it('ignores eval( inside heredoc and nowdoc bodies but still flags real calls after them', () => {
+    const clean = withFile(
+      'inc/a.php',
+      php(
+        `$js = <<<JS\nwindow.x = eval("1+1");\nJS;\n$n = <<<'EOT'\nit's text\nEOT;\n$a = 'never call eval( here';`
+      )
+    )
+    expect(runRule(THEME_012, clean)).toEqual([])
+
+    const real = withFile('inc/a.php', php(`$js = <<<JS\nx\nJS;\neval( '1' );`))
+    expect(runRule(THEME_012, real)).toHaveLength(1)
   })
 
   it('reports base64_decode() as a warning', () => {

@@ -21,8 +21,17 @@ describe('parseStyleHeader', () => {
     expect(parseStyleHeader(css)).toEqual({ 'theme name': 'A', 'license uri': 'https://x.test/l' })
   })
 
-  it('only reads the first comment block', () => {
-    expect(parseStyleHeader('/* Theme Name: A */\n/* Version: 9 */')).toEqual({ 'theme name': 'A' })
+  it('reads headers from the first 8 KB, past a leading comment', () => {
+    const css = '/*! normalize.css */\n/*\nTheme Name: A\nVersion: 2\n*/'
+    expect(parseStyleHeader(css)).toEqual({ 'theme name': 'A', version: '2' })
+  })
+
+  it('ignores headers beyond the first 8 KB', () => {
+    expect(parseStyleHeader(' '.repeat(9000) + '\nTheme Name: A')).toEqual({})
+  })
+
+  it('strips a closing comment marker on a one-line header', () => {
+    expect(parseStyleHeader('/* Theme Name: A */')).toEqual({ 'theme name': 'A' })
   })
 
   it('returns an empty object when there is no comment', () => {

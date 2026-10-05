@@ -48,4 +48,27 @@ describe('readConfig', () => {
   it('reports malformed package.json as a ReviewError', () => {
     expect(() => readConfig(makeTheme({ 'package.json': '{nope' }))).toThrow(ReviewError)
   })
+
+  it.each([
+    [{ review: { ignore: 'vendor/**' } }, /stratawp\.review\.ignore must be an array of strings/],
+    [{ review: { ignore: ['a', 1] } }, /stratawp\.review\.ignore must be an array of strings/],
+    [{ review: { rules: ['THEME-001'] } }, /stratawp\.review\.rules must be an object/],
+    [{ review: { rules: 'off' } }, /stratawp\.review\.rules must be an object/],
+    [{ review: 'yes' }, /stratawp\.review must be an object/],
+    [{ themeType: 3 }, /stratawp\.themeType/],
+  ])('rejects wrong shapes: %j', (stratawp, message) => {
+    const dir = makeTheme({ 'package.json': pkg(stratawp) })
+    expect(() => readConfig(dir)).toThrow(ReviewError)
+    expect(() => readConfig(dir)).toThrow(message)
+  })
+
+  it('rejects a non-object stratawp field', () => {
+    const dir = makeTheme({ 'package.json': pkg('nope') })
+    expect(() => readConfig(dir)).toThrow(/stratawp in package.json must be an object/)
+  })
+
+  it('reads a package.json with a leading BOM', () => {
+    const dir = makeTheme({ 'package.json': '\uFEFF' + pkg({ themeType: 'block' }) })
+    expect(readConfig(dir).themeType).toBe('block')
+  })
 })

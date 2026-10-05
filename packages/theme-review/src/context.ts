@@ -25,16 +25,32 @@ function walk(root: string, rel = ''): string[] {
   return out.sort()
 }
 
-/** Parses the first comment block of style.css into lowercase-keyed fields. */
+const STYLE_HEADERS = [
+  'Theme Name',
+  'Version',
+  'License',
+  'License URI',
+  'Text Domain',
+  'Tested up to',
+  'Requires at least',
+  'Requires PHP',
+  'Description',
+  'Author',
+]
+
+/**
+ * Reads the theme headers from the first 8 KB of style.css into lowercase-keyed fields, one
+ * regex per header (the way WordPress does), so a leading comment such as `/*! normalize.css *\/`
+ * does not hide the real header block.
+ */
 export function parseStyleHeader(css: string): Record<string, string> {
   const header: Record<string, string> = {}
-  const block = /\/\*([\s\S]*?)\*\//.exec(css)
-  if (!block) return header
+  const head = css.slice(0, 8192)
 
-  for (const raw of (block[1] ?? '').split(/\r?\n/)) {
-    const line = raw.replace(/^\s*\*?\s*/, '')
-    const match = /^([A-Za-z][A-Za-z0-9 _-]*?)\s*:\s*(.+?)\s*$/.exec(line)
-    if (match) header[(match[1] as string).toLowerCase()] = match[2] as string
+  for (const name of STYLE_HEADERS) {
+    const match = new RegExp(`^[ \\t/*#@]*${name}:(.*)$`, 'im').exec(head)
+    const value = (match?.[1] ?? '').replace(/\s*\*\/\s*$/, '').trim()
+    if (value) header[name.toLowerCase()] = value
   }
   return header
 }

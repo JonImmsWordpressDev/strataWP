@@ -1,13 +1,30 @@
 const blank = (text: string): string => text.replace(/[^\n]/g, ' ')
 
 /**
+ * If a heredoc/nowdoc opener (`<<<LABEL`, `<<<'LABEL'`, `<<<"LABEL"`) starts at `i`, returns
+ * where the opener ends and where the body ends (the start of the closing label's line, or the
+ * end of input when it never closes).
+ */
+function heredocAt(code: string, i: number): { openerEnd: number; bodyEnd: number } | undefined {
+  if (code.charAt(i) !== '<' || code.charAt(i + 1) !== '<' || code.charAt(i + 2) !== '<') {
+    return undefined
+  }
+  const opener = /^<<<[ \t]*(['"]?)(\w+)\1/.exec(code.slice(i, i + 200))
+  if (!opener) return undefined
+  const openerEnd = i + opener[0].length
+  const closing = new RegExp(`\\n[ \\t]*${opener[2]}(?!\\w)`, 'g')
+  closing.lastIndex = openerEnd
+  const found = closing.exec(code)
+  return { openerEnd, bodyEnd: found ? found.index + 1 : code.length }
+}
+
+/**
  * Returns `source` with everything that is not PHP code replaced by spaces:
  * HTML outside `<?php`/`<?=` tags and all comments. Newlines are kept so line
  * numbers stay stable, and string literals are kept so callers can read them.
+ * Heredoc/nowdoc bodies are blanked too (the opener and closing label stay).
  *
- * Limitation: heredoc/nowdoc bodies and backtick strings are scanned as code,
- * so an odd apostrophe in heredoc prose can flip quote parity for the rest of
- * the file.
+ * Limitation: backtick strings are scanned as code.
  */
 export function phpOnly(source: string): string {
   let out = ''
@@ -66,6 +83,17 @@ export function phpOnly(source: string): string {
       continue
     }
 
+    if (c === '<') {
+      const heredoc = heredocAt(source, i)
+      if (heredoc) {
+        out +=
+          source.slice(i, heredoc.openerEnd) +
+          blank(source.slice(heredoc.openerEnd, heredoc.bodyEnd))
+        i = heredoc.bodyEnd
+        continue
+      }
+    }
+
     if (c === "'" || c === '"') {
       let j = i + 1
       while (j < n && source.charAt(j) !== c) {
@@ -97,6 +125,15 @@ export function stripStrings(code: string): string {
 
   while (i < n) {
     const c = code.charAt(i)
+    if (c === '<') {
+      const heredoc = heredocAt(code, i)
+      if (heredoc) {
+        out +=
+          code.slice(i, heredoc.openerEnd) + blank(code.slice(heredoc.openerEnd, heredoc.bodyEnd))
+        i = heredoc.bodyEnd
+        continue
+      }
+    }
     if (c !== "'" && c !== '"') {
       out += c
       i++

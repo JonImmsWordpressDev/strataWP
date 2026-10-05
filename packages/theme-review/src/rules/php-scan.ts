@@ -80,7 +80,7 @@ export const THEME_009: Rule = {
 
     for (const file of phpFiles(ctx)) {
       const code = codeOf(ctx, file)
-      if (/^\s*namespace\s+[\w\\]+\s*[;{]/m.test(stripStrings(code))) continue
+      if (/^[ \t]*namespace\s+[\w\\]+\s*[;{]/m.test(stripStrings(code))) continue
 
       for (const match of code.matchAll(/^function\s+&?\s*(\w+)\s*\(/gm)) {
         const name = match[1] as string
@@ -105,7 +105,7 @@ export const THEME_009: Rule = {
       }
 
       const constants = [
-        ...code.matchAll(/^\s*define\s*\(\s*['"](\w+)['"]/gm),
+        ...code.matchAll(/^[ \t]*define\s*\(\s*['"](\w+)['"]/gm),
         ...code.matchAll(/^const\s+(\w+)\s*=/gm),
       ]
       for (const match of constants) {

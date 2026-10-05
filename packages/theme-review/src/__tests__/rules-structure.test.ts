@@ -25,6 +25,13 @@ const REQUIRED = [
   'Text Domain: x',
 ]
 
+describe('THEME-001 leading comments', () => {
+  it('finds the header after a leading minified-library comment', () => {
+    const css = '/*! normalize.css v8 | MIT */\n' + HEADER(REQUIRED)
+    expect(runRule(THEME_001, { ...goodHybridFiles(), 'style.css': css })).toEqual([])
+  })
+})
+
 describe('THEME-001 required style.css headers', () => {
   it('passes on a good theme', () => {
     expect(runRule(THEME_001, goodHybridFiles())).toEqual([])
@@ -103,6 +110,19 @@ describe('THEME-003 screenshot', () => {
   })
 })
 
+describe('THEME-003 other screenshot formats', () => {
+  it.each(['jpg', 'jpeg', 'gif', 'webp', 'avif'])(
+    'accepts screenshot.%s without size checks',
+    (ext) => {
+      const files = {
+        ...without(goodHybridFiles(), 'screenshot.png'),
+        [`screenshot.${ext}`]: Buffer.from('not a png at all'),
+      }
+      expect(runRule(THEME_003, files)).toEqual([])
+    }
+  )
+})
+
 describe('THEME-004 index.php', () => {
   it('passes when index.php exists', () => {
     expect(runRule(THEME_004, goodClassicFiles())).toEqual([])
@@ -155,10 +175,30 @@ describe('THEME-006 block theme essentials', () => {
     expect(out).toEqual(['theme.json is not valid JSON'])
   })
 
-  it('errors when theme.json lacks $schema or version', () => {
-    const out = messages(runRule(THEME_006, { ...goodHybridFiles(), 'theme.json': '{}' }))
-    expect(out).toContain('theme.json is missing "$schema"')
-    expect(out).toContain('theme.json is missing "version"')
+  it('errors when theme.json lacks version and only warns about $schema', () => {
+    const results = runRule(THEME_006, { ...goodHybridFiles(), 'theme.json': '{}' })
+    const byMessage = Object.fromEntries(results.map((r) => [r.message, r.severity]))
+    expect(byMessage['theme.json is missing "$schema"']).toBe('warning')
+    expect(byMessage['theme.json is missing "version"']).toBeUndefined()
+    expect(Object.keys(byMessage)).toContain('theme.json is missing "version"')
+  })
+
+  it('does not require block files in a classic theme that only has a stray template', () => {
+    const files = { ...goodClassicFiles(), 'templates/modal.html': '<div></div>' }
+    expect(runRule(THEME_006, files, 'hybrid')).toEqual([])
+  })
+
+  it('still validates theme.json in a hybrid theme when it is present', () => {
+    const files = { ...goodClassicFiles(), 'theme.json': '{nope' }
+    expect(messages(runRule(THEME_006, files, 'hybrid'))).toContain('theme.json is not valid JSON')
+  })
+
+  it('reads theme.json with a leading BOM', () => {
+    const files = {
+      ...goodHybridFiles(),
+      'theme.json': '\uFEFF' + JSON.stringify({ $schema: 'x', version: 3 }),
+    }
+    expect(runRule(THEME_006, files)).toEqual([])
   })
 
   it.each([['null'], ['[]'], ['"text"'], ['42'], ['true']])(
