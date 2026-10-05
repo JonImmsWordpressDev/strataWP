@@ -90,6 +90,7 @@ describe('customizeTheme', () => {
       '@stratawp/vite-plugin',
       '@stratawp/stylelint-config',
       '@stratawp/testing',
+      '@stratawp/theme-review',
     ]
 
     it.each(GATE_PACKAGES)('pins %s from templateDependencies', async (name) => {
@@ -100,6 +101,13 @@ describe('customizeTheme', () => {
       expect(pkg.devDependencies[name]).toBe(cliPkg.templateDependencies[name])
       expect(pkg.devDependencies[name]).not.toMatch(/^workspace:/)
       expect(pkg.devDependencies[name]).not.toBe('latest')
+    })
+
+    it('scaffolded themes run the theme review cleanly (zero errors)', async () => {
+      const { reviewTheme } = await import('@stratawp/theme-review')
+      const report = reviewTheme(themePath)
+      expect(report.summary.errors).toBe(0)
+      expect(report.findings.length).toBeGreaterThan(0)
     })
   })
 

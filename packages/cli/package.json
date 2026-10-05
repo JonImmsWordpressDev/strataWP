@@ -93,6 +93,7 @@
   "templateDependencies": {
     "@stratawp/vite-plugin": "^0.3.0",
     "@stratawp/stylelint-config": "^0.1.0",
-    "@stratawp/testing": "^0.2.0"
+    "@stratawp/testing": "^0.2.0",
+    "@stratawp/theme-review": "^0.0.0"
   }
 }
