@@ -68,9 +68,87 @@ Override detection with `stratawp.themeType` in `package.json` (see above). `pnp
 
 - **Skill:** `.ai/skills/theme-review/SKILL.md` tells an agent how to run the checker, interpret findings, fix them and re-run. It is listed in `.ai/SKILLS.md`.
 - **CLI:** `stratawp theme:review [dir]` with `--json`, `--strict` and `--type <block|classic|hybrid>`.
+- **Visual skill:** `.ai/skills/visual-checks/SKILL.md` covers capture, compare and the baseline rules. Generated themes ship their own copy.
 - **MCP** (`@stratawp/mcp`, read-only):
   - `review_theme`: input `themeDir` (absolute path), optional `type` and `strict`. Output: `themeType`, `typeSource`, `passed`, `summary` (`errors`, `warnings`, `infos`), `findings` (each with `ruleId`, `severity`, `message`, optional `file` and `line`), and `disclaimer`. `passed` is false on errors, or on warnings when `strict` is true.
   - `detect_theme_type`: input `themeDir`. Output: `themeType` and `typeSource` (`detected` or `override`).
+  - `capture_screenshots`: see [Screenshots and visual checks](#screenshots-and-visual-checks).
+
+## Screenshots and visual checks
+
+`@stratawp/testing` ships two things: a capture command for looking at a theme, and an opt-in compare gate.
+
+### Capture
+
+```bash
+pnpm exec stratawp-screenshots capture
+pnpm exec stratawp-screenshots capture --routes=/,/blog --widths=1280,390 --out=shots --base-url=http://localhost:8888
+stratawp screenshots --routes=/,/blog     # same command, via the CLI
+```
+
+- Flags: `--routes` (site paths), `--widths` (pixels), `--out` (default `.stratawp/screenshots`), `--base-url`.
+- Routes are plain paths concatenated onto the base URL. Full URLs and `//host` are rejected.
+- Captures are viewport-sized PNGs (not full-page). Files are named `<route-slug>-<width>.png`; `/` becomes `home`.
+- It needs a running site and Chromium: `pnpm exec playwright install chromium`.
+- One failing route does not stop the others; failures are listed and the exit code is `1`.
+- A route that answers HTTP 404 still counts as a successful capture. The default routes include a 404 page on purpose.
+- When `--out` points outside the current directory, the printed path is relative (for example `../shots`).
+- `stratawp screenshots` runs the theme's own `stratawp-screenshots` bin through `pnpm exec`, so run it from a theme that has `@stratawp/testing` installed.
+
+Exit codes: `0` all captured, `1` a capture failed or the site or browser is unavailable, `2` usage or config problem.
+
+Defaults live in the theme's `package.json`:
+
+```json
+{
+  "stratawp": {
+    "screenshots": {
+      "routes": ["/", "/blog", "/this-page-does-not-exist-404/"],
+      "widths": [1280, 390]
+    }
+  }
+}
+```
+
+Precedence: the flag, then `package.json`, then the `WP_BASE_URL` environment variable (base URL only), then the built-in defaults (`/` and a 404 path; widths 1280 and 390; `http://localhost:8888`).
+
+### MCP tool
+
+`capture_screenshots` in `@stratawp/mcp` (read-only; it sends GET requests to the site and writes no files):
+
+- Input: `baseUrl` (required, http or https), optional `routes` (paths) and `widths`.
+- Output: image content for each screenshot, plus structured `captured` (`route`, `width`, `name`, `bytes`) and `failures` (`route`, `width`, `message`).
+- Caps: at most 6 images per call (routes x widths), at most 2 widths, viewport-sized captures. Over-limit input is an error result.
+- The site must already be running.
+
+### Compare (opt-in)
+
+`createVisualConfig({ testDir, baseURL?, maxDiffPixelRatio? })` from `@stratawp/testing/config` is a Playwright preset: Chromium only, `toHaveScreenshot`, `retries: 0`, one worker, and baselines at `<testDir>/__screenshots__/<spec file>/<name>.png`. `maxDiffPixelRatio` defaults to `0.01` and must be between 0 and 1. The example theme and all three templates ship a visual spec, `playwright.visual.config.ts` and a `test:visual` script.
+
+```bash
+pnpm test:visual
+```
+
+Baselines are recorded on the CI runner, never locally, because fonts and rendering differ between machines. Using the Visual workflow (`.github/workflows/visual.yml`, dispatch-only):
+
+1. In GitHub, open Actions, pick **Visual**, choose **Run workflow** with mode `record`.
+2. When it finishes, download the `visual-baselines` artifact.
+3. Commit its contents under `e2e/visual/__screenshots__/` in the theme.
+
+From then on, run the workflow with mode `compare` (or `pnpm test:visual` against a site rendered the same way) to fail on a diff. Things to know:
+
+- The Visual workflow can only be dispatched once `visual.yml` is on the default branch, so the first `record` run happens after the PR that adds it is merged.
+- With no baselines committed, the first `compare` run **fails**: a missing baseline is written and the test fails. Record first.
+- `--update-snapshots` (what record mode uses) rewrites only missing or changed baselines. Drift that stays within the tolerance is not refreshed.
+- `test:visual` and the workflows need Docker (wp-env) and are verified on CI only.
+
+### Smoke capture
+
+The `smoke.yml` job also runs one capture against wp-env (home and 404, desktop and mobile) and uploads the images as the `smoke-screenshots` artifact. It fails the job if capture breaks.
+
+### Why compare is opt-in
+
+Pixel diffs flake across machines: fonts, anti-aliasing and GPU rendering all shift results. A default blocking gate would fail for reasons unrelated to the change, so compare stays opt-in and baselines come from a single, fixed environment (the CI runner).
 
 ## CI
 

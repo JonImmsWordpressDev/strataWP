@@ -76,7 +76,7 @@ pnpm dev           # Start Vite dev server on port 3000
 - **packages/explorer**: Interactive component browser (Storybook-like)
 - **packages/sync**: Environment sync, snapshots, and rollback
 - **packages/stylelint-config**: Shared Stylelint preset (nesting, specificity, custom-property rules)
-- **packages/testing**: Vitest and Playwright testing utilities
+- **packages/testing**: Vitest and Playwright testing utilities, screenshots and visual compare
 - **packages/theme-review**: Theme review checks and theme-type detection (`pnpm review`)
 - **packages/headless**: REST API client, React hooks, Next.js utilities
 - **packages/create-stratawp**: Theme creation CLI (bundled templates)
@@ -247,6 +247,7 @@ Commands in `packages/cli/src/commands/`:
 - **sync.ts**: Database sync between environments (`stratawp sync:db:pull`, `sync:db:push`)
 - **rollback.ts**: Snapshot management (`stratawp rollback:list`, `rollback:diff`, `rollback:mark-stable`)
 - **update.ts**: Package updates (`stratawp update`, `stratawp update --check`)
+- **screenshots.ts**: Capture viewport screenshots of a running site (`stratawp screenshots`)
 
 Each command uses:
 
@@ -493,6 +494,9 @@ pnpm lint:css
 
 # Cross-browser smoke tests on wp-env (Chromium locally; all three engines in CI)
 pnpm test:smoke
+
+# Opt-in visual compare (Chromium). Baselines must be recorded on CI first; the first run without them fails
+pnpm test:visual
 ```
 
 ### Component Explorer
@@ -733,7 +737,7 @@ pnpm review      # Theme review (zero errors required on all StrataWP themes)
 pnpm mcp:docs    # Start the docs MCP server (search/read repo documentation over stdio)
 ```
 
-The docs MCP server (`scripts/mcp-docs-server.mjs`) is dependency-free and exposes `stratawp_docs_list`, `stratawp_docs_search`, and `stratawp_docs_read` tools. Register it in any MCP client with `{ "command": "node", "args": ["scripts/mcp-docs-server.mjs"] }`. It complements the `@stratawp/mcp` package (`packages/mcp`), which exposes the framework's generators and component catalog as MCP tools/resources.
+The docs MCP server (`scripts/mcp-docs-server.mjs`) is dependency-free and exposes `stratawp_docs_list`, `stratawp_docs_search`, and `stratawp_docs_read` tools. Register it in any MCP client with `{ "command": "node", "args": ["scripts/mcp-docs-server.mjs"] }`. It complements the `@stratawp/mcp` package (`packages/mcp`), which exposes the framework's generators and component catalog as MCP tools/resources, plus read-only `review_theme`, `detect_theme_type` and `capture_screenshots` tools.
 
 ### Contract-First Workflow
 

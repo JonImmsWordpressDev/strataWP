@@ -18,6 +18,7 @@ Specialized skills for AI agents working on this theme.
 ## ✅ Quality
 
 - [**Theme Review**](skills/theme-review/SKILL.md): Run `pnpm review` and fix findings against the WordPress.org guidelines.
+- [**Visual Checks**](skills/visual-checks/SKILL.md): Capture screenshots with `stratawp-screenshots` and run the opt-in `pnpm test:visual`.
 
 ## 📋 Planning
 

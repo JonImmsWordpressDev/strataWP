@@ -41,4 +41,4 @@ Before starting, check `.ai/agent-state.md` for your status:
 
 - [**Skill directory**](.ai/SKILLS.md) — recipes for this theme's architecture, blocks & patterns, deployment, and theme review.
 - **Project rules** (`.ai/PROJECT_RULES.md`) — the running log of learned conventions. Read it every session.
-- **StrataWP MCP** — if available, the `@stratawp/mcp` server exposes the framework's generators and component catalog to MCP-capable agents.
+- **StrataWP MCP** — if available, the `@stratawp/mcp` server exposes the framework's generators and component catalog to MCP-capable agents, and a read-only `capture_screenshots` tool that returns screenshots of the running site (see the [**Visual Checks skill**](.ai/skills/visual-checks/SKILL.md)).

@@ -107,6 +107,22 @@ Run E2E tests:
 pnpm test:e2e
 ```
 
+## Screenshots
+
+The package ships a capture command and an opt-in visual compare preset.
+
+- **Bin:** `stratawp-screenshots capture [--routes=/,/blog] [--widths=1280,390] [--out=dir] [--base-url=url]` takes viewport-sized PNGs of a running site (default output `.stratawp/screenshots/`). Defaults come from `package.json` `stratawp.screenshots`. It needs Chromium: `pnpm exec playwright install chromium`.
+- **`@stratawp/testing/screenshots`:** the capture core (`capturePages`, `resolveCaptureOptions`) used by the bin and by the `@stratawp/mcp` `capture_screenshots` tool. It returns image buffers and writes no files.
+- **`createVisualConfig`** (from `@stratawp/testing/config`): a Chromium-only Playwright preset using `toHaveScreenshot`, with baselines under `<testDir>/__screenshots__/`. Options: `testDir`, `baseURL?`, `maxDiffPixelRatio?` (default `0.01`). Record baselines on CI, not locally; with none committed the first compare run fails.
+
+```typescript
+import { createVisualConfig } from '@stratawp/testing/config'
+
+export default createVisualConfig({ testDir: './e2e/visual' })
+```
+
+See `docs/ai-tooling.md` in the StrataWP repository for the full workflow.
+
 ## Unit Testing
 
 ### WordPress Mocks
