@@ -1,0 +1,50 @@
+{
+  "name": "@stratawp/theme-review",
+  "version": "0.0.0",
+  "description": "Theme review checks for StrataWP themes, approximating the WordPress.org theme guidelines",
+  "author": "Jon Imms",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "keywords": [
+    "wordpress",
+    "theme",
+    "review",
+    "block-theme",
+    "stratawp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonImmsWordpressDev/StrataWP.git",
+    "directory": "packages/theme-review"
+  },
+  "bin": {
+    "stratawp-review": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}
