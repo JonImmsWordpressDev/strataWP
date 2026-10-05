@@ -31,6 +31,7 @@ Before starting, check `.ai/agent-state.md` for your status:
 ### 5. PRE-FLIGHT QUALITY CHECK
 
 - Run `pnpm ai:check` before submitting to ensure compliance with ESLint, Prettier, TypeScript, and the unit test suite. See the [**Code Quality skill**](.ai/skills/code-quality/SKILL.md).
+- If you changed an example theme or CLI template (templates, patterns, `style.css`, `theme.json`, PHP), run `pnpm review`: it must report zero errors. See the [**Theme Review skill**](.ai/skills/theme-review/SKILL.md).
 - Accessibility is enforced in CI (axe-core via Playwright, WCAG 2.1 A/AA). Run `pnpm test:e2e` against a running wp-env when your change affects rendered front-end output.
 
 ---
@@ -48,6 +49,7 @@ WordPress domain skills (block development, theme.json, REST API, WP-CLI, perfor
 
 ## Capabilities & Tooling
 
+- **Theme review (MCP):** the `@stratawp/mcp` server also exposes read-only `review_theme` and `detect_theme_type` tools backed by `@stratawp/theme-review`.
 - **Docs search (MCP):** Run `pnpm mcp:docs` to start the Model Context Protocol server that indexes and searches this repository's documentation (`CLAUDE.md`, `docs/`, `.ai/`, package READMEs).
 - **Scaffolding & catalog (MCP):** The `@stratawp/mcp` package (`packages/mcp`, bin `stratawp-mcp`) exposes the framework's generators and component catalog as MCP tools/resources.
 - **Verification:** Run `pnpm ai:check` for the combined lint, format, typecheck, and unit-test gate.

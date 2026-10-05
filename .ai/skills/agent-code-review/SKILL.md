@@ -27,7 +27,7 @@ Run `git status` and `git diff` and check every touched file:
 ## Step 3: Verification Evidence
 
 - [ ] `pnpm ai:check` executed and passing (paste the result summary, don't assert it).
-- [ ] Surface-specific suites run when applicable (`pnpm test:e2e` for rendered output, `pnpm test:perf` for loading behavior, `pnpm lint:php` for theme PHP).
+- [ ] Surface-specific suites run when applicable (`pnpm test:e2e` for rendered output, `pnpm test:perf` for loading behavior, `pnpm lint:php` for theme PHP, `pnpm review` for theme metadata, templates and patterns).
 - [ ] New behavior covered by a test that fails without the change.
 - [ ] If verification was skipped or impossible (e.g., no wp-env available), this is stated explicitly in the final report — never implied as done.
 

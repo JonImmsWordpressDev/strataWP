@@ -24,6 +24,7 @@ These skills define the core development workflow in StrataWP.
 ## 🧪 Workflow & Quality
 
 - [**Agent Self-Code Review**](skills/agent-code-review/SKILL.md): Mandatory self-review protocol before concluding tasks.
+- [**Theme Review**](skills/theme-review/SKILL.md): Run and extend the theme checker (`pnpm review`).
 - [**Onboarding Guide**](ONBOARDING.md): First-time setup protocol.
 
 ## 📚 WordPress Domain Skills (`.claude/skills/`)

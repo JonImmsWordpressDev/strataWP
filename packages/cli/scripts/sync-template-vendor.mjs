@@ -45,6 +45,7 @@ const templatePackages = {
   '@stratawp/vite-plugin': 'vite-plugin',
   '@stratawp/stylelint-config': 'stylelint-config',
   '@stratawp/testing': 'testing',
+  '@stratawp/theme-review': 'theme-review',
 }
 
 let changed = false

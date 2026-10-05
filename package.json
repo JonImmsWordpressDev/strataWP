@@ -21,6 +21,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:php": "node scripts/lint-php.mjs",
+    "review": "node scripts/review-themes.mjs",
     "lint:css": "stylelint --config stylelint.config.js \"examples/*/src/**/*.{css,scss}\" \"packages/cli/templates/*/src/**/*.{css,scss}\"",
     "test:e2e": "cd examples/basic-theme && pnpm exec playwright test --config playwright.a11y.config.ts",
     "test:smoke": "cd examples/basic-theme && pnpm exec playwright test --config playwright.smoke.config.ts",
@@ -37,7 +38,7 @@
     "contracts:validate": "node scripts/validate-contracts.mjs",
     "contracts:types:check": "node scripts/check-types-drift.mjs",
     "ai:setup": "node scripts/ai-setup.mjs",
-    "ai:check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test",
+    "ai:check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm review",
     "mcp:docs": "node scripts/mcp-docs-server.mjs"
   },
   "devDependencies": {

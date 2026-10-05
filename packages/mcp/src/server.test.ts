@@ -67,10 +67,12 @@ async function tempDir(): Promise<string> {
 }
 
 describe('@stratawp/mcp server tools', () => {
-  it('exposes exactly the four scaffold_* tools, each with an inputSchema', async () => {
+  it('exposes the scaffold_* and theme review tools, each with an inputSchema', async () => {
     const { tools } = await client.listTools()
     const names = tools.map((t) => t.name).sort()
     expect(names).toEqual([
+      'detect_theme_type',
+      'review_theme',
       'scaffold_block',
       'scaffold_component',
       'scaffold_part',
@@ -374,5 +376,60 @@ describe('@stratawp/mcp built bin stdout hygiene', () => {
       }
       expect(parsed).toBeTruthy()
     }
+  })
+})
+
+describe('@stratawp/mcp theme review tools', () => {
+  it('review_theme returns a structured report with zero errors for the basic-theme example', async () => {
+    const result = await client.callTool({
+      name: 'review_theme',
+      arguments: { themeDir: BASIC_THEME_DIR },
+    })
+    expect(result.isError).toBeFalsy()
+    const report = result.structuredContent as {
+      themeType: string
+      passed: boolean
+      summary: { errors: number }
+      findings: unknown[]
+      disclaimer: string
+    }
+    expect(report.summary.errors).toBe(0)
+    expect(report.passed).toBe(true)
+    expect(report.themeType).toBe('hybrid')
+    expect(Array.isArray(report.findings)).toBe(true)
+    expect(report.disclaimer).toContain('approximates')
+  })
+
+  it('review_theme with strict fails when warnings exist', async () => {
+    const result = await client.callTool({
+      name: 'review_theme',
+      arguments: { themeDir: BASIC_THEME_DIR, strict: true },
+    })
+    const report = result.structuredContent as { passed: boolean; summary: { warnings: number } }
+    expect(report.summary.warnings).toBeGreaterThan(0)
+    expect(report.passed).toBe(false)
+  })
+
+  it('review_theme returns an error result for a missing directory', async () => {
+    const result = await client.callTool({
+      name: 'review_theme',
+      arguments: { themeDir: '/definitely/not/a/theme' },
+    })
+    expect(result.isError).toBe(true)
+    const text = (result.content as Array<{ text: string }>)[0]?.text ?? ''
+    expect(text).toContain('Theme directory not found')
+  })
+
+  it('detect_theme_type reports the type and its source', async () => {
+    const result = await client.callTool({
+      name: 'detect_theme_type',
+      arguments: { themeDir: BASIC_THEME_DIR },
+    })
+    expect(result.structuredContent).toEqual({ themeType: 'hybrid', typeSource: 'detected' })
+  })
+
+  it('review_theme rejects a themeDir of the wrong type', async () => {
+    const result = await client.callTool({ name: 'review_theme', arguments: { themeDir: 42 } })
+    expect(result.isError).toBe(true)
   })
 })

@@ -37,6 +37,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm lint:css
+      - name: Theme review (zero errors on all StrataWP themes)
+        run: pnpm review
       - run: pnpm format:check
       - run: pnpm test
 

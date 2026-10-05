@@ -6,6 +6,9 @@
  * is the only place that touches the filesystem: it writes each file under the
  * caller-provided absolute `targetDir`.
  *
+ * The review tools (`review_theme`, `detect_theme_type`) are read-only wrappers over
+ * `@stratawp/theme-review`.
+ *
  * Tools never call process.exit and never write to stdout (the JSON-RPC
  * channel) — diagnostics, if any, go to stderr.
  */
@@ -19,6 +22,13 @@ import {
   generateTemplate,
   type GenerateResult,
 } from '@stratawp/cli/generators'
+import {
+  detectTheme,
+  exitCodeFor,
+  formatReport,
+  reviewTheme,
+  THEME_TYPES,
+} from '@stratawp/theme-review'
 import { z } from 'zod'
 
 /**
@@ -156,6 +166,98 @@ export function registerTools(server: McpServer): void {
     async ({ targetDir, name, type, markup, themeSlug }) => {
       const generated = generatePart({ name, type, markup, themeSlug })
       return writeAndReport(targetDir, generated)
+    }
+  )
+
+  const themeTypeSchema = z.enum([...THEME_TYPES] as [string, ...string[]])
+
+  server.registerTool(
+    'review_theme',
+    {
+      title: 'Review a theme against the WordPress.org theme guidelines',
+      description:
+        'Runs the StrataWP theme review (read-only) on a theme directory and returns structured findings. It approximates the WordPress.org theme guidelines with static checks and is not a certification. `passed` is false when there are errors, or warnings when `strict` is true.',
+      inputSchema: {
+        themeDir: z.string().describe('Absolute path to the theme directory to review'),
+        type: themeTypeSchema
+          .optional()
+          .describe('Override the detected theme type: block, classic or hybrid'),
+        strict: z.boolean().optional().describe('Treat warnings as failures in `passed`'),
+      },
+      outputSchema: {
+        themeType: themeTypeSchema,
+        typeSource: z.enum(['detected', 'override']),
+        passed: z.boolean(),
+        summary: z.object({ errors: z.number(), warnings: z.number(), infos: z.number() }),
+        findings: z.array(
+          z.object({
+            ruleId: z.string(),
+            severity: z.enum(['error', 'warning', 'info']),
+            message: z.string(),
+            file: z.string().optional(),
+            line: z.number().optional(),
+          })
+        ),
+        disclaimer: z.string(),
+      },
+    },
+    async ({ themeDir, type, strict }) => {
+      try {
+        const report = reviewTheme(themeDir, {
+          type: type as (typeof THEME_TYPES)[number] | undefined,
+        })
+        const passed = exitCodeFor(report, strict ?? false) === 0
+        return {
+          structuredContent: {
+            themeType: report.themeType,
+            typeSource: report.typeSource,
+            passed,
+            summary: report.summary,
+            findings: report.findings,
+            disclaimer: report.disclaimer,
+          },
+          content: [{ type: 'text' as const, text: formatReport(report) }],
+        }
+      } catch (error) {
+        return {
+          isError: true,
+          content: [
+            { type: 'text' as const, text: error instanceof Error ? error.message : String(error) },
+          ],
+        }
+      }
+    }
+  )
+
+  server.registerTool(
+    'detect_theme_type',
+    {
+      title: 'Detect whether a theme is block, classic, or hybrid',
+      description:
+        'Read-only. Classifies a theme directory as block, classic or hybrid (both block templates and PHP templates) and says whether the answer was detected or came from a stratawp.themeType override in package.json.',
+      inputSchema: {
+        themeDir: z.string().describe('Absolute path to the theme directory'),
+      },
+      outputSchema: {
+        themeType: themeTypeSchema,
+        typeSource: z.enum(['detected', 'override']),
+      },
+    },
+    async ({ themeDir }) => {
+      try {
+        const result = detectTheme(themeDir)
+        return {
+          structuredContent: { themeType: result.themeType, typeSource: result.typeSource },
+          content: [{ type: 'text' as const, text: `${result.themeType} (${result.typeSource})` }],
+        }
+      } catch (error) {
+        return {
+          isError: true,
+          content: [
+            { type: 'text' as const, text: error instanceof Error ? error.message : String(error) },
+          ],
+        }
+      }
     }
   )
 }

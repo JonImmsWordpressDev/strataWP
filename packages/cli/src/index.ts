@@ -6,6 +6,7 @@ import { componentCommand } from './commands/component'
 import { testCommand } from './commands/test'
 import { templateCommand } from './commands/template'
 import { partCommand } from './commands/part'
+import { themeReviewCommand } from './commands/theme-review'
 import { designSystemCommand } from './commands/design-system'
 import { startCommand as explorerStartCommand } from '@stratawp/explorer'
 import { setupCommand as deploySetupCommand } from './commands/deploy/setup'
@@ -78,6 +79,14 @@ program
   .option('-t, --type <type>', 'Part type (header|footer|sidebar|content|custom)', 'custom')
   .option('--markup <markup>', 'Markup style (html|php)', 'php')
   .action(partCommand)
+
+program
+  .command('theme:review [dir]')
+  .description('Review a theme against the WordPress.org theme guidelines (approximate)')
+  .option('--json', 'Print the report as JSON')
+  .option('--strict', 'Fail on warnings as well as errors')
+  .option('--type <type>', 'Override the detected theme type: block | classic | hybrid')
+  .action(themeReviewCommand)
 
 // Design system setup
 program

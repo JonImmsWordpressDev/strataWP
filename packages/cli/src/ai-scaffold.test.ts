@@ -27,6 +27,7 @@ const REQUIRED_FILES = [
   '.ai/skills/architecture/SKILL.md',
   '.ai/skills/gutenberg-blocks/SKILL.md',
   '.ai/skills/deployment/SKILL.md',
+  '.ai/skills/theme-review/SKILL.md',
   'scripts/ai-setup.mjs',
 ]
 

@@ -10,6 +10,7 @@ Before starting, check `.ai/agent-state.md` for your status:
 
 - **If Pending:** Follow [**The Onboarding Guide**](.ai/ONBOARDING.md) (run `pnpm ai:setup` once, read [**Developer Directions**](.ai/developer-directions.md), read/initialize [**Project Rules**](.ai/PROJECT_RULES.md), and mark state as Completed).
 - **If Completed:** Read [**Project Rules**](.ai/PROJECT_RULES.md) for learned theme conventions, keep it updated with new decisions, and proceed directly to the user's task. Do NOT re-run setup.
+- `.ai/agent-state.md` records this theme's **Theme type** (block, classic or hybrid), detected automatically by `pnpm ai:setup`. Review rules differ by type.
 
 ### 2. ARCHITECTURE & BUILD PIPELINE
 
@@ -31,12 +32,13 @@ Before starting, check `.ai/agent-state.md` for your status:
 ### 5. PRE-FLIGHT QUALITY CHECK
 
 - Run `pnpm ai:check` before submitting to confirm the theme builds cleanly.
+- Run `pnpm review` when you change `style.css`, `theme.json`, templates, patterns, or PHP. It must report zero errors; see the [**Theme Review skill**](.ai/skills/theme-review/SKILL.md).
 - If your change affects rendered output, verify it in the block editor and on the front end, and check for accessibility regressions (landmarks, focus, contrast, `aria-*`).
 
 ---
 
 ## Skills & Resources
 
-- [**Skill directory**](.ai/SKILLS.md) — recipes for this theme's architecture, blocks & patterns, and deployment.
+- [**Skill directory**](.ai/SKILLS.md) — recipes for this theme's architecture, blocks & patterns, deployment, and theme review.
 - **Project rules** (`.ai/PROJECT_RULES.md`) — the running log of learned conventions. Read it every session.
 - **StrataWP MCP** — if available, the `@stratawp/mcp` server exposes the framework's generators and component catalog to MCP-capable agents.
