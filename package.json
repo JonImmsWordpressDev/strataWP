@@ -21,6 +21,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:php": "node scripts/lint-php.mjs",
+    "review": "node scripts/review-themes.mjs",
     "lint:css": "stylelint --config stylelint.config.js \"examples/*/src/**/*.{css,scss}\" \"packages/cli/templates/*/src/**/*.{css,scss}\"",
     "test:e2e": "cd examples/basic-theme && pnpm exec playwright test --config playwright.a11y.config.ts",
     "test:smoke": "cd examples/basic-theme && pnpm exec playwright test --config playwright.smoke.config.ts",
