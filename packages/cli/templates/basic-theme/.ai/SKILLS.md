@@ -15,6 +15,10 @@ Specialized skills for AI agents working on this theme.
 
 - [**Deployment**](skills/deployment/SKILL.md): Deploying safely with the StrataWP CLI.
 
+## ✅ Quality
+
+- [**Theme Review**](skills/theme-review/SKILL.md): Run `pnpm review` and fix findings against the WordPress.org guidelines.
+
 ## 📋 Planning
 
 - [**Spec template**](plans/SPEC-TEMPLATE.md): Contract-first feature planning — copy it into `plans/` for any non-trivial feature.

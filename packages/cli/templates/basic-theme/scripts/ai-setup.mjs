@@ -8,7 +8,7 @@
 //   pnpm ai:setup --agents=claude,cursor
 //   pnpm ai:setup --force         # overwrite existing files
 
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createInterface } from 'node:readline/promises'
@@ -95,7 +95,9 @@ async function selectInteractive() {
   for (const n of NATIVE) console.log(`  — ${n.label}: ${n.note}, no setup needed`)
 
   const rl = createInterface({ input: process.stdin, output: process.stdout })
-  const answer = await rl.question('\nEnter numbers separated by commas (or press Enter to cancel): ')
+  const answer = await rl.question(
+    '\nEnter numbers separated by commas (or press Enter to cancel): '
+  )
   rl.close()
 
   const picks = answer
@@ -110,7 +112,9 @@ function writeAgentFile(key, force) {
   const agent = AGENTS[key]
   const target = resolve(root, agent.file)
   if (existsSync(target) && !force) {
-    console.log(`  • ${agent.label}: ${agent.file} already exists — skipped (use --force to overwrite)`)
+    console.log(
+      `  • ${agent.label}: ${agent.file} already exists — skipped (use --force to overwrite)`
+    )
     return
   }
   mkdirSync(dirname(target), { recursive: true })
@@ -118,7 +122,49 @@ function writeAgentFile(key, force) {
   console.log(`  ✓ ${agent.label}: wrote ${agent.file}`)
 }
 
+// Records the theme type (block, classic or hybrid) in .ai/agent-state.md so
+// agents know which review rules apply. Detection lives in
+// @stratawp/theme-review; without it this step is skipped.
+async function recordThemeType() {
+  const statePath = resolve(root, '.ai/agent-state.md')
+  if (!existsSync(statePath)) return
+
+  let detectTheme
+  try {
+    ;({ detectTheme } = await import('@stratawp/theme-review'))
+  } catch {
+    console.log(
+      '  • Theme type: @stratawp/theme-review is not installed — run `pnpm install` to enable detection'
+    )
+    return
+  }
+
+  let result
+  try {
+    result = detectTheme(root)
+  } catch (error) {
+    console.log(`  ! Theme type: ${error.message}`)
+    return
+  }
+
+  const line = `- **Theme type**: ${result.themeType} (${result.typeSource})`
+  const state = readFileSync(statePath, 'utf8')
+  const existing = /^- \*\*Theme type\*\*:.*$/m
+  const lastUpdated = /^(- \*\*Last Updated\*\*:.*)$/m
+
+  let next
+  if (existing.test(state)) next = state.replace(existing, line)
+  else if (lastUpdated.test(state)) next = state.replace(lastUpdated, `$1\n${line}`)
+  else next = `${state.trimEnd()}\n\n${line}\n`
+
+  if (next !== state) writeFileSync(statePath, next)
+  console.log(
+    `  ✓ Theme type: ${result.themeType} (${result.typeSource}) recorded in .ai/agent-state.md`
+  )
+}
+
 const opts = parseArgs(process.argv.slice(2))
+await recordThemeType()
 let selected = []
 if (opts.all) selected = Object.keys(AGENTS)
 else if (opts.agents.length) {
@@ -140,4 +186,6 @@ if (!selected.length) {
 
 console.log('')
 for (const key of selected) writeAgentFile(key, opts.force)
-console.log('\nDone. Agents should now read AGENTS.md and follow the onboarding protocol in .ai/ONBOARDING.md.')
+console.log(
+  '\nDone. Agents should now read AGENTS.md and follow the onboarding protocol in .ai/ONBOARDING.md.'
+)

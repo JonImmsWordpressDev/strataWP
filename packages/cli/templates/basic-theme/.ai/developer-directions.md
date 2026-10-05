@@ -7,6 +7,15 @@ This file is your dedicated space to define standing rules for all AI agents wor
 
 ---
 
+## ✅ Standing rules (prefilled, edit freely)
+
+- Run `pnpm ai:check` and `pnpm review` before finishing. `pnpm review` must report zero errors.
+- Keep the text domain equal to the theme slug in `style.css`, in every gettext call, and in pattern slug namespaces.
+- Do not add remote scripts or styles; bundle assets with the theme.
+- Read the **Theme type** line in `.ai/agent-state.md` before changing templates: block themes use `templates/*.html`, classic themes use PHP templates, hybrid themes use both.
+
+---
+
 ## 🎨 Design & Aesthetic Guidelines
 
 _Define the look and feel agents should maintain._
