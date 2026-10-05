@@ -7,6 +7,7 @@ import { testCommand } from './commands/test'
 import { templateCommand } from './commands/template'
 import { partCommand } from './commands/part'
 import { themeReviewCommand } from './commands/theme-review'
+import { screenshotsCommand } from './commands/screenshots'
 import { designSystemCommand } from './commands/design-system'
 import { startCommand as explorerStartCommand } from '@stratawp/explorer'
 import { setupCommand as deploySetupCommand } from './commands/deploy/setup'
@@ -87,6 +88,15 @@ program
   .option('--strict', 'Fail on warnings as well as errors')
   .option('--type <type>', 'Override the detected theme type: block | classic | hybrid')
   .action(themeReviewCommand)
+
+program
+  .command('screenshots')
+  .description('Capture viewport screenshots of a running site (home and 404 by default)')
+  .option('--routes <list>', 'Comma-separated site paths, e.g. /,/blog')
+  .option('--widths <list>', 'Comma-separated viewport widths, e.g. 1280,390')
+  .option('--out <dir>', 'Output directory (default .stratawp/screenshots)')
+  .option('--base-url <url>', 'Site URL (default WP_BASE_URL, then http://localhost:8888)')
+  .action(screenshotsCommand)
 
 // Design system setup
 program

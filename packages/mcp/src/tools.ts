@@ -9,6 +9,8 @@
  * The review tools (`review_theme`, `detect_theme_type`) are read-only wrappers over
  * `@stratawp/theme-review`.
  *
+ * The `capture_screenshots` tool drives headless Chromium over the given site and returns images in memory; it writes no files.
+ *
  * Tools never call process.exit and never write to stdout (the JSON-RPC
  * channel) — diagnostics, if any, go to stderr.
  */
@@ -29,6 +31,13 @@ import {
   reviewTheme,
   THEME_TYPES,
 } from '@stratawp/theme-review'
+import {
+  capturePages,
+  resolveCaptureOptions,
+  ScreenshotOptionsError,
+  type CaptureOptions,
+  type CaptureResult,
+} from '@stratawp/testing/screenshots'
 import { z } from 'zod'
 
 /**
@@ -70,10 +79,18 @@ async function writeAndReport(targetDir: string, generated: GenerateResult) {
 
 const targetDir = z.string().describe('Absolute path to the theme directory to write files into')
 
+export const MAX_SCREENSHOTS_PER_CALL = 6
+export const MAX_WIDTHS_PER_CALL = 2
+
+/** Test seam: lets tests replace the browser-backed capture. */
+export interface ToolDeps {
+  capturePages?: (options: CaptureOptions) => Promise<CaptureResult>
+}
+
 /**
- * Registers the four `scaffold_*` tools on the given server.
+ * Registers the scaffold, review and screenshot tools on the given server.
  */
-export function registerTools(server: McpServer): void {
+export function registerTools(server: McpServer, deps: ToolDeps = {}): void {
   server.registerTool(
     'scaffold_block',
     {
@@ -249,6 +266,108 @@ export function registerTools(server: McpServer): void {
         return {
           structuredContent: { themeType: result.themeType, typeSource: result.typeSource },
           content: [{ type: 'text' as const, text: `${result.themeType} (${result.typeSource})` }],
+        }
+      } catch (error) {
+        return {
+          isError: true,
+          content: [
+            { type: 'text' as const, text: error instanceof Error ? error.message : String(error) },
+          ],
+        }
+      }
+    }
+  )
+
+  server.registerTool(
+    'capture_screenshots',
+    {
+      title: 'Capture viewport screenshots of a running site',
+      description:
+        'Opens a running WordPress site in headless Chromium and returns viewport-sized PNG screenshots (not full-page) as image content. Read-only: it sends GET requests to the site and writes no files. Limits: at most 6 images per call (routes x widths) and at most 2 widths. Defaults: routes "/" and a 404 page; widths 1280 and 390. The site must already be running (for example wp-env on http://localhost:8888).',
+      inputSchema: {
+        baseUrl: z
+          .string()
+          .describe('Base URL of the running site, http or https, e.g. http://localhost:8888'),
+        routes: z
+          .array(z.string())
+          .optional()
+          .describe('Site paths that start with "/"; defaults to "/" and a 404 route'),
+        widths: z
+          .array(z.number().int())
+          .optional()
+          .describe('Viewport widths in pixels, at most 2; defaults to 1280 and 390'),
+      },
+      outputSchema: {
+        captured: z.array(
+          z.object({
+            route: z.string(),
+            width: z.number(),
+            name: z.string(),
+            bytes: z.number(),
+          })
+        ),
+        failures: z.array(z.object({ route: z.string(), width: z.number(), message: z.string() })),
+      },
+    },
+    async ({ baseUrl, routes, widths }) => {
+      try {
+        const options = resolveCaptureOptions({ baseUrl, routes, widths }, {})
+        if (options.widths.length > MAX_WIDTHS_PER_CALL) {
+          throw new ScreenshotOptionsError(
+            `at most ${MAX_WIDTHS_PER_CALL} widths per call (got ${options.widths.length})`
+          )
+        }
+        const total = options.routes.length * options.widths.length
+        if (total > MAX_SCREENSHOTS_PER_CALL) {
+          throw new ScreenshotOptionsError(
+            `at most ${MAX_SCREENSHOTS_PER_CALL} screenshots per call (got ${total}: ${options.routes.length} routes x ${options.widths.length} widths)`
+          )
+        }
+
+        const result = await (deps.capturePages ?? capturePages)(options)
+        const failureLines = result.failures.map(
+          (failure) => `FAILED ${failure.route} at ${failure.width}px: ${failure.message}`
+        )
+        if (result.shots.length === 0) {
+          return {
+            isError: true,
+            content: [
+              {
+                type: 'text' as const,
+                text: ['No screenshots were captured.', ...failureLines].join('\n'),
+              },
+            ],
+          }
+        }
+
+        const captured = result.shots.map(({ route, width, name, png }) => ({
+          route,
+          width,
+          name,
+          bytes: png.byteLength,
+        }))
+        return {
+          structuredContent: { captured, failures: result.failures },
+          content: [
+            {
+              type: 'text' as const,
+              text: [
+                `Captured ${captured.length} of ${total} screenshot(s) from ${options.baseUrl}.`,
+                ...failureLines,
+              ].join('\n'),
+            },
+            ...result.shots.flatMap((shot) => [
+              {
+                type: 'text' as const,
+                text: `${shot.name} (${shot.route} at ${shot.width}px)`,
+              },
+              {
+                type: 'image' as const,
+                data: Buffer.from(shot.png).toString('base64'),
+                mimeType: 'image/png',
+              },
+            ]),
+          ],
         }
       } catch (error) {
         return {

@@ -380,6 +380,9 @@ importers:
       '@stratawp/explorer':
         specifier: workspace:*
         version: link:../explorer
+      '@stratawp/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@stratawp/theme-review':
         specifier: workspace:*
         version: link:../theme-review
