@@ -129,14 +129,15 @@ Precedence: the flag, then `package.json`, then the `WP_BASE_URL` environment va
 pnpm test:visual
 ```
 
-Baselines are recorded on the CI runner, never locally, because fonts and rendering differ between machines. Using the Visual workflow (`.github/workflows/visual.yml`, dispatch-only):
+Baselines are recorded on the CI runner, never locally, because fonts and rendering differ between machines. Using the "Visual (record or compare baselines)" workflow (`.github/workflows/visual.yml`, dispatch-only):
 
-1. In GitHub, open Actions, pick **Visual**, choose **Run workflow** with mode `record`.
+1. In GitHub, open Actions, pick **Visual (record or compare baselines)**, choose **Run workflow** with mode `record`.
 2. When it finishes, download the `visual-baselines` artifact.
 3. Commit its contents under `e2e/visual/__screenshots__/` in the theme.
 
 From then on, run the workflow with mode `compare` (or `pnpm test:visual` against a site rendered the same way) to fail on a diff. Things to know:
 
+- Compare mode uploads the Playwright HTML report as the `playwright-visual-report` artifact (kept 7 days), which shows expected, actual and diff images for each failure.
 - The Visual workflow can only be dispatched once `visual.yml` is on the default branch, so the first `record` run happens after the PR that adds it is merged.
 - With no baselines committed, the first `compare` run **fails**: a missing baseline is written and the test fails. Record first.
 - `--update-snapshots` (what record mode uses) rewrites only missing or changed baselines. Drift that stays within the tolerance is not refreshed.

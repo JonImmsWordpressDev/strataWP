@@ -283,7 +283,7 @@ export function registerTools(server: McpServer, deps: ToolDeps = {}): void {
     {
       title: 'Capture viewport screenshots of a running site',
       description:
-        'Opens a running WordPress site in headless Chromium and returns viewport-sized PNG screenshots (not full-page) as image content. Read-only: it sends GET requests to the site and writes no files. Limits: at most 6 images per call (routes x widths) and at most 2 widths. Defaults: routes "/" and a 404 page; widths 1280 and 390. The site must already be running (for example wp-env on http://localhost:8888).',
+        'Opens a running WordPress site in headless Chromium and returns viewport-sized PNG screenshots (not full-page) as image content. Read-only: it sends GET requests to the site and writes no files. Limits: at most 6 images per call (routes x widths) and at most 2 widths. Defaults: routes "/" and a 404 page; widths 1280 and 390. The site must already be running (for example wp-env on http://localhost:8888). Any http(s) URL is accepted, not only localhost (including remote and LAN hosts); the site\'s own redirects are followed.',
       inputSchema: {
         baseUrl: z
           .string()

@@ -99,7 +99,7 @@ async function readPackageConfig(cwd: string) {
   }
   let pkg: unknown
   try {
-    pkg = JSON.parse(raw.replace(/^﻿/, ''))
+    pkg = JSON.parse(raw.replace(/^\uFEFF/, ''))
   } catch {
     throw new ScreenshotOptionsError('package.json is not valid JSON')
   }
@@ -133,6 +133,9 @@ export async function runScreenshotsCli(
       config
     )
     const outDir = resolve(io.cwd, flags.out ?? DEFAULT_OUT_DIR)
+
+    // Fail fast on an unusable --out before spending time on a capture run.
+    if (!deps.writeShots) await mkdir(outDir, { recursive: true })
 
     const result = await (deps.capture ?? capturePages)(options)
     if (result.shots.length > 0) {

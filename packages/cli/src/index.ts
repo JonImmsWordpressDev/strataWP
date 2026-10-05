@@ -96,7 +96,7 @@ program
   .option('--widths <list>', 'Comma-separated viewport widths, e.g. 1280,390')
   .option('--out <dir>', 'Output directory (default .stratawp/screenshots)')
   .option('--base-url <url>', 'Site URL (default WP_BASE_URL, then http://localhost:8888)')
-  .action(screenshotsCommand)
+  .action((options) => screenshotsCommand(options))
 
 // Design system setup
 program

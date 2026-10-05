@@ -20,7 +20,7 @@ Screenshots do two jobs. **Capture** produces PNGs you can look at. **Compare** 
 ## Compare
 
 - `pnpm test:visual` in a theme runs the visual spec against baselines under `e2e/visual/__screenshots__/`.
-- **Never record baselines locally.** Fonts and rendering differ between machines. Record on CI: Actions, workflow "Visual", mode `record`. Download the `visual-baselines` artifact and commit it under `e2e/visual/__screenshots__/`.
+- **Never record baselines locally.** Fonts and rendering differ between machines. Record on CI: Actions, workflow "Visual (record or compare baselines)", mode `record`. Download the `visual-baselines` artifact and commit it under `e2e/visual/__screenshots__/`.
 - The Visual workflow can only be dispatched once `visual.yml` is on the default branch.
 - With no baselines committed, the first `compare` run **fails** (a missing baseline is written and the test fails). Record first.
 - Mode `compare` fails on any diff beyond the tolerance. `--update-snapshots` (record mode) rewrites only missing or changed baselines; drift within tolerance is not refreshed.

@@ -32,13 +32,14 @@ pnpm exec stratawp-screenshots capture --routes=/,/blog --widths=1280,390 --base
 
 - `pnpm test:visual` runs `e2e/visual/` against baselines in `e2e/visual/__screenshots__/`.
 - **Never record baselines locally.** Fonts and rendering differ between machines. Record them on CI with a visual workflow in `record` mode, download the artifact and commit it under `e2e/visual/__screenshots__/`.
+- Generated themes do not ship a visual workflow, so run `pnpm test:visual` only after recording baselines from your own CI job (use the example theme's Visual workflow as a model).
 - With no baselines committed, the first compare run **fails** (a missing baseline is written and the test fails). Record first.
 - `--update-snapshots` rewrites only missing or changed baselines; drift within tolerance is not refreshed.
 - Tolerance is `maxDiffPixelRatio` in `createVisualConfig` (`playwright.visual.config.ts`).
 
 ## Hard rules
 
-- Do not commit `.stratawp/`.
+- Do not commit `.stratawp/`: add `.stratawp/` to your theme's .gitignore (generated themes do not ship one).
 - Do not hand-edit baselines.
 - Do not raise `maxDiffPixelRatio` to silence a failure without asking the maintainer.
 - Baselines are PNGs and are not for agents to read; look at fresh captures instead.

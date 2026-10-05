@@ -149,7 +149,21 @@ describe('runScreenshotsCli', () => {
     expect(await runScreenshotsCli(['capture'], io(), deps(oneShot))).toBe(2)
     expect(err.join('\n')).toMatch(/package\.json is not valid JSON/)
 
-    await writeFile(join(cwd, 'package.json'), '﻿{"name":"x"}')
+    await writeFile(join(cwd, 'package.json'), '\uFEFF{"name":"x"}')
     expect(await runScreenshotsCli(['capture', '--out=shots'], io(), deps(oneShot))).toBe(0)
+  })
+
+  it('exits 1 before capturing when --out is an existing file', async () => {
+    await writeFile(join(cwd, 'taken'), 'x')
+    let called = false
+    const code = await runScreenshotsCli(['capture', '--out=taken'], io(), {
+      capture: async () => {
+        called = true
+        return oneShot
+      },
+    })
+    expect(code).toBe(1)
+    expect(called).toBe(false)
+    expect(err.join('\n')).not.toBe('')
   })
 })

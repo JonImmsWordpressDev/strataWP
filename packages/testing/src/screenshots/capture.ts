@@ -43,8 +43,13 @@ export interface CaptureResult {
   failures: CaptureFailure[]
 }
 
+const ANSI_ESCAPE = new RegExp(String.fromCharCode(27) + '\\[[0-9;]*m', 'g')
+
+/** First non-empty line, colour codes removed: Playwright appends a multi-line call log. */
 function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error)
+  const raw = error instanceof Error ? error.message : String(error)
+  const lines = raw.replace(ANSI_ESCAPE, '').split('\n')
+  return lines.find((line) => line.trim() !== '')?.trim() ?? raw
 }
 
 export function viewportFor(width: number): { width: number; height: number } {
@@ -103,7 +108,9 @@ export async function capturePages(
           waitUntil: 'load',
           timeout: 30_000,
         })
-        await page.evaluate('document.fonts.ready.then(() => undefined)')
+        await page.evaluate(
+          'Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 5000))]).then(() => undefined)'
+        )
         const png = await page.screenshot({ type: 'png', fullPage: false })
         result.shots.push({ ...planned, png })
       } catch (error) {

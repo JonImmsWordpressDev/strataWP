@@ -2225,10 +2225,10 @@ pnpm test
 pnpm exec prettier --check .changeset/ai-tooling-visual.md docs/ai-tooling.md CLAUDE.md AGENTS.md .ai packages/testing/README.md docs/superpowers/specs/2026-10-05-ai-tooling-design.md
 for t in advanced store; do cmp packages/cli/templates/basic-theme/AGENTS.md packages/cli/templates/$t-theme/AGENTS.md; cmp packages/cli/templates/basic-theme/.ai/skills/visual-checks/SKILL.md packages/cli/templates/$t-theme/.ai/skills/visual-checks/SKILL.md; done
 git log --format=%B main..HEAD | grep -ciE 'co-authored|generated with'
-grep -rniE 'wprig' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.superpowers . | head
+# Confirm no external starter theme is named in changed files (the maintainer's list is in the project memory).
 ```
 
-Expected: every command passes; `pnpm review` shows 0 errors on all six themes; the `cmp` calls print nothing; the attribution count is `0`; the last grep prints nothing. `pnpm format:check` may flag only git-ignored `.superpowers` scratch files; run Prettier directly on the files you changed instead of treating that as a failure. `pnpm test:visual` and the capture step in `smoke.yml` and `visual.yml` can only be verified on CI (no Docker locally); say so.
+Expected: every command passes; `pnpm review` shows 0 errors on all six themes; the `cmp` calls print nothing; the attribution count is `0`; the name check finds nothing. `pnpm format:check` may flag only git-ignored `.superpowers` scratch files; run Prettier directly on the files you changed instead of treating that as a failure. `pnpm test:visual` and the capture step in `smoke.yml` and `visual.yml` can only be verified on CI (no Docker locally); say so.
 
 - [ ] **Step 7: Commit**
 

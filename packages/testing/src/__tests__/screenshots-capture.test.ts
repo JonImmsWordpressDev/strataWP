@@ -5,10 +5,11 @@ import type { BrowserLike } from '../screenshots/capture'
 
 const PNG = Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
 
-function fakeBrowser(options: { failOn?: string } = {}) {
+function fakeBrowser(options: { failOn?: string; failWith?: Error } = {}) {
   const log = {
     viewports: [] as Array<{ width: number; height: number }>,
     urls: [] as string[],
+    scripts: [] as string[],
     closed: { pages: 0, contexts: 0, browser: 0 },
   }
   const browser: BrowserLike = {
@@ -20,10 +21,11 @@ function fakeBrowser(options: { failOn?: string } = {}) {
             async goto(url) {
               log.urls.push(url)
               if (options.failOn && url.endsWith(options.failOn)) {
-                throw new Error('net::ERR_TIMED_OUT')
+                throw options.failWith ?? new Error('net::ERR_TIMED_OUT')
               }
             },
-            async evaluate() {
+            async evaluate(script) {
+              log.scripts.push(script)
               return undefined
             },
             async screenshot() {
@@ -139,5 +141,29 @@ describe('capturePages', () => {
         },
       })
     ).rejects.toThrow('Could not start Chromium')
+  })
+
+  it('bounds the font wait so a stalled font load cannot hang the capture', async () => {
+    const { browser, log } = fakeBrowser()
+    await capturePages(options, { launch: async () => browser, checkReachable: reachable })
+    expect(log.scripts.length).toBeGreaterThan(0)
+    for (const script of log.scripts) {
+      expect(script).toContain('Promise.race')
+      expect(script).toContain('setTimeout')
+    }
+  })
+
+  it('reports only the first line of a failure, without colour codes', async () => {
+    const failWith = new Error(
+      '\u001b[2mpage.goto:\u001b[22m Timeout 30000ms exceeded.\nCall log:\n  - navigating'
+    )
+    const { browser } = fakeBrowser({ failOn: '/blog/', failWith })
+    const result = await capturePages(
+      { ...options, routes: ['/blog/'], widths: [1280] },
+      { launch: async () => browser, checkReachable: reachable }
+    )
+    expect(result.failures).toEqual([
+      { route: '/blog/', width: 1280, message: 'page.goto: Timeout 30000ms exceeded.' },
+    ])
   })
 })
