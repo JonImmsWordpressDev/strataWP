@@ -84,6 +84,38 @@ export function phpOnly(source: string): string {
   return out
 }
 
+/**
+ * Takes already-sanitized code (see `phpOnly`) and blanks the body of every
+ * single- and double-quoted string, keeping the quotes and newlines. Lets
+ * callers match code constructs without hitting text inside strings. An
+ * unterminated string is blanked to the end of the input.
+ */
+export function stripStrings(code: string): string {
+  let out = ''
+  let i = 0
+  const n = code.length
+
+  while (i < n) {
+    const c = code.charAt(i)
+    if (c !== "'" && c !== '"') {
+      out += c
+      i++
+      continue
+    }
+    let j = i + 1
+    while (j < n && code.charAt(j) !== c) {
+      if (code.charAt(j) === '\\') j++
+      j++
+    }
+    const end = Math.min(j, n)
+    out += c + blank(code.slice(i + 1, end))
+    if (j < n) out += c
+    i = j + 1
+  }
+
+  return out
+}
+
 /** 1-based line number of `index` in `source`. */
 export function lineOf(source: string, index: number): number {
   return source.slice(0, index).split('\n').length

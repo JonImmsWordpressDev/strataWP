@@ -94,6 +94,16 @@ describe('THEME-009 prefixing', () => {
     expect(runRule(THEME_009, files)).toEqual([])
   })
 
+  it('does not skip a file whose multi-line string contains a namespace line', () => {
+    const files = withFile(
+      'inc/a.php',
+      php(`$t = 'intro\nnamespace Foo;\nend';\nfunction add_hints() {}`)
+    )
+    expect(messages(runRule(THEME_009, files))).toEqual([
+      'Function "add_hints" is not prefixed with "fixture_theme_"',
+    ])
+  })
+
   it('does not flag indented methods inside a prefixed class', () => {
     const files = withFile('inc/a.php', php(`class FixtureThemeThing {\n\tfunction run() {}\n}`))
     expect(runRule(THEME_009, files)).toEqual([])
@@ -129,6 +139,16 @@ describe('THEME-010 plugin territory', () => {
     expect(runRule(THEME_010, withFile('inc/a.php', php(`// register_post_type( 'x' );`)))).toEqual(
       []
     )
+  })
+
+  it('ignores register_post_type( inside a string but still flags a real call', () => {
+    const files = withFile(
+      'inc/a.php',
+      php(`$d = 'call register_post_type( now )';\nregister_post_type( 'x', array() );`)
+    )
+    const results = runRule(THEME_010, files)
+    expect(results).toHaveLength(1)
+    expect(results[0]?.line).toBe(3)
   })
 
   it('flags calls written directly after => (array value)', () => {
@@ -219,6 +239,23 @@ describe('THEME-012 risky functions', () => {
     const results = runRule(THEME_012, withFile('inc/a.php', php(`$c ? 1 :eval( 'x' );`)))
     expect(results).toHaveLength(1)
     expect(results[0]?.severity).toBe('error')
+  })
+
+  it('ignores eval( inside string literals but still flags a real call', () => {
+    const files = withFile(
+      'inc/a.php',
+      php(`$m = 'Never call eval( ) here'; echo "<script>eval( x )</script>";\neval( '1' );`)
+    )
+    const results = runRule(THEME_012, files)
+    expect(results).toHaveLength(1)
+    expect(results[0]?.severity).toBe('error')
+    expect(results[0]?.line).toBe(3)
+  })
+
+  it('does not flag base64_decode( inside a string', () => {
+    expect(
+      runRule(THEME_012, withFile('inc/a.php', php(`$m = 'use base64_decode( x )';`)))
+    ).toEqual([])
   })
 
   it('does not flag instance, nullsafe or static eval()', () => {

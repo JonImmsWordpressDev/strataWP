@@ -1,4 +1,4 @@
-import { extractCalls, lineOf, phpOnly } from '../php'
+import { extractCalls, lineOf, phpOnly, stripStrings } from '../php'
 import type { Rule, RuleResult, ThemeContext, ThemeType } from '../types'
 
 const ALL: ThemeType[] = ['block', 'classic', 'hybrid']
@@ -80,7 +80,7 @@ export const THEME_009: Rule = {
 
     for (const file of phpFiles(ctx)) {
       const code = codeOf(ctx, file)
-      if (/^\s*namespace\s+[\w\\]+\s*[;{]/m.test(code)) continue
+      if (/^\s*namespace\s+[\w\\]+\s*[;{]/m.test(stripStrings(code))) continue
 
       for (const match of code.matchAll(/^function\s+&?\s*(\w+)\s*\(/gm)) {
         const name = match[1] as string
@@ -133,7 +133,7 @@ export const THEME_010: Rule = {
     const re = /(?<![\w$])(?<!->)(?<!::)(register_post_type|register_taxonomy|add_shortcode)\s*\(/g
 
     for (const file of phpFiles(ctx)) {
-      const code = codeOf(ctx, file)
+      const code = stripStrings(codeOf(ctx, file))
       for (const match of code.matchAll(re)) {
         findings.push({
           message: `${match[1]}() is plugin territory; WordPress.org expects custom post types, taxonomies and shortcodes in a plugin`,
@@ -209,7 +209,7 @@ export const THEME_012: Rule = {
     const findings: RuleResult[] = []
 
     for (const file of phpFiles(ctx)) {
-      const code = codeOf(ctx, file)
+      const code = stripStrings(codeOf(ctx, file))
 
       for (const match of code.matchAll(/(?<![\w$])(?<!->)(?<!::)(eval|create_function)\s*\(/g)) {
         findings.push({

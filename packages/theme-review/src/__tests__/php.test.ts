@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractCalls, lineOf, phpOnly } from '../php'
+import { extractCalls, lineOf, phpOnly, stripStrings } from '../php'
 
 describe('phpOnly', () => {
   it('blanks HTML outside PHP tags, including apostrophes in text', () => {
@@ -95,5 +95,39 @@ describe('lineOf', () => {
     expect(lineOf('a\nb\nc', 0)).toBe(1)
     expect(lineOf('a\nb\nc', 2)).toBe(2)
     expect(lineOf('a\nb\nc', 4)).toBe(3)
+  })
+})
+
+describe('stripStrings', () => {
+  it('blanks the body of single-quoted strings', () => {
+    expect(stripStrings(`$m = 'Never call eval( ) here';`)).not.toContain('eval')
+  })
+
+  it('blanks the body of double-quoted strings', () => {
+    expect(stripStrings(`$m = "eval(" ;`)).not.toContain('eval')
+  })
+
+  it('treats an escaped quote as part of the same string', () => {
+    const out = stripStrings(`$m = 'it\\'s eval( x' ; foo();`)
+    expect(out).not.toContain('eval')
+    expect(out).toContain('foo();')
+  })
+
+  it('keeps the quotes and the call itself, blanking only the argument body', () => {
+    const out = stripStrings(`eval( 'x' );`)
+    expect(out).toContain('eval(')
+    expect(out).toBe(`eval( ' ' );`)
+  })
+
+  it('keeps newlines inside multi-line strings', () => {
+    const src = `$m = 'a\nb eval(\nc';\nfoo();`
+    const out = stripStrings(src)
+    expect(out.split('\n')).toHaveLength(src.split('\n').length)
+    expect(out).not.toContain('eval')
+  })
+
+  it('does not throw or hang on an unterminated string', () => {
+    expect(() => stripStrings(`$m = 'oops eval( `)).not.toThrow()
+    expect(stripStrings(`$m = "oops \\`)).toBeTypeOf('string')
   })
 })
