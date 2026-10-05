@@ -35,7 +35,14 @@
     "./config": {
       "types": "./dist/config.d.ts",
       "import": "./dist/config.js"
+    },
+    "./screenshots": {
+      "types": "./dist/screenshots.d.ts",
+      "import": "./dist/screenshots.js"
     }
+  },
+  "bin": {
+    "stratawp-screenshots": "./dist/screenshots-cli.js"
   },
   "files": [
     "dist",
