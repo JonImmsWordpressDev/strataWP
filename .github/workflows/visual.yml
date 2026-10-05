@@ -1,20 +1,26 @@
-name: Smoke (cross-browser)
+name: Visual (record or compare baselines)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'record writes baselines and uploads them as an artifact to commit; compare fails on any diff'
+        type: choice
+        options:
+          - record
+          - compare
+        default: compare
 
 permissions:
   contents: read
 
 concurrency:
-  group: smoke-${{ github.ref }}
+  group: visual-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  smoke:
-    name: Smoke Chromium + Firefox + WebKit (wp-env)
+  visual:
+    name: Visual ${{ inputs.mode }} (Chromium, wp-env)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,13 +46,12 @@ jobs:
       - name: Build the Vite plugin (theme build dependency)
         run: pnpm --filter @stratawp/vite-plugin build
 
-      - name: Build the testing package (smoke preset)
+      - name: Build the testing package (visual preset)
         run: pnpm --filter @stratawp/testing build
 
       - name: Prepare example theme (copy core into vendor, build assets)
         working-directory: examples/basic-theme
         env:
-          # Copy the path-repo core into vendor/ so it resolves in the container.
           COMPOSER_MIRROR_PATH_REPOS: '1'
         run: |
           composer install --no-interaction --no-progress
@@ -61,34 +66,37 @@ jobs:
           pnpm exec wp-env run cli wp rewrite structure '/%postname%/' --hard
           pnpm exec wp-env run cli wp rewrite flush --hard
 
-      - name: Install Playwright browsers
+      - name: Install Playwright browser
         working-directory: examples/basic-theme
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Wait for WordPress to be ready
         run: node scripts/wait-for-http.mjs http://localhost:8888/ 120000
 
-      - name: Run smoke tests on all three engines
+      - name: Record baselines
+        if: ${{ inputs.mode == 'record' }}
         working-directory: examples/basic-theme
-        run: pnpm exec playwright test --config playwright.smoke.config.ts
+        run: pnpm exec playwright test --config playwright.visual.config.ts --update-snapshots
 
-      - name: Capture screenshots (home and 404, desktop and mobile)
-        working-directory: examples/basic-theme
-        run: node ../../packages/testing/dist/screenshots-cli.js capture --out .stratawp/screenshots
-
-      - name: Upload screenshots
-        if: ${{ !cancelled() }}
+      - name: Upload recorded baselines (download, commit under e2e/visual/__screenshots__)
+        if: ${{ inputs.mode == 'record' }}
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-screenshots
-          path: examples/basic-theme/.stratawp/screenshots
-          retention-days: 7
-          if-no-files-found: ignore
+          name: visual-baselines
+          path: examples/basic-theme/e2e/visual/__screenshots__
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Compare against the committed baselines
+        if: ${{ inputs.mode == 'compare' }}
+        working-directory: examples/basic-theme
+        run: pnpm exec playwright test --config playwright.visual.config.ts
 
       - name: Upload Playwright report
-        if: ${{ !cancelled() }}
+        if: ${{ inputs.mode == 'compare' && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-smoke-report
+          name: playwright-visual-report
           path: examples/basic-theme/playwright-report
           retention-days: 7
+          if-no-files-found: ignore
