@@ -129,13 +129,18 @@ export const THEME_006: Rule = {
       return findings
     }
 
-    let json: Record<string, unknown>
+    let parsed: unknown
     try {
-      json = JSON.parse(text) as Record<string, unknown>
+      parsed = JSON.parse(text)
     } catch {
       findings.push({ message: 'theme.json is not valid JSON', file: 'theme.json' })
       return findings
     }
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      findings.push({ message: 'theme.json must be a JSON object', file: 'theme.json' })
+      return findings
+    }
+    const json = parsed as Record<string, unknown>
 
     if (json['$schema'] === undefined) {
       findings.push({ message: 'theme.json is missing "$schema"', file: 'theme.json' })
@@ -157,8 +162,11 @@ export const THEME_007: Rule = {
     const patterns = ctx.files.filter((file) => /^patterns\/[^/]+\.php$/.test(file))
 
     for (const file of patterns) {
-      const head = (ctx.read(file) ?? '').slice(0, 4096)
-      const block = /\/\*\*?([\s\S]*?)\*\//.exec(head)?.[1] ?? ''
+      const head = (ctx.read(file) ?? '').slice(0, 8192)
+      // Every comment in the scanned window, including a trailing unterminated one, and the
+      // first that declares a Title or Slug is the header (a licence block may come first).
+      const comments = head.match(/\/\*[\s\S]*?(?:\*\/|$)/g) ?? []
+      const block = comments.find((c) => /^\s*\*?\s*(?:Title|Slug):/im.test(c)) ?? ''
       const title = /^\s*\*?\s*Title:\s*(.+)$/im.exec(block)
       const slug = /^\s*\*?\s*Slug:\s*(\S+)/im.exec(block)?.[1]
 

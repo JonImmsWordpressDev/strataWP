@@ -161,6 +161,22 @@ describe('THEME-006 block theme essentials', () => {
     expect(out).toContain('theme.json is missing "version"')
   })
 
+  it.each([['null'], ['[]'], ['"text"'], ['42'], ['true']])(
+    'errors without throwing when theme.json is %s',
+    (raw) => {
+      const files = { ...goodHybridFiles(), 'theme.json': raw }
+      expect(messages(runRule(THEME_006, files))).toEqual(['theme.json must be a JSON object'])
+    }
+  )
+
+  it('counts version 0 as present', () => {
+    const files = {
+      ...goodHybridFiles(),
+      'theme.json': JSON.stringify({ $schema: 'x', version: 0 }),
+    }
+    expect(runRule(THEME_006, files)).toEqual([])
+  })
+
   it('does not apply to classic themes', () => {
     expect(THEME_006.appliesTo).not.toContain('classic')
   })
@@ -200,6 +216,21 @@ describe('THEME-007 patterns', () => {
     expect(messages(runRule(THEME_007, files))).toEqual([
       'patterns/a.php: slug "plain" should be namespaced like "fixture-theme/name"',
     ])
+  })
+
+  it('finds the header after a preceding license comment', () => {
+    const body = `<?php\n/**\n * Copyright notice, all rights reserved.\n */\n/**\n * Title: A\n * Slug: fixture-theme/a\n */\n?>\n<p>x</p>\n`
+    expect(runRule(THEME_007, { ...goodHybridFiles(), 'patterns/a.php': body })).toEqual([])
+  })
+
+  it('finds Title and Slug when a long Description pushes the comment end past 4096 chars', () => {
+    const body = pattern(['Title: A', 'Slug: fixture-theme/a', `Description: ${'x'.repeat(5000)}`])
+    expect(runRule(THEME_007, { ...goodHybridFiles(), 'patterns/a.php': body })).toEqual([])
+  })
+
+  it('finds Title and Slug in a header cut off by the 8192 character limit', () => {
+    const body = pattern(['Title: A', 'Slug: fixture-theme/a', `Description: ${'x'.repeat(9000)}`])
+    expect(runRule(THEME_007, { ...goodHybridFiles(), 'patterns/a.php': body })).toEqual([])
   })
 
   it('ignores patterns in subfolders', () => {
