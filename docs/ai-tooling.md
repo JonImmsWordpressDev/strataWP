@@ -16,7 +16,7 @@ pnpm exec stratawp-review --json     # machine-readable report
 pnpm exec stratawp-review --strict   # fail on warnings too
 ```
 
-Every StrataWP theme currently reports 0 errors and 0 warnings. A generated theme starts that way: the scaffolder keeps the 1200x900 `screenshot.png` and the `readme.txt` (short description equal to the `style.css` Description) in step with the name and description you chose.
+Every StrataWP theme currently reports 0 errors and 0 warnings. A generated theme starts that way: it ships a 1200x900 `screenshot.png` and a `readme.txt` whose short description equals the `style.css` Description. The scaffolder updates the name, description and author in `style.css` and `readme.txt`; replace `screenshot.png` with your own 1200x900 image.
 
 Exit codes: `0` pass, `1` errors (or warnings with `--strict`), `2` usage or file problem.
 

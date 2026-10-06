@@ -13,7 +13,7 @@ The portfolio, team, testimonial and case-study content types are registered by 
 ### Frost Design System Integration
 
 - Built on WP Engine's Frost theme foundation
-- 52+ professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
+- 50 professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
 - Light and dark mode variants
 - Responsive design system with fluid typography
 - Comprehensive block styling
@@ -58,7 +58,7 @@ The portfolio, team, testimonial and case-study content types are registered by 
 - Header (references header patterns)
 - Footer (references footer patterns)
 
-### Patterns (52)
+### Patterns (50)
 
 All patterns from Frost theme, adapted for StrataWP:
 
@@ -166,7 +166,7 @@ advanced-theme/
 ├── parts/                  # Template parts (HTML)
 │   ├── header.html         # References header pattern
 │   └── footer.html         # References footer pattern
-├── patterns/               # Reusable patterns (52 PHP files)
+├── patterns/               # Reusable patterns ((50 PHP files))
 │   ├── header-*.php
 │   ├── footer-*.php
 │   ├── hero-*.php

@@ -49,19 +49,21 @@ Scaffold a full theme with one command, edit PHP/SCSS/TypeScript and see changes
 
 Make sure the following are installed before you begin.
 
-| Requirement                       | Version       | Notes                                                                                   |
-| --------------------------------- | ------------- | --------------------------------------------------------------------------------------- |
-| **Node.js**                       | 18 or higher  | `engines` requires `node >=18.18`.                                                      |
-| **pnpm**                          | 8 or higher   | Recommended package manager (`npm` also works).                                         |
-| **PHP**                           | 8.1 or higher |                                                                                         |
-| **WordPress**                     | 6.7 or higher |                                                                                         |
-| **A local WordPress environment** | —             | [Local by Flywheel](https://localwp.com/), [MAMP](https://www.mamp.info/), Docker, etc. |
+| Requirement                       | Version         | Notes                                                                                   |
+| --------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| **Node.js**                       | 18.18 or higher | `engines` requires `node >=18.18`.                                                      |
+| **pnpm**                          | 8 or higher     | Recommended package manager (`npm` also works).                                         |
+| **PHP**                           | 8.1 or higher   |                                                                                         |
+| **WordPress**                     | 6.7 or higher   | What StrataWP is developed against.                                                     |
+| **A local WordPress environment** | —               | [Local by Flywheel](https://localwp.com/), [MAMP](https://www.mamp.info/), Docker, etc. |
 
 Install pnpm if you don't have it:
 
 ```bash
 npm install -g pnpm
 ```
+
+> **Note:** The generated themes' `style.css` headers currently declare `Requires at least: 6.0` and `Tested up to: 6.4`. Update them to match the WordPress version you target for your own site.
 
 > **Tip:** For the best experience, use VS Code with the ESLint, Prettier, PHP Intelephense, and TypeScript/JavaScript language extensions.
 
@@ -174,15 +176,11 @@ Each command creates the files in the right folders and, for blocks, registers t
 | `pnpm review`   | A theme review that approximates the WordPress.org theme guidelines. Errors fail it; warnings are advice. |
 | `pnpm lint:css` | Stylelint rules for nesting depth, specificity and custom-property names.                                 |
 | `pnpm ai:check` | Builds the theme and runs the review, the same gate AI agents use.                                        |
-| `pnpm test:e2e` | Cross-browser smoke tests against your running site (see below).                                          |
+| `pnpm test:e2e` | Cross-browser smoke tests against your running site (see the commands below).                             |
 
 `pnpm review` is a helper, not a certification: passing it does not guarantee that WordPress.org accepts your theme.
 
-Every StrataWP theme (the three examples and the three templates) currently reports **0 errors and 0 warnings** in the review, and `pnpm review` in this repository is expected to stay that way. A theme you generate starts clean too: it ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`, and `create-stratawp` keeps both in step with the name and description you chose.
-
-### Advanced template: the companion plugin
-
-The Advanced theme does not register content types itself, because the WordPress.org guidelines reserve `register_post_type` and `register_taxonomy` for plugins. Its portfolio, team, testimonial and case-study types live in the `strata-advanced-content` plugin. `create-stratawp` offers to copy it into your linked site; the theme works without it, those content types are just absent. To install it by hand, copy the folder into `wp-content/plugins/` and activate it: from this repository it is `plugins/strata-advanced-content`, and for `npx` users it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
+Every StrataWP theme (the three examples and the three templates) currently reports **0 errors and 0 warnings** in the review, and `pnpm review` in this repository is expected to stay that way. A theme you generate starts clean too: it ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. `create-stratawp` updates the name, description and author in `style.css` and `readme.txt`; replace `screenshot.png` with your own 1200x900 image.
 
 To run the smoke tests against your local site, install the test browser once, then point the tests at your site's address:
 
@@ -190,6 +188,10 @@ To run the smoke tests against your local site, install the test browser once, t
 pnpm exec playwright install chromium
 WP_BASE_URL=http://my-site.local pnpm test:e2e
 ```
+
+### Advanced template: the companion plugin
+
+The Advanced theme does not register content types itself, because the WordPress.org guidelines reserve `register_post_type` and `register_taxonomy` for plugins. Its portfolio, team, testimonial and case-study types live in the `strata-advanced-content` plugin. `create-stratawp` offers to copy it into your linked site; the theme works without it, those content types are just absent. To install it by hand, copy the folder into `wp-content/plugins/` and activate it: from this repository it is `plugins/strata-advanced-content`, and for `npx` users it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
 
 ### Take screenshots of your theme
 
@@ -314,7 +316,7 @@ my-theme/
 │   └── main.ts       # Entry point
 ├── templates/        # FSE templates (*.html)
 ├── functions.php     # Theme entry point
-├── readme.txt        # WordPress.org-style readme (kept in step with style.css)
+├── readme.txt        # WordPress.org-style readme (name and description updated by the scaffolder)
 ├── screenshot.png    # 1200x900 theme screenshot
 ├── style.css         # Theme metadata
 ├── theme.json        # FSE configuration

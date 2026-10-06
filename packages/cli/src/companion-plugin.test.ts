@@ -227,18 +227,26 @@ describe('setupCompanionPlugin (create.ts wiring)', () => {
     expect(install).toHaveBeenCalledWith(expect.objectContaining({ wpRoot: undefined }))
   })
 
-  it('writes nothing and never asks when linking produced no site', async () => {
+  it('writes nothing and never asks when linking was skipped or failed', async () => {
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'companion-wiring-'))
     try {
+      // A real install exists on disk and a real bundle is available; linking just returned no path.
+      const plugins = path.join(tmp, 'wp', 'wp-content', 'plugins')
+      const bundle = path.join(tmp, 'bundle')
+      await fs.ensureDir(plugins)
+      await fs.outputFile(path.join(bundle, 'strata-advanced-content.php'), '<?php // plugin')
       const ask = vi.fn(async () => true)
+      const copy = vi.fn(async () => {})
       const out = await setupCompanionPlugin({
         templateName: 'advanced-theme',
         link: async () => undefined,
         confirm: ask,
+        install: (options) => installCompanionPlugin({ ...options, bundledDir: bundle, copy }),
       })
       expect(out.installed).toBe(false)
       expect(ask).not.toHaveBeenCalled()
-      expect(await fs.readdir(tmp)).toEqual([])
+      expect(copy).not.toHaveBeenCalled()
+      expect(await fs.readdir(plugins)).toEqual([])
     } finally {
       await fs.remove(tmp)
     }

@@ -6,7 +6,7 @@ A professional Block Theme (FSE) showcasing the StrataWP framework with modern d
 
 ### Design System Integration
 
-- 52+ professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
+- 50 professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
 - Light and dark mode variants
 - Responsive design system with fluid typography
 - Comprehensive block styling
@@ -51,7 +51,7 @@ A professional Block Theme (FSE) showcasing the StrataWP framework with modern d
 - Header (references header patterns)
 - Footer (references footer patterns)
 
-### Patterns (52)
+### Patterns (50)
 
 Included block patterns:
 
@@ -159,7 +159,7 @@ basic-theme/
 ├── parts/                  # Template parts (HTML)
 │   ├── header.html         # References header pattern
 │   └── footer.html         # References footer pattern
-├── patterns/               # Reusable patterns (52 PHP files)
+├── patterns/               # Reusable patterns ((50 PHP files))
 │   ├── header-*.php
 │   ├── footer-*.php
 │   ├── hero-*.php

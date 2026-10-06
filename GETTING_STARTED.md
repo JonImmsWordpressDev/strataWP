@@ -21,11 +21,13 @@ Before you start, make sure you have:
 
 ### Required
 
-- **Node.js** 18 or higher
+- **Node.js** 18.18 or higher
 - **pnpm** (recommended) or npm
 - **PHP** 8.1 or higher
-- **WordPress** 6.7 or higher
+- **WordPress** 6.7 or higher (what StrataWP is developed against)
 - **Local WordPress development environment** (Local by Flywheel, MAMP, Docker, etc.)
+
+Note: the generated themes' `style.css` headers currently declare `Requires at least: 6.0` and `Tested up to: 6.4`. Update them to match the WordPress version you target for your own site.
 
 ### Recommended
 
@@ -467,7 +469,7 @@ pnpm lint:css         # Stylelint: nesting depth, specificity, custom-property n
 pnpm review           # Theme review (approximates the WordPress.org guidelines)
 pnpm ai:check         # Build, then review (the gate AI agents run)
 
-# Browser tests (need a running site; see "Check your theme before you ship it")
+# Browser tests (need a running site; see [Checking Your Theme](#checking-your-theme))
 pnpm test:e2e         # Cross-browser smoke tests
 pnpm test:visual      # Opt-in screenshot comparison against recorded baselines
 ```
@@ -658,7 +660,7 @@ WP_BASE_URL=http://my-site.local pnpm test:e2e
 Two files in your theme folder are part of what WordPress shows about your theme, and the review checks both:
 
 - `screenshot.png` is the image under Appearance, Themes. It must be 1200x900 pixels (the size WordPress.org expects, so it stays sharp on high-density screens). Generated themes ship one at that size; replace it with a real screenshot of your design, at the same size.
-- `readme.txt` is the WordPress.org-style readme. Its short description should match the `Description` in `style.css`. `create-stratawp` fills in both from the name and description you gave the wizard.
+- `readme.txt` is the WordPress.org-style readme. Its short description should match the `Description` in `style.css`. `create-stratawp` updates the name, description and author in `style.css` and `readme.txt`; it does not touch `screenshot.png`, so replace it with your own 1200x900 image.
 
 To capture the pages of your running site (home and a 404 page at desktop and phone widths by default):
 
