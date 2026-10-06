@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/JonImmsWordpressDev/StrataWP
  * Description:       Portfolio, team, testimonial and case-study content types for the StrataWP Advanced theme.
  * Version:           1.0.0
- * Requires at least: 6.5
+ * Requires at least: 6.7
  * Requires PHP:      8.1
  * Author:            Jon Imms
  * License:           GPL-3.0-or-later

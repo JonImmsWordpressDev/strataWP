@@ -27,7 +27,7 @@ Before you start, make sure you have:
 - **WordPress** 6.7 or higher (what StrataWP is developed against)
 - **Local WordPress development environment** (Local by Flywheel, MAMP, Docker, etc.)
 
-Note: the generated themes' `style.css` headers currently declare `Requires at least: 6.0` and `Tested up to: 6.4`. Update them to match the WordPress version you target for your own site.
+Note: the generated themes' `style.css` headers declare `Requires at least: 6.7` and `Tested up to: 7.1`. Adjust `Tested up to` to the WordPress version you have actually tested against.
 
 ### Recommended
 

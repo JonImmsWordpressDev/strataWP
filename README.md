@@ -63,7 +63,7 @@ Install pnpm if you don't have it:
 npm install -g pnpm
 ```
 
-> **Note:** The generated themes' `style.css` headers currently declare `Requires at least: 6.0` and `Tested up to: 6.4`. Update them to match the WordPress version you target for your own site.
+> **Note:** The generated themes' `style.css` headers declare `Requires at least: 6.7` and `Tested up to: 7.1`. Adjust `Tested up to` to the WordPress version you have actually tested against.
 
 > **Tip:** For the best experience, use VS Code with the ESLint, Prettier, PHP Intelephense, and TypeScript/JavaScript language extensions.
 
