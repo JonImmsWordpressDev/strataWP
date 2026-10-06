@@ -24,9 +24,9 @@ use StrataWP\Components\Assets;
 use StrataWP\Components\Blocks;
 use StrataWP\Components\Performance;
 use StrataWP\Components\Fonts;
-use StrataBasic\Components\Navigation;
-use StrataBasic\Components\Customizer;
-use StrataBasic\Components\WooCommerceIntegration;
+use StrataStore\Components\Navigation;
+use StrataStore\Components\Customizer;
+use StrataStore\Components\WooCommerceIntegration;
 
 /**
  * Initialize the theme

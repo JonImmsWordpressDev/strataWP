@@ -24,11 +24,11 @@ use StrataWP\Components\Assets;
 use StrataWP\Components\Blocks;
 use StrataWP\Components\Performance;
 use StrataWP\Components\Fonts;
-use StrataBasic\Components\Navigation;
-use StrataBasic\Components\Customizer;
-use StrataBasic\Components\CustomPostTypes;
-use StrataBasic\Components\AdvancedLayouts;
-use StrataBasic\Components\MetaBoxes;
+use StrataAdvanced\Components\Navigation;
+use StrataAdvanced\Components\Customizer;
+use StrataAdvanced\Components\CustomPostTypes;
+use StrataAdvanced\Components\AdvancedLayouts;
+use StrataAdvanced\Components\MetaBoxes;
 
 /**
  * Initialize the theme

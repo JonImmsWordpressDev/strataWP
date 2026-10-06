@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: List of posts in one column.
- * Slug: strata-basic/posts
+ * Slug: strata-store/posts
  * Categories: posts
  * Block Types: core/query
  */

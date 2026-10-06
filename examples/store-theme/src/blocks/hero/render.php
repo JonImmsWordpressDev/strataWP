@@ -2,7 +2,7 @@
 /**
  * Hero Block Render
  *
- * @package StrataBasic
+ * @package StrataStore
  * @var array $attributes Block attributes
  */
 

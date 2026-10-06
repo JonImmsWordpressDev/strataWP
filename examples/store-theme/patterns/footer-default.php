@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: Footer with text, links.
- * Slug: strata-basic/footer-default
+ * Slug: strata-store/footer-default
  * Categories: footer
  * Block Types: core/template-part/footer
  */
@@ -14,7 +14,7 @@
 		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Your Company LLC · <a href="#">Contact Us</a></p>
 		<!-- /wp:paragraph -->
 		<!-- wp:paragraph -->
-		<p><a href="#"><?php echo esc_html__( 'Facebook', 'frost' ); ?></a> · <a href="#"><?php echo esc_html__( 'LinkedIn', 'frost' ); ?></a> · <a href="#"><?php echo esc_html__( 'Instagram', 'frost' ); ?></a></p>
+		<p><a href="#"><?php echo esc_html__( 'Facebook', 'strata-store' ); ?></a> · <a href="#"><?php echo esc_html__( 'LinkedIn', 'strata-store' ); ?></a> · <a href="#"><?php echo esc_html__( 'Instagram', 'strata-store' ); ?></a></p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->

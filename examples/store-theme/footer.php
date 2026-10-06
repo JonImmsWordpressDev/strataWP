@@ -2,7 +2,7 @@
 /**
  * Footer template
  *
- * @package StrataBasic
+ * @package StrataStore
  */
 ?>
 

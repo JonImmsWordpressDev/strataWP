@@ -7,7 +7,7 @@
  * @package StrataAdvanced
  */
 
-namespace StrataBasic\Components;
+namespace StrataAdvanced\Components;
 
 use StrataWP\ComponentInterface;
 
