@@ -1,6 +1,6 @@
 {
   "name": "@stratawp/mcp",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "description": "StrataWP MCP server — exposes the framework's generators and component catalog to AI agents",
   "license": "GPL-3.0-or-later",

@@ -1,5 +1,12 @@
 # @stratawp/mcp
 
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [0a5b59c]
+  - @stratawp/cli@2.4.0
+
 ## 0.1.7
 
 ### Patch Changes
