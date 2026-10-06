@@ -299,6 +299,10 @@ Edit `functions.php` to customize:
 - Related products for upselling
 - Sale badges and countdown timers
 
+## Quality
+
+This theme currently reports **0 errors and 0 warnings** in the StrataWP theme review (`pnpm review`), and that is expected to stay true. It ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. The review approximates the WordPress.org theme guidelines; it is not a certification.
+
 ## Requirements
 
 - PHP 8.1+

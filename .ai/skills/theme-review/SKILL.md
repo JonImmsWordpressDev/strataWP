@@ -10,8 +10,9 @@ globs: packages/theme-review/**/*, packages/cli/templates/**/*, examples/**/*
 ## Running it
 
 - `pnpm build` first (the root script runs the built `packages/theme-review/dist/cli.js`).
-- `pnpm review` reviews all six themes (3 examples, 3 CLI templates). It must report **zero errors**; CI blocks on it. Warnings do not fail.
+- `pnpm review` reviews all six themes (3 examples, 3 CLI templates). Every theme currently reports **zero errors and zero warnings**, and that is expected to stay true. CI blocks on errors only, so a new warning will not fail the build: treat it as a regression and fix it.
 - One theme: `node packages/theme-review/dist/cli.js examples/basic-theme --json`.
+- The advanced theme does not register content types (THEME-010); they live in the `plugins/strata-advanced-content` companion plugin.
 - Template files are byte-identical across the three templates for agent files; when you change a theme file, check the example twin with `cmp`.
 
 ## Changing a rule

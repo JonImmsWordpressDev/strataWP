@@ -16,6 +16,8 @@ pnpm exec stratawp-review --json     # machine-readable report
 pnpm exec stratawp-review --strict   # fail on warnings too
 ```
 
+Every StrataWP theme currently reports 0 errors and 0 warnings. A generated theme starts that way: the scaffolder keeps the 1200x900 `screenshot.png` and the `readme.txt` (short description equal to the `style.css` Description) in step with the name and description you chose.
+
 Exit codes: `0` pass, `1` errors (or warnings with `--strict`), `2` usage or file problem.
 
 Configure it in the theme's `package.json`:
@@ -51,6 +53,8 @@ Rule overrides accept `off`, `info`, `warn` or `error`; anything else (or a wron
 | THEME-011 | all             | no remote scripts or styles                                                                                                                      | warning         |
 | THEME-012 | all             | no `eval()` / `create_function()` (error); `base64_decode()` (warning)                                                                           | error / warning |
 | THEME-013 | classic, hybrid | `wp_head()` and `wp_footer()` are called                                                                                                         | error           |
+
+THEME-010 is why the Advanced theme ships no content types of its own: they live in the `strata-advanced-content` companion plugin (`plugins/strata-advanced-content`, bundled with `@stratawp/cli` and offered by `create-stratawp`). A theme that genuinely needs content types should do the same.
 
 Output escaping is left to PHPCS, which checks it properly. Heuristic rules are warnings, so only `--strict` fails on them.
 
@@ -153,4 +157,4 @@ Pixel diffs flake across machines: fonts, anti-aliasing and GPU rendering all sh
 
 ## CI
 
-The `js` job in `.github/workflows/ci.yml` runs `pnpm review` after the build. It is blocking: any error on any of the six themes fails the job. Warnings do not fail it.
+The `js` job in `.github/workflows/ci.yml` runs `pnpm review` after the build. It is blocking: any error on any of the six themes fails the job. Warnings do not fail it, but every theme (the three examples and the three templates) currently reports 0 errors and 0 warnings and `pnpm review` is expected to stay that way, so treat a new warning as a regression.

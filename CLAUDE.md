@@ -80,6 +80,8 @@ pnpm dev           # Start Vite dev server on port 3000
 - **packages/theme-review**: Theme review checks and theme-type detection (`pnpm review`)
 - **packages/headless**: REST API client, React hooks, Next.js utilities
 - **packages/create-stratawp**: Theme creation CLI (bundled templates)
+- **packages/mcp**: MCP server exposing generators, the component catalog and read-only review and screenshot tools
+- **plugins/strata-advanced-content**: Companion plugin that registers the advanced theme's portfolio, team, testimonial and case-study content types (themes must not register content types; the review's THEME-010 flags it). A byte-identical copy is bundled at `packages/cli/templates/plugins/strata-advanced-content`, and `create-stratawp` offers to copy it into a linked WordPress site. Edit the `plugins/` copy and mirror it to the bundled one (a test enforces they match)
 - **examples/**: Production-ready theme examples (basic, advanced, store)
 
 ### PHP Component Architecture
@@ -247,7 +249,8 @@ Commands in `packages/cli/src/commands/`:
 - **sync.ts**: Database sync between environments (`stratawp sync:db:pull`, `sync:db:push`)
 - **rollback.ts**: Snapshot management (`stratawp rollback:list`, `rollback:diff`, `rollback:mark-stable`)
 - **update.ts**: Package updates (`stratawp update`, `stratawp update --check`)
-- **screenshots.ts**: Capture viewport screenshots of a running site (`stratawp screenshots`)
+- **theme-review.ts**: Review a theme against the WordPress.org guidelines (`stratawp theme:review [dir] --json --strict --type`)
+- **screenshots.ts**: Capture viewport screenshots of a running site (`stratawp screenshots --routes --widths --out --base-url`)
 
 Each command uses:
 
@@ -458,6 +461,7 @@ npx create-stratawp my-theme
 # 3. CSS framework (vanilla, Tailwind, UnoCSS, Panda)
 # 4. Features (TypeScript, testing)
 # 5. WordPress linking (auto-detected for Local by Flywheel, MAMP)
+# 6. Advanced template only: offer to install the strata-advanced-content companion plugin into the linked site
 
 cd my-theme
 pnpm dev
@@ -495,9 +499,15 @@ pnpm lint:css
 # Cross-browser smoke tests on wp-env (Chromium locally; all three engines in CI)
 pnpm test:smoke
 
-# Opt-in visual compare (Chromium). Baselines must be recorded on CI first; the first run without them fails
-pnpm test:visual
+# Opt-in visual compare (Chromium), run inside a theme (for example examples/basic-theme).
+# Baselines must be recorded on CI first (Visual workflow, mode record); the first run without them fails
+cd examples/basic-theme && pnpm test:visual
+
+# Theme review of all three examples and all three templates
+pnpm build && pnpm review
 ```
+
+`pnpm review` must report **0 errors and 0 warnings** for every theme. That is the current state and it is expected to stay that way; CI blocks on errors only, so treat any new warning as a regression to fix in the theme (or in the rule), never by adding `review.rules` or `review.ignore` to an example or template.
 
 ### Component Explorer
 
@@ -715,16 +725,16 @@ StrataWP ships a structured, agent-agnostic development protocol so any AI codin
 
 ### The `.ai/` Directory
 
-| File / Directory              | Purpose                                                                                                                                  |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `.ai/ONBOARDING.md`           | First-time agent onboarding workflow                                                                                                     |
-| `.ai/agent-state.md`          | Onboarding status tracking — prevents redundant setup runs                                                                               |
-| `.ai/PROJECT_RULES.md`        | Self-learning memory: discovered conventions and a dated decision log agents maintain                                                    |
-| `.ai/developer-directions.md` | Maintainer-authored constraints and priorities all agents must follow                                                                    |
-| `.ai/SKILLS.md`               | Directory of all agent skills                                                                                                            |
-| `.ai/skills/*/SKILL.md`       | StrataWP-specific recipes (architecture, feature planning, code quality, components, blocks, testing, deployment, releases, self-review) |
-| `.ai/plans/`                  | Contract-first feature specs (`SPEC-TEMPLATE.md` is the starting point)                                                                  |
-| `.aiignore`                   | Files agents should not read or index (artifacts, deps, vendored snapshots)                                                              |
+| File / Directory              | Purpose                                                                                                                                                               |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.ai/ONBOARDING.md`           | First-time agent onboarding workflow                                                                                                                                  |
+| `.ai/agent-state.md`          | Onboarding status tracking — prevents redundant setup runs                                                                                                            |
+| `.ai/PROJECT_RULES.md`        | Self-learning memory: discovered conventions and a dated decision log agents maintain                                                                                 |
+| `.ai/developer-directions.md` | Maintainer-authored constraints and priorities all agents must follow                                                                                                 |
+| `.ai/SKILLS.md`               | Directory of all agent skills                                                                                                                                         |
+| `.ai/skills/*/SKILL.md`       | StrataWP-specific recipes (architecture, feature planning, code quality, components, blocks, testing, deployment, releases, self-review, theme review, visual checks) |
+| `.ai/plans/`                  | Contract-first feature specs (`SPEC-TEMPLATE.md` is the starting point)                                                                                               |
+| `.aiignore`                   | Files agents should not read or index (artifacts, deps, vendored snapshots)                                                                                           |
 
 `.claude/skills/` (WordPress domain skills) complements `.ai/skills/` (StrataWP-specific workflows) — both are referenced from `.ai/SKILLS.md`.
 

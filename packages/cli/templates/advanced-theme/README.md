@@ -1,12 +1,12 @@
-# StrataWP Basic Theme
+# StrataWP Advanced Theme
 
-A professional Block Theme (FSE) showcasing the StrataWP framework with modern development tools. Perfect for blogs, business sites, and learning StrataWP.
+An advanced Block Theme (FSE) showcasing the StrataWP framework with modern development tools and advanced features. Perfect for complex sites, agencies, and production use.
 
 ## Content types come from a companion plugin
 
 The portfolio, team, testimonial and case-study content types are registered by the `strata-advanced-content` companion plugin, not by the theme, so they survive a theme switch. Without the plugin the theme still works; the portfolio and team blocks render nothing.
 
-`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy `plugins/strata-advanced-content` from the StrataWP repository into `wp-content/plugins` and activate it under Plugins.
+`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy the plugin folder into `wp-content/plugins` and activate it under Plugins. In the StrataWP repository the folder is `plugins/strata-advanced-content`; if you used `npx create-stratawp`, it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
 
 ## Features
 
@@ -101,16 +101,16 @@ Included block patterns:
 
    ```bash
    # Replace /path/to/wordpress with your actual WordPress path
-   ln -s "$(pwd)/examples/basic-theme" /path/to/wordpress/wp-content/themes/stratawp-basic
+   ln -s "$(pwd)/examples/advanced-theme" /path/to/wordpress/wp-content/themes/stratawp-advanced
    ```
 
 4. **Activate in WordPress Admin:**
    - Go to Appearance → Themes
-   - Activate "StrataWP Basic Theme"
+   - Activate "StrataWP Advanced Theme"
 
 5. **Start the development server:**
    ```bash
-   cd examples/basic-theme
+   cd examples/advanced-theme
    pnpm dev
    ```
 
@@ -123,7 +123,7 @@ If you prefer to work directly in `wp-content/themes/`:
    ```bash
    cd wp-content/themes
    git clone https://github.com/JonImmsWordpressDev/StrataWP.git stratawp
-   cd stratawp/examples/basic-theme
+   cd stratawp/examples/advanced-theme
    ```
 
 2. Install and activate as above
@@ -148,7 +148,7 @@ pnpm build  # Build for production
 ### File Structure
 
 ```
-basic-theme/
+advanced-theme/
 ├── theme.json              # Design system v3
 ├── style.css               # Theme metadata
 ├── functions.php           # Theme setup + Vite integration
@@ -214,6 +214,10 @@ Edit `theme.json` to customize the color palette:
 - Swap header/footer patterns by editing `parts/header.html` or `parts/footer.html`
 - Change pattern slug to use different header/footer styles
 - Insert patterns anywhere through the WordPress editor
+
+## Quality
+
+This theme currently reports **0 errors and 0 warnings** in the StrataWP theme review (`pnpm review`), and that is expected to stay true. It ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. The review approximates the WordPress.org theme guidelines; it is not a certification.
 
 ## Requirements
 

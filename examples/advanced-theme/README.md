@@ -6,7 +6,7 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 
 The portfolio, team, testimonial and case-study content types are registered by the `strata-advanced-content` companion plugin, not by the theme, so they survive a theme switch. Without the plugin the theme still works; the portfolio and team blocks render nothing.
 
-`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy `plugins/strata-advanced-content` from the StrataWP repository into `wp-content/plugins` and activate it under Plugins.
+`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy the plugin folder into `wp-content/plugins` and activate it under Plugins. In the StrataWP repository the folder is `plugins/strata-advanced-content`; if you used `npx create-stratawp`, it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
 
 ## Features
 
@@ -215,6 +215,10 @@ Edit `theme.json` to customize the color palette:
 - Swap header/footer patterns by editing `parts/header.html` or `parts/footer.html`
 - Change pattern slug to use different header/footer styles
 - Insert patterns anywhere through the WordPress editor
+
+## Quality
+
+This theme currently reports **0 errors and 0 warnings** in the StrataWP theme review (`pnpm review`), and that is expected to stay true. It ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. The review approximates the WordPress.org theme guidelines; it is not a certification.
 
 ## Requirements
 

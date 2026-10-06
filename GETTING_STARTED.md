@@ -9,10 +9,11 @@ Welcome to StrataWP! This guide will walk you through everything you need to kno
 3. [Your First Theme](#your-first-theme)
 4. [Development Workflow](#development-workflow)
 5. [Creating Components](#creating-components)
-6. [Building for Production](#building-for-production)
-7. [Advanced Features](#advanced-features)
-8. [Troubleshooting](#troubleshooting)
-9. [Next Steps](#next-steps)
+6. [Checking Your Theme](#checking-your-theme)
+7. [Building for Production](#building-for-production)
+8. [Advanced Features](#advanced-features)
+9. [Troubleshooting](#troubleshooting)
+10. [Next Steps](#next-steps)
 
 ## Prerequisites
 
@@ -96,13 +97,14 @@ The fastest and easiest way to get started:
    - **Theme name and details** - Name, description, author
    - **🎨 Template selection** - Choose your starting point:
      - **Basic Theme** - Recommended for beginners, includes essential blocks
-     - **Advanced Theme** - Portfolio grids, team members, advanced features
+     - **Advanced Theme** - Advanced layouts and custom blocks; works with a companion plugin for portfolio, team, testimonial and case-study content
      - **Store Theme** - WooCommerce ready with product blocks
      - **Minimal** - Start from scratch
    - **CSS framework** - Choose vanilla, Tailwind, UnoCSS, or Panda
    - **TypeScript** - Enable/disable
    - **Testing** - Optional setup
    - ✨ **WordPress linking** - Automatically detects your installations!
+   - **Companion plugin** (Advanced template only) - After linking, you are asked whether to copy the `strata-advanced-content` plugin into the site
 
 4. **Select your WordPress site** (NEW!):
 
@@ -112,6 +114,8 @@ The fastest and easiest way to get started:
    - 🔍 Shows all detected WordPress sites
 
    Just select your site from the list and the theme is automatically linked!
+
+   **Advanced template:** right after linking, you are asked whether to install the companion plugin (`strata-advanced-content`) into that site. Say yes, then activate it under `Plugins`. See [The Advanced template's companion plugin](#the-advanced-templates-companion-plugin).
 
    **If no sites are detected**, you can manually create the symlink:
 
@@ -339,6 +343,8 @@ my-first-theme/
 │   └── main.ts         # Entry point
 ├── templates/          # FSE templates
 ├── functions.php       # Theme entry point
+├── readme.txt          # WordPress.org-style readme
+├── screenshot.png      # 1200x900 theme screenshot
 ├── style.css           # Theme header
 ├── theme.json          # FSE configuration
 ├── package.json        # Dependencies and scripts
@@ -456,18 +462,17 @@ StrataWP includes smart hot-reload:
 pnpm dev              # Start dev server with hot-reload
 pnpm build            # Build for production
 
-# Code Quality
-pnpm type-check       # Check TypeScript types
-pnpm lint             # Run ESLint
+# Code quality and review
+pnpm lint:css         # Stylelint: nesting depth, specificity, custom-property names
+pnpm review           # Theme review (approximates the WordPress.org guidelines)
+pnpm ai:check         # Build, then review (the gate AI agents run)
 
-# Testing (if @stratawp/testing is installed)
-pnpm test             # Run unit tests
-pnpm test:coverage    # Run with coverage
-pnpm test:e2e         # Run E2E tests
-
-# Component Explorer (if @stratawp/explorer is installed)
-pnpm explorer         # Launch component browser
+# Browser tests (need a running site; see "Check your theme before you ship it")
+pnpm test:e2e         # Cross-browser smoke tests
+pnpm test:visual      # Opt-in screenshot comparison against recorded baselines
 ```
+
+For the generators, deployment and the component explorer, install the CLI (`npm install -g @stratawp/cli`) and use `stratawp --help`.
 
 ## Creating Components
 
@@ -626,6 +631,54 @@ Then edit `patterns/hero-banner.php`:
 <!-- /wp:cover -->
 ```
 
+## Checking Your Theme
+
+Everything here runs inside your theme folder. It mirrors the "Using StrataWP day to day" section of the [README](./README.md).
+
+### Review it before you ship it
+
+| Command         | What it checks                                                                                            |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| `pnpm review`   | A theme review that approximates the WordPress.org theme guidelines. Errors fail it; warnings are advice. |
+| `pnpm lint:css` | Stylelint rules for nesting depth, specificity and custom-property names.                                 |
+| `pnpm ai:check` | Builds the theme and runs the review, the same gate AI agents use.                                        |
+| `pnpm test:e2e` | Cross-browser smoke tests against your running site.                                                      |
+
+`pnpm review` is a helper, not a certification: passing it does not guarantee that WordPress.org accepts your theme. Every StrataWP theme (the three examples and the three templates) currently reports 0 errors and 0 warnings, and a freshly generated theme starts that way. Keep it that way: treat a new warning as something to fix, not to ignore. See [AI tooling](./docs/ai-tooling.md) for the rule list and the options (`--json`, `--strict`).
+
+To run the smoke tests against your local site, install the test browser once, then point the tests at your site's address:
+
+```bash
+pnpm exec playwright install chromium
+WP_BASE_URL=http://my-site.local pnpm test:e2e
+```
+
+### Screenshots, `screenshot.png` and `readme.txt`
+
+Two files in your theme folder are part of what WordPress shows about your theme, and the review checks both:
+
+- `screenshot.png` is the image under Appearance, Themes. It must be 1200x900 pixels (the size WordPress.org expects, so it stays sharp on high-density screens). Generated themes ship one at that size; replace it with a real screenshot of your design, at the same size.
+- `readme.txt` is the WordPress.org-style readme. Its short description should match the `Description` in `style.css`. `create-stratawp` fills in both from the name and description you gave the wizard.
+
+To capture the pages of your running site (home and a 404 page at desktop and phone widths by default):
+
+```bash
+pnpm exec playwright install chromium     # once
+pnpm exec stratawp-screenshots capture --base-url=http://my-site.local
+```
+
+The images land in `.stratawp/screenshots/` (add that folder to your `.gitignore`). Use `--routes=/,/blog` and `--widths=1280,390` to choose what to capture; `stratawp screenshots` runs the same command. Want a pass/fail visual check? `pnpm test:visual` compares pages against saved baseline images. It is opt-in, and the baselines are recorded on a CI runner through the "Visual (record or compare baselines)" workflow, not locally. See [AI tooling and visual checks](./docs/ai-tooling.md#screenshots-and-visual-checks).
+
+### The Advanced template's companion plugin
+
+The Advanced theme does not register content types itself, because the WordPress.org guidelines reserve `register_post_type` and `register_taxonomy` for plugins. The portfolio, team, testimonial and case-study types come from the `strata-advanced-content` plugin:
+
+1. When you link the theme to a WordPress site, `create-stratawp` asks whether to install the plugin. Say yes and it is copied to `wp-content/plugins/strata-advanced-content`. It never overwrites an existing folder.
+2. Activate it under `Plugins` in WordPress admin. Activation flushes the permalinks so the new content types work straight away.
+3. Skipped it, or no site was linked? Copy the folder into `wp-content/plugins/` yourself. From the StrataWP repository it is `plugins/strata-advanced-content`; for `npx` users it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
+
+The theme works without the plugin; those content types are simply absent.
+
 ## Building for Production
 
 When you're ready to deploy:
@@ -698,6 +751,7 @@ Use tools like:
 ### Production Checklist
 
 - [ ] Run `pnpm build` successfully
+- [ ] Run `pnpm review` and fix anything it reports
 - [ ] Test on staging environment
 - [ ] Check all pages render correctly
 - [ ] Test forms and interactive features
@@ -836,7 +890,7 @@ rm -rf node_modules
 pnpm install
 
 # Check TypeScript config
-pnpm type-check
+pnpm exec tsc --noEmit
 ```
 
 #### WordPress Not Finding Theme
@@ -1016,9 +1070,10 @@ npx stratawp part:new <name>
 # Component Explorer
 npx stratawp explorer           # Launch browser
 
-# Testing
-pnpm test                   # Run tests
-pnpm test:coverage          # With coverage
+# Quality and testing
+pnpm review                 # Theme review
+pnpm lint:css               # Stylelint
+pnpm test:e2e               # Smoke tests against your running site
 
 ```
 

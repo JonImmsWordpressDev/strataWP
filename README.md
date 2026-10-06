@@ -94,13 +94,14 @@ npx create-stratawp@latest my-theme
 
 A short wizard asks you questions. If you are unsure, the first (recommended) answer is a good default:
 
-| Question                         | What it means                                                                                             |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Theme name, description, author  | Shown in WordPress under Appearance → Themes.                                                             |
-| Template                         | **Basic** is the best starting point. Advanced adds custom post types. Store adds WooCommerce templates.  |
-| CSS framework                    | How you write styles: plain CSS, Tailwind, UnoCSS, or Panda. UnoCSS is recommended.                       |
-| TypeScript / testing             | Say yes to both if you are not sure.                                                                      |
-| Link to a WordPress installation | Pick your local site. StrataWP creates the link into `wp-content/themes/` so you never copy files around. |
+| Question                         | What it means                                                                                                                                                                                  |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Theme name, description, author  | Shown in WordPress under Appearance → Themes.                                                                                                                                                  |
+| Template                         | **Basic** is the best starting point. Advanced adds extra layouts and works with a companion plugin for portfolio, team, testimonial and case-study content. Store adds WooCommerce templates. |
+| CSS framework                    | How you write styles: plain CSS, Tailwind, UnoCSS, or Panda. UnoCSS is recommended.                                                                                                            |
+| TypeScript / testing             | Say yes to both if you are not sure.                                                                                                                                                           |
+| Link to a WordPress installation | Pick your local site. StrataWP creates the link into `wp-content/themes/` so you never copy files around.                                                                                      |
+| Companion plugin (Advanced only) | After linking, you are asked whether to copy the `strata-advanced-content` plugin into that site's `wp-content/plugins/`. Say yes, then activate it under Plugins.                             |
 
 It installs the dependencies for you (`pnpm install` runs automatically). When it finishes you will see the next-step commands.
 
@@ -176,6 +177,12 @@ Each command creates the files in the right folders and, for blocks, registers t
 | `pnpm test:e2e` | Cross-browser smoke tests against your running site (see below).                                          |
 
 `pnpm review` is a helper, not a certification: passing it does not guarantee that WordPress.org accepts your theme.
+
+Every StrataWP theme (the three examples and the three templates) currently reports **0 errors and 0 warnings** in the review, and `pnpm review` in this repository is expected to stay that way. A theme you generate starts clean too: it ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`, and `create-stratawp` keeps both in step with the name and description you chose.
+
+### Advanced template: the companion plugin
+
+The Advanced theme does not register content types itself, because the WordPress.org guidelines reserve `register_post_type` and `register_taxonomy` for plugins. Its portfolio, team, testimonial and case-study types live in the `strata-advanced-content` plugin. `create-stratawp` offers to copy it into your linked site; the theme works without it, those content types are just absent. To install it by hand, copy the folder into `wp-content/plugins/` and activate it: from this repository it is `plugins/strata-advanced-content`, and for `npx` users it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
 
 To run the smoke tests against your local site, install the test browser once, then point the tests at your site's address:
 
@@ -289,7 +296,7 @@ StrataWP/
 │   └── mcp/              # MCP server exposing generators to AI agents
 ├── examples/
 │   ├── basic-theme/      # General-purpose starter theme
-│   ├── advanced-theme/   # Enterprise theme with CPTs and custom blocks
+│   ├── advanced-theme/   # Advanced layouts and custom blocks (content types come from a companion plugin)
 │   └── store-theme/      # WooCommerce e-commerce theme
 └── docs/                 # Documentation
 ```
@@ -307,6 +314,8 @@ my-theme/
 │   └── main.ts       # Entry point
 ├── templates/        # FSE templates (*.html)
 ├── functions.php     # Theme entry point
+├── readme.txt        # WordPress.org-style readme (kept in step with style.css)
+├── screenshot.png    # 1200x900 theme screenshot
 ├── style.css         # Theme metadata
 ├── theme.json        # FSE configuration
 └── vite.config.ts    # Build configuration
@@ -316,11 +325,11 @@ See [Project Structure](https://github.com/JonImmsWordpressDev/strataWP/wiki/Pro
 
 ## Example Themes
 
-| Theme                                     | Best for                                             | Highlights                                                                                                                                  |
-| ----------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[Basic](./examples/basic-theme)**       | Blogs, portfolios, business sites, learning StrataWP | [Frost](https://frostwp.com/) design system, 50 block patterns, 9 templates, light/dark variants, Google Fonts typography                   |
-| **[Advanced](./examples/advanced-theme)** | Complex / production sites and agencies              | 4 Custom Post Types (Portfolio, Team, Testimonials, Case Studies), custom blocks, Advanced Layouts + Customizer, Meta Boxes system          |
-| **[Store](./examples/store-theme)**       | WooCommerce e-commerce                               | WooCommerce templates (shop, product, cart, checkout), Featured Products & Product Categories blocks, e-commerce patterns, mobile-optimized |
+| Theme                                     | Best for                                             | Highlights                                                                                                                                                                                                                    |
+| ----------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Basic](./examples/basic-theme)**       | Blogs, portfolios, business sites, learning StrataWP | [Frost](https://frostwp.com/) design system, 50 block patterns, 9 templates, light/dark variants, Google Fonts typography                                                                                                     |
+| **[Advanced](./examples/advanced-theme)** | Complex / production sites and agencies              | Custom blocks, Advanced Layouts + Customizer, Meta Boxes system; works with the [`strata-advanced-content`](./plugins/strata-advanced-content) companion plugin for Portfolio, Team, Testimonial and Case Study content types |
+| **[Store](./examples/store-theme)**       | WooCommerce e-commerce                               | WooCommerce templates (shop, product, cart, checkout), Featured Products & Product Categories blocks, e-commerce patterns, mobile-optimized                                                                                   |
 
 Learn how to run and customize them on the [Example Themes](https://github.com/JonImmsWordpressDev/strataWP/wiki/Example-Themes) wiki page.
 
