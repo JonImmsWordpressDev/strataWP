@@ -1,5 +1,11 @@
 # @stratawp/cli
 
+## 2.4.1
+
+### Patch Changes
+
+- 8889e8a: Generated themes now declare Requires at least 6.7 and Tested up to 7.1.
+
 ## 2.4.0
 
 ### Minor Changes
