@@ -165,7 +165,7 @@ basic-theme/
 │   ├── footer-*.php
 │   ├── hero-*.php
 │   ├── cta-*.php
-│   └── ... (48 more patterns)
+│   └── ... (more patterns)
 ├── src/
 │   ├── blocks/            # Custom Gutenberg blocks
 │   ├── scss/              # Modular SCSS

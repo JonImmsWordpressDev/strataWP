@@ -469,7 +469,7 @@ pnpm lint:css         # Stylelint: nesting depth, specificity, custom-property n
 pnpm review           # Theme review (approximates the WordPress.org guidelines)
 pnpm ai:check         # Build, then review (the gate AI agents run)
 
-# Browser tests (need a running site; see [Checking Your Theme](#checking-your-theme))
+# Browser tests (need a running site; see "Checking Your Theme" below)
 pnpm test:e2e         # Cross-browser smoke tests
 pnpm test:visual      # Opt-in screenshot comparison against recorded baselines
 ```
