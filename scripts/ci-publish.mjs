@@ -18,7 +18,18 @@ const dryRun = process.argv.includes('--dry-run')
 const root = process.cwd()
 let failed = false
 
-for (const dir of readdirSync('packages')) {
+// The CLI bundles templates that pin the other packages' versions, and
+// create-stratawp wraps the CLI, so both publish last. If anything else fails,
+// they are skipped: a published CLI must never point at a version that is
+// missing from the registry.
+const LAST = ['cli', 'create-stratawp']
+const dirs = readdirSync('packages').sort((a, b) => LAST.indexOf(a) - LAST.indexOf(b))
+
+for (const dir of dirs) {
+  if (failed && LAST.includes(dir)) {
+    console.error(`skip packages/${dir}: a package it depends on failed to publish`)
+    continue
+  }
   const pkgDir = join(root, 'packages', dir)
   let pkg
   try {

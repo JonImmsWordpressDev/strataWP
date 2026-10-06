@@ -1,5 +1,11 @@
 # @stratawp/testing
 
+## 0.3.0
+
+### Minor Changes
+
+- b77730d: Add `stratawp-screenshots` (viewport screenshots of a running site, also via `stratawp screenshots`) and `createVisualConfig`, an opt-in Chromium visual compare preset. Generated themes ship a `test:visual` script, a visual spec and the `visual-checks` agent skill.
+
 ## 0.2.0
 
 ### Minor Changes

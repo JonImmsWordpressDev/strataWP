@@ -1,5 +1,18 @@
 # create-stratawp
 
+## 2.3.0
+
+### Minor Changes
+
+- bf392c0: Add `@stratawp/theme-review`, a theme checker that approximates the WordPress.org theme guidelines and detects whether a theme is block, classic, or hybrid. The CLI gains `stratawp theme:review`, and generated themes ship the checker with a `review` script. `pnpm ai:setup` records the detected theme type for agents.
+- b77730d: Add `stratawp-screenshots` (viewport screenshots of a running site, also via `stratawp screenshots`) and `createVisualConfig`, an opt-in Chromium visual compare preset. Generated themes ship a `test:visual` script, a visual spec and the `visual-checks` agent skill.
+
+### Patch Changes
+
+- Updated dependencies [bf392c0]
+- Updated dependencies [b77730d]
+  - @stratawp/cli@2.3.0
+
 ## 2.2.0
 
 ### Minor Changes
