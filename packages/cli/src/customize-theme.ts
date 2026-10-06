@@ -40,6 +40,29 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
     await fs.writeFile(styleCssPath, styleContent)
   }
 
+  // Keep the WordPress.org readme.txt in step with style.css. The template's
+  // title and short description (the first paragraph after the header block)
+  // are read from the file itself so no per-template strings are hardcoded.
+  const wpReadmePath = path.join(themePath, 'readme.txt')
+  if (await fs.pathExists(wpReadmePath)) {
+    let wpReadme = await fs.readFile(wpReadmePath, 'utf-8')
+    const templateName = wpReadme.match(/^=== (.+) ===$/m)?.[1]
+    const shortDescription = wpReadme.match(/^Tags:.*\r?\n\r?\n(.+)$/m)?.[1]
+    const authorSlug = config.author.toLowerCase().replace(/\s+/g, '')
+
+    if (templateName) {
+      wpReadme = wpReadme.split(templateName).join(config.name)
+    }
+    if (shortDescription) {
+      wpReadme = wpReadme.replace(shortDescription, () => config.description)
+    }
+    if (authorSlug) {
+      wpReadme = wpReadme.replace(/^Contributors:.*$/m, `Contributors: ${authorSlug}`)
+    }
+
+    await fs.writeFile(wpReadmePath, wpReadme)
+  }
+
   // Update package.json with user's info
   const packageJsonPath = path.join(themePath, 'package.json')
   if (await fs.pathExists(packageJsonPath)) {

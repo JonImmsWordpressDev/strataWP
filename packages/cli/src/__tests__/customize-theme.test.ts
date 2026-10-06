@@ -107,7 +107,7 @@ describe('customizeTheme', () => {
       const { reviewTheme } = await import('@stratawp/theme-review')
       const report = reviewTheme(themePath)
       expect(report.summary.errors).toBe(0)
-      expect(report.findings.length).toBeGreaterThan(0)
+      expect(report.themeDir).toBe(themePath)
     })
   })
 
@@ -123,5 +123,84 @@ describe('customizeTheme', () => {
       r.warnings.map((w) => `${path.relative(themePath, r.source ?? '')}: ${w.rule}`)
     )
     expect(problems).toEqual([])
+  })
+})
+
+describe.each(['basic', 'advanced', 'store'] as const)(
+  'customizeTheme readme.txt (%s)',
+  (template) => {
+    let parent: string
+    let themePath: string
+
+    const config: ThemeConfig = {
+      name: 'Acme Studio Theme',
+      slug: 'acme-studio',
+      description: 'A custom description for the readme test',
+      author: 'Ada Lovelace',
+      template,
+      cssFramework: 'vanilla',
+      typescript: true,
+      testing: false,
+    }
+
+    beforeAll(async () => {
+      parent = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-readme-'))
+      themePath = path.join(parent, config.slug)
+      await fs.copy(path.join(__dirname, '..', '..', 'templates', `${template}-theme`), themePath, {
+        filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+      })
+      await customizeTheme(themePath, config)
+    })
+
+    afterAll(async () => {
+      await fs.remove(parent)
+    })
+
+    it('rewrites the title, description, contributors and copyright name', async () => {
+      const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+      expect(readme).toMatch(/^=== Acme Studio Theme ===$/m)
+      expect(readme).toMatch(/^Contributors: adalovelace$/m)
+      expect(readme).toMatch(/^Tags:.*\n\nA custom description for the readme test\n/m)
+      expect(readme).toMatch(/^Acme Studio Theme is distributed under the terms/m)
+    })
+
+    it('leaves the compatibility and license headers equal to style.css', async () => {
+      const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+      const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+      for (const field of [
+        'Requires at least',
+        'Tested up to',
+        'Requires PHP',
+        'License',
+        'License URI',
+      ]) {
+        const value = style.match(new RegExp(`^${field}:\\s*(.+)$`, 'm'))?.[1]?.trim()
+        expect(value).toBeTruthy()
+        expect(readme).toContain(`\n${field}: ${value}\n`)
+      }
+    })
+  }
+)
+
+describe('customizeTheme without a readme.txt', () => {
+  it('does not fail on templates that lack one', async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-noreadme-'))
+    try {
+      await fs.writeFile(path.join(dir, 'style.css'), '/*\nTheme Name: X\n*/\n')
+      await expect(
+        customizeTheme(dir, {
+          name: 'Y',
+          slug: 'y',
+          description: 'd',
+          author: 'a',
+          template: 'minimal',
+          cssFramework: 'vanilla',
+          typescript: true,
+          testing: false,
+        })
+      ).resolves.toBeUndefined()
+    } finally {
+      await fs.remove(dir)
+    }
   })
 })

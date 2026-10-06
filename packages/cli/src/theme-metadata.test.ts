@@ -46,6 +46,8 @@ describe.each(THEMES)('%s metadata', (theme) => {
         new RegExp(`^${escapeRegExp(field)}: ${escapeRegExp(value as string)}$`, 'm')
       )
     }
+    expect(readme.match(/^=== (.+) ===$/m)?.[1]).toBe(header('Theme Name'))
+    expect(readme.match(/^Tags:.*\r?\n\r?\n(.+)$/m)?.[1]).toBe(header('Description'))
     expect(readme).toMatch(/^== Description ==/m)
     expect(readme).toMatch(/^== Changelog ==/m)
   })
