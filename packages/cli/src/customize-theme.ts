@@ -32,10 +32,10 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
 
     // Replace theme metadata
     styleContent = styleContent
-      .replace(/Theme Name:.*$/m, `Theme Name: ${config.name}`)
-      .replace(/Description:.*$/m, `Description: ${config.description}`)
-      .replace(/Author:.*$/m, `Author: ${config.author}`)
-      .replace(/Text Domain:.*$/m, `Text Domain: ${config.slug}`)
+      .replace(/Theme Name:.*$/m, () => `Theme Name: ${config.name}`)
+      .replace(/Description:.*$/m, () => `Description: ${config.description}`)
+      .replace(/Author:.*$/m, () => `Author: ${config.author}`)
+      .replace(/Text Domain:.*$/m, () => `Text Domain: ${config.slug}`)
 
     await fs.writeFile(styleCssPath, styleContent)
   }
@@ -48,7 +48,9 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
     let wpReadme = await fs.readFile(wpReadmePath, 'utf-8')
     const templateName = wpReadme.match(/^=== (.+) ===$/m)?.[1]
     const shortDescription = wpReadme.match(/^Tags:.*\r?\n\r?\n(.+)$/m)?.[1]
-    const authorSlug = config.author.toLowerCase().replace(/\s+/g, '')
+    // WordPress.org usernames are ASCII; when nothing usable remains (empty or
+    // non-ASCII author) the template's Contributors line is left as is.
+    const authorSlug = config.author.toLowerCase().replace(/[^a-z0-9-]/g, '')
 
     if (templateName) {
       wpReadme = wpReadme.split(templateName).join(config.name)
@@ -57,7 +59,7 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
       wpReadme = wpReadme.replace(shortDescription, () => config.description)
     }
     if (authorSlug) {
-      wpReadme = wpReadme.replace(/^Contributors:.*$/m, `Contributors: ${authorSlug}`)
+      wpReadme = wpReadme.replace(/^Contributors:.*$/m, () => `Contributors: ${authorSlug}`)
     }
 
     await fs.writeFile(wpReadmePath, wpReadme)

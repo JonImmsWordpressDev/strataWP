@@ -107,7 +107,19 @@ describe('customizeTheme', () => {
       const { reviewTheme } = await import('@stratawp/theme-review')
       const report = reviewTheme(themePath)
       expect(report.summary.errors).toBe(0)
-      expect(report.themeDir).toBe(themePath)
+      // The CLI templates are classified hybrid (block theme plus PHP includes).
+      expect(report.themeType).toBe('hybrid')
+      expect(report.typeSource).toBe('detected')
+
+      // Negative control on a copy: the rules must demonstrably run on a
+      // scaffolded directory, so removing readme.txt has to surface a finding.
+      const copy = path.join(path.dirname(themePath), 'review-control')
+      await fs.copy(themePath, copy, {
+        filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+      })
+      await fs.remove(path.join(copy, 'readme.txt'))
+      const control = reviewTheme(copy)
+      expect(control.findings.map((f) => f.message)).toContain('readme.txt is missing')
     })
   })
 
@@ -204,3 +216,47 @@ describe('customizeTheme without a readme.txt', () => {
     }
   })
 })
+
+describe.each(['basic', 'advanced', 'store'] as const)(
+  'customizeTheme special characters (%s)',
+  (template) => {
+    const config: ThemeConfig = {
+      name: 'Acme & Sons (Pty) Ltd.',
+      slug: 'acme-sons',
+      description: 'Costs $& more, $1 and \'quotes\' "dq" $$',
+      author: 'Zoë Ünal-Smith',
+      template,
+      cssFramework: 'vanilla',
+      typescript: true,
+      testing: false,
+    }
+    let parent: string
+    let themePath: string
+
+    beforeAll(async () => {
+      parent = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-special-'))
+      themePath = path.join(parent, config.slug)
+      await fs.copy(path.join(__dirname, '..', '..', 'templates', `${template}-theme`), themePath, {
+        filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+      })
+      await customizeTheme(themePath, config)
+    })
+
+    afterAll(async () => {
+      await fs.remove(parent)
+    })
+
+    it('writes name, description and author verbatim to style.css and readme.txt', async () => {
+      const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+      const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+      expect(style).toContain(`\nTheme Name: ${config.name}\n`)
+      expect(style).toContain(`\nDescription: ${config.description}\n`)
+      expect(style).toContain(`\nAuthor: ${config.author}\n`)
+      expect(readme).toContain(`=== ${config.name} ===`)
+      expect(readme).toContain(`\n\n${config.description}\n`)
+      expect(readme).toContain(`\n${config.name} is distributed under`)
+      // The non-ASCII characters drop out of the slug rather than leaking in.
+      expect(readme).toMatch(/^Contributors: zonal-smith$/m)
+    })
+  }
+)
