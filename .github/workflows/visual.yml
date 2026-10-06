@@ -1,0 +1,102 @@
+name: Visual (record or compare baselines)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'record writes baselines and uploads them as an artifact to commit; compare fails on any diff'
+        type: choice
+        options:
+          - record
+          - compare
+        default: compare
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-${{ github.ref }}-${{ inputs.mode }}
+  cancel-in-progress: true
+
+jobs:
+  visual:
+    name: Visual ${{ inputs.mode }} (Chromium, wp-env)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the Vite plugin (theme build dependency)
+        run: pnpm --filter @stratawp/vite-plugin build
+
+      - name: Build the testing package (visual preset)
+        run: pnpm --filter @stratawp/testing build
+
+      - name: Prepare example theme (copy core into vendor, build assets)
+        working-directory: examples/basic-theme
+        env:
+          COMPOSER_MIRROR_PATH_REPOS: '1'
+        run: |
+          composer install --no-interaction --no-progress
+          pnpm build
+
+      - name: Start WordPress (wp-env)
+        run: pnpm exec wp-env start
+
+      - name: Activate theme + enable pretty permalinks
+        run: |
+          pnpm exec wp-env run cli wp theme activate basic-theme
+          pnpm exec wp-env run cli wp rewrite structure '/%postname%/' --hard
+          pnpm exec wp-env run cli wp rewrite flush --hard
+
+      - name: Install Playwright browser
+        working-directory: examples/basic-theme
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Wait for WordPress to be ready
+        run: node scripts/wait-for-http.mjs http://localhost:8888/ 120000
+
+      - name: Record baselines
+        if: ${{ inputs.mode == 'record' }}
+        working-directory: examples/basic-theme
+        run: pnpm exec playwright test --config playwright.visual.config.ts --update-snapshots
+
+      - name: Upload recorded baselines (download, commit under e2e/visual/__screenshots__)
+        if: ${{ inputs.mode == 'record' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines
+          path: examples/basic-theme/e2e/visual/__screenshots__
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Compare against the committed baselines
+        if: ${{ inputs.mode == 'compare' }}
+        working-directory: examples/basic-theme
+        run: pnpm exec playwright test --config playwright.visual.config.ts
+
+      - name: Upload Playwright report
+        if: ${{ inputs.mode == 'compare' && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-visual-report
+          path: examples/basic-theme/playwright-report
+          retention-days: 7
+          if-no-files-found: ignore

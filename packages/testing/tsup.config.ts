@@ -7,6 +7,8 @@ export default defineConfig({
     playwright: 'src/playwright.ts',
     config: 'src/config.ts',
     'global-setup': 'src/global-setup.ts',
+    screenshots: 'src/screenshots.ts',
+    'screenshots-cli': 'src/screenshots-cli.ts',
   },
   format: ['esm'],
   dts: true,

@@ -3,19 +3,19 @@
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { registerResources } from './resources'
-import { registerTools } from './tools'
+import { registerTools, type ToolDeps } from './tools'
 
 /**
  * Creates a fully-configured (but not-yet-connected) MCP server instance.
  * Callers connect it to a transport (stdio in production, InMemory in tests).
  */
-export function createServer(rootDir?: string): McpServer {
+export function createServer(rootDir?: string, deps?: ToolDeps): McpServer {
   const server = new McpServer({
     name: '@stratawp/mcp',
     version: '0.1.0',
   })
 
-  registerTools(server)
+  registerTools(server, deps)
   registerResources(server, rootDir)
 
   return server

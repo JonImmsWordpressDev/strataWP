@@ -10,6 +10,7 @@ coverage/
 *.lcov
 playwright-report/
 test-results/
+.stratawp/
 
 # Build outputs
 dist/

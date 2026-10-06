@@ -32,6 +32,9 @@ tmp/
 .stratawp-deploy.json
 .stratawp-snapshots/
 
+# Visual baselines (PNG snapshots are not for agents to read)
+**/__screenshots__/
+
 # Binary assets
 *.png
 *.jpg
@@ -40,3 +43,6 @@ tmp/
 *.webp
 *.woff
 *.woff2
+
+# Fresh captures are meant to be looked at, so re-include them after the binary patterns
+!.stratawp/screenshots/**

@@ -1,5 +1,84 @@
 [
   {
+    "name": "capture_screenshots",
+    "description": "Opens a running WordPress site in headless Chromium and returns viewport-sized PNG screenshots (not full-page) as image content. Read-only: it sends GET requests to the site and writes no files. Limits: at most 6 images per call (routes x widths) and at most 2 widths. Defaults: routes \"/\" and a 404 page; widths 1280 and 390. The site must already be running (for example wp-env on http://localhost:8888). Any http(s) URL is accepted, not only localhost (including remote and LAN hosts); the site's own redirects are followed.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "description": "Base URL of the running site, http or https, e.g. http://localhost:8888"
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Site paths that start with \"/\"; defaults to \"/\" and a 404 route"
+        },
+        "widths": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "Viewport widths in pixels, at most 2; defaults to 1280 and 390"
+        }
+      },
+      "required": ["baseUrl"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "captured": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "route": {
+                "type": "string"
+              },
+              "width": {
+                "type": "number"
+              },
+              "name": {
+                "type": "string"
+              },
+              "bytes": {
+                "type": "number"
+              }
+            },
+            "required": ["route", "width", "name", "bytes"],
+            "additionalProperties": false
+          }
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "route": {
+                "type": "string"
+              },
+              "width": {
+                "type": "number"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": ["route", "width", "message"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["captured", "failures"],
+      "additionalProperties": false,
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+  },
+  {
     "name": "detect_theme_type",
     "description": "Read-only. Classifies a theme directory as block, classic or hybrid (both block templates and PHP templates) and says whether the answer was detected or came from a stratawp.themeType override in package.json.",
     "inputSchema": {

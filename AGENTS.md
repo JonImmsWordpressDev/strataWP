@@ -50,6 +50,7 @@ WordPress domain skills (block development, theme.json, REST API, WP-CLI, perfor
 ## Capabilities & Tooling
 
 - **Theme review (MCP):** the `@stratawp/mcp` server also exposes read-only `review_theme` and `detect_theme_type` tools backed by `@stratawp/theme-review`.
+- **Screenshots (MCP):** the `capture_screenshots` tool returns viewport screenshots of a running site (read-only, at most 6 images). See the [**Visual Checks skill**](.ai/skills/visual-checks/SKILL.md).
 - **Docs search (MCP):** Run `pnpm mcp:docs` to start the Model Context Protocol server that indexes and searches this repository's documentation (`CLAUDE.md`, `docs/`, `.ai/`, package READMEs).
 - **Scaffolding & catalog (MCP):** The `@stratawp/mcp` package (`packages/mcp`, bin `stratawp-mcp`) exposes the framework's generators and component catalog as MCP tools/resources.
 - **Verification:** Run `pnpm ai:check` for the combined lint, format, typecheck, and unit-test gate.

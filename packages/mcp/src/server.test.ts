@@ -8,6 +8,7 @@ import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
 import { LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createServer } from './server'
+import type { ToolDeps } from './tools'
 
 // Absolute path to the built bin, resolved relative to this test file.
 const __filename = fileURLToPath(import.meta.url)
@@ -28,7 +29,8 @@ const BASIC_THEME_DIR = resolve(fileURLToPath(import.meta.url), '../../../../exa
  * callback to capture the real negotiated value rather than asserting a guess.
  */
 async function connect(
-  rootDir?: string
+  rootDir?: string,
+  deps?: ToolDeps
 ): Promise<{ client: Client; negotiatedVersion: string | undefined }> {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
 
@@ -42,7 +44,7 @@ async function connect(
     originalSet?.(version)
   }
 
-  const server = createServer(rootDir)
+  const server = createServer(rootDir, deps)
   const client = new Client({ name: 'test-client', version: '0.0.0' })
 
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)])
@@ -71,6 +73,7 @@ describe('@stratawp/mcp server tools', () => {
     const { tools } = await client.listTools()
     const names = tools.map((t) => t.name).sort()
     expect(names).toEqual([
+      'capture_screenshots',
       'detect_theme_type',
       'review_theme',
       'scaffold_block',
@@ -431,5 +434,130 @@ describe('@stratawp/mcp theme review tools', () => {
   it('review_theme rejects a themeDir of the wrong type', async () => {
     const result = await client.callTool({ name: 'review_theme', arguments: { themeDir: 42 } })
     expect(result.isError).toBe(true)
+  })
+})
+
+describe('@stratawp/mcp capture_screenshots tool', () => {
+  const PNG = Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3])
+  const shot = (route: string, width: number, name: string) => ({ route, width, name, png: PNG })
+
+  function fakeDeps(result: {
+    shots: ReturnType<typeof shot>[]
+    failures: Array<{ route: string; width: number; message: string }>
+  }) {
+    const calls: unknown[] = []
+    const deps: ToolDeps = {
+      capturePages: async (options) => {
+        calls.push(options)
+        return result
+      },
+    }
+    return { deps, calls }
+  }
+
+  it('returns image content (valid base64 PNG) plus structured results', async () => {
+    const { deps, calls } = fakeDeps({ shots: [shot('/', 1280, 'home-1280.png')], failures: [] })
+    const { client } = await connect(undefined, deps)
+    const res = await client.callTool({
+      name: 'capture_screenshots',
+      arguments: { baseUrl: 'http://localhost:8888', routes: ['/'], widths: [1280] },
+    })
+    expect(res.isError).toBeFalsy()
+    expect(calls).toHaveLength(1)
+    const images = (
+      res.content as Array<{ type: string; data?: string; mimeType?: string }>
+    ).filter((block) => block.type === 'image')
+    expect(images).toHaveLength(1)
+    expect(images[0]?.mimeType).toBe('image/png')
+    expect(Array.from(Buffer.from(images[0]?.data ?? '', 'base64'))).toEqual(Array.from(PNG))
+    expect(res.structuredContent).toEqual({
+      captured: [{ route: '/', width: 1280, name: 'home-1280.png', bytes: PNG.byteLength }],
+      failures: [],
+    })
+  })
+
+  it('uses the documented defaults (home and 404 at 1280 and 390 = 4 images)', async () => {
+    const { deps, calls } = fakeDeps({ shots: [shot('/', 1280, 'home-1280.png')], failures: [] })
+    const { client } = await connect(undefined, deps)
+    await client.callTool({
+      name: 'capture_screenshots',
+      arguments: { baseUrl: 'http://localhost:8888' },
+    })
+    expect(calls[0]).toEqual({
+      baseUrl: 'http://localhost:8888',
+      routes: ['/', '/this-page-does-not-exist-404/'],
+      widths: [1280, 390],
+    })
+  })
+
+  it('treats a partial failure as a result, listing the failure', async () => {
+    const failure = { route: '/blog', width: 1280, message: 'timeout' }
+    const { deps } = fakeDeps({ shots: [shot('/', 1280, 'home-1280.png')], failures: [failure] })
+    const { client } = await connect(undefined, deps)
+    const res = await client.callTool({
+      name: 'capture_screenshots',
+      arguments: { baseUrl: 'http://localhost:8888', routes: ['/', '/blog'], widths: [1280] },
+    })
+    expect(res.isError).toBeFalsy()
+    expect((res.structuredContent as { failures: unknown[] }).failures).toEqual([failure])
+  })
+
+  it('returns an error result when every capture failed', async () => {
+    const failure = { route: '/', width: 1280, message: 'timeout' }
+    const { deps } = fakeDeps({ shots: [], failures: [failure] })
+    const { client } = await connect(undefined, deps)
+    const res = await client.callTool({
+      name: 'capture_screenshots',
+      arguments: { baseUrl: 'http://localhost:8888', routes: ['/'], widths: [1280] },
+    })
+    expect(res.isError).toBe(true)
+    expect(JSON.stringify(res.content)).toMatch(/FAILED \/ at 1280px: timeout/)
+  })
+
+  it.each([
+    ['more than 2 widths', { routes: ['/'], widths: [1280, 768, 390] }, /at most 2 widths/],
+    [
+      'more than 6 images',
+      { routes: ['/a', '/b', '/c', '/d'], widths: [1280, 390] },
+      /at most 6 screenshots/,
+    ],
+    ['a full-URL route', { routes: ['https://evil.example/'] }, /not a site path/],
+    ['a protocol-relative route', { routes: ['//evil.example/'] }, /not a site path/],
+    ['a bad width', { widths: [50] }, /is not a width/],
+  ])('rejects %s without capturing', async (_label, extra, message) => {
+    const { deps, calls } = fakeDeps({ shots: [], failures: [] })
+    const { client } = await connect(undefined, deps)
+    const res = await client.callTool({
+      name: 'capture_screenshots',
+      arguments: { baseUrl: 'http://localhost:8888', ...extra },
+    })
+    expect(res.isError).toBe(true)
+    expect(JSON.stringify(res.content)).toMatch(message)
+    expect(calls).toHaveLength(0)
+  })
+
+  it.each(['file:///etc/passwd', 'http://user:pw@localhost:8888', 'not a url'])(
+    'rejects the baseUrl %s without capturing',
+    async (baseUrl) => {
+      const { deps, calls } = fakeDeps({ shots: [], failures: [] })
+      const { client } = await connect(undefined, deps)
+      const res = await client.callTool({ name: 'capture_screenshots', arguments: { baseUrl } })
+      expect(res.isError).toBe(true)
+      expect(calls).toHaveLength(0)
+    }
+  )
+
+  it('returns an error result when capture itself throws (site down)', async () => {
+    const { client } = await connect(undefined, {
+      capturePages: async () => {
+        throw new Error('StrataWP screenshots: http://localhost:8888 is not reachable')
+      },
+    })
+    const res = await client.callTool({
+      name: 'capture_screenshots',
+      arguments: { baseUrl: 'http://localhost:8888' },
+    })
+    expect(res.isError).toBe(true)
+    expect(JSON.stringify(res.content)).toMatch(/is not reachable/)
   })
 })

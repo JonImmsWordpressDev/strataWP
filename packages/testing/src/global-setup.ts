@@ -6,7 +6,8 @@ import type { FullConfig } from '@playwright/test'
  */
 export async function checkSiteReachable(
   url: string,
-  fetchImpl: typeof fetch = fetch
+  fetchImpl: typeof fetch = fetch,
+  context = 'smoke tests'
 ): Promise<void> {
   let detail: string
   try {
@@ -21,7 +22,7 @@ export async function checkSiteReachable(
     detail = code ? `${message}, ${code}` : message
   }
   throw new Error(
-    `StrataWP smoke tests: ${url} is not reachable (${detail}). ` +
+    `StrataWP ${context}: ${url} is not reachable (${detail}). ` +
       `Start WordPress first (for example: pnpm exec wp-env start) or set WP_BASE_URL.`
   )
 }

@@ -100,17 +100,17 @@ All three templates gain the `@stratawp/theme-review` dev dependency, a `review`
 
 ### B1. Capture (`@stratawp/testing`)
 
-`stratawp-screenshots capture [--routes=/,/blog] [--widths=1280,390] [--out=dir] [--base-url=url]`. Routes and widths default from `package.json` `stratawp.screenshots` (defaults: `/` and a known 404 route; widths 1280 and 390). Output defaults to `.stratawp/screenshots/` (added to `.gitignore`). Reuses `checkSiteReachable` so a down site gives one clear error. One failing route does not stop the others; the summary lists failures and the exit code is non-zero if any failed.
+`stratawp-screenshots capture [--routes=/,/blog] [--widths=1280,390] [--out=dir] [--base-url=url]`. Routes and widths default from `package.json` `stratawp.screenshots` (defaults: `/` and a known 404 route; widths 1280 and 390). Precedence is flag, then `package.json`, then the `WP_BASE_URL` environment variable (base URL only), then the defaults. Routes must be site paths starting with a single `/`; full URLs are rejected. Output defaults to `.stratawp/screenshots/` (added to `.gitignore`). Reuses `checkSiteReachable` so a down site gives one clear error. One failing route does not stop the others; the summary lists failures and the exit code is non-zero if any failed.
 
 ### B2. Compare (opt-in)
 
-- `createVisualConfig({ testDir, baseURL?, maxDiffPixelRatio? })` in `@stratawp/testing/config`: Chromium only, `toHaveScreenshot`, baselines under `e2e/visual/__screenshots__/`.
+- `createVisualConfig({ testDir, baseURL?, maxDiffPixelRatio? })` in `@stratawp/testing/config`: Chromium only, `toHaveScreenshot`, baselines under `e2e/visual/__screenshots__/`. The exact template is `snapshotPathTemplate: '{testDir}/__screenshots__/{testFileName}/{arg}{ext}'`, with `retries: 0` so a flaky diff is never retried into a pass.
 - A visual spec ships in the example theme and templates with a `test:visual` script. No baselines are committed in the PR.
 - `visual.yml` is dispatch-only with a `mode` input: `record` (writes baselines and uploads them as an artifact; the maintainer downloads and commits them) or `compare` (fails on a diff). Baselines are recorded on the CI runner so fonts match.
 
 ### B3. MCP, CLI, skill
 
-`@stratawp/mcp` gains `capture_screenshots({ baseUrl, routes?, widths? })`, which returns image content. Safety caps: at most six images per call, at most two widths, viewport-sized (not full-page) captures. The contract snapshot is regenerated. `stratawp screenshots` wraps the capture command. The `visual-checks` skill is added.
+`@stratawp/mcp` gains `capture_screenshots({ baseUrl, routes?, widths? })`, which returns image content. Safety caps: at most six images per call, at most two widths, viewport-sized (not full-page) captures. The contract snapshot is regenerated. `stratawp screenshots` wraps the capture command by running the theme's own `stratawp-screenshots` bin through `pnpm exec`. `capture_screenshots` writes no files. The `visual-checks` skill is added, with a copy in each of the three templates (byte-identical).
 
 ## Testing
 
@@ -120,6 +120,7 @@ All three templates gain the `@stratawp/theme-review` dev dependency, a `review`
 - **Self-check:** the six themes review with zero errors, in the blocking CI job.
 - **ai-setup:** records the type idempotently; the `claude` target does not overwrite an existing `CLAUDE.md`.
 - **MCP:** server tests for the new tools and a regenerated, in-sync contract snapshot.
+- **Visual-checks skill (B):** the three template copies are checked with `cmp`.
 - **Screenshots (B):** unit tests for route, width and output parsing, naming, and failure aggregation, with no browser. A capture step in `smoke.yml` runs once against wp-env and uploads the images; it fails the job if capture breaks. Compare mode can only be verified on CI (no Docker locally).
 
 ## Rollout order
@@ -131,6 +132,8 @@ PR 2 (ordered commits): capture command; visual factory, spec and `visual.yml`; 
 ## Release notes for the maintainer
 
 `@stratawp/theme-review` is a **new published package**. It needs the manual first publish from the maintainer's own Terminal (security-key approval), followed by the trusted-publisher entry with "Allow npm publish" ticked, before the release tag. Until the first release, `templateDependencies` carries a hand-stamped `^0.0.0` placeholder for the package; the release step re-stamps it. This is listed in the PR checklist from the start. `@stratawp/mcp` is private and is not published. The CLI cannot be released ahead of `@stratawp/theme-review`, because the templates pin it.
+
+PR 2 adds no new package. `@stratawp/testing`, `@stratawp/cli` and `create-stratawp` all bump **minor**. The templates pin the new `@stratawp/testing` range, so it must be on the registry before the CLI is published; `ci-publish.mjs` publishes alphabetically (cli first), and reordering it is a known follow-up. `visual.yml` can only be dispatched once it is on the default branch, so the first `record` run happens after merge, and the baselines it produces are committed afterwards.
 
 ## Risks
 
