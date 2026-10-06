@@ -7,11 +7,11 @@ License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Tags: full-site-editing, block-patterns, custom-colors, editor-style, wide-blocks
 
-An advanced theme with custom post types, advanced layouts, and extended functionality built on StrataWP
+An advanced theme with extended layouts and patterns that works with a companion plugin for portfolio, team, testimonial and case-study content types, built on StrataWP
 
 == Description ==
 
-StrataWP Advanced Theme extends the basic block theme with custom post types, flexible layouts and additional block patterns. It is aimed at portfolio and content-rich sites built on the StrataWP framework.
+StrataWP Advanced Theme extends the basic block theme with flexible layouts and additional block patterns. It works with the Strata Advanced Content companion plugin, which provides the portfolio, team, testimonial and case-study content types; without the plugin the theme still works and those content types are simply absent. It is aimed at portfolio and content-rich sites built on the StrataWP framework.
 
 == Installation ==
 

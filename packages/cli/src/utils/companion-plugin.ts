@@ -34,8 +34,14 @@ function defaultBundledDir(): string {
   return candidates.find((dir) => fs.pathExistsSync(dir)) ?? candidates[0]
 }
 
-export function manualInstallInstruction(): string {
-  return `Copy plugins/${COMPANION_PLUGIN_SLUG} from the StrataWP repository into wp-content/plugins and activate it.`
+/**
+ * Where to copy the plugin from. The scaffolder bundles it inside the
+ * installed `@stratawp/cli` package (which `create-stratawp` resolves, so this
+ * is the right path under npx too); repo users also have it at
+ * `plugins/<slug>`.
+ */
+export function manualInstallInstruction(bundledDir: string = defaultBundledDir()): string {
+  return `Copy ${bundledDir} (or plugins/${COMPANION_PLUGIN_SLUG} in the StrataWP repository) into wp-content/plugins and activate it.`
 }
 
 /**
@@ -58,22 +64,25 @@ export async function installCompanionPlugin(
   if (!wpRoot) {
     return {
       installed: false,
-      message: `No WordPress install was linked. ${manualInstallInstruction()}`,
+      message: `No WordPress install was linked. ${manualInstallInstruction(bundledDir)}`,
     }
   }
   if (!(await confirm())) {
-    return { installed: false, message: manualInstallInstruction() }
+    return { installed: false, message: manualInstallInstruction(bundledDir) }
   }
 
   const target = path.join(wpRoot, 'wp-content', 'plugins', COMPANION_PLUGIN_SLUG)
   if (await fs.pathExists(target)) {
     return {
       installed: false,
-      message: `A plugin already exists at ${target}; left it untouched. ${manualInstallInstruction()}`,
+      message: `A plugin already exists at ${target}; left it untouched. ${manualInstallInstruction(bundledDir)}`,
     }
   }
   if (!(await fs.pathExists(bundledDir))) {
-    return { installed: false, message: `Bundled plugin not found. ${manualInstallInstruction()}` }
+    return {
+      installed: false,
+      message: `Bundled plugin not found. ${manualInstallInstruction(bundledDir)}`,
+    }
   }
 
   try {
@@ -82,11 +91,29 @@ export async function installCompanionPlugin(
     const reason = error instanceof Error ? error.message : String(error)
     return {
       installed: false,
-      message: `Could not copy the plugin (${reason}). ${manualInstallInstruction()}`,
+      message: `Could not copy the plugin (${reason}). ${manualInstallInstruction(bundledDir)}`,
     }
   }
   return {
     installed: true,
     message: `Installed ${COMPANION_PLUGIN_SLUG} to ${target}. Activate it under Plugins.`,
   }
+}
+
+export interface SetupCompanionPluginOptions {
+  /** Bundled template directory name (for example `advanced-theme`). */
+  templateName: string
+  /** Links the theme to WordPress; resolves to the site root, or undefined when no link was made. */
+  link: () => Promise<string | undefined>
+  confirm: () => Promise<boolean>
+  install?: typeof installCompanionPlugin
+}
+
+/** Runs the linking step, then hands exactly its result to the installer. */
+export async function setupCompanionPlugin(
+  options: SetupCompanionPluginOptions
+): Promise<InstallCompanionPluginResult> {
+  const wpRoot = await options.link()
+  const install = options.install ?? installCompanionPlugin
+  return install({ wpRoot, templateName: options.templateName, confirm: options.confirm })
 }

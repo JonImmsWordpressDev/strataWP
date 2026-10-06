@@ -1,9 +1,14 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { installCompanionPlugin, COMPANION_PLUGIN_SLUG } from './utils/companion-plugin.js'
+import {
+  installCompanionPlugin,
+  setupCompanionPlugin,
+  manualInstallInstruction,
+  COMPANION_PLUGIN_SLUG,
+} from './utils/companion-plugin.js'
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..')
 const pluginDir = path.join(root, 'plugins', 'strata-advanced-content')
@@ -174,5 +179,68 @@ describe('installCompanionPlugin', () => {
     expect(result.message).toMatch(/already exists/i)
     expect(await fs.readFile(path.join(dest(), 'keep.txt'), 'utf8')).toBe('mine')
     expect(await fs.pathExists(path.join(dest(), 'strata-advanced-content.php'))).toBe(false)
+  })
+})
+
+describe('manualInstallInstruction', () => {
+  it('names the bundled directory and the repository path, not just the repository', () => {
+    const text = manualInstallInstruction('/cache/node_modules/@stratawp/cli/templates/plugins/x')
+    expect(text).toContain('/cache/node_modules/@stratawp/cli/templates/plugins/x')
+    expect(text).toContain(`plugins/${COMPANION_PLUGIN_SLUG} in the StrataWP repository`)
+  })
+
+  it('defaults to the real bundled directory', () => {
+    expect(manualInstallInstruction()).toContain(
+      path.join('templates', 'plugins', COMPANION_PLUGIN_SLUG)
+    )
+  })
+})
+
+describe('setupCompanionPlugin (create.ts wiring)', () => {
+  const confirm = async () => true
+  const result = { installed: false, message: 'x' }
+
+  it('passes the path the linking step returned to the installer', async () => {
+    const install = vi.fn(async () => result)
+    await setupCompanionPlugin({
+      templateName: 'advanced-theme',
+      link: async () => '/sites/demo',
+      confirm,
+      install,
+    })
+    expect(install).toHaveBeenCalledTimes(1)
+    expect(install).toHaveBeenCalledWith({
+      wpRoot: '/sites/demo',
+      templateName: 'advanced-theme',
+      confirm,
+    })
+  })
+
+  it('passes no path when linking was skipped or failed', async () => {
+    const install = vi.fn(async () => result)
+    await setupCompanionPlugin({
+      templateName: 'advanced-theme',
+      link: async () => undefined,
+      confirm,
+      install,
+    })
+    expect(install).toHaveBeenCalledWith(expect.objectContaining({ wpRoot: undefined }))
+  })
+
+  it('writes nothing and never asks when linking produced no site', async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'companion-wiring-'))
+    try {
+      const ask = vi.fn(async () => true)
+      const out = await setupCompanionPlugin({
+        templateName: 'advanced-theme',
+        link: async () => undefined,
+        confirm: ask,
+      })
+      expect(out.installed).toBe(false)
+      expect(ask).not.toHaveBeenCalled()
+      expect(await fs.readdir(tmp)).toEqual([])
+    } finally {
+      await fs.remove(tmp)
+    }
   })
 })

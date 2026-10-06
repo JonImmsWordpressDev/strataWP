@@ -10,7 +10,14 @@ import { dirname } from 'path'
 import validatePackageName from 'validate-npm-package-name'
 import { customizeTheme, type ThemeConfig } from './customize-theme.js'
 import { getCliVersion } from './version.js'
-import { installCompanionPlugin } from './utils/companion-plugin.js'
+import { setupCompanionPlugin } from './utils/companion-plugin.js'
+
+/** Bundled template directory for each template choice (`minimal` is built from scratch). */
+const TEMPLATE_DIRS = {
+  basic: 'basic-theme',
+  advanced: 'advanced-theme',
+  store: 'store-theme',
+} as const
 
 async function main() {
   console.log(chalk.bold.cyan('\n⚡ Create StrataWP Theme\n'))
@@ -136,13 +143,7 @@ async function createTheme(config: ThemeConfig) {
       const __dirname = dirname(__filename)
       const templatesDir = path.join(__dirname, '..', 'templates')
 
-      const templateMap = {
-        basic: 'basic-theme',
-        advanced: 'advanced-theme',
-        store: 'store-theme',
-      }
-
-      const templatePath = path.join(templatesDir, templateMap[config.template])
+      const templatePath = path.join(templatesDir, TEMPLATE_DIRS[config.template])
 
       // Copy template to destination
       await fs.copy(templatePath, themePath)
@@ -158,14 +159,10 @@ async function createTheme(config: ThemeConfig) {
 
     spinner.succeed(chalk.green('Theme created successfully!'))
 
-    // Offer to link to WordPress
-    const linkedSitePath = await offerWordPressLinking(themePath, config.slug)
-
-    // The advanced theme's content types live in a companion plugin
-    const templateNames = { basic: 'basic-theme', advanced: 'advanced-theme', store: 'store-theme' }
-    const companion = await installCompanionPlugin({
-      wpRoot: linkedSitePath,
-      templateName: templateNames[config.template as keyof typeof templateNames] ?? config.template,
+    // Offer to link to WordPress; the advanced theme's content types live in a companion plugin
+    const companion = await setupCompanionPlugin({
+      templateName: TEMPLATE_DIRS[config.template as keyof typeof TEMPLATE_DIRS] ?? config.template,
+      link: () => offerWordPressLinking(themePath, config.slug),
       confirm: async () => {
         const { install } = await prompts({
           type: 'confirm',

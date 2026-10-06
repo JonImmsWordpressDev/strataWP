@@ -2,7 +2,9 @@
 /**
  * StrataWP Advanced Theme
  *
- * An advanced theme with custom post types and extended functionality.
+ * An advanced theme with extended layouts and patterns. Its portfolio, team,
+ * testimonial and case-study content types come from the companion plugin
+ * (strata-advanced-content); the theme works without it.
  *
  * @package StrataAdvanced
  */
@@ -99,9 +101,6 @@ function strata_advanced_activate(): void {
 	// Set default theme mods
 	if ( ! get_theme_mod( 'strata_advanced_setup_complete' ) ) {
 		set_theme_mod( 'strata_advanced_setup_complete', true );
-
-		// Flush rewrite rules to register custom post types
-		flush_rewrite_rules();
 	}
 }
 
