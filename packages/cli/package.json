@@ -1,6 +1,6 @@
 {
   "name": "@stratawp/cli",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "CLI tool for StrataWP - create and manage WordPress themes",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
@@ -93,7 +93,7 @@
   "templateDependencies": {
     "@stratawp/vite-plugin": "^0.3.0",
     "@stratawp/stylelint-config": "^0.1.0",
-    "@stratawp/testing": "^0.2.0",
-    "@stratawp/theme-review": "^0.0.0"
+    "@stratawp/testing": "^0.3.0",
+    "@stratawp/theme-review": "^0.1.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@stratawp/theme-review",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Theme review checks for StrataWP themes, approximating the WordPress.org theme guidelines",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",

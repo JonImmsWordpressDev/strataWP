@@ -1,5 +1,15 @@
 # @stratawp/mcp
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [bf392c0]
+- Updated dependencies [b77730d]
+  - @stratawp/theme-review@0.1.0
+  - @stratawp/cli@2.3.0
+  - @stratawp/testing@0.3.0
+
 ## 0.1.6
 
 ### Patch Changes
