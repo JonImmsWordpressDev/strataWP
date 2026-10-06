@@ -36,6 +36,9 @@ Scaffold a full theme with one command, edit PHP/SCSS/TypeScript and see changes
 - **CLI Scaffolding** — generate blocks, components, templates, and parts.
 - **Design Systems** — Tailwind CSS or UnoCSS with WordPress preset mappings.
 - **Comprehensive Testing** — Vitest unit tests and Playwright E2E.
+- **Quality Gates** — a shared Stylelint preset, axe accessibility checks, cross-browser smoke tests (Chromium, Firefox, WebKit), and Lighthouse budgets in CI.
+- **Theme Review** — `pnpm review` checks a theme against an approximation of the WordPress.org theme guidelines and detects block, classic, or hybrid themes.
+- **Screenshots & Visual Checks** — capture screenshots of a running theme from the CLI or an AI agent, plus an opt-in visual compare gate.
 - **Component Explorer** — an interactive, Storybook-style component browser.
 - **Headless WordPress** — typed REST API client, React hooks, and Next.js integration.
 - **Production Deployment** — SFTP/FTP/SSH deployment with change detection.
@@ -64,58 +67,158 @@ npm install -g pnpm
 
 ## Quick Start (5 minutes)
 
-Go from zero to a running, hot-reloading WordPress theme by copy-pasting these steps.
+New to all this? Follow these steps in order, copy-pasting each command. Every step tells you what you should see when it worked.
 
-> **Warning:** Run these commands in a **projects folder** (e.g. `~/Projects`), **not** inside your WordPress `wp-content/themes/` directory. The CLI symlinks your theme into WordPress for you.
+> **Warning:** Run these commands in a **projects folder** (for example `~/Projects`), **not** inside your WordPress `wp-content/themes/` folder. StrataWP links your theme into WordPress for you.
 
-**1. Move to a projects folder (outside WordPress):**
+### Step 1: Check your tools (1 minute)
+
+Open a terminal and run:
+
+```bash
+node -v    # should print v18.18 or higher
+pnpm -v    # should print 8 or higher
+```
+
+- No Node.js? Install the LTS version from [nodejs.org](https://nodejs.org/), then open a new terminal.
+- No pnpm? Run `npm install -g pnpm`.
+- You also need a local WordPress site running (6.7 or higher). [Local by Flywheel](https://localwp.com/) is the easiest option and includes PHP. [MAMP](https://www.mamp.info/) and Docker work too.
+
+### Step 2: Create your theme
 
 ```bash
 mkdir -p ~/Projects
 cd ~/Projects
-```
-
-**2. Scaffold a new theme:**
-
-```bash
 npx create-stratawp@latest my-theme
 ```
 
-The interactive wizard guides you through:
+A short wizard asks you questions. If you are unsure, the first (recommended) answer is a good default:
 
-- Theme name, description, and author
-- **Template** — Basic, Advanced, Store, or Minimal
-- **CSS framework** — vanilla, Tailwind, UnoCSS, or Panda
-- **TypeScript** and optional **testing** setup
-- **WordPress linking** — auto-detects Local by Flywheel (`~/Local Sites/`) and MAMP (`/Applications/MAMP/htdocs/`) installs and creates the symlink for you
+| Question                         | What it means                                                                                             |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Theme name, description, author  | Shown in WordPress under Appearance → Themes.                                                             |
+| Template                         | **Basic** is the best starting point. Advanced adds custom post types. Store adds WooCommerce templates.  |
+| CSS framework                    | How you write styles: plain CSS, Tailwind, UnoCSS, or Panda. UnoCSS is recommended.                       |
+| TypeScript / testing             | Say yes to both if you are not sure.                                                                      |
+| Link to a WordPress installation | Pick your local site. StrataWP creates the link into `wp-content/themes/` so you never copy files around. |
 
-> **Note:** If no WordPress install is detected, link the theme manually:
+It installs the dependencies for you (`pnpm install` runs automatically). When it finishes you will see the next-step commands.
+
+> **Note:** If no WordPress install was detected, link the theme yourself:
 >
 > ```bash
-> ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
+> ln -s "$(pwd)/my-theme" /path/to/wordpress/wp-content/themes/my-theme
 > ```
 
-**3. Enter your theme and start the dev server:**
+### Step 3: Start the dev server
 
 ```bash
 cd my-theme
 pnpm dev
 ```
 
-Expected output: the Vite dev server starts on **http://localhost:3000**. Keep this terminal open — the dev server must run continuously for hot reload.
+You should see Vite start on **http://localhost:3000**. Leave this terminal open: it must keep running for live reload.
 
-> **If `pnpm dev` fails with "Port 3000 is already in use":** start it on another port with `pnpm dev --port 3001`.
+> **"Port 3000 is already in use"?** Run `pnpm dev --port 3001` instead.
 
-**4. Activate the theme in WordPress:**
+### Step 4: Activate the theme in WordPress
 
-- Open your local WordPress site in a browser.
-- Go to **Appearance → Themes**, find your theme, and click **Activate**.
+1. Open your local WordPress admin (for example `http://my-site.local/wp-admin`).
+2. Go to **Appearance → Themes**.
+3. Find your theme and click **Activate**.
+4. Visit the site. You are now looking at your StrataWP theme.
 
-**5. Make your first change:**
+### Step 5: Make your first change
 
-Edit a file in `src/scss/` or `templates/` and watch your browser update automatically. That's it — you're developing with StrataWP. 🎉
+Edit any file in `src/scss/` or `templates/`, save it, and watch the browser update by itself. That is the whole development loop.
 
-For a fuller walkthrough (including running the bundled example themes), see the **[Getting Started Guide](./GETTING_STARTED.md)** and the [Installation & Quick Start](https://github.com/JonImmsWordpressDev/strataWP/wiki/Installation-and-Quick-Start) wiki page.
+### Step 6: Build for production
+
+When you are happy with the result:
+
+```bash
+pnpm build
+```
+
+This writes the optimized files to `dist/`. The files WordPress needs in production are `dist/`, the PHP files, `theme.json`, `style.css` and `vendor/`.
+
+## Using StrataWP day to day
+
+Everything below runs inside your theme folder (`my-theme/`).
+
+### Install the `stratawp` command (optional, recommended)
+
+The generators and deployment tools live in the CLI. Install it once:
+
+```bash
+npm install -g @stratawp/cli
+stratawp --help
+```
+
+### Add things to your theme
+
+```bash
+stratawp block:new hero          # a Gutenberg block
+stratawp component:new Analytics # a PHP feature component
+stratawp template:new about      # a Full Site Editing template
+stratawp part:new sidebar        # a template part
+```
+
+Each command creates the files in the right folders and, for blocks, registers them automatically. Re-run `pnpm dev` if it was stopped.
+
+### Check your theme before you ship it
+
+| Command         | What it checks                                                                                            |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| `pnpm review`   | A theme review that approximates the WordPress.org theme guidelines. Errors fail it; warnings are advice. |
+| `pnpm lint:css` | Stylelint rules for nesting depth, specificity and custom-property names.                                 |
+| `pnpm ai:check` | Builds the theme and runs the review, the same gate AI agents use.                                        |
+| `pnpm test:e2e` | Cross-browser smoke tests against your running site (see below).                                          |
+
+`pnpm review` is a helper, not a certification: passing it does not guarantee that WordPress.org accepts your theme.
+
+To run the smoke tests against your local site, install the test browser once, then point the tests at your site's address:
+
+```bash
+pnpm exec playwright install chromium
+WP_BASE_URL=http://my-site.local pnpm test:e2e
+```
+
+### Take screenshots of your theme
+
+With your site running, capture the home page and a 404 page at desktop and phone widths:
+
+```bash
+pnpm exec playwright install chromium     # once
+pnpm exec stratawp-screenshots capture --base-url=http://my-site.local
+```
+
+The images land in `.stratawp/screenshots/` (add that folder to your `.gitignore`). Use `--routes=/,/blog` and `--widths=1280,390` to choose what to capture. The same thing is available as `stratawp screenshots`.
+
+Want a pass/fail visual check? `pnpm test:visual` compares pages against saved baseline images. It is opt-in and the baselines must be recorded first. See [AI tooling and visual checks](./docs/ai-tooling.md#screenshots-and-visual-checks) for the full steps.
+
+### Deploy
+
+```bash
+stratawp deploy:setup               # one-time questions (host, credentials)
+stratawp deploy production --dry-run   # preview what would change
+stratawp deploy production          # ship it (a snapshot is taken first)
+```
+
+If something goes wrong, `stratawp rollback:list` shows your snapshots. See the [Deployment guide](./docs/deployment/getting-started.md).
+
+### If something goes wrong
+
+| Problem                                        | Fix                                                                                           |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `stratawp: command not found`                  | Run `npm install -g @stratawp/cli`, then open a new terminal.                                 |
+| Theme missing in Appearance → Themes           | The link was not created. Use the `ln -s` command from Step 2.                                |
+| Page does not update when you edit             | Make sure `pnpm dev` is still running in a terminal.                                          |
+| `pnpm review` reports errors                   | Read the message: each one names the file and the rule. Fix the error and run it again.       |
+| Screenshots or smoke tests say "not reachable" | Your site is not running at that address. Start it, or pass `--base-url` / set `WP_BASE_URL`. |
+| "Could not start Chromium"                     | Run `pnpm exec playwright install chromium`.                                                  |
+
+More help: the [FAQ & Troubleshooting](https://github.com/JonImmsWordpressDev/strataWP/wiki/FAQ-and-Troubleshooting) wiki page and the full **[Getting Started Guide](./GETTING_STARTED.md)**.
 
 ## What you can do
 
@@ -132,6 +235,9 @@ Each capability links to its in-repo guide and matching wiki page.
 | **Set up a design system**     | `stratawp design-system:setup tailwind`                                         | [Blocks, Patterns & Design Systems](https://github.com/JonImmsWordpressDev/strataWP/wiki/Blocks-Patterns-and-Design-Systems) |
 | **Browse components visually** | `stratawp explorer`                                                             | [Architecture & Packages](https://github.com/JonImmsWordpressDev/strataWP/wiki/Architecture-and-Packages)                    |
 | **Run tests**                  | `pnpm test` · `pnpm test:e2e`                                                   | [Testing & Quality](https://github.com/JonImmsWordpressDev/strataWP/wiki/Testing-and-Quality)                                |
+| **Review a theme**             | `pnpm review` · `stratawp theme:review`                                         | [AI tooling](./docs/ai-tooling.md)                                                                                           |
+| **Capture screenshots**        | `stratawp screenshots` · `pnpm exec stratawp-screenshots capture`               | [AI tooling](./docs/ai-tooling.md#screenshots-and-visual-checks)                                                             |
+| **Visual compare (opt-in)**    | `pnpm test:visual`                                                              | [AI tooling](./docs/ai-tooling.md#screenshots-and-visual-checks)                                                             |
 | **Build a headless front-end** | `pnpm add @stratawp/headless`                                                   | [Headless WordPress](https://github.com/JonImmsWordpressDev/strataWP/wiki/Headless-WordPress)                                |
 | **Deploy to a server**         | `stratawp deploy:setup` · `stratawp deploy production`                          | [Deployment](https://github.com/JonImmsWordpressDev/strataWP/wiki/Deployment)                                                |
 | **Sync databases & templates** | `stratawp sync:db:pull production` · `stratawp sync:templates production --all` | [Environment Sync & Rollback](https://github.com/JonImmsWordpressDev/strataWP/wiki/Environment-Sync-and-Rollback)            |
@@ -177,7 +283,9 @@ StrataWP/
 │   ├── explorer/         # Interactive component browser
 │   ├── headless/         # REST API client, React hooks, Next.js integration
 │   ├── sync/             # Environment sync, snapshots, rollback
-│   ├── testing/          # Vitest and Playwright utilities
+│   ├── testing/          # Vitest and Playwright utilities, screenshots, visual compare
+│   ├── theme-review/     # Theme checker (WordPress.org guidelines, approximate)
+│   ├── stylelint-config/ # Shared Stylelint preset
 │   └── mcp/              # MCP server exposing generators to AI agents
 ├── examples/
 │   ├── basic-theme/      # General-purpose starter theme
@@ -358,7 +466,7 @@ Open [`.ai/developer-directions.md`](./.ai/developer-directions.md) and fill in 
 [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) lets AI tools call live capabilities instead of guessing. StrataWP ships two servers:
 
 - **Docs server** (`pnpm mcp:docs`) — dependency-free search over this repo's documentation (`stratawp_docs_search`, `stratawp_docs_read`).
-- **`@stratawp/mcp` package** — exposes the framework's generators and component catalog as tools/resources.
+- **`@stratawp/mcp` package** — exposes the framework's generators and component catalog as tools/resources, plus read-only `review_theme`, `detect_theme_type` and `capture_screenshots` tools (see [AI tooling](./docs/ai-tooling.md)).
 
 To register the docs server, add this to your tool's MCP config (e.g. `.mcp.json` for Claude Code, `.cursor/mcp.json` for Cursor):
 
@@ -408,20 +516,22 @@ Inspired by and built on:
 
 ## Published Packages
 
-| Package                                                                      | Description                                                              |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| [create-stratawp](https://www.npmjs.com/package/create-stratawp)             | One-command scaffolder — what `npx create-stratawp` runs                 |
-| [@stratawp/cli](https://www.npmjs.com/package/@stratawp/cli)                 | CLI tool (provides the `stratawp` command and bundles `create-stratawp`) |
-| [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin) | Vite plugin for WordPress                                                |
-| [@stratawp/sync](https://www.npmjs.com/package/@stratawp/sync)               | Environment sync, snapshots, rollback                                    |
-| [@stratawp/testing](https://www.npmjs.com/package/@stratawp/testing)         | Testing utilities (Vitest, Playwright)                                   |
-| [@stratawp/headless](https://www.npmjs.com/package/@stratawp/headless)       | Headless WordPress (REST client, React hooks, Next.js)                   |
-| [@stratawp/explorer](https://www.npmjs.com/package/@stratawp/explorer)       | Component explorer                                                       |
+| Package                                                                                | Description                                                              |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [create-stratawp](https://www.npmjs.com/package/create-stratawp)                       | One-command scaffolder — what `npx create-stratawp` runs                 |
+| [@stratawp/cli](https://www.npmjs.com/package/@stratawp/cli)                           | CLI tool (provides the `stratawp` command and bundles `create-stratawp`) |
+| [@stratawp/vite-plugin](https://www.npmjs.com/package/@stratawp/vite-plugin)           | Vite plugin for WordPress                                                |
+| [@stratawp/sync](https://www.npmjs.com/package/@stratawp/sync)                         | Environment sync, snapshots, rollback                                    |
+| [@stratawp/testing](https://www.npmjs.com/package/@stratawp/testing)                   | Testing utilities (Vitest, Playwright), screenshots, visual compare      |
+| [@stratawp/theme-review](https://www.npmjs.com/package/@stratawp/theme-review)         | Theme checker approximating the WordPress.org guidelines                 |
+| [@stratawp/stylelint-config](https://www.npmjs.com/package/@stratawp/stylelint-config) | Shared Stylelint preset                                                  |
+| [@stratawp/headless](https://www.npmjs.com/package/@stratawp/headless)                 | Headless WordPress (REST client, React hooks, Next.js)                   |
+| [@stratawp/explorer](https://www.npmjs.com/package/@stratawp/explorer)                 | Component explorer                                                       |
 
 The repository also includes `@stratawp/core` (the PHP framework) and `@stratawp/mcp` (an MCP server that exposes the scaffolding generators to AI agents). See [Architecture & Packages](https://github.com/JonImmsWordpressDev/strataWP/wiki/Architecture-and-Packages) for how everything fits together.
 
 ---
 
-**Current version:** v2.0.0 — see the [Changelog](./CHANGELOG.md) for details.
+See the [Changelog](./CHANGELOG.md) for the version history; the badges at the top show the latest published versions.
 
 Built with ❤️ by [Jon Imms](https://jonimms.com)
