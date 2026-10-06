@@ -296,3 +296,53 @@ describe.each(['', '日本語'])('customizeTheme with unusable author %j', (auth
     expect(readme).toContain(`\n${line}\n`)
   })
 })
+
+describe.each(['basic', 'advanced', 'store'] as const)(
+  'scaffolded %s theme review with unusual authors',
+  (template) => {
+    it.each(['Ada Lovelace', '', '日本語'])(
+      'reports 0 errors and 0 warnings for author %j',
+      async (author) => {
+        const { parent, themePath } = await scaffold(template, { author })
+        try {
+          const { reviewTheme } = await import('@stratawp/theme-review')
+          const report = reviewTheme(themePath)
+          expect(report.findings.map((f) => `${f.ruleId}: ${f.message}`)).toEqual([])
+          if (!author) {
+            const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+            expect(style).toMatch(/^Author: .+$/m)
+          }
+        } finally {
+          await fs.remove(parent)
+        }
+      }
+    )
+  }
+)
+
+describe('advanced template companion plugin slug', () => {
+  it('keeps strata-advanced-content while other strata-advanced tokens become the slug', async () => {
+    const { parent, themePath } = await scaffold('advanced', {})
+    try {
+      const texts: string[] = []
+      const walk = async (dir: string): Promise<void> => {
+        for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name)
+          if (entry.isDirectory()) await walk(full)
+          else if (/\.(php|md|txt|css|json|ts|tsx|html)$/.test(entry.name)) {
+            texts.push(await fs.readFile(full, 'utf-8'))
+          }
+        }
+      }
+      await walk(themePath)
+      const all = texts.join('\n')
+      expect(all).toContain('strata-advanced-content')
+      expect(all).not.toContain('acme-sons-content')
+      expect(all).not.toContain('acme_sons_content')
+      expect(all).not.toMatch(/strata-advanced(?!-content)/)
+      expect(all).toContain("'acme-sons'")
+    } finally {
+      await fs.remove(parent)
+    }
+  })
+})

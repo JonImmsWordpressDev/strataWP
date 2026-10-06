@@ -2,7 +2,7 @@
   "name": "stratawp-advanced-theme",
   "version": "1.0.0",
   "private": true,
-  "description": "Advanced theme with custom post types and extended functionality built with StrataWP",
+  "description": "Advanced theme with extended layouts that works with a companion plugin for portfolio, team, testimonial and case-study content, built with StrataWP",
   "author": "Jon Imms",
   "license": "GPL-3.0-or-later",
   "type": "module",

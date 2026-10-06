@@ -34,8 +34,12 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
     styleContent = styleContent
       .replace(/Theme Name:.*$/m, () => `Theme Name: ${config.name}`)
       .replace(/Description:.*$/m, () => `Description: ${config.description}`)
-      .replace(/Author:.*$/m, () => `Author: ${config.author}`)
       .replace(/Text Domain:.*$/m, () => `Text Domain: ${config.slug}`)
+    // An empty author keeps the template's Author and Author URI lines: a bare
+    // `Author:` header would make the theme review warn about a missing Author.
+    if (config.author) {
+      styleContent = styleContent.replace(/Author:.*$/m, () => `Author: ${config.author}`)
+    }
 
     await fs.writeFile(styleCssPath, styleContent)
   }

@@ -1,4 +1,4 @@
-import { mkdtemp, readFile } from 'node:fs/promises'
+import { cp, mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -404,13 +404,36 @@ describe('@stratawp/mcp theme review tools', () => {
   })
 
   it('review_theme with strict fails when warnings exist', async () => {
-    const result = await client.callTool({
-      name: 'review_theme',
-      arguments: { themeDir: BASIC_THEME_DIR, strict: true },
-    })
-    const report = result.structuredContent as { passed: boolean; summary: { warnings: number } }
-    expect(report.summary.warnings).toBeGreaterThan(0)
-    expect(report.passed).toBe(false)
+    // The shipped example is warning-free, so make exactly one warning on a copy.
+    const dir = await mkdtemp(join(tmpdir(), 'review-strict-'))
+    try {
+      const copy = join(dir, 'basic-theme')
+      await cp(BASIC_THEME_DIR, copy, {
+        recursive: true,
+        filter: (src) => !/[\\/](node_modules|vendor|dist)([\\/]|$)/.test(src),
+      })
+      await rm(join(copy, 'readme.txt'))
+      type Report = {
+        passed: boolean
+        summary: { errors: number; warnings: number }
+      }
+      const strict = await client.callTool({
+        name: 'review_theme',
+        arguments: { themeDir: copy, strict: true },
+      })
+      const strictReport = strict.structuredContent as Report
+      expect(strictReport.summary.errors).toBe(0)
+      expect(strictReport.summary.warnings).toBe(1)
+      expect(strictReport.passed).toBe(false)
+
+      const lenient = await client.callTool({
+        name: 'review_theme',
+        arguments: { themeDir: copy },
+      })
+      expect((lenient.structuredContent as Report).passed).toBe(true)
+    } finally {
+      await rm(dir, { recursive: true, force: true })
+    }
   })
 
   it('review_theme returns an error result for a missing directory', async () => {

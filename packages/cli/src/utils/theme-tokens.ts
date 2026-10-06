@@ -37,6 +37,12 @@ const TEXT_EXTENSIONS = new Set([
   '.txt',
 ])
 
+/**
+ * Names that start with a template token but are not the theme's own slug and
+ * must survive scaffolding unchanged (the companion plugin's folder name).
+ */
+const PROTECTED_NAMES = ['strata-advanced-content']
+
 /** Derive a PHP-identifier-safe prefix from a theme slug. */
 export function phpIdentifier(slug: string): string {
   return slug.replace(/[^a-zA-Z0-9_]/g, '_')
@@ -58,10 +64,18 @@ export async function replaceThemeTokens(
 
   for (const filePath of await listTextFiles(themePath)) {
     const content = await fs.readFile(filePath, 'utf-8')
+    // Swap protected names for placeholders (no template token inside them),
+    // replace the tokens, then put the protected names back.
     let updated = content
+    PROTECTED_NAMES.forEach((name, i) => {
+      updated = updated.split(name).join(`\u0000protected-${i}\u0000`)
+    })
     for (const [from, to] of replacements) {
       updated = updated.split(from).join(to)
     }
+    PROTECTED_NAMES.forEach((name, i) => {
+      updated = updated.split(`\u0000protected-${i}\u0000`).join(name)
+    })
     if (updated !== content) {
       await fs.writeFile(filePath, updated)
     }

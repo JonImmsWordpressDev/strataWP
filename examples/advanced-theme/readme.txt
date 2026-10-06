@@ -11,7 +11,7 @@ An advanced theme with extended layouts and patterns that works with a companion
 
 == Description ==
 
-StrataWP Advanced Theme extends the basic block theme with flexible layouts and additional block patterns. It works with the Strata Advanced Content companion plugin, which provides the portfolio, team, testimonial and case-study content types; without the plugin the theme still works and those content types are simply absent. It is aimed at portfolio and content-rich sites built on the StrataWP framework.
+StrataWP Advanced Theme extends the basic block theme with flexible layouts and additional block patterns. It works with the StrataWP Advanced Content companion plugin, which provides the portfolio, team, testimonial and case-study content types; without the plugin the theme still works and those content types are simply absent. It is aimed at portfolio and content-rich sites built on the StrataWP framework.
 
 == Installation ==
 

@@ -594,11 +594,7 @@ This creates: `parts/custom-header.html`
 
 ### Create a Block Pattern
 
-```bash
-stratawp pattern:new hero-banner --category=featured
-```
-
-Then edit `patterns/hero-banner.php`:
+There is no pattern generator: add a PHP file to `patterns/` by hand, with a header comment. The slug must start with your theme's slug (the review checks this), for example `patterns/hero-banner.php`:
 
 ```php
 <?php
