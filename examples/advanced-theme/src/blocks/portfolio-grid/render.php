@@ -14,6 +14,11 @@ $category       = $attributes['category'] ?? '';
 $block_orderby  = $attributes['orderBy'] ?? 'date';
 $block_order    = $attributes['order'] ?? 'DESC';
 
+// The portfolio post type comes from the strata-advanced-content companion plugin.
+if ( ! post_type_exists( 'portfolio' ) ) {
+	return;
+}
+
 $args = array(
 	'post_type'      => 'portfolio',
 	'posts_per_page' => $posts_per_page,

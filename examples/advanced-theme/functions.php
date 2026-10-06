@@ -26,7 +26,6 @@ use StrataWP\Components\Performance;
 use StrataWP\Components\Fonts;
 use StrataAdvanced\Components\Navigation;
 use StrataAdvanced\Components\Customizer;
-use StrataAdvanced\Components\CustomPostTypes;
 use StrataAdvanced\Components\AdvancedLayouts;
 use StrataAdvanced\Components\MetaBoxes;
 
@@ -44,7 +43,6 @@ function strata_advanced_init(): void {
 			new Fonts(),
 			new Navigation(),
 			new Customizer(),
-			new CustomPostTypes(),
 			new AdvancedLayouts(),
 			new MetaBoxes(),
 		)

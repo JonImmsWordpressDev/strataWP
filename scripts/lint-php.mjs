@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Runs the core-provided phpcs binary against each cleaned theme location
+// Runs the core-provided phpcs binary against each cleaned theme (and companion plugin) location
 // using that location's phpcs.xml.dist. Locations are added as they are
 // brought to green (spec: "turn the gate on per-location").
 import { execFileSync } from 'node:child_process'
@@ -18,6 +18,7 @@ const LOCATIONS = [
   'examples/store-theme',
   'packages/cli/templates/advanced-theme',
   'examples/advanced-theme',
+  'plugins/strata-advanced-content',
 ]
 
 if (!existsSync(phpcs)) {

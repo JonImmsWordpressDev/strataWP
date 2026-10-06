@@ -2,6 +2,12 @@
 
 An advanced Block Theme (FSE) built on the Frost design system, showcasing the StrataWP framework with modern development tools and advanced features. Perfect for complex sites, agencies, and production use.
 
+## Content types come from a companion plugin
+
+The portfolio, team, testimonial and case-study content types are registered by the `strata-advanced-content` companion plugin, not by the theme, so they survive a theme switch. Without the plugin the theme still works; the portfolio and team blocks render nothing.
+
+`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy `plugins/strata-advanced-content` from the StrataWP repository into `wp-content/plugins` and activate it under Plugins.
+
 ## Features
 
 ### Frost Design System Integration

@@ -13,6 +13,11 @@ $posts_per_page = $attributes['postsPerPage'] ?? -1;
 $department     = $attributes['department'] ?? '';
 $show_bio       = $attributes['showBio'] ?? true;
 
+// The team post type comes from the strata-advanced-content companion plugin.
+if ( ! post_type_exists( 'team' ) ) {
+	return;
+}
+
 $args = array(
 	'post_type'      => 'team',
 	'posts_per_page' => $posts_per_page,

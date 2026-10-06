@@ -2,6 +2,12 @@
 
 A professional Block Theme (FSE) showcasing the StrataWP framework with modern development tools. Perfect for blogs, business sites, and learning StrataWP.
 
+## Content types come from a companion plugin
+
+The portfolio, team, testimonial and case-study content types are registered by the `strata-advanced-content` companion plugin, not by the theme, so they survive a theme switch. Without the plugin the theme still works; the portfolio and team blocks render nothing.
+
+`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy `plugins/strata-advanced-content` from the StrataWP repository into `wp-content/plugins` and activate it under Plugins.
+
 ## Features
 
 ### Design System Integration

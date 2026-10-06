@@ -10,6 +10,7 @@ import { dirname } from 'path'
 import validatePackageName from 'validate-npm-package-name'
 import { customizeTheme, type ThemeConfig } from './customize-theme.js'
 import { getCliVersion } from './version.js'
+import { installCompanionPlugin } from './utils/companion-plugin.js'
 
 async function main() {
   console.log(chalk.bold.cyan('\n⚡ Create StrataWP Theme\n'))
@@ -158,7 +159,31 @@ async function createTheme(config: ThemeConfig) {
     spinner.succeed(chalk.green('Theme created successfully!'))
 
     // Offer to link to WordPress
-    await offerWordPressLinking(themePath, config.slug)
+    const linkedSitePath = await offerWordPressLinking(themePath, config.slug)
+
+    // The advanced theme's content types live in a companion plugin
+    const templateNames = { basic: 'basic-theme', advanced: 'advanced-theme', store: 'store-theme' }
+    const companion = await installCompanionPlugin({
+      wpRoot: linkedSitePath,
+      templateName: templateNames[config.template as keyof typeof templateNames] ?? config.template,
+      confirm: async () => {
+        const { install } = await prompts({
+          type: 'confirm',
+          name: 'install',
+          message:
+            'Install the companion plugin (portfolio, team, testimonial and case-study content types) into this WordPress site?',
+          initial: true,
+        })
+        return Boolean(install)
+      },
+    })
+    if (config.template === 'advanced') {
+      console.log(
+        companion.installed
+          ? chalk.green(`\n✓ ${companion.message}`)
+          : chalk.dim(`\n${companion.message}`)
+      )
+    }
 
     console.log(chalk.cyan('\n📦 Next steps:\n'))
     console.log(`  cd ${config.slug}`)
@@ -171,7 +196,8 @@ async function createTheme(config: ThemeConfig) {
   }
 }
 
-async function offerWordPressLinking(themePath: string, slug: string) {
+/** Returns the linked site's root path, or undefined when no link was created. */
+async function offerWordPressLinking(themePath: string, slug: string): Promise<string | undefined> {
   console.log()
   const { shouldLink } = await prompts({
     type: 'confirm',
@@ -181,7 +207,7 @@ async function offerWordPressLinking(themePath: string, slug: string) {
   })
 
   if (!shouldLink) {
-    return
+    return undefined
   }
 
   const wordpressSites = await detectWordPressSites()
@@ -190,7 +216,7 @@ async function offerWordPressLinking(themePath: string, slug: string) {
     console.log(chalk.yellow('\n⚠️  No WordPress installations detected automatically.'))
     console.log(chalk.dim('You can manually create a symlink later:\n'))
     console.log(chalk.dim(`  ln -s "${themePath}" /path/to/wordpress/wp-content/themes/${slug}\n`))
-    return
+    return undefined
   }
 
   const { selectedSite } = await prompts({
@@ -205,7 +231,7 @@ async function offerWordPressLinking(themePath: string, slug: string) {
   })
 
   if (!selectedSite) {
-    return
+    return undefined
   }
 
   try {
@@ -214,13 +240,14 @@ async function offerWordPressLinking(themePath: string, slug: string) {
     // Check if target already exists
     if (await fs.pathExists(targetPath)) {
       console.log(chalk.yellow(`\n⚠️  Theme already exists at ${targetPath}`))
-      return
+      return undefined
     }
 
     // Create symlink
     await fs.ensureSymlink(themePath, targetPath)
     console.log(chalk.green(`\n✓ Linked theme to ${selectedSite.name}`))
     console.log(chalk.dim(`  ${targetPath}`))
+    return selectedSite.path
   } catch (error) {
     console.log(chalk.red('\n✖ Failed to create symlink'))
     console.log(chalk.dim('You can manually create it:\n'))
@@ -230,6 +257,8 @@ async function offerWordPressLinking(themePath: string, slug: string) {
       )
     )
   }
+
+  return undefined
 }
 
 interface WordPressSite {

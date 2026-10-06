@@ -19,6 +19,10 @@ StrataWP Advanced Theme extends the basic block theme with custom post types, fl
 2. Click Upload Theme and choose the theme zip file.
 3. Click Install Now, then Activate.
 
+== Companion plugin ==
+
+The portfolio, team, testimonial and case-study content types are registered by the StrataWP Advanced Content companion plugin (strata-advanced-content), not by this theme. The theme works without it; the portfolio and team blocks render nothing until it is active. To install it, copy the strata-advanced-content folder into wp-content/plugins and activate it under Plugins.
+
 == Changelog ==
 
 = 1.0.0 =

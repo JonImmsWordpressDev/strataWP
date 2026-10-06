@@ -154,6 +154,11 @@ class AdvancedLayouts implements ComponentInterface {
 	 * @return string Portfolio grid HTML.
 	 */
 	public static function get_portfolio_grid( array $args = array() ): string {
+		// The portfolio post type comes from the strata-advanced-content companion plugin.
+		if ( ! post_type_exists( 'portfolio' ) ) {
+			return '';
+		}
+
 		$defaults = array(
 			'post_type'      => 'portfolio',
 			'posts_per_page' => 9,
@@ -230,6 +235,11 @@ class AdvancedLayouts implements ComponentInterface {
 	 * @return string Team grid HTML.
 	 */
 	public static function get_team_grid( array $args = array() ): string {
+		// The team post type comes from the strata-advanced-content companion plugin.
+		if ( ! post_type_exists( 'team' ) ) {
+			return '';
+		}
+
 		$defaults = array(
 			'post_type'      => 'team',
 			'posts_per_page' => -1,
