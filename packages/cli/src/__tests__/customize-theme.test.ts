@@ -217,46 +217,82 @@ describe('customizeTheme without a readme.txt', () => {
   })
 })
 
-describe.each(['basic', 'advanced', 'store'] as const)(
-  'customizeTheme special characters (%s)',
-  (template) => {
-    const config: ThemeConfig = {
-      name: 'Acme & Sons (Pty) Ltd.',
-      slug: 'acme-sons',
-      description: 'Costs $& more, $1 and \'quotes\' "dq" $$',
-      author: 'Zoë Ünal-Smith',
-      template,
-      cssFramework: 'vanilla',
-      typescript: true,
-      testing: false,
-    }
-    let parent: string
-    let themePath: string
-
-    beforeAll(async () => {
-      parent = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-special-'))
-      themePath = path.join(parent, config.slug)
-      await fs.copy(path.join(__dirname, '..', '..', 'templates', `${template}-theme`), themePath, {
-        filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
-      })
-      await customizeTheme(themePath, config)
-    })
-
-    afterAll(async () => {
-      await fs.remove(parent)
-    })
-
-    it('writes name, description and author verbatim to style.css and readme.txt', async () => {
-      const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
-      const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
-      expect(style).toContain(`\nTheme Name: ${config.name}\n`)
-      expect(style).toContain(`\nDescription: ${config.description}\n`)
-      expect(style).toContain(`\nAuthor: ${config.author}\n`)
-      expect(readme).toContain(`=== ${config.name} ===`)
-      expect(readme).toContain(`\n\n${config.description}\n`)
-      expect(readme).toContain(`\n${config.name} is distributed under`)
-      // The non-ASCII characters drop out of the slug rather than leaking in.
-      expect(readme).toMatch(/^Contributors: zonal-smith$/m)
-    })
-  }
+const SPECIAL_NAMES = ['Acme & Sons (Pty) Ltd.', "Cost $& $' Co"]
+const TEMPLATES = ['basic', 'advanced', 'store'] as const
+const CASES = TEMPLATES.flatMap((template) =>
+  SPECIAL_NAMES.map((name) => [template, name] as const)
 )
+
+async function scaffold(template: (typeof TEMPLATES)[number], overrides: Partial<ThemeConfig>) {
+  const parent = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-special-'))
+  const themePath = path.join(parent, 'acme-sons')
+  await fs.copy(path.join(__dirname, '..', '..', 'templates', `${template}-theme`), themePath, {
+    filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+  })
+  await customizeTheme(themePath, {
+    name: 'Acme',
+    slug: 'acme-sons',
+    description: 'Costs $& more, $1 and \'quotes\' "dq" $$',
+    author: 'Zoë Ünal-Smith',
+    template,
+    cssFramework: 'vanilla',
+    typescript: true,
+    testing: false,
+    ...overrides,
+  })
+  return { parent, themePath }
+}
+
+describe.each(CASES)('customizeTheme special characters (%s, %s)', (template, name) => {
+  const description = 'Costs $& more, $1 and \'quotes\' "dq" $$'
+  const author = 'Zoë Ünal-Smith'
+  let parent: string
+  let themePath: string
+
+  beforeAll(async () => {
+    ;({ parent, themePath } = await scaffold(template, { name, description, author }))
+  })
+
+  afterAll(async () => {
+    await fs.remove(parent)
+  })
+
+  it('writes name, description and author verbatim to style.css, readme.txt and README.md', async () => {
+    const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+    const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+    const readmeMd = await fs.readFile(path.join(themePath, 'README.md'), 'utf-8')
+    expect(style).toContain(`\nTheme Name: ${name}\n`)
+    expect(style).toContain(`\nDescription: ${description}\n`)
+    expect(style).toContain(`\nAuthor: ${author}\n`)
+    expect(readme).toContain(`=== ${name} ===`)
+    expect(readme).toContain(`\n\n${description}\n`)
+    expect(readme).toContain(`\n${name} is distributed under`)
+    expect(readmeMd).toMatch(new RegExp(`^# ${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm'))
+    // The non-ASCII characters drop out of the slug rather than leaking in.
+    expect(readme).toMatch(/^Contributors: zonal-smith$/m)
+  })
+})
+
+describe.each(['', '日本語'])('customizeTheme with unusable author %j', (author) => {
+  let parent: string
+  let themePath: string
+
+  beforeAll(async () => {
+    ;({ parent, themePath } = await scaffold('basic', { author }))
+  })
+
+  afterAll(async () => {
+    await fs.remove(parent)
+  })
+
+  it("keeps the template's Contributors line", async () => {
+    const template = await fs.readFile(
+      path.join(__dirname, '..', '..', 'templates', 'basic-theme', 'readme.txt'),
+      'utf-8'
+    )
+    const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+    const line = template.match(/^Contributors:.*$/m)?.[0]
+    expect(line).toBeTruthy()
+    expect(readme).toContain(`\n${line}\n`)
+  })
+})

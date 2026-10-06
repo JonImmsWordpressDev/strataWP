@@ -104,7 +104,7 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
   if (await fs.pathExists(readmePath)) {
     let readmeContent = await fs.readFile(readmePath, 'utf-8')
     // Replace the first heading with the new theme name
-    readmeContent = readmeContent.replace(/^#\s+.*$/m, `# ${config.name}`)
+    readmeContent = readmeContent.replace(/^#\s+.*$/m, () => `# ${config.name}`)
     await fs.writeFile(readmePath, readmeContent)
   }
 
@@ -112,7 +112,10 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
   const viteConfigPath = path.join(themePath, 'vite.config.ts')
   if (await fs.pathExists(viteConfigPath)) {
     let viteConfig = await fs.readFile(viteConfigPath, 'utf-8')
-    viteConfig = viteConfig.replace(/namespace:\s*['"][\w-]+['"]/, `namespace: '${config.slug}'`)
+    viteConfig = viteConfig.replace(
+      /namespace:\s*['"][\w-]+['"]/,
+      () => `namespace: '${config.slug}'`
+    )
     await fs.writeFile(viteConfigPath, viteConfig)
   }
 }
