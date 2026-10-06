@@ -32,12 +32,41 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
 
     // Replace theme metadata
     styleContent = styleContent
-      .replace(/Theme Name:.*$/m, `Theme Name: ${config.name}`)
-      .replace(/Description:.*$/m, `Description: ${config.description}`)
-      .replace(/Author:.*$/m, `Author: ${config.author}`)
-      .replace(/Text Domain:.*$/m, `Text Domain: ${config.slug}`)
+      .replace(/Theme Name:.*$/m, () => `Theme Name: ${config.name}`)
+      .replace(/Description:.*$/m, () => `Description: ${config.description}`)
+      .replace(/Text Domain:.*$/m, () => `Text Domain: ${config.slug}`)
+    // An empty author keeps the template's Author and Author URI lines: a bare
+    // `Author:` header would make the theme review warn about a missing Author.
+    if (config.author) {
+      styleContent = styleContent.replace(/Author:.*$/m, () => `Author: ${config.author}`)
+    }
 
     await fs.writeFile(styleCssPath, styleContent)
+  }
+
+  // Keep the WordPress.org readme.txt in step with style.css. The template's
+  // title and short description (the first paragraph after the header block)
+  // are read from the file itself so no per-template strings are hardcoded.
+  const wpReadmePath = path.join(themePath, 'readme.txt')
+  if (await fs.pathExists(wpReadmePath)) {
+    let wpReadme = await fs.readFile(wpReadmePath, 'utf-8')
+    const templateName = wpReadme.match(/^=== (.+) ===$/m)?.[1]
+    const shortDescription = wpReadme.match(/^Tags:.*\r?\n\r?\n(.+)$/m)?.[1]
+    // WordPress.org usernames are ASCII; when nothing usable remains (empty or
+    // non-ASCII author) the template's Contributors line is left as is.
+    const authorSlug = config.author.toLowerCase().replace(/[^a-z0-9-]/g, '')
+
+    if (templateName) {
+      wpReadme = wpReadme.split(templateName).join(config.name)
+    }
+    if (shortDescription) {
+      wpReadme = wpReadme.replace(shortDescription, () => config.description)
+    }
+    if (authorSlug) {
+      wpReadme = wpReadme.replace(/^Contributors:.*$/m, () => `Contributors: ${authorSlug}`)
+    }
+
+    await fs.writeFile(wpReadmePath, wpReadme)
   }
 
   // Update package.json with user's info
@@ -79,7 +108,7 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
   if (await fs.pathExists(readmePath)) {
     let readmeContent = await fs.readFile(readmePath, 'utf-8')
     // Replace the first heading with the new theme name
-    readmeContent = readmeContent.replace(/^#\s+.*$/m, `# ${config.name}`)
+    readmeContent = readmeContent.replace(/^#\s+.*$/m, () => `# ${config.name}`)
     await fs.writeFile(readmePath, readmeContent)
   }
 
@@ -87,7 +116,10 @@ export async function customizeTheme(themePath: string, config: ThemeConfig) {
   const viteConfigPath = path.join(themePath, 'vite.config.ts')
   if (await fs.pathExists(viteConfigPath)) {
     let viteConfig = await fs.readFile(viteConfigPath, 'utf-8')
-    viteConfig = viteConfig.replace(/namespace:\s*['"][\w-]+['"]/, `namespace: '${config.slug}'`)
+    viteConfig = viteConfig.replace(
+      /namespace:\s*['"][\w-]+['"]/,
+      () => `namespace: '${config.slug}'`
+    )
     await fs.writeFile(viteConfigPath, viteConfig)
   }
 }

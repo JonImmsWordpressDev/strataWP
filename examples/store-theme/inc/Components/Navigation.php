@@ -2,10 +2,10 @@
 /**
  * Navigation Component
  *
- * @package StrataBasic
+ * @package StrataStore
  */
 
-namespace StrataBasic\Components;
+namespace StrataStore\Components;
 
 use StrataWP\ComponentInterface;
 

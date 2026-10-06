@@ -107,7 +107,19 @@ describe('customizeTheme', () => {
       const { reviewTheme } = await import('@stratawp/theme-review')
       const report = reviewTheme(themePath)
       expect(report.summary.errors).toBe(0)
-      expect(report.findings.length).toBeGreaterThan(0)
+      // The CLI templates are classified hybrid (block theme plus PHP includes).
+      expect(report.themeType).toBe('hybrid')
+      expect(report.typeSource).toBe('detected')
+
+      // Negative control on a copy: the rules must demonstrably run on a
+      // scaffolded directory, so removing readme.txt has to surface a finding.
+      const copy = path.join(path.dirname(themePath), 'review-control')
+      await fs.copy(themePath, copy, {
+        filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+      })
+      await fs.remove(path.join(copy, 'readme.txt'))
+      const control = reviewTheme(copy)
+      expect(control.findings.map((f) => f.message)).toContain('readme.txt is missing')
     })
   })
 
@@ -123,5 +135,214 @@ describe('customizeTheme', () => {
       r.warnings.map((w) => `${path.relative(themePath, r.source ?? '')}: ${w.rule}`)
     )
     expect(problems).toEqual([])
+  })
+})
+
+describe.each(['basic', 'advanced', 'store'] as const)(
+  'customizeTheme readme.txt (%s)',
+  (template) => {
+    let parent: string
+    let themePath: string
+
+    const config: ThemeConfig = {
+      name: 'Acme Studio Theme',
+      slug: 'acme-studio',
+      description: 'A custom description for the readme test',
+      author: 'Ada Lovelace',
+      template,
+      cssFramework: 'vanilla',
+      typescript: true,
+      testing: false,
+    }
+
+    beforeAll(async () => {
+      parent = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-readme-'))
+      themePath = path.join(parent, config.slug)
+      await fs.copy(path.join(__dirname, '..', '..', 'templates', `${template}-theme`), themePath, {
+        filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+      })
+      await customizeTheme(themePath, config)
+    })
+
+    afterAll(async () => {
+      await fs.remove(parent)
+    })
+
+    it('rewrites the title, description, contributors and copyright name', async () => {
+      const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+      expect(readme).toMatch(/^=== Acme Studio Theme ===$/m)
+      expect(readme).toMatch(/^Contributors: adalovelace$/m)
+      expect(readme).toMatch(/^Tags:.*\n\nA custom description for the readme test\n/m)
+      expect(readme).toMatch(/^Acme Studio Theme is distributed under the terms/m)
+    })
+
+    it('leaves the compatibility and license headers equal to style.css', async () => {
+      const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+      const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+      for (const field of [
+        'Requires at least',
+        'Tested up to',
+        'Requires PHP',
+        'License',
+        'License URI',
+      ]) {
+        const value = style.match(new RegExp(`^${field}:\\s*(.+)$`, 'm'))?.[1]?.trim()
+        expect(value).toBeTruthy()
+        expect(readme).toContain(`\n${field}: ${value}\n`)
+      }
+    })
+  }
+)
+
+describe('customizeTheme without a readme.txt', () => {
+  it('does not fail on templates that lack one', async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-noreadme-'))
+    try {
+      await fs.writeFile(path.join(dir, 'style.css'), '/*\nTheme Name: X\n*/\n')
+      await expect(
+        customizeTheme(dir, {
+          name: 'Y',
+          slug: 'y',
+          description: 'd',
+          author: 'a',
+          template: 'minimal',
+          cssFramework: 'vanilla',
+          typescript: true,
+          testing: false,
+        })
+      ).resolves.toBeUndefined()
+    } finally {
+      await fs.remove(dir)
+    }
+  })
+})
+
+const SPECIAL_NAMES = ['Acme & Sons (Pty) Ltd.', "Cost $& $' Co"]
+const TEMPLATES = ['basic', 'advanced', 'store'] as const
+const CASES = TEMPLATES.flatMap((template) =>
+  SPECIAL_NAMES.map((name) => [template, name] as const)
+)
+
+async function scaffold(template: (typeof TEMPLATES)[number], overrides: Partial<ThemeConfig>) {
+  const parent = await fs.mkdtemp(path.join(os.tmpdir(), 'stratawp-special-'))
+  const themePath = path.join(parent, 'acme-sons')
+  await fs.copy(path.join(__dirname, '..', '..', 'templates', `${template}-theme`), themePath, {
+    filter: (src) => !src.split(path.sep).some((part) => SKIP_DIRS.has(part)),
+  })
+  await customizeTheme(themePath, {
+    name: 'Acme',
+    slug: 'acme-sons',
+    description: 'Costs $& more, $1 and \'quotes\' "dq" $$',
+    author: 'Zoë Ünal-Smith',
+    template,
+    cssFramework: 'vanilla',
+    typescript: true,
+    testing: false,
+    ...overrides,
+  })
+  return { parent, themePath }
+}
+
+describe.each(CASES)('customizeTheme special characters (%s, %s)', (template, name) => {
+  const description = 'Costs $& more, $1 and \'quotes\' "dq" $$'
+  const author = 'Zoë Ünal-Smith'
+  let parent: string
+  let themePath: string
+
+  beforeAll(async () => {
+    ;({ parent, themePath } = await scaffold(template, { name, description, author }))
+  })
+
+  afterAll(async () => {
+    await fs.remove(parent)
+  })
+
+  it('writes name, description and author verbatim to style.css, readme.txt and README.md', async () => {
+    const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+    const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+    const readmeMd = await fs.readFile(path.join(themePath, 'README.md'), 'utf-8')
+    expect(style).toContain(`\nTheme Name: ${name}\n`)
+    expect(style).toContain(`\nDescription: ${description}\n`)
+    expect(style).toContain(`\nAuthor: ${author}\n`)
+    expect(readme).toContain(`=== ${name} ===`)
+    expect(readme).toContain(`\n\n${description}\n`)
+    expect(readme).toContain(`\n${name} is distributed under`)
+    expect(readmeMd).toMatch(new RegExp(`^# ${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm'))
+    // The non-ASCII characters drop out of the slug rather than leaking in.
+    expect(readme).toMatch(/^Contributors: zonal-smith$/m)
+  })
+})
+
+describe.each(['', '日本語'])('customizeTheme with unusable author %j', (author) => {
+  let parent: string
+  let themePath: string
+
+  beforeAll(async () => {
+    ;({ parent, themePath } = await scaffold('basic', { author }))
+  })
+
+  afterAll(async () => {
+    await fs.remove(parent)
+  })
+
+  it("keeps the template's Contributors line", async () => {
+    const template = await fs.readFile(
+      path.join(__dirname, '..', '..', 'templates', 'basic-theme', 'readme.txt'),
+      'utf-8'
+    )
+    const readme = await fs.readFile(path.join(themePath, 'readme.txt'), 'utf-8')
+    const line = template.match(/^Contributors:.*$/m)?.[0]
+    expect(line).toBeTruthy()
+    expect(readme).toContain(`\n${line}\n`)
+  })
+})
+
+describe.each(['basic', 'advanced', 'store'] as const)(
+  'scaffolded %s theme review with unusual authors',
+  (template) => {
+    it.each(['Ada Lovelace', '', '日本語'])(
+      'reports 0 errors and 0 warnings for author %j',
+      async (author) => {
+        const { parent, themePath } = await scaffold(template, { author })
+        try {
+          const { reviewTheme } = await import('@stratawp/theme-review')
+          const report = reviewTheme(themePath)
+          expect(report.findings.map((f) => `${f.ruleId}: ${f.message}`)).toEqual([])
+          if (!author) {
+            const style = await fs.readFile(path.join(themePath, 'style.css'), 'utf-8')
+            expect(style).toMatch(/^Author: .+$/m)
+          }
+        } finally {
+          await fs.remove(parent)
+        }
+      }
+    )
+  }
+)
+
+describe('advanced template companion plugin slug', () => {
+  it('keeps strata-advanced-content while other strata-advanced tokens become the slug', async () => {
+    const { parent, themePath } = await scaffold('advanced', {})
+    try {
+      const texts: string[] = []
+      const walk = async (dir: string): Promise<void> => {
+        for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name)
+          if (entry.isDirectory()) await walk(full)
+          else if (/\.(php|md|txt|css|json|ts|tsx|html)$/.test(entry.name)) {
+            texts.push(await fs.readFile(full, 'utf-8'))
+          }
+        }
+      }
+      await walk(themePath)
+      const all = texts.join('\n')
+      expect(all).toContain('strata-advanced-content')
+      expect(all).not.toContain('acme-sons-content')
+      expect(all).not.toContain('acme_sons_content')
+      expect(all).not.toMatch(/strata-advanced(?!-content)/)
+      expect(all).toContain("'acme-sons'")
+    } finally {
+      await fs.remove(parent)
+    }
   })
 })

@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: Grid of posts in three columns.
- * Slug: strata-basic/posts-grid
+ * Slug: strata-store/posts-grid
  * Categories: posts
  * Block Types: core/query
  */

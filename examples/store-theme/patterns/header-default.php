@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: Header with site title, navigation.
- * Slug: strata-basic/header-default
+ * Slug: strata-store/header-default
  * Categories: header
  * Block Types: core/template-part/header
  */

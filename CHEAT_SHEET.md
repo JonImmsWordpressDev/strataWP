@@ -13,13 +13,14 @@ npx create-stratawp my-theme
 1. ✅ Interactive setup wizard
 2. 🎨 **Template selection** - Choose from example themes:
    - **Basic Theme** - Essential blocks and clean structure
-   - **Advanced Theme** - Portfolio, team members
+   - **Advanced Theme** - Advanced layouts; pairs with the `strata-advanced-content` companion plugin (portfolio, team, testimonial, case-study content)
    - **Store Theme** - WooCommerce ready
    - **Minimal** - Start from scratch
 3. ✅ Choice of CSS frameworks (vanilla, Tailwind, UnoCSS, Panda)
 4. ✅ TypeScript configuration
 5. ✅ Optional testing
 6. ✨ **Automatically detects and links to WordPress!**
+7. 🔌 **Advanced only:** offers to copy the companion plugin into the linked site (then activate it under Plugins)
 
 **What happens automatically:**
 
@@ -55,8 +56,9 @@ ln -s "$(pwd)" ~/Local\ Sites/mysite/app/public/wp-content/themes/my-theme
 ```bash
 pnpm dev              # Start dev server (http://localhost:3000)
 pnpm build            # Production build
-pnpm type-check       # TypeScript validation
-pnpm lint             # ESLint
+pnpm lint:css         # Stylelint (nesting depth, specificity, custom properties)
+pnpm review           # Theme review (WordPress.org guidelines, approximate)
+pnpm ai:check         # Build, then review (the gate AI agents run)
 ```
 
 ### Generate Components
@@ -88,14 +90,52 @@ stratawp design-system:setup <framework>
   # tailwind|unocss
 ```
 
+### Theme Review
+
+```bash
+# In a generated theme (devDependency @stratawp/theme-review, script "review")
+pnpm review
+pnpm exec stratawp-review --json         # Machine-readable report
+pnpm exec stratawp-review --strict       # Fail on warnings too
+
+# Via the CLI, for any theme directory
+stratawp theme:review [dir]
+  --json                     # Print the report as JSON
+  --strict                   # Fail on warnings as well as errors
+  --type <type>              # Override detected type: block|classic|hybrid
+
+# In the StrataWP repository: all three examples and three templates
+pnpm review                  # Expected: 0 errors, 0 warnings per theme
+```
+
+Exit codes: `0` pass, `1` errors (or warnings with `--strict`), `2` usage problem. Rules and config: [AI tooling](./docs/ai-tooling.md).
+
+### Screenshots
+
+```bash
+stratawp screenshots [options]           # Needs a running site and Chromium
+  --routes <list>            # Comma-separated paths, e.g. /,/blog (default: / and a 404 path)
+  --widths <list>            # Comma-separated widths, e.g. 1280,390 (default)
+  --out <dir>                # Output directory (default .stratawp/screenshots)
+  --base-url <url>           # Site URL (default WP_BASE_URL, then http://localhost:8888)
+
+# The same capture, straight from @stratawp/testing
+pnpm exec playwright install chromium    # Once
+pnpm exec stratawp-screenshots capture --routes=/,/blog --base-url=http://my-site.local
+```
+
+A theme's own `screenshot.png` must be 1200x900 (the review checks it).
+
 ### Testing
 
 ```bash
-pnpm test                    # Run unit tests
-pnpm test:coverage           # Run with coverage
-pnpm test:e2e                # Run E2E tests
-pnpm test:watch              # Watch mode
+pnpm test:e2e                # Cross-browser smoke tests (WP_BASE_URL=<site>)
+pnpm test:visual             # Opt-in screenshot compare against recorded baselines
 ```
+
+Visual baselines are recorded on a CI runner, not locally. In GitHub Actions run **Visual (record or compare baselines)** with mode `record`, download the `visual-baselines` artifact and commit it under `e2e/visual/__screenshots__/`. From then on run it with mode `compare` to fail on any diff. Details: [AI tooling](./docs/ai-tooling.md#screenshots-and-visual-checks).
+
+In the StrataWP repository itself, `pnpm test:smoke` (cross-browser smoke) and `pnpm test:e2e` (axe accessibility) run against `examples/basic-theme` and need a running wp-env; `pnpm lint:css` and `pnpm review` need nothing running.
 
 ### Explorer
 
@@ -617,10 +657,10 @@ stratawp --help
 pnpm dev --port 3001
 
 # TypeScript errors
-pnpm type-check
+pnpm exec tsc --noEmit
 
-# Linting errors
-pnpm lint --fix
+# Stylelint errors
+pnpm lint:css --fix
 
 # Permission errors (symlink)
 sudo ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
@@ -632,6 +672,8 @@ sudo ln -s "$(pwd)" /path/to/wordpress/wp-content/themes/my-theme
 ## Useful Snippets
 
 ### Add Custom Post Type
+
+Put this in a plugin, not in the theme: the WordPress.org guidelines reserve content types for plugins, and the review (`THEME-010`) warns on `register_post_type` and `register_taxonomy` in a theme. The Advanced template's types live in `plugins/strata-advanced-content`, which is a working example.
 
 ```php
 register_post_type('portfolio', [

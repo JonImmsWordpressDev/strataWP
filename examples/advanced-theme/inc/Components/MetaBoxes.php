@@ -2,12 +2,12 @@
 /**
  * Meta Boxes Component
  *
- * Adds custom meta boxes for custom post types.
+ * Adds custom meta boxes for the content types provided by the companion plugin.
  *
  * @package StrataAdvanced
  */
 
-namespace StrataBasic\Components;
+namespace StrataAdvanced\Components;
 
 use StrataWP\ComponentInterface;
 

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="StrataWP Advanced Content Plugin">
+  <description>WordPress coding standards for the StrataWP advanced content companion plugin.</description>
+
+  <!-- Run from this directory: <file>.</file> resolves against phpcs's working dir (the lint:php orchestrator cd's into each location). -->
+  <file>.</file>
+
+  <arg name="extensions" value="php"/>
+  <arg name="colors"/>
+  <arg value="sp"/>
+  <arg name="parallel" value="8"/>
+
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+  <config name="testVersion" value="8.1-"/>
+  <config name="minimum_wp_version" value="6.5"/>
+
+  <rule ref="WordPress-Extra"/>
+
+  <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+    <properties>
+      <property name="prefixes" type="array">
+        <element value="strata_advanced_content"/>
+      </property>
+    </properties>
+  </rule>
+
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array">
+        <element value="strata-advanced-content"/>
+      </property>
+    </properties>
+  </rule>
+</ruleset>

@@ -2,10 +2,10 @@
 /**
  * Customizer Component
  *
- * @package StrataBasic
+ * @package StrataAdvanced
  */
 
-namespace StrataBasic\Components;
+namespace StrataAdvanced\Components;
 
 use StrataWP\ComponentInterface;
 use WP_Customize_Manager;
@@ -36,7 +36,7 @@ class Customizer implements ComponentInterface {
 	public function register_settings( WP_Customize_Manager $wp_customize ): void {
 		// Add theme section
 		$wp_customize->add_section(
-			'strata_basic_theme_options',
+			'strata_advanced_theme_options',
 			array(
 				'title'    => __( 'Theme Options', 'strata-advanced' ),
 				'priority' => 30,
@@ -45,7 +45,7 @@ class Customizer implements ComponentInterface {
 
 		// Header text color
 		$wp_customize->add_setting(
-			'strata_basic_header_color',
+			'strata_advanced_header_color',
 			array(
 				'default'           => '#000000',
 				'sanitize_callback' => 'sanitize_hex_color',
@@ -56,17 +56,17 @@ class Customizer implements ComponentInterface {
 		$wp_customize->add_control(
 			new \WP_Customize_Color_Control(
 				$wp_customize,
-				'strata_basic_header_color',
+				'strata_advanced_header_color',
 				array(
 					'label'   => __( 'Header Text Color', 'strata-advanced' ),
-					'section' => 'strata_basic_theme_options',
+					'section' => 'strata_advanced_theme_options',
 				)
 			)
 		);
 
 		// Show/hide tagline
 		$wp_customize->add_setting(
-			'strata_basic_show_tagline',
+			'strata_advanced_show_tagline',
 			array(
 				'default'           => true,
 				'sanitize_callback' => 'wp_validate_boolean',
@@ -74,10 +74,10 @@ class Customizer implements ComponentInterface {
 		);
 
 		$wp_customize->add_control(
-			'strata_basic_show_tagline',
+			'strata_advanced_show_tagline',
 			array(
 				'label'   => __( 'Show Site Tagline', 'strata-advanced' ),
-				'section' => 'strata_basic_theme_options',
+				'section' => 'strata_advanced_theme_options',
 				'type'    => 'checkbox',
 			)
 		);

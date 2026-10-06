@@ -2,12 +2,18 @@
 
 An advanced Block Theme (FSE) built on the Frost design system, showcasing the StrataWP framework with modern development tools and advanced features. Perfect for complex sites, agencies, and production use.
 
+## Content types come from a companion plugin
+
+The portfolio, team, testimonial and case-study content types are registered by the `strata-advanced-content` companion plugin, not by the theme, so they survive a theme switch. Without the plugin the theme still works; the portfolio and team blocks render nothing.
+
+`create-stratawp` offers to install the plugin when it links this theme to a local WordPress site. To install it manually, copy the plugin folder into `wp-content/plugins` and activate it under Plugins. In the StrataWP repository the folder is `plugins/strata-advanced-content`; if you used `npx create-stratawp`, it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
+
 ## Features
 
 ### Frost Design System Integration
 
 - Built on WP Engine's Frost theme foundation
-- 52+ professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
+- 50 professional patterns (headers, footers, heroes, CTAs, testimonials, pricing tables)
 - Light and dark mode variants
 - Responsive design system with fluid typography
 - Comprehensive block styling
@@ -52,7 +58,7 @@ An advanced Block Theme (FSE) built on the Frost design system, showcasing the S
 - Header (references header patterns)
 - Footer (references footer patterns)
 
-### Patterns (52)
+### Patterns (50)
 
 All patterns from Frost theme, adapted for StrataWP:
 
@@ -160,12 +166,12 @@ advanced-theme/
 ├── parts/                  # Template parts (HTML)
 │   ├── header.html         # References header pattern
 │   └── footer.html         # References footer pattern
-├── patterns/               # Reusable patterns (52 PHP files)
+├── patterns/               # Reusable patterns ((50 PHP files))
 │   ├── header-*.php
 │   ├── footer-*.php
 │   ├── hero-*.php
 │   ├── cta-*.php
-│   └── ... (48 more patterns)
+│   └── ... (more patterns)
 ├── src/
 │   ├── blocks/            # Custom Gutenberg blocks
 │   ├── scss/              # Modular SCSS
@@ -209,6 +215,10 @@ Edit `theme.json` to customize the color palette:
 - Swap header/footer patterns by editing `parts/header.html` or `parts/footer.html`
 - Change pattern slug to use different header/footer styles
 - Insert patterns anywhere through the WordPress editor
+
+## Quality
+
+This theme currently reports **0 errors and 0 warnings** in the StrataWP theme review (`pnpm review`), and that is expected to stay true. It ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. The review approximates the WordPress.org theme guidelines; it is not a certification.
 
 ## Requirements
 

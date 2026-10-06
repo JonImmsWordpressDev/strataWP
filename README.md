@@ -49,19 +49,21 @@ Scaffold a full theme with one command, edit PHP/SCSS/TypeScript and see changes
 
 Make sure the following are installed before you begin.
 
-| Requirement                       | Version       | Notes                                                                                   |
-| --------------------------------- | ------------- | --------------------------------------------------------------------------------------- |
-| **Node.js**                       | 18 or higher  | `engines` requires `node >=18.18`.                                                      |
-| **pnpm**                          | 8 or higher   | Recommended package manager (`npm` also works).                                         |
-| **PHP**                           | 8.1 or higher |                                                                                         |
-| **WordPress**                     | 6.7 or higher |                                                                                         |
-| **A local WordPress environment** | —             | [Local by Flywheel](https://localwp.com/), [MAMP](https://www.mamp.info/), Docker, etc. |
+| Requirement                       | Version         | Notes                                                                                   |
+| --------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| **Node.js**                       | 18.18 or higher | `engines` requires `node >=18.18`.                                                      |
+| **pnpm**                          | 8 or higher     | Recommended package manager (`npm` also works).                                         |
+| **PHP**                           | 8.1 or higher   |                                                                                         |
+| **WordPress**                     | 6.7 or higher   | What StrataWP is developed against.                                                     |
+| **A local WordPress environment** | —               | [Local by Flywheel](https://localwp.com/), [MAMP](https://www.mamp.info/), Docker, etc. |
 
 Install pnpm if you don't have it:
 
 ```bash
 npm install -g pnpm
 ```
+
+> **Note:** The generated themes' `style.css` headers currently declare `Requires at least: 6.0` and `Tested up to: 6.4`. Update them to match the WordPress version you target for your own site.
 
 > **Tip:** For the best experience, use VS Code with the ESLint, Prettier, PHP Intelephense, and TypeScript/JavaScript language extensions.
 
@@ -94,13 +96,14 @@ npx create-stratawp@latest my-theme
 
 A short wizard asks you questions. If you are unsure, the first (recommended) answer is a good default:
 
-| Question                         | What it means                                                                                             |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Theme name, description, author  | Shown in WordPress under Appearance → Themes.                                                             |
-| Template                         | **Basic** is the best starting point. Advanced adds custom post types. Store adds WooCommerce templates.  |
-| CSS framework                    | How you write styles: plain CSS, Tailwind, UnoCSS, or Panda. UnoCSS is recommended.                       |
-| TypeScript / testing             | Say yes to both if you are not sure.                                                                      |
-| Link to a WordPress installation | Pick your local site. StrataWP creates the link into `wp-content/themes/` so you never copy files around. |
+| Question                         | What it means                                                                                                                                                                                  |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Theme name, description, author  | Shown in WordPress under Appearance → Themes.                                                                                                                                                  |
+| Template                         | **Basic** is the best starting point. Advanced adds extra layouts and works with a companion plugin for portfolio, team, testimonial and case-study content. Store adds WooCommerce templates. |
+| CSS framework                    | How you write styles: plain CSS, Tailwind, UnoCSS, or Panda. UnoCSS is recommended.                                                                                                            |
+| TypeScript / testing             | Say yes to both if you are not sure.                                                                                                                                                           |
+| Link to a WordPress installation | Pick your local site. StrataWP creates the link into `wp-content/themes/` so you never copy files around.                                                                                      |
+| Companion plugin (Advanced only) | After linking, you are asked whether to copy the `strata-advanced-content` plugin into that site's `wp-content/plugins/`. Say yes, then activate it under Plugins.                             |
 
 It installs the dependencies for you (`pnpm install` runs automatically). When it finishes you will see the next-step commands.
 
@@ -173,9 +176,11 @@ Each command creates the files in the right folders and, for blocks, registers t
 | `pnpm review`   | A theme review that approximates the WordPress.org theme guidelines. Errors fail it; warnings are advice. |
 | `pnpm lint:css` | Stylelint rules for nesting depth, specificity and custom-property names.                                 |
 | `pnpm ai:check` | Builds the theme and runs the review, the same gate AI agents use.                                        |
-| `pnpm test:e2e` | Cross-browser smoke tests against your running site (see below).                                          |
+| `pnpm test:e2e` | Cross-browser smoke tests against your running site (see the commands below).                             |
 
 `pnpm review` is a helper, not a certification: passing it does not guarantee that WordPress.org accepts your theme.
+
+Every StrataWP theme (the three examples and the three templates) currently reports **0 errors and 0 warnings** in the review, and `pnpm review` in this repository is expected to stay that way. A theme you generate starts clean too: it ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. `create-stratawp` updates the name, description and author in `style.css` and `readme.txt`; replace `screenshot.png` with your own 1200x900 image.
 
 To run the smoke tests against your local site, install the test browser once, then point the tests at your site's address:
 
@@ -183,6 +188,10 @@ To run the smoke tests against your local site, install the test browser once, t
 pnpm exec playwright install chromium
 WP_BASE_URL=http://my-site.local pnpm test:e2e
 ```
+
+### Advanced template: the companion plugin
+
+The Advanced theme does not register content types itself, because the WordPress.org guidelines reserve `register_post_type` and `register_taxonomy` for plugins. Its portfolio, team, testimonial and case-study types live in the `strata-advanced-content` plugin. `create-stratawp` offers to copy it into your linked site; the theme works without it, those content types are just absent. To install it by hand, copy the folder into `wp-content/plugins/` and activate it: from this repository it is `plugins/strata-advanced-content`, and for `npx` users it is `templates/plugins/strata-advanced-content` inside the installed `@stratawp/cli` package (the installer prints the exact path).
 
 ### Take screenshots of your theme
 
@@ -289,7 +298,7 @@ StrataWP/
 │   └── mcp/              # MCP server exposing generators to AI agents
 ├── examples/
 │   ├── basic-theme/      # General-purpose starter theme
-│   ├── advanced-theme/   # Enterprise theme with CPTs and custom blocks
+│   ├── advanced-theme/   # Advanced layouts and custom blocks (content types come from a companion plugin)
 │   └── store-theme/      # WooCommerce e-commerce theme
 └── docs/                 # Documentation
 ```
@@ -307,6 +316,8 @@ my-theme/
 │   └── main.ts       # Entry point
 ├── templates/        # FSE templates (*.html)
 ├── functions.php     # Theme entry point
+├── readme.txt        # WordPress.org-style readme (name and description updated by the scaffolder)
+├── screenshot.png    # 1200x900 theme screenshot
 ├── style.css         # Theme metadata
 ├── theme.json        # FSE configuration
 └── vite.config.ts    # Build configuration
@@ -316,11 +327,11 @@ See [Project Structure](https://github.com/JonImmsWordpressDev/strataWP/wiki/Pro
 
 ## Example Themes
 
-| Theme                                     | Best for                                             | Highlights                                                                                                                                  |
-| ----------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[Basic](./examples/basic-theme)**       | Blogs, portfolios, business sites, learning StrataWP | [Frost](https://frostwp.com/) design system, 50 block patterns, 9 templates, light/dark variants, Google Fonts typography                   |
-| **[Advanced](./examples/advanced-theme)** | Complex / production sites and agencies              | 4 Custom Post Types (Portfolio, Team, Testimonials, Case Studies), custom blocks, Advanced Layouts + Customizer, Meta Boxes system          |
-| **[Store](./examples/store-theme)**       | WooCommerce e-commerce                               | WooCommerce templates (shop, product, cart, checkout), Featured Products & Product Categories blocks, e-commerce patterns, mobile-optimized |
+| Theme                                     | Best for                                             | Highlights                                                                                                                                                                                                                    |
+| ----------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Basic](./examples/basic-theme)**       | Blogs, portfolios, business sites, learning StrataWP | [Frost](https://frostwp.com/) design system, 50 block patterns, 9 templates, light/dark variants, Google Fonts typography                                                                                                     |
+| **[Advanced](./examples/advanced-theme)** | Complex / production sites and agencies              | Custom blocks, Advanced Layouts + Customizer, Meta Boxes system; works with the [`strata-advanced-content`](./plugins/strata-advanced-content) companion plugin for Portfolio, Team, Testimonial and Case Study content types |
+| **[Store](./examples/store-theme)**       | WooCommerce e-commerce                               | WooCommerce templates (shop, product, cart, checkout), Featured Products & Product Categories blocks, e-commerce patterns, mobile-optimized                                                                                   |
 
 Learn how to run and customize them on the [Example Themes](https://github.com/JonImmsWordpressDev/strataWP/wiki/Example-Themes) wiki page.
 

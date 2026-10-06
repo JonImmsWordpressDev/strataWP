@@ -29,12 +29,12 @@ All patterns from Frost theme, plus store-specific patterns:
 ### Frost Design System Integration
 
 - Built on WP Engine's Frost theme foundation
-- 52+ professional patterns (headers, footers, heroes, CTAs)
+- 50 professional patterns (headers, footers, heroes, CTAs)
 - Light and dark mode variants
 - Responsive design system with fluid typography
 - Comprehensive block styling optimized for product pages
 
-### Store Templates (13+)
+### Store Templates (13)
 
 - Home page (store homepage)
 - Shop (product archive)
@@ -196,7 +196,7 @@ store-theme/
 ├── style.css               # Theme metadata
 ├── functions.php           # Theme setup + WooCommerce integration
 ├── woocommerce.php         # WooCommerce template override
-├── templates/              # Block templates (13+ HTML files)
+├── templates/              # Block templates ((13 HTML files))
 │   ├── home.html           # Store homepage
 │   ├── index.html          # Blog listing
 │   ├── single.html         # Blog post
@@ -211,14 +211,14 @@ store-theme/
 ├── parts/                  # Template parts (HTML)
 │   ├── header.html         # Store header with cart icon
 │   └── footer.html         # Store footer
-├── patterns/               # Reusable patterns (60+ PHP files)
+├── patterns/               # Reusable patterns ((50 PHP files))
 │   ├── header-*.php
 │   ├── footer-*.php
 │   ├── product-*.php       # Product showcase patterns
 │   ├── shop-*.php          # Shop layouts
 │   ├── hero-*.php
 │   ├── cta-*.php
-│   └── ... (52+ more patterns)
+│   └── ... (more patterns)
 ├── src/
 │   ├── blocks/            # Custom Gutenberg blocks
 │   ├── scss/              # Modular SCSS
@@ -298,6 +298,10 @@ Edit `functions.php` to customize:
 - Customer testimonials
 - Related products for upselling
 - Sale badges and countdown timers
+
+## Quality
+
+This theme currently reports **0 errors and 0 warnings** in the StrataWP theme review (`pnpm review`), and that is expected to stay true. It ships a 1200x900 `screenshot.png` (the size WordPress.org expects) and a `readme.txt` whose short description matches `style.css`. The review approximates the WordPress.org theme guidelines; it is not a certification.
 
 ## Requirements
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: Box with image, text, social icons.
- * Slug: strata-basic/author-box
+ * Slug: strata-store/author-box
  * Categories: call-to-action
  */
 ?>

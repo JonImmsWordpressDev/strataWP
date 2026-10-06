@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: Testimonials with text.
- * Slug: strata-basic/testimonials
+ * Slug: strata-advanced/testimonials
  * Categories: testimonials
  */
 ?>
@@ -15,10 +15,10 @@
 			<p class="has-text-align-center has-max-72-font-size" style="line-height:1">“</p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"align":"center","style":{"spacing":{"margin":{"top":"0px"}}}} -->
-			<p class="has-text-align-center" style="margin-top:0px"><?php echo esc_html__( 'With its clean, minimal design and powerful features, Frost enables agencies to build cool websites.', 'frost' ); ?></p>
+			<p class="has-text-align-center" style="margin-top:0px"><?php echo esc_html__( 'With its clean, minimal design and powerful features, Frost enables agencies to build cool websites.', 'strata-advanced' ); ?></p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"align":"center","fontSize":"small"} -->
-			<p class="has-text-align-center has-small-font-size"><strong><?php echo esc_html__( '—Allison Taylor, Designer', 'frost' ); ?></strong></p>
+			<p class="has-text-align-center has-small-font-size"><strong><?php echo esc_html__( '—Allison Taylor, Designer', 'strata-advanced' ); ?></strong></p>
 			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:column -->
@@ -29,10 +29,10 @@
 			<p class="has-text-align-center has-max-72-font-size" style="line-height:1">“</p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"align":"center","style":{"spacing":{"margin":{"top":"0px"}}}} -->
-			<p class="has-text-align-center" style="margin-top:0px"><?php echo esc_html__( 'With its clean, minimal design and powerful features, Frost enables agencies to build cool websites.', 'frost' ); ?></p>
+			<p class="has-text-align-center" style="margin-top:0px"><?php echo esc_html__( 'With its clean, minimal design and powerful features, Frost enables agencies to build cool websites.', 'strata-advanced' ); ?></p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"align":"center","fontSize":"small"} -->
-			<p class="has-text-align-center has-small-font-size"><strong><?php echo esc_html__( '—Anthony Breck, Developer', 'frost' ); ?></strong></p>
+			<p class="has-text-align-center has-small-font-size"><strong><?php echo esc_html__( '—Anthony Breck, Developer', 'strata-advanced' ); ?></strong></p>
 			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:column -->
@@ -42,10 +42,10 @@
 			<p class="has-text-align-center has-max-72-font-size" style="line-height:1">“</p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"align":"center","style":{"spacing":{"margin":{"top":"0px"}}}} -->
-			<p class="has-text-align-center" style="margin-top:0px"><?php echo esc_html__( 'With its clean, minimal design and powerful features, Frost enables agencies to build cool websites.', 'frost' ); ?></p>
+			<p class="has-text-align-center" style="margin-top:0px"><?php echo esc_html__( 'With its clean, minimal design and powerful features, Frost enables agencies to build cool websites.', 'strata-advanced' ); ?></p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"align":"center","fontSize":"small"} -->
-			<p class="has-text-align-center has-small-font-size"><strong><?php echo esc_html__( '—Rebecca Jones, Coach', 'frost' ); ?></strong></p>
+			<p class="has-text-align-center has-small-font-size"><strong><?php echo esc_html__( '—Rebecca Jones, Coach', 'strata-advanced' ); ?></strong></p>
 			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:column -->
