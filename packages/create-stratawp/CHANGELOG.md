@@ -1,5 +1,16 @@
 # create-stratawp
 
+## 2.4.0
+
+### Minor Changes
+
+- 0a5b59c: Generated themes ship a 1200x900 screenshot and a readme.txt; the advanced template's custom post types move into a companion plugin that create-stratawp offers to install; example themes use their own namespace and text domain.
+
+### Patch Changes
+
+- Updated dependencies [0a5b59c]
+  - @stratawp/cli@2.4.0
+
 ## 2.3.0
 
 ### Minor Changes
