@@ -545,4 +545,4 @@ The repository also includes `@stratawp/core` (the PHP framework) and `@stratawp
 
 See the [Changelog](./CHANGELOG.md) for the version history; the badges at the top show the latest published versions.
 
-Built with ❤️ by [Jon Imms](https://jonimms.com)
+Built with ❤️ by [Jon Imms](https://jonimms.com/services/custom-wordpress-development/)
