@@ -65,6 +65,12 @@ jobs:
       - name: Activate the theme
         run: pnpm exec wp-env run cli wp theme activate ${{ matrix.theme }}
 
+      # A normal install turns pretty permalinks on; wp-env stays on plain
+      # ones, where WordPress has no rewrite rule for /favicon.ico and the
+      # browser logs a 404 that no theme can fix.
+      - name: Use pretty permalinks
+        run: pnpm exec wp-env run cli wp rewrite structure '/%postname%/'
+
       - name: Wait for WordPress to be ready
         run: node scripts/wait-for-http.mjs http://localhost:8888/ 120000
 

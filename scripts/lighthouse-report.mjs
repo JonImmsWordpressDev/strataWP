@@ -118,7 +118,7 @@ export const FIXES = {
   },
   'errors-in-console': {
     owner: 'theme',
-    fix: 'Fix the console error at the logged URL (a 404 favicon means the theme or site has no site icon).',
+    fix: 'Fix the console error at the logged URL. A 404 `/favicon.ico` is the environment: WordPress answers it (Site Icon or its default) only through its rewrite rules, so the site needs pretty permalinks.',
   },
   'inspector-issues': {
     owner: 'theme',

@@ -37,7 +37,16 @@ const preset = PRESETS.includes(process.env.STRATAWP_LH_PRESET)
  *     reason: 'Meta descriptions come from an SEO plugin, which a fresh theme does not ship.',
  *   },
  */
-const ALLOWLIST = []
+const ALLOWLIST = [
+  {
+    audit: 'meta-description',
+    category: 'seo',
+    // The only failing SEO audit, which scores the category at 0.91.
+    minScore: 0.9,
+    reason:
+      'Meta descriptions are SEO plugin territory under the WordPress.org theme guidelines; a theme-printed one would duplicate the tag SEO plugins already write.',
+  },
+]
 
 const activeAllowlist = ALLOWLIST.filter(
   (entry) => !entry.presets || entry.presets.includes(preset)

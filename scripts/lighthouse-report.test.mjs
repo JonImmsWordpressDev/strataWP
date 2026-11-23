@@ -208,7 +208,11 @@ test('.lighthouserc.cjs asserts 100 in every category and keeps the budgets', ()
   const rc = require(path.join(root, '.lighthouserc.cjs'))
   const { assertions } = rc.ci.assert
   for (const category of ['performance', 'accessibility', 'best-practices', 'seo']) {
-    assert.deepEqual(assertions[`categories:${category}`], ['error', { minScore: 1 }])
+    const floor = rc.ALLOWLIST.filter((entry) => entry.category === category).reduce(
+      (min, entry) => Math.min(min, entry.minScore),
+      1
+    )
+    assert.deepEqual(assertions[`categories:${category}`], ['error', { minScore: floor }])
   }
   assert.equal(assertions['largest-contentful-paint'][1].maxNumericValue, 2000)
   assert.equal(assertions['cumulative-layout-shift'][1].maxNumericValue, 0.1)
@@ -217,5 +221,6 @@ test('.lighthouserc.cjs asserts 100 in every category and keeps the budgets', ()
   for (const entry of rc.ALLOWLIST) {
     assert.ok(entry.audit && entry.category && entry.reason, 'allowlist entries need a reason')
     assert.ok(entry.minScore < 1)
+    assert.equal(assertions[entry.audit], 'off')
   }
 })
