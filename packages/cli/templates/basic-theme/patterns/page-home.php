@@ -15,8 +15,8 @@
 	<!-- /wp:paragraph -->
 	<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"},"style":{"spacing":{"blockGap":"10px","margin":{"top":"30px"}}}} -->
 	<div class="wp-block-buttons" style="margin-top:30px">
-		<!-- wp:button {"fontSize":"small"} -->
-		<div class="wp-block-button has-custom-font-size has-small-font-size"><a class="wp-block-button__link wp-element-button"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?></a></div>
+		<!-- wp:button {"fontSize":"small","url":"#"} -->
+		<div class="wp-block-button has-custom-font-size has-small-font-size"><a class="wp-block-button__link wp-element-button" href="#"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?></a></div>
 		<!-- /wp:button -->
 		<!-- wp:button {"className":"is-style-outline-background is-style-outline","fontSize":"small"} -->
 		<div class="wp-block-button has-custom-font-size is-style-outline-background is-style-outline has-small-font-size"><a class="wp-block-button__link wp-element-button" href="#"><?php echo esc_html__( 'Learn More', 'strata-basic' ); ?></a></div>
@@ -41,8 +41,8 @@
 				<!-- /wp:paragraph -->
 				<!-- wp:buttons -->
 				<div class="wp-block-buttons">
-					<!-- wp:button {"textColor":"base"} -->
-					<div class="wp-block-button"><a class="wp-block-button__link has-base-color has-text-color wp-element-button"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
+					<!-- wp:button {"textColor":"base","url":"#"} -->
+					<div class="wp-block-button"><a class="wp-block-button__link has-base-color has-text-color wp-element-button" href="#"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
 					<!-- /wp:button -->
 				</div>
 				<!-- /wp:buttons -->
@@ -92,8 +92,8 @@
 			<!-- /wp:paragraph -->
 			<!-- wp:buttons -->
 			<div class="wp-block-buttons">
-				<!-- wp:button {"backgroundColor":"primary","style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
-				<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
+				<!-- wp:button {"backgroundColor":"primary","url":"#","style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
+				<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" href="#" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
@@ -112,8 +112,8 @@
 			<!-- /wp:paragraph -->
 			<!-- wp:buttons -->
 			<div class="wp-block-buttons">
-				<!-- wp:button {"backgroundColor":"primary","style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
-				<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
+				<!-- wp:button {"backgroundColor":"primary","url":"#","style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
+				<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" href="#" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
@@ -147,8 +147,8 @@
 			<!-- /wp:paragraph -->
 			<!-- wp:buttons -->
 			<div class="wp-block-buttons">
-				<!-- wp:button {"backgroundColor":"primary","style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
-				<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
+				<!-- wp:button {"backgroundColor":"primary","url":"#","style":{"spacing":{"padding":{"top":"var:preset|spacing|x-small","bottom":"var:preset|spacing|x-small","left":"var:preset|spacing|medium","right":"var:preset|spacing|medium"}}}} -->
+				<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" href="#" style="padding-top:var(--wp--preset--spacing--x-small);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--x-small);padding-left:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Get Started', 'strata-basic' ); ?> →</a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
