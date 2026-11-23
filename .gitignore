@@ -76,3 +76,6 @@ DEVELOPMENT_NOTES.md
 
 # Lighthouse CI results
 .lighthouseci/
+
+# Lighthouse CI reports (perf workflow)
+lighthouse-reports/

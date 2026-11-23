@@ -1,0 +1,1364 @@
+{
+  "lighthouseVersion": "12.1.0",
+  "requestedUrl": "http://localhost:8888/",
+  "finalDisplayedUrl": "http://localhost:8888/",
+  "fetchTime": "2026-11-23T17:04:19.640Z",
+  "configSettings": { "formFactor": "desktop" },
+  "categories": {
+    "performance": {
+      "id": "performance",
+      "title": "Performance",
+      "score": 1,
+      "auditRefs": [
+        { "id": "first-contentful-paint", "weight": 10, "group": "metrics" },
+        { "id": "largest-contentful-paint", "weight": 25, "group": "metrics" },
+        { "id": "total-blocking-time", "weight": 30, "group": "metrics" },
+        { "id": "cumulative-layout-shift", "weight": 25, "group": "metrics" },
+        { "id": "speed-index", "weight": 10, "group": "metrics" },
+        { "id": "interactive", "weight": 0, "group": "hidden" },
+        { "id": "max-potential-fid", "weight": 0, "group": "hidden" },
+        { "id": "first-meaningful-paint", "weight": 0, "group": "hidden" },
+        { "id": "render-blocking-resources", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-responsive-images", "weight": 0, "group": "diagnostics" },
+        { "id": "offscreen-images", "weight": 0, "group": "diagnostics" },
+        { "id": "unminified-css", "weight": 0, "group": "diagnostics" },
+        { "id": "unminified-javascript", "weight": 0, "group": "diagnostics" },
+        { "id": "unused-css-rules", "weight": 0, "group": "diagnostics" },
+        { "id": "unused-javascript", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-optimized-images", "weight": 0, "group": "diagnostics" },
+        { "id": "modern-image-formats", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-text-compression", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-rel-preconnect", "weight": 0, "group": "diagnostics" },
+        { "id": "server-response-time", "weight": 0, "group": "diagnostics" },
+        { "id": "redirects", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-http2", "weight": 0, "group": "diagnostics" },
+        { "id": "efficient-animated-content", "weight": 0, "group": "diagnostics" },
+        { "id": "duplicated-javascript", "weight": 0, "group": "diagnostics" },
+        { "id": "legacy-javascript", "weight": 0, "group": "diagnostics" },
+        { "id": "prioritize-lcp-image", "weight": 0, "group": "diagnostics" },
+        { "id": "total-byte-weight", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-long-cache-ttl", "weight": 0, "group": "diagnostics" },
+        { "id": "dom-size", "weight": 0, "group": "diagnostics" },
+        { "id": "critical-request-chains", "weight": 0, "group": "diagnostics" },
+        { "id": "user-timings", "weight": 0, "group": "diagnostics" },
+        { "id": "bootup-time", "weight": 0, "group": "diagnostics" },
+        { "id": "mainthread-work-breakdown", "weight": 0, "group": "diagnostics" },
+        { "id": "font-display", "weight": 0, "group": "diagnostics" },
+        { "id": "third-party-summary", "weight": 0, "group": "diagnostics" },
+        { "id": "third-party-facades", "weight": 0, "group": "diagnostics" },
+        { "id": "largest-contentful-paint-element", "weight": 0, "group": "diagnostics" },
+        { "id": "lcp-lazy-loaded", "weight": 0, "group": "diagnostics" },
+        { "id": "layout-shifts", "weight": 0, "group": "diagnostics" },
+        { "id": "uses-passive-event-listeners", "weight": 0, "group": "diagnostics" },
+        { "id": "no-document-write", "weight": 0, "group": "diagnostics" },
+        { "id": "long-tasks", "weight": 0, "group": "diagnostics" },
+        { "id": "non-composited-animations", "weight": 0, "group": "diagnostics" },
+        { "id": "unsized-images", "weight": 0, "group": "diagnostics" },
+        { "id": "viewport", "weight": 0, "group": "diagnostics" },
+        { "id": "bf-cache", "weight": 0, "group": "diagnostics" },
+        { "id": "network-requests", "weight": 0, "group": "hidden" },
+        { "id": "network-rtt", "weight": 0, "group": "hidden" },
+        { "id": "network-server-latency", "weight": 0, "group": "hidden" },
+        { "id": "main-thread-tasks", "weight": 0, "group": "hidden" },
+        { "id": "diagnostics", "weight": 0, "group": "hidden" },
+        { "id": "metrics", "weight": 0, "group": "hidden" },
+        { "id": "screenshot-thumbnails", "weight": 0, "group": "hidden" },
+        { "id": "final-screenshot", "weight": 0, "group": "hidden" },
+        { "id": "script-treemap-data", "weight": 0, "group": "hidden" },
+        { "id": "resource-summary", "weight": 0, "group": "hidden" }
+      ]
+    },
+    "accessibility": {
+      "id": "accessibility",
+      "title": "Accessibility",
+      "score": 0.42,
+      "auditRefs": [
+        { "id": "accesskeys", "weight": 0, "group": "a11y-navigation" },
+        { "id": "aria-allowed-attr", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-allowed-role", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-command-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-conditional-attr", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-deprecated-role", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-dialog-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-hidden-body", "weight": 10, "group": "a11y-aria" },
+        { "id": "aria-hidden-focus", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-input-field-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-meter-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-progressbar-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-prohibited-attr", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-required-attr", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-required-children", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-required-parent", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-roles", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-text", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-toggle-field-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-tooltip-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-treeitem-name", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-valid-attr-value", "weight": 0, "group": "a11y-aria" },
+        { "id": "aria-valid-attr", "weight": 0, "group": "a11y-aria" },
+        { "id": "button-name", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "bypass", "weight": 0, "group": "a11y-navigation" },
+        { "id": "color-contrast", "weight": 7, "group": "a11y-color-contrast" },
+        { "id": "definition-list", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "dlitem", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "document-title", "weight": 7, "group": "a11y-names-labels" },
+        { "id": "duplicate-id-aria", "weight": 0, "group": "a11y-aria" },
+        { "id": "form-field-multiple-labels", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "frame-title", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "heading-order", "weight": 3, "group": "a11y-navigation" },
+        { "id": "html-has-lang", "weight": 7, "group": "a11y-language" },
+        { "id": "html-lang-valid", "weight": 0, "group": "a11y-language" },
+        { "id": "html-xml-lang-mismatch", "weight": 0, "group": "a11y-language" },
+        { "id": "image-alt", "weight": 10, "group": "a11y-names-labels" },
+        { "id": "image-redundant-alt", "weight": 1, "group": "a11y-names-labels" },
+        { "id": "input-button-name", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "input-image-alt", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "label", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "link-in-text-block", "weight": 0, "group": "a11y-color-contrast" },
+        { "id": "link-name", "weight": 7, "group": "a11y-names-labels" },
+        { "id": "list", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "listitem", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "meta-refresh", "weight": 0, "group": "a11y-best-practices" },
+        { "id": "meta-viewport", "weight": 0, "group": "a11y-best-practices" },
+        { "id": "object-alt", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "select-name", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "skip-link", "weight": 0, "group": "a11y-names-labels" },
+        { "id": "tabindex", "weight": 0, "group": "a11y-navigation" },
+        { "id": "table-duplicate-name", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "target-size", "weight": 7, "group": "a11y-best-practices" },
+        { "id": "td-headers-attr", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "th-has-data-cells", "weight": 0, "group": "a11y-tables-lists" },
+        { "id": "valid-lang", "weight": 0, "group": "a11y-language" },
+        { "id": "video-caption", "weight": 0, "group": "a11y-audio-video" },
+        { "id": "focusable-controls", "weight": 0 },
+        { "id": "interactive-element-affordance", "weight": 0 },
+        { "id": "logical-tab-order", "weight": 0 },
+        { "id": "visual-order-follows-dom", "weight": 0 },
+        { "id": "focus-traps", "weight": 0 },
+        { "id": "managed-focus", "weight": 0 },
+        { "id": "use-landmarks", "weight": 0 },
+        { "id": "offscreen-content-hidden", "weight": 0 },
+        { "id": "custom-controls-labels", "weight": 0 },
+        { "id": "custom-controls-roles", "weight": 0 },
+        { "id": "empty-heading", "weight": 0, "group": "hidden" },
+        { "id": "identical-links-same-purpose", "weight": 0, "group": "hidden" },
+        { "id": "landmark-one-main", "weight": 0, "group": "hidden" },
+        { "id": "label-content-name-mismatch", "weight": 0, "group": "hidden" },
+        { "id": "table-fake-caption", "weight": 0, "group": "hidden" },
+        { "id": "td-has-header", "weight": 0, "group": "hidden" }
+      ]
+    },
+    "best-practices": {
+      "id": "best-practices",
+      "title": "Best Practices",
+      "score": 0.93,
+      "auditRefs": [
+        { "id": "is-on-https", "weight": 5, "group": "best-practices-trust-safety" },
+        { "id": "redirects-http", "weight": 0, "group": "best-practices-trust-safety" },
+        { "id": "geolocation-on-start", "weight": 1, "group": "best-practices-trust-safety" },
+        { "id": "notification-on-start", "weight": 1, "group": "best-practices-trust-safety" },
+        { "id": "csp-xss", "weight": 0, "group": "best-practices-trust-safety" },
+        { "id": "paste-preventing-inputs", "weight": 3, "group": "best-practices-ux" },
+        { "id": "image-aspect-ratio", "weight": 1, "group": "best-practices-ux" },
+        { "id": "image-size-responsive", "weight": 1, "group": "best-practices-ux" },
+        { "id": "viewport", "weight": 1, "group": "best-practices-ux" },
+        { "id": "font-size", "weight": 0, "group": "best-practices-ux" },
+        { "id": "doctype", "weight": 1, "group": "best-practices-browser-compat" },
+        { "id": "charset", "weight": 1, "group": "best-practices-browser-compat" },
+        { "id": "js-libraries", "weight": 0, "group": "best-practices-general" },
+        { "id": "deprecations", "weight": 5, "group": "best-practices-general" },
+        { "id": "third-party-cookies", "weight": 5, "group": "best-practices-general" },
+        { "id": "errors-in-console", "weight": 1, "group": "best-practices-general" },
+        { "id": "valid-source-maps", "weight": 0, "group": "best-practices-general" },
+        { "id": "inspector-issues", "weight": 1, "group": "best-practices-general" }
+      ]
+    },
+    "seo": {
+      "id": "seo",
+      "title": "SEO",
+      "score": 0.82,
+      "auditRefs": [
+        { "id": "is-crawlable", "weight": 4.043478260869565, "group": "seo-crawl" },
+        { "id": "document-title", "weight": 1, "group": "seo-content" },
+        { "id": "meta-description", "weight": 1, "group": "seo-content" },
+        { "id": "http-status-code", "weight": 1, "group": "seo-crawl" },
+        { "id": "link-text", "weight": 1, "group": "seo-content" },
+        { "id": "crawlable-anchors", "weight": 1, "group": "seo-crawl" },
+        { "id": "robots-txt", "weight": 0, "group": "seo-crawl" },
+        { "id": "image-alt", "weight": 1, "group": "seo-content" },
+        { "id": "hreflang", "weight": 1, "group": "seo-content" },
+        { "id": "canonical", "weight": 0, "group": "seo-content" },
+        { "id": "structured-data", "weight": 0 }
+      ]
+    }
+  },
+  "audits": {
+    "first-contentful-paint": {
+      "id": "first-contentful-paint",
+      "title": "First Contentful Paint",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "0.2 s",
+      "numericValue": 241.8866,
+      "numericUnit": "millisecond"
+    },
+    "largest-contentful-paint": {
+      "id": "largest-contentful-paint",
+      "title": "Largest Contentful Paint",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "0.3 s",
+      "numericValue": 321.8866,
+      "numericUnit": "millisecond"
+    },
+    "total-blocking-time": {
+      "id": "total-blocking-time",
+      "title": "Total Blocking Time",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "0 ms",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "cumulative-layout-shift": {
+      "id": "cumulative-layout-shift",
+      "title": "Cumulative Layout Shift",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "0.014",
+      "numericValue": 0.0142861787175384,
+      "numericUnit": "unitless"
+    },
+    "speed-index": {
+      "id": "speed-index",
+      "title": "Speed Index",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "0.2 s",
+      "numericValue": 241.8866,
+      "numericUnit": "millisecond"
+    },
+    "interactive": {
+      "id": "interactive",
+      "title": "Time to Interactive",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "0.3 s",
+      "numericValue": 321.88660000000004,
+      "numericUnit": "millisecond"
+    },
+    "max-potential-fid": {
+      "id": "max-potential-fid",
+      "title": "Max Potential First Input Delay",
+      "score": 1,
+      "scoreDisplayMode": "numeric",
+      "displayValue": "20 ms",
+      "numericValue": 16,
+      "numericUnit": "millisecond"
+    },
+    "first-meaningful-paint": {
+      "id": "first-meaningful-paint",
+      "title": "First Meaningful Paint",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "render-blocking-resources": {
+      "id": "render-blocking-resources",
+      "title": "Eliminate render-blocking resources",
+      "score": null,
+      "scoreDisplayMode": "error"
+    },
+    "uses-responsive-images": {
+      "id": "uses-responsive-images",
+      "title": "Properly size images",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "offscreen-images": {
+      "id": "offscreen-images",
+      "title": "Defer offscreen images",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "unminified-css": {
+      "id": "unminified-css",
+      "title": "Minify CSS",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "unminified-javascript": {
+      "id": "unminified-javascript",
+      "title": "Minify JavaScript",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "unused-css-rules": {
+      "id": "unused-css-rules",
+      "title": "Reduce unused CSS",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "unused-javascript": {
+      "id": "unused-javascript",
+      "title": "Reduce unused JavaScript",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "uses-optimized-images": {
+      "id": "uses-optimized-images",
+      "title": "Efficiently encode images",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "modern-image-formats": {
+      "id": "modern-image-formats",
+      "title": "Serve images in next-gen formats",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "uses-text-compression": {
+      "id": "uses-text-compression",
+      "title": "Enable text compression",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "uses-rel-preconnect": {
+      "id": "uses-rel-preconnect",
+      "title": "Preconnect to required origins",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "server-response-time": {
+      "id": "server-response-time",
+      "title": "Initial server response time was short",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "Root document took 0 ms",
+      "numericValue": 0.4739999999999993,
+      "numericUnit": "millisecond"
+    },
+    "redirects": {
+      "id": "redirects",
+      "title": "Avoid multiple page redirects",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "uses-http2": {
+      "id": "uses-http2",
+      "title": "Use HTTP/2",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "efficient-animated-content": {
+      "id": "efficient-animated-content",
+      "title": "Use video formats for animated content",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "duplicated-javascript": {
+      "id": "duplicated-javascript",
+      "title": "Remove duplicate modules in JavaScript bundles",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "legacy-javascript": {
+      "id": "legacy-javascript",
+      "title": "Avoid serving legacy JavaScript to modern browsers",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "prioritize-lcp-image": {
+      "id": "prioritize-lcp-image",
+      "title": "Preload Largest Contentful Paint image",
+      "score": null,
+      "scoreDisplayMode": "error"
+    },
+    "total-byte-weight": {
+      "id": "total-byte-weight",
+      "title": "Avoids enormous network payloads",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "Total size was 47 KiB",
+      "numericValue": 47936,
+      "numericUnit": "byte"
+    },
+    "uses-long-cache-ttl": {
+      "id": "uses-long-cache-ttl",
+      "title": "Serve static assets with an efficient cache policy",
+      "description": "A long cache lifetime can speed up repeat visits to your page. [Learn more about efficient cache policies](https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl/).",
+      "score": 0.5,
+      "scoreDisplayMode": "metricSavings",
+      "displayValue": "3 resources found",
+      "numericValue": 46657,
+      "numericUnit": "byte",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "url": "http://localhost:8888/photo.png",
+            "cacheLifetimeMs": 0,
+            "cacheHitProbability": 0,
+            "totalBytes": 46109,
+            "wastedBytes": 46109
+          },
+          {
+            "url": "http://localhost:8888/wp-content/themes/basic-theme/dist/css/main-abc123.css",
+            "cacheLifetimeMs": 0,
+            "cacheHitProbability": 0,
+            "totalBytes": 303,
+            "wastedBytes": 303
+          },
+          {
+            "url": "http://localhost:8888/wp-includes/css/style.min.css",
+            "cacheLifetimeMs": 0,
+            "cacheHitProbability": 0,
+            "totalBytes": 245,
+            "wastedBytes": 245
+          }
+        ]
+      }
+    },
+    "dom-size": {
+      "id": "dom-size",
+      "title": "Avoids an excessive DOM size",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "7 elements",
+      "numericValue": 7,
+      "numericUnit": "element"
+    },
+    "critical-request-chains": {
+      "id": "critical-request-chains",
+      "title": "Avoid chaining critical requests",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "2 chains found"
+    },
+    "user-timings": {
+      "id": "user-timings",
+      "title": "User Timing marks and measures",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "bootup-time": {
+      "id": "bootup-time",
+      "title": "JavaScript execution time",
+      "score": null,
+      "scoreDisplayMode": "notApplicable",
+      "displayValue": "",
+      "numericValue": 0,
+      "numericUnit": "millisecond"
+    },
+    "mainthread-work-breakdown": {
+      "id": "mainthread-work-breakdown",
+      "title": "Minimizes main-thread work",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "0.1 s",
+      "numericValue": 72.37900000000003,
+      "numericUnit": "millisecond"
+    },
+    "font-display": {
+      "id": "font-display",
+      "title": "All text remains visible during webfont loads",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings"
+    },
+    "third-party-summary": {
+      "id": "third-party-summary",
+      "title": "Minimize third-party usage",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "third-party-facades": {
+      "id": "third-party-facades",
+      "title": "Lazy load third-party resources with facades",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "largest-contentful-paint-element": {
+      "id": "largest-contentful-paint-element",
+      "title": "Largest Contentful Paint element",
+      "score": null,
+      "scoreDisplayMode": "error"
+    },
+    "lcp-lazy-loaded": {
+      "id": "lcp-lazy-loaded",
+      "title": "Largest Contentful Paint image was not lazily loaded",
+      "score": null,
+      "scoreDisplayMode": "error"
+    },
+    "layout-shifts": {
+      "id": "layout-shifts",
+      "title": "Avoid large layout shifts",
+      "score": null,
+      "scoreDisplayMode": "error"
+    },
+    "uses-passive-event-listeners": {
+      "id": "uses-passive-event-listeners",
+      "title": "Uses passive listeners to improve scrolling performance",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings"
+    },
+    "no-document-write": {
+      "id": "no-document-write",
+      "title": "Avoids `document.write()`",
+      "score": 1,
+      "scoreDisplayMode": "metricSavings"
+    },
+    "long-tasks": {
+      "id": "long-tasks",
+      "title": "Avoid long main-thread tasks",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "non-composited-animations": {
+      "id": "non-composited-animations",
+      "title": "Avoid non-composited animations",
+      "score": null,
+      "scoreDisplayMode": "error"
+    },
+    "unsized-images": {
+      "id": "unsized-images",
+      "title": "Image elements do not have explicit `width` and `height`",
+      "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/articles/optimize-cls#images_without_dimensions)",
+      "score": 0.5,
+      "scoreDisplayMode": "metricSavings",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "url": "http://localhost:8888/photo.png",
+            "node": {
+              "type": "node",
+              "selector": "body > main > img.hero-image",
+              "snippet": "<img class=\"hero-image\" src=\"/photo.png\">",
+              "nodeLabel": "body > main > img.hero-image"
+            }
+          }
+        ]
+      }
+    },
+    "viewport": {
+      "id": "viewport",
+      "title": "Does not have a `<meta name=\"viewport\">` tag with `width` or `initial-scale`",
+      "description": "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents [a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/). [Learn more about using the viewport meta tag](https://developer.chrome.com/docs/lighthouse/pwa/viewport/).",
+      "score": 0,
+      "scoreDisplayMode": "metricSavings"
+    },
+    "bf-cache": {
+      "id": "bf-cache",
+      "title": "Page didn't prevent back/forward cache restoration",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "network-requests": {
+      "id": "network-requests",
+      "title": "Network Requests",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "network-rtt": {
+      "id": "network-rtt",
+      "title": "Network Round Trip Times",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "0 ms",
+      "numericValue": 0.43470000000000003,
+      "numericUnit": "millisecond"
+    },
+    "network-server-latency": {
+      "id": "network-server-latency",
+      "title": "Server Backend Latencies",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "displayValue": "0 ms",
+      "numericValue": 0.9432999999999991,
+      "numericUnit": "millisecond"
+    },
+    "main-thread-tasks": {
+      "id": "main-thread-tasks",
+      "title": "Tasks",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "diagnostics": {
+      "id": "diagnostics",
+      "title": "Diagnostics",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "metrics": {
+      "id": "metrics",
+      "title": "Metrics",
+      "score": 1,
+      "scoreDisplayMode": "informative",
+      "numericValue": 322,
+      "numericUnit": "millisecond"
+    },
+    "screenshot-thumbnails": {
+      "id": "screenshot-thumbnails",
+      "title": "Screenshot Thumbnails",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "final-screenshot": {
+      "id": "final-screenshot",
+      "title": "Final Screenshot",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "script-treemap-data": {
+      "id": "script-treemap-data",
+      "title": "Script Treemap Data",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "resource-summary": {
+      "id": "resource-summary",
+      "title": "Resources Summary",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "accesskeys": {
+      "id": "accesskeys",
+      "title": "`[accesskey]` values are unique",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-allowed-attr": {
+      "id": "aria-allowed-attr",
+      "title": "`[aria-*]` attributes match their roles",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-allowed-role": {
+      "id": "aria-allowed-role",
+      "title": "Uses ARIA roles only on compatible elements",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-command-name": {
+      "id": "aria-command-name",
+      "title": "`button`, `link`, and `menuitem` elements have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-conditional-attr": {
+      "id": "aria-conditional-attr",
+      "title": "ARIA attributes are used as specified for the element's role",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-deprecated-role": {
+      "id": "aria-deprecated-role",
+      "title": "Deprecated ARIA roles were not used",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-dialog-name": {
+      "id": "aria-dialog-name",
+      "title": "Elements with `role=\"dialog\"` or `role=\"alertdialog\"` have accessible names.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-hidden-body": {
+      "id": "aria-hidden-body",
+      "title": "`[aria-hidden=\"true\"]` is not present on the document `<body>`",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "aria-hidden-focus": {
+      "id": "aria-hidden-focus",
+      "title": "`[aria-hidden=\"true\"]` elements do not contain focusable descendents",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-input-field-name": {
+      "id": "aria-input-field-name",
+      "title": "ARIA input fields have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-meter-name": {
+      "id": "aria-meter-name",
+      "title": "ARIA `meter` elements have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-progressbar-name": {
+      "id": "aria-progressbar-name",
+      "title": "ARIA `progressbar` elements have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-prohibited-attr": {
+      "id": "aria-prohibited-attr",
+      "title": "Elements use only permitted ARIA attributes",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-required-attr": {
+      "id": "aria-required-attr",
+      "title": "`[role]`s have all required `[aria-*]` attributes",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-required-children": {
+      "id": "aria-required-children",
+      "title": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-required-parent": {
+      "id": "aria-required-parent",
+      "title": "`[role]`s are contained by their required parent element",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-roles": {
+      "id": "aria-roles",
+      "title": "`[role]` values are valid",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-text": {
+      "id": "aria-text",
+      "title": "Elements with the `role=text` attribute do not have focusable descendents.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-toggle-field-name": {
+      "id": "aria-toggle-field-name",
+      "title": "ARIA toggle fields have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-tooltip-name": {
+      "id": "aria-tooltip-name",
+      "title": "ARIA `tooltip` elements have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-treeitem-name": {
+      "id": "aria-treeitem-name",
+      "title": "ARIA `treeitem` elements have accessible names",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-valid-attr-value": {
+      "id": "aria-valid-attr-value",
+      "title": "`[aria-*]` attributes have valid values",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "aria-valid-attr": {
+      "id": "aria-valid-attr",
+      "title": "`[aria-*]` attributes are valid and not misspelled",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "button-name": {
+      "id": "button-name",
+      "title": "Buttons have an accessible name",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "bypass": {
+      "id": "bypass",
+      "title": "The page contains a heading, skip link, or landmark region",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "color-contrast": {
+      "id": "color-contrast",
+      "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "description": "Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.9/color-contrast).",
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "node": {
+              "type": "node",
+              "selector": "body > main > h1.has-muted-color",
+              "snippet": "<h1 class=\"has-muted-color has-text-color\">",
+              "nodeLabel": "Hello world",
+              "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 1.91 (foreground color: #bbbbbb, background color: #ffffff, font size: 24.0pt (32px), font weight: bold). Expected contrast ratio of 3:1"
+            }
+          },
+          {
+            "node": {
+              "type": "node",
+              "selector": "body > main > p.hero-tagline",
+              "snippet": "<p class=\"hero-tagline\">",
+              "nodeLabel": "Welcome to WordPress. This is your first post.",
+              "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 1.6 (foreground color: #cccccc, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          }
+        ]
+      }
+    },
+    "definition-list": {
+      "id": "definition-list",
+      "title": "`<dl>`'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>`, `<template>` or `<div>` elements.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "dlitem": {
+      "id": "dlitem",
+      "title": "Definition list items are wrapped in `<dl>` elements",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "document-title": {
+      "id": "document-title",
+      "title": "Document has a `<title>` element",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "duplicate-id-aria": {
+      "id": "duplicate-id-aria",
+      "title": "ARIA IDs are unique",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "form-field-multiple-labels": {
+      "id": "form-field-multiple-labels",
+      "title": "No form fields have multiple labels",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "frame-title": {
+      "id": "frame-title",
+      "title": "`<frame>` or `<iframe>` elements have a title",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "heading-order": {
+      "id": "heading-order",
+      "title": "Heading elements are not in a sequentially-descending order",
+      "description": "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.9/heading-order).",
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "node": {
+              "type": "node",
+              "selector": "body > main > h4",
+              "snippet": "<h4>",
+              "nodeLabel": "Recent posts",
+              "explanation": "Fix any of the following:\n  Heading order invalid"
+            }
+          }
+        ]
+      }
+    },
+    "html-has-lang": {
+      "id": "html-has-lang",
+      "title": "`<html>` element does not have a `[lang]` attribute",
+      "description": "If a page doesn't specify a `lang` attribute, a screen reader assumes that the page is in the default language that the user chose when setting up the screen reader. If the page isn't actually in the default language, then the screen reader might not announce the page's text correctly. [Learn more about the `lang` attribute](https://dequeuniversity.com/rules/axe/4.9/html-has-lang).",
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "node": {
+              "type": "node",
+              "selector": "html",
+              "snippet": "<html>",
+              "nodeLabel": "html",
+              "explanation": "Fix any of the following:\n  The <html> element does not have a lang attribute"
+            }
+          }
+        ]
+      }
+    },
+    "html-lang-valid": {
+      "id": "html-lang-valid",
+      "title": "`<html>` element has a valid value for its `[lang]` attribute",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "html-xml-lang-mismatch": {
+      "id": "html-xml-lang-mismatch",
+      "title": "`<html>` element has an `[xml:lang]` attribute with the same base language as the `[lang]` attribute.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "image-alt": {
+      "id": "image-alt",
+      "title": "Image elements do not have `[alt]` attributes",
+      "description": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.9/image-alt).",
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "node": {
+              "type": "node",
+              "selector": "body > main > img.hero-image",
+              "snippet": "<img class=\"hero-image\" src=\"/photo.png\">",
+              "nodeLabel": "body > main > img.hero-image",
+              "explanation": "Fix any of the following:\n  Element does not have an alt attribute\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          }
+        ]
+      }
+    },
+    "image-redundant-alt": {
+      "id": "image-redundant-alt",
+      "title": "Image elements do not have `[alt]` attributes that are redundant text.",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "input-button-name": {
+      "id": "input-button-name",
+      "title": "Input buttons have discernible text.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "input-image-alt": {
+      "id": "input-image-alt",
+      "title": "`<input type=\"image\">` elements have `[alt]` text",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "label": {
+      "id": "label",
+      "title": "Form elements have associated labels",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "link-in-text-block": {
+      "id": "link-in-text-block",
+      "title": "Links are distinguishable without relying on color.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "link-name": {
+      "id": "link-name",
+      "title": "Links do not have a discernible name",
+      "description": "Link text (and alternate text for images, when used as links) that is discernible, unique, and focusable improves the navigation experience for screen reader users. [Learn how to make links accessible](https://dequeuniversity.com/rules/axe/4.9/link-name).",
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "node": {
+              "type": "node",
+              "selector": "body > header.wp-block-group > a.wp-block-site-title",
+              "snippet": "<a class=\"wp-block-site-title\" href=\"/\">",
+              "nodeLabel": "body > header.wp-block-group > a.wp-block-site-title",
+              "explanation": "Fix all of the following:\n  Element is in tab order and does not have accessible text\n\nFix any of the following:\n  Element does not have text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+            }
+          }
+        ]
+      }
+    },
+    "list": {
+      "id": "list",
+      "title": "Lists contain only `<li>` elements and script supporting elements (`<script>` and `<template>`).",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "listitem": {
+      "id": "listitem",
+      "title": "List items (`<li>`) are contained within `<ul>`, `<ol>` or `<menu>` parent elements",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "meta-refresh": {
+      "id": "meta-refresh",
+      "title": "The document does not use `<meta http-equiv=\"refresh\">`",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "meta-viewport": {
+      "id": "meta-viewport",
+      "title": "`[user-scalable=\"no\"]` is not used in the `<meta name=\"viewport\">` element and the `[maximum-scale]` attribute is not less than 5.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "object-alt": {
+      "id": "object-alt",
+      "title": "`<object>` elements have alternate text",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "select-name": {
+      "id": "select-name",
+      "title": "Select elements have associated label elements.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "skip-link": {
+      "id": "skip-link",
+      "title": "Skip links are focusable.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "tabindex": {
+      "id": "tabindex",
+      "title": "No element has a `[tabindex]` value greater than 0",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "table-duplicate-name": {
+      "id": "table-duplicate-name",
+      "title": "Tables have different content in the summary attribute and `<caption>`.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "target-size": {
+      "id": "target-size",
+      "title": "Touch targets have sufficient size and spacing.",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "td-headers-attr": {
+      "id": "td-headers-attr",
+      "title": "Cells in a `<table>` element that use the `[headers]` attribute refer to table cells within the same table.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "th-has-data-cells": {
+      "id": "th-has-data-cells",
+      "title": "`<th>` elements and elements with `[role=\"columnheader\"/\"rowheader\"]` have data cells they describe.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "valid-lang": {
+      "id": "valid-lang",
+      "title": "`[lang]` attributes have a valid value",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "video-caption": {
+      "id": "video-caption",
+      "title": "`<video>` elements contain a `<track>` element with `[kind=\"captions\"]`",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "focusable-controls": {
+      "id": "focusable-controls",
+      "title": "Interactive controls are keyboard focusable",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "interactive-element-affordance": {
+      "id": "interactive-element-affordance",
+      "title": "Interactive elements indicate their purpose and state",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "logical-tab-order": {
+      "id": "logical-tab-order",
+      "title": "The page has a logical tab order",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "visual-order-follows-dom": {
+      "id": "visual-order-follows-dom",
+      "title": "Visual order on the page follows DOM order",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "focus-traps": {
+      "id": "focus-traps",
+      "title": "User focus is not accidentally trapped in a region",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "managed-focus": {
+      "id": "managed-focus",
+      "title": "The user's focus is directed to new content added to the page",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "use-landmarks": {
+      "id": "use-landmarks",
+      "title": "HTML5 landmark elements are used to improve navigation",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "offscreen-content-hidden": {
+      "id": "offscreen-content-hidden",
+      "title": "Offscreen content is hidden from assistive technology",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "custom-controls-labels": {
+      "id": "custom-controls-labels",
+      "title": "Custom controls have associated labels",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "custom-controls-roles": {
+      "id": "custom-controls-roles",
+      "title": "Custom controls have ARIA roles",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    },
+    "empty-heading": {
+      "id": "empty-heading",
+      "title": "All heading elements contain content.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "identical-links-same-purpose": {
+      "id": "identical-links-same-purpose",
+      "title": "Identical links have the same purpose.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "landmark-one-main": {
+      "id": "landmark-one-main",
+      "title": "Document has a main landmark.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "label-content-name-mismatch": {
+      "id": "label-content-name-mismatch",
+      "title": "Elements with visible text labels have matching accessible names.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "table-fake-caption": {
+      "id": "table-fake-caption",
+      "title": "Tables use `<caption>` instead of cells with the `[colspan]` attribute to indicate a caption.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "td-has-header": {
+      "id": "td-has-header",
+      "title": "`<td>` elements in a large `<table>` have one or more table headers.",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "is-on-https": {
+      "id": "is-on-https",
+      "title": "Uses HTTPS",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "redirects-http": {
+      "id": "redirects-http",
+      "title": "Redirects HTTP traffic to HTTPS",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "geolocation-on-start": {
+      "id": "geolocation-on-start",
+      "title": "Avoids requesting the geolocation permission on page load",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "notification-on-start": {
+      "id": "notification-on-start",
+      "title": "Avoids requesting the notification permission on page load",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "csp-xss": {
+      "id": "csp-xss",
+      "title": "Ensure CSP is effective against XSS attacks",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "paste-preventing-inputs": {
+      "id": "paste-preventing-inputs",
+      "title": "Allows users to paste into input fields",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "image-aspect-ratio": {
+      "id": "image-aspect-ratio",
+      "title": "Displays images with correct aspect ratio",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "image-size-responsive": {
+      "id": "image-size-responsive",
+      "title": "Serves images with appropriate resolution",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "font-size": {
+      "id": "font-size",
+      "title": "Document uses legible font sizes",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "doctype": {
+      "id": "doctype",
+      "title": "Page has the HTML doctype",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "charset": {
+      "id": "charset",
+      "title": "Properly defines charset",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "js-libraries": {
+      "id": "js-libraries",
+      "title": "Detected JavaScript libraries",
+      "score": 1,
+      "scoreDisplayMode": "informative"
+    },
+    "deprecations": {
+      "id": "deprecations",
+      "title": "Avoids deprecated APIs",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "third-party-cookies": {
+      "id": "third-party-cookies",
+      "title": "Avoids third-party cookies",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "errors-in-console": {
+      "id": "errors-in-console",
+      "title": "Browser errors were logged to the console",
+      "description": "Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)",
+      "score": 0,
+      "scoreDisplayMode": "binary",
+      "details": {
+        "type": "table",
+        "items": [
+          {
+            "source": "network",
+            "description": "Failed to load resource: the server responded with a status of 404 (File not found)",
+            "sourceLocation": {
+              "type": "source-location",
+              "url": "http://localhost:8888/favicon.ico",
+              "urlProvider": "network",
+              "line": 0,
+              "column": 0
+            }
+          }
+        ]
+      }
+    },
+    "valid-source-maps": {
+      "id": "valid-source-maps",
+      "title": "Page has valid source maps",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "inspector-issues": {
+      "id": "inspector-issues",
+      "title": "No issues in the `Issues` panel in Chrome Devtools",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "is-crawlable": {
+      "id": "is-crawlable",
+      "title": "Page isn’t blocked from indexing",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "meta-description": {
+      "id": "meta-description",
+      "title": "Document does not have a meta description",
+      "description": "Meta descriptions may be included in search results to concisely summarize page content. [Learn more about the meta description](https://developer.chrome.com/docs/lighthouse/seo/meta-description/).",
+      "score": 0,
+      "scoreDisplayMode": "binary"
+    },
+    "http-status-code": {
+      "id": "http-status-code",
+      "title": "Page has successful HTTP status code",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "link-text": {
+      "id": "link-text",
+      "title": "Links have descriptive text",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "crawlable-anchors": {
+      "id": "crawlable-anchors",
+      "title": "Links are crawlable",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "robots-txt": {
+      "id": "robots-txt",
+      "title": "robots.txt is valid",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "hreflang": {
+      "id": "hreflang",
+      "title": "Document has a valid `hreflang`",
+      "score": 1,
+      "scoreDisplayMode": "binary"
+    },
+    "canonical": {
+      "id": "canonical",
+      "title": "Document has a valid `rel=canonical`",
+      "score": null,
+      "scoreDisplayMode": "notApplicable"
+    },
+    "structured-data": {
+      "id": "structured-data",
+      "title": "Structured data is valid",
+      "score": null,
+      "scoreDisplayMode": "manual"
+    }
+  }
+}
