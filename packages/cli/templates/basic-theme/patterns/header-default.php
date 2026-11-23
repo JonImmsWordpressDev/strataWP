@@ -11,7 +11,10 @@
 	<!-- wp:group {"align":"wide","layout":{"type":"flex","justifyContent":"space-between"}} -->
 	<div class="wp-block-group alignwide">
 		<!-- wp:site-title /-->
-		<!-- wp:navigation {"layout":{"type":"flex","setCascadingProperties":true}} /-->
+		<!-- wp:navigation {"layout":{"type":"flex","setCascadingProperties":true}} -->
+		<!-- wp:navigation-link {"label":"Home","url":"/","kind":"custom"} /-->
+		<!-- wp:navigation-link {"label":"Sample Page","url":"/sample-page/","kind":"custom"} /-->
+		<!-- /wp:navigation -->
 	</div>
 	<!-- /wp:group -->
 </div>
