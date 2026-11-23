@@ -1,0 +1,83 @@
+name: Release stratawp/core
+
+# Every v* tag publishes packages/core to the read-only mirror
+# github.com/JonImmsWordpressDev/stratawp-core with the same tag, so themes
+# can install it with Composer and their deploys ship it. Each release is one
+# snapshot commit; if packages/core did not change, the tag points at the
+# previous snapshot.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish, e.g. v2.4.1'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-core
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      CORE_KEY: ${{ secrets.STRATAWP_CORE_DEPLOY_KEY }}
+      GIT_AUTHOR_NAME: Jon Imms
+      GIT_AUTHOR_EMAIL: 60996163+JonImmsWordpressDev@users.noreply.github.com
+      GIT_COMMITTER_NAME: Jon Imms
+      GIT_COMMITTER_EMAIL: 60996163+JonImmsWordpressDev@users.noreply.github.com
+    steps:
+      - name: Check the deploy key is set up
+        run: |
+          if [ -z "$CORE_KEY" ]; then
+            echo "::error::STRATAWP_CORE_DEPLOY_KEY secret is not set."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$CORE_KEY" > ~/.ssh/core_key
+          chmod 600 ~/.ssh/core_key
+          # GitHub's published ed25519 host key.
+          echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > ~/.ssh/known_hosts
+          echo "GIT_SSH_COMMAND=ssh -i $HOME/.ssh/core_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
+
+      - name: Publish the snapshot
+        run: |
+          set -euo pipefail
+          git rev-parse -q --verify "refs/tags/$TAG^{commit}" >/dev/null || { echo "::error::tag $TAG not found"; exit 1; }
+          TREE=$(git rev-parse "$TAG:packages/core")
+          SRC=$(git rev-parse --short "$TAG^{commit}")
+          git remote add core git@github.com:JonImmsWordpressDev/stratawp-core.git
+          git fetch -q core main
+          if git ls-remote --exit-code --tags core "refs/tags/$TAG" >/dev/null; then
+            echo "$TAG is already published, nothing to do."
+            exit 0
+          fi
+          PARENT=$(git rev-parse core/main)
+          if [ "$(git rev-parse "$PARENT^{tree}")" = "$TREE" ]; then
+            COMMIT=$PARENT
+            echo "packages/core unchanged since the last release; tagging the existing snapshot."
+          else
+            export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+            GIT_AUTHOR_DATE=$(git log -1 --format=%cI "$TAG")
+            GIT_COMMITTER_DATE=$GIT_AUTHOR_DATE
+            COMMIT=$(git commit-tree "$TREE" -p "$PARENT" -m "stratawp/core $TAG (from strataWP@$SRC)")
+          fi
+          git push core "$COMMIT:refs/heads/main" "$COMMIT:refs/tags/$TAG"
+          echo "Published stratawp/core $TAG as ${COMMIT:0:7}"
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/core_key
