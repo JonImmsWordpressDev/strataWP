@@ -67,9 +67,13 @@ jobs:
 
       # A normal install turns pretty permalinks on; wp-env stays on plain
       # ones, where WordPress has no rewrite rule for /favicon.ico and the
-      # browser logs a 404 that no theme can fix.
+      # browser logs a 404 that no theme can fix. wp-env also ships no
+      # .htaccess, and wp-cli only writes one on a hard flush when it is told
+      # mod_rewrite is loaded (it can't detect Apache modules from the CLI).
       - name: Use pretty permalinks
-        run: pnpm exec wp-env run cli wp rewrite structure '/%postname%/'
+        run: |
+          pnpm exec wp-env run cli wp rewrite structure '/%postname%/'
+          pnpm exec wp-env run cli bash -c 'printf "apache_modules:\n  - mod_rewrite\n" > wp-cli.yml && wp rewrite flush --hard && rm wp-cli.yml && test -f .htaccess'
 
       - name: Wait for WordPress to be ready
         run: node scripts/wait-for-http.mjs http://localhost:8888/ 120000
