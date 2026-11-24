@@ -61,6 +61,7 @@ jobs:
           cp -r "${THEME_DIR}"/parts /tmp/strata-basic/ 2>/dev/null || true
           cp -r "${THEME_DIR}"/patterns /tmp/strata-basic/ 2>/dev/null || true
           cp -r "${THEME_DIR}"/inc /tmp/strata-basic/ 2>/dev/null || true
+          cp -r "${THEME_DIR}"/assets /tmp/strata-basic/ 2>/dev/null || true
           cp -r "${THEME_DIR}"/languages /tmp/strata-basic/ 2>/dev/null || true
 
           # Copy PHP files from theme root

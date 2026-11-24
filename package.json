@@ -29,6 +29,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
     "test:perf": "lhci autorun",
+    "test:scripts": "node --test scripts/lighthouse-report.test.mjs",
     "extract:critical": "node scripts/extract-critical.mjs",
     "clean": "turbo clean && rm -rf node_modules",
     "changeset": "changeset",

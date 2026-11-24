@@ -41,6 +41,7 @@ jobs:
         run: pnpm review
       - run: pnpm format:check
       - run: pnpm test
+      - run: pnpm test:scripts
 
   php:
     name: PHP ${{ matrix.php }}

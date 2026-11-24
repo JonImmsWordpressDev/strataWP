@@ -63,18 +63,46 @@ function strata_basic(): Theme {
 }
 
 /**
+ * Check if Vite dev server is running
+ */
+function strata_basic_is_vite_running(): bool {
+	static $is_running = null;
+
+	if ( null !== $is_running ) {
+		return $is_running;
+	}
+
+	if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || 'local' !== WP_ENVIRONMENT_TYPE ) {
+		$is_running = false;
+		return false;
+	}
+
+	// Check if Vite dev server is accessible
+	$vite_server = 'http://localhost:3000';
+	$response    = wp_remote_get(
+		$vite_server . '/@vite/client',
+		array(
+			'timeout'   => 1,
+			'sslverify' => false,
+		)
+	);
+
+	$is_running = ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200;
+	return $is_running;
+}
+
+/**
  * Load Vite dev server in development
  */
 function strata_basic_vite_dev_server(): void {
-	if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || 'local' !== WP_ENVIRONMENT_TYPE ) {
+	if ( ! strata_basic_is_vite_running() ) {
 		return;
 	}
 
-	// In local development, always inject Vite client
-	// Browser will connect to localhost:3000
+	// Inject Vite client and main entry for HMR
 	$vite_server = 'http://localhost:3000';
 
-	// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Vite HMR client must be injected as a raw module script; wp_enqueue_script() does not support type="module" entry points for HMR.
+	// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Vite HMR requires type="module" scripts pointing at the dev-server URL; wp_enqueue_script() cannot express this pattern.
 	printf(
 		'<script type="module" src="%s/@vite/client"></script>',
 		esc_url( $vite_server )
@@ -87,6 +115,19 @@ function strata_basic_vite_dev_server(): void {
 }
 
 add_action( 'wp_head', 'strata_basic_vite_dev_server', 1 );
+
+/**
+ * Prevent loading compiled assets when Vite dev server is running
+ */
+function strata_basic_maybe_dequeue_assets(): void {
+	if ( strata_basic_is_vite_running() ) {
+		// Dequeue compiled assets since Vite will serve them
+		wp_dequeue_style( 'stratawp-styles' );
+		wp_dequeue_script( 'stratawp-main' );
+	}
+}
+
+add_action( 'wp_enqueue_scripts', 'strata_basic_maybe_dequeue_assets', 999 );
 
 /**
  * Theme activation

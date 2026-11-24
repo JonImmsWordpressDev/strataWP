@@ -7,8 +7,8 @@
 ?>
 <!-- wp:group {"align":"wide","layout":{"type":"constrained","wideSize":"800px"}} -->
 <div class="wp-block-group alignwide">
-	<!-- wp:image {"sizeSlug":"full","linkDestination":"none"} -->
-	<figure class="wp-block-image size-full"><img src="<?php echo esc_url( get_theme_file_uri() ) . '/assets/images/sample_1920x1200.jpg'; ?>" alt="<?php echo esc_attr__( 'Sample Image', 'strata-store' ); ?>" /></figure>
+	<!-- wp:image {"aspectRatio":"8/5","width":"100%","sizeSlug":"full","linkDestination":"none"} -->
+	<figure class="wp-block-image size-full is-resized"><img src="<?php echo esc_url( get_theme_file_uri() ) . '/assets/images/sample_1920x1200.jpg'; ?>" alt="<?php echo esc_attr__( 'Sample Image', 'strata-store' ); ?>" style="aspect-ratio:8/5;width:100%;height:auto"/></figure>
 	<!-- /wp:image -->
 	<!-- wp:heading {"textAlign":"center","anchor":"image-heading-text-buttons","style":{"spacing":{"margin":{"top":"var:preset|spacing|medium"}}},"className":"wp-block-heading","fontSize":"x-large"} -->
 	<h2 class="wp-block-heading has-text-align-center has-x-large-font-size" id="image-heading-text-buttons" style="margin-top:var(--wp--preset--spacing--medium)"><?php echo esc_html__( 'Welcome to StrataWP', 'strata-store' ); ?></h2>

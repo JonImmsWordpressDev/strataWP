@@ -31,8 +31,8 @@
 		<!-- /wp:column -->
 		<!-- wp:column {"verticalAlignment":"center","width":"40%"} -->
 		<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:40%">
-			<!-- wp:image {"sizeSlug":"full","linkDestination":"none"} -->
-			<figure class="wp-block-image size-full"><img src="<?php echo esc_url( get_theme_file_uri() ) . '/assets/images/sample_black_1200x1200.jpg'; ?>" alt="<?php echo esc_attr__( 'Sample Image', 'strata-store' ); ?>"/></figure>
+			<!-- wp:image {"aspectRatio":"1","width":"100%","sizeSlug":"full","linkDestination":"none"} -->
+			<figure class="wp-block-image size-full is-resized"><img src="<?php echo esc_url( get_theme_file_uri() ) . '/assets/images/sample_black_1200x1200.jpg'; ?>" alt="<?php echo esc_attr__( 'Sample Image', 'strata-store' ); ?>" style="aspect-ratio:1;width:100%;height:auto"/></figure>
 			<!-- /wp:image -->
 		</div>
 		<!-- /wp:column -->

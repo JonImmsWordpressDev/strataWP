@@ -14,12 +14,16 @@ concurrency:
 
 jobs:
   lighthouse:
-    name: Lighthouse budget (wp-env)
+    name: Lighthouse ${{ matrix.theme }} (mobile + desktop, wp-env)
     runs-on: ubuntu-latest
-    # NON-BLOCKING while we calibrate against real CI numbers. Once scores are
-    # stable across runs, remove continue-on-error and make this a required
-    # check — the enforced budget the comparison target never actually runs.
+    # NON-BLOCKING until every theme's scores are stable across 3 runs. Then
+    # remove continue-on-error, make the matrix a required check, and record
+    # anything that truly cannot reach 100 in the ALLOWLIST in .lighthouserc.cjs.
     continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [basic-theme, advanced-theme, store-theme]
     steps:
       - uses: actions/checkout@v4
 
@@ -44,8 +48,8 @@ jobs:
       - name: Build the Vite plugin (the theme's framework build dependency)
         run: pnpm --filter @stratawp/vite-plugin build
 
-      - name: Prepare example theme (copy core into vendor, build assets)
-        working-directory: examples/basic-theme
+      - name: Prepare the theme (copy core into vendor, build assets)
+        working-directory: examples/${{ matrix.theme }}
         env:
           # Copy the path-repo `stratawp/core` into vendor/ instead of
           # symlinking, so it resolves inside the wp-env container.
@@ -57,11 +61,48 @@ jobs:
       - name: Start WordPress (wp-env)
         run: pnpm exec wp-env start
 
-      - name: Activate the example theme
-        run: pnpm exec wp-env run cli wp theme activate basic-theme
+      # Default content, no extra setup, logged out: the theme as a user gets it.
+      - name: Activate the theme
+        run: pnpm exec wp-env run cli wp theme activate ${{ matrix.theme }}
 
+      # A normal install turns pretty permalinks on; wp-env stays on plain
+      # ones, where WordPress has no rewrite rule for /favicon.ico and the
+      # browser logs a 404 that no theme can fix. wp-env also ships no
+      # .htaccess, and wp-cli only writes one on a hard flush when it is told
+      # mod_rewrite is loaded (it can't detect Apache modules from the CLI).
+      - name: Use pretty permalinks
+        run: |
+          pnpm exec wp-env run cli wp rewrite structure '/%postname%/'
+          pnpm exec wp-env run cli bash -c 'printf "apache_modules:\n  - mod_rewrite\n" > wp-cli.yml && wp rewrite flush --hard && rm wp-cli.yml && test -f .htaccess'
+
+      - name: Wait for WordPress to be ready
+        run: node scripts/wait-for-http.mjs http://localhost:8888/ 120000
+
+      # Only basic-theme loads the CriticalCss component.
       - name: Extract critical CSS from the rendered page
+        if: matrix.theme == 'basic-theme'
         run: node scripts/extract-critical.mjs http://localhost:8888/ examples/basic-theme/dist
 
-      - name: Run the Lighthouse budget
+      - name: Lighthouse (mobile)
+        env:
+          STRATAWP_LH_PRESET: mobile
         run: pnpm test:perf
+
+      - name: Lighthouse (desktop)
+        if: ${{ !cancelled() }}
+        env:
+          STRATAWP_LH_PRESET: desktop
+        run: pnpm test:perf
+
+      - name: Gap report (job summary)
+        if: ${{ !cancelled() }}
+        run: node scripts/lighthouse-report.mjs --theme ${{ matrix.theme }} --dir lighthouse-reports
+
+      - name: Upload Lighthouse reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-${{ matrix.theme }}
+          path: lighthouse-reports
+          retention-days: 14
+          if-no-files-found: ignore

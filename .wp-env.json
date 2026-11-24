@@ -1,5 +1,5 @@
 {
-  "themes": ["./examples/basic-theme"],
+  "themes": ["./examples/basic-theme", "./examples/advanced-theme", "./examples/store-theme"],
   "config": {
     "WP_DEBUG": false
   }
