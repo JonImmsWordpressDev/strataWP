@@ -1,6 +1,7 @@
 // packages/sync/src/snapshots/__tests__/manager.test.ts
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { SnapshotManager } from '../manager.js'
+import tar from 'tar'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import * as os from 'os'
@@ -35,6 +36,43 @@ describe('SnapshotManager', () => {
       expect(snapshot.id).toMatch(/^\d{4}-\d{2}-\d{2}T/)
       expect(snapshot.environment).toBe('production')
       expect(snapshot.files.count).toBeGreaterThan(0)
+    })
+
+    it('keeps nested src directories and drops only the theme root src', async () => {
+      const themePath = path.join(tempDir, 'theme')
+      const files = [
+        'style.css',
+        'functions.php',
+        'vendor/autoload.php',
+        'vendor/stratawp/core/src/Theme.php',
+        'vendor/stratawp/core/src/Components/Setup.php',
+        'dist/main.js',
+        'src/js/main.ts',
+        'e2e/home.spec.ts',
+        'vendor/x/node_modules/y/index.js',
+      ]
+      for (const file of files) {
+        await fs.mkdir(path.dirname(path.join(themePath, file)), { recursive: true })
+        await fs.writeFile(path.join(themePath, file), '')
+      }
+
+      const snapshot = await manager.createSnapshot({
+        environment: 'production',
+        themePath,
+        databaseDump: '',
+      })
+
+      const archived: string[] = []
+      await tar.list({
+        file: path.join(tempDir, snapshot.id, 'theme.tar.gz'),
+        onentry: (entry) => {
+          if (entry.type === 'File') archived.push(entry.path)
+        },
+      })
+
+      const expected = files.slice(0, 6).map((file) => `theme/${file}`)
+      expect(archived.sort()).toEqual(expected.sort())
+      expect(snapshot.files.count).toBe(6)
     })
   })
 
