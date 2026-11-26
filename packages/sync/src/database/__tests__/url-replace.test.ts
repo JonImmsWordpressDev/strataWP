@@ -54,5 +54,44 @@ describe('UrlReplacer', () => {
       const result = replacer.replaceInSQL(sql)
       expect(result).toContain('http://local.test')
     })
+
+    describe('escaped values', () => {
+      // Escape a stored value the way DatabaseDumper does
+      const dumpEscape = (v: string) => v.replace(/'/g, "''").replace(/\\/g, '\\\\')
+      const serialize = (v: string) => `s:${Buffer.byteLength(v, 'utf8')}:"${v}";`
+      const insert = (v: string) =>
+        `INSERT INTO \`wp_options\` (\`option_name\`, \`option_value\`) VALUES ('x', '${dumpEscape(v)}');`
+      const storedValue = (line: string) =>
+        line
+          .slice(line.lastIndexOf(", '") + 3, line.lastIndexOf("');"))
+          .replace(/''|\\\\/g, (m) => m[0])
+
+      it.each([
+        ['plain', 'https://production.com/page'],
+        ['apostrophe', "Jon's site https://production.com"],
+        ['backslash', 'C:\\uploads https://production.com'],
+        ['both', "it's C:\\a\\b https://production.com/x"],
+      ])('keeps serialized lengths correct with %s', (_name, original) => {
+        const result = replacer.replaceInSQL(insert(serialize(original)))
+        const expected = original.split('https://production.com').join('http://local.test')
+        expect(storedValue(result)).toBe(serialize(expected))
+      })
+
+      it('keeps the statement a single SQL literal per value', () => {
+        const result = replacer.replaceInSQL(insert(serialize("Jon's https://production.com")))
+        expect(result).toBe(insert(serialize("Jon's http://local.test")))
+      })
+
+      it('reads backslash-escaped quotes as mysqldump writes them', () => {
+        const sql = `INSERT INTO t VALUES ('Jon\\'s https://production.com');`
+        const result = replacer.replaceInSQL(sql)
+        expect(result).toBe(`INSERT INTO t VALUES ('Jon''s http://local.test');`)
+      })
+
+      it('leaves literals without a match untouched', () => {
+        const sql = `INSERT INTO t VALUES ('Jon\\'s \\n site');`
+        expect(replacer.replaceInSQL(sql)).toBe(sql)
+      })
+    })
   })
 })
