@@ -29,6 +29,67 @@ export class UrlReplacer {
       return this.replaceInString(input)
     }
 
+    const walked = this.walkSerialized(input)
+    if (walked === null) {
+      // A string length that doesn't match its value: fall back to pattern matching
+      return this.replaceInSerializedByPattern(input)
+    }
+    return walked.strings > 0 ? walked.output : this.replaceInString(input)
+  }
+
+  /**
+   * Read each s:N:"..."; token by its declared byte length, so values holding
+   * double quotes (HTML attributes) are found, and replace inside the value.
+   * Returns null when a declared length doesn't land on the closing quote.
+   */
+  private walkSerialized(input: string): { output: string; strings: number } | null {
+    const buf = Buffer.from(input, 'utf8')
+    const parts: string[] = []
+    let strings = 0
+    let copyFrom = 0
+    let i = 0
+
+    while (i < buf.length) {
+      const prev = i === 0 ? -1 : buf[i - 1]
+      // A string token starts the input or follows ; { or }
+      if (
+        buf[i] === 0x73 &&
+        buf[i + 1] === 0x3a &&
+        (prev === -1 || prev === 0x3b || prev === 0x7b || prev === 0x7d)
+      ) {
+        let j = i + 2
+        while (buf[j] >= 0x30 && buf[j] <= 0x39) j++
+        if (j > i + 2 && buf[j] === 0x3a && buf[j + 1] === 0x22) {
+          const start = j + 2
+          const end = start + Number(buf.subarray(i + 2, j).toString('latin1'))
+          if (buf[end] !== 0x22 || buf[end + 1] !== 0x3b) {
+            return null
+          }
+
+          const value = buf.subarray(start, end).toString('utf8')
+          // Serialized data stored inside a string (double serialization) gets its own lengths fixed
+          const replaced = /^(?:a:\d+:\{|O:\d+:"|s:\d+:")/.test(value)
+            ? this.replaceInSerialized(value)
+            : this.replaceInString(value)
+
+          parts.push(
+            buf.subarray(copyFrom, i).toString('utf8'),
+            `s:${Buffer.byteLength(replaced, 'utf8')}:"${replaced}";`
+          )
+          strings++
+          i = end + 2
+          copyFrom = i
+          continue
+        }
+      }
+      i++
+    }
+
+    parts.push(buf.subarray(copyFrom).toString('utf8'))
+    return { output: parts.join(''), strings }
+  }
+
+  private replaceInSerializedByPattern(input: string): string {
     let result = input
 
     for (const { from, to } of this.replacements) {

@@ -38,6 +38,51 @@ describe('UrlReplacer', () => {
       expect(result).toContain('http://local.test')
       expect(result).toContain('http://local.test/wp-content')
     })
+
+    // Expected values below are PHP serialize() of the replaced data
+    it('should replace URLs in values that contain double quotes', () => {
+      const input = 'a:1:{s:1:"v";s:43:"<a href="https://production.com/page">x</a>";}'
+      expect(replacer.replaceInSerialized(input)).toBe(
+        'a:1:{s:1:"v";s:38:"<a href="http://local.test/page">x</a>";}'
+      )
+    })
+
+    it('should handle HTML values in nested arrays', () => {
+      const input =
+        'a:2:{s:1:"w";a:2:{s:5:"title";s:2:"Hi";s:4:"text";s:61:"<p class="x">See <a href="https://production.com/a">a</a></p>";}s:1:"n";i:3;}'
+      expect(replacer.replaceInSerialized(input)).toBe(
+        'a:2:{s:1:"w";a:2:{s:5:"title";s:2:"Hi";s:4:"text";s:56:"<p class="x">See <a href="http://local.test/a">a</a></p>";}s:1:"n";i:3;}'
+      )
+    })
+
+    it('should count multibyte values in bytes', () => {
+      const input = 'a:1:{s:1:"v";s:47:"Café <img src="https://production.com/é.png">";}'
+      expect(replacer.replaceInSerialized(input)).toBe(
+        'a:1:{s:1:"v";s:42:"Café <img src="http://local.test/é.png">";}'
+      )
+    })
+
+    it('should fix lengths in serialized data stored inside a string', () => {
+      const input =
+        'a:1:{s:5:"inner";s:55:"a:1:{s:1:"u";s:33:"<a href="https://production.com">";}";}'
+      expect(replacer.replaceInSerialized(input)).toBe(
+        'a:1:{s:5:"inner";s:50:"a:1:{s:1:"u";s:28:"<a href="http://local.test">";}";}'
+      )
+    })
+
+    it('should fall back to pattern matching when a length is wrong', () => {
+      const input = 'a:1:{s:3:"url";s:99:"https://production.com";}'
+      expect(replacer.replaceInSerialized(input)).toBe('a:1:{s:3:"url";s:17:"http://local.test";}')
+    })
+  })
+
+  describe('replaceInSQL with serialized HTML', () => {
+    it('should replace URLs in serialized HTML inside an INSERT', () => {
+      const sql = `INSERT INTO wp_options VALUES (1,'widget_text','a:1:{s:1:"v";s:43:"<a href="https://production.com/page">x</a>";}','yes');`
+      expect(replacer.replaceInSQL(sql)).toBe(
+        `INSERT INTO wp_options VALUES (1,'widget_text','a:1:{s:1:"v";s:38:"<a href="http://local.test/page">x</a>";}','yes');`
+      )
+    })
   })
 
   describe('replaceInJSON', () => {
