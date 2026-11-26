@@ -25,19 +25,32 @@ export class SnapshotManager {
   private basePath: string
   private indexPath: string
 
-  /** Directories and files excluded from snapshot archives */
+  /** Directories and files excluded from snapshot archives, at any depth */
   private static readonly SNAPSHOT_EXCLUDES = [
     'node_modules',
     '.stratawp-snapshots',
     '.git',
-    'src',
-    'e2e',
     '__tests__',
     '.playwright-mcp',
     '.claude',
     '.turbo',
     '.cache',
   ]
+
+  /**
+   * Excluded only at the theme root: vendored packages such as
+   * vendor/stratawp/core/src hold code the deployed theme needs
+   */
+  private static readonly SNAPSHOT_ROOT_EXCLUDES = ['src', 'e2e']
+
+  /** Whether a path relative to the theme directory is left out of snapshots */
+  static isExcluded(relativePath: string): boolean {
+    const parts = relativePath.split(/[\\/]/).filter(Boolean)
+    if (parts.length > 0 && SnapshotManager.SNAPSHOT_ROOT_EXCLUDES.includes(parts[0])) {
+      return true
+    }
+    return parts.some((part) => SnapshotManager.SNAPSHOT_EXCLUDES.includes(part))
+  }
 
   constructor(basePath: string = '.stratawp-snapshots') {
     this.basePath = basePath
@@ -72,10 +85,9 @@ export class SnapshotManager {
         gzip: true,
         file: themeArchive,
         cwd: path.dirname(options.themePath),
-        filter: (entryPath) => {
-          const parts = entryPath.split(path.sep)
-          return !parts.some((part) => SnapshotManager.SNAPSHOT_EXCLUDES.includes(part))
-        },
+        // Entries are prefixed with the theme directory name; drop it
+        filter: (entryPath) =>
+          !SnapshotManager.isExcluded(entryPath.split(/[\\/]/).slice(1).join('/')),
       },
       [path.basename(options.themePath)]
     )
@@ -208,13 +220,12 @@ export class SnapshotManager {
 
   private async getFileList(dirPath: string): Promise<string[]> {
     const files: string[] = []
-    const excludes = SnapshotManager.SNAPSHOT_EXCLUDES
 
     async function walk(dir: string) {
       const entries = await fs.readdir(dir, { withFileTypes: true })
       for (const entry of entries) {
-        if (excludes.includes(entry.name)) continue
         const fullPath = path.join(dir, entry.name)
+        if (SnapshotManager.isExcluded(path.relative(dirPath, fullPath))) continue
         if (entry.isDirectory()) {
           await walk(fullPath)
         } else {
