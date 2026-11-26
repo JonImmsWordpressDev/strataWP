@@ -83,19 +83,49 @@ export class UrlReplacer {
   }
 
   private processLine(line: string): string {
-    // Match string values in SQL: 'value'
-    return line.replace(/'([^'\\]|\\.)*'/g, (match) => {
-      const value = match.slice(1, -1) // Remove quotes
+    // Match SQL string literals: 'value', with '' and backslash escapes inside
+    return line.replace(/'(?:[^'\\]|''|\\.)*'/g, (match) => {
+      // Work on the stored value, not its escaped SQL form, so serialized
+      // lengths are counted on the real bytes
+      const value = UrlReplacer.unescapeSQL(match.slice(1, -1))
 
       // Detect type and process accordingly
+      let replaced: string
       if (this.isSerializedPHP(value)) {
-        return `'${this.replaceInSerialized(value)}'`
+        replaced = this.replaceInSerialized(value)
       } else if (this.isJSON(value)) {
-        return `'${this.replaceInJSON(value)}'`
+        replaced = this.replaceInJSON(value)
       } else {
-        return `'${this.replaceInString(value)}'`
+        replaced = this.replaceInString(value)
       }
+
+      return replaced === value ? match : `'${UrlReplacer.escapeSQL(replaced)}'`
     })
+  }
+
+  /**
+   * Decode the body of a MySQL string literal ('' and backslash escapes)
+   */
+  static unescapeSQL(str: string): string {
+    const escapes: Record<string, string> = { '0': '\0', n: '\n', r: '\r', t: '\t', Z: '\x1a' }
+    return str.replace(/''|\\(.)/gs, (_m, ch: string | undefined) =>
+      ch === undefined ? "'" : (escapes[ch] ?? ch)
+    )
+  }
+
+  /**
+   * Encode a value as the body of a MySQL string literal, as DatabaseDumper does,
+   * keeping control characters escaped so the statement stays on one line
+   */
+  static escapeSQL(str: string): string {
+    return str
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "''")
+      .replace(/\0/g, '\\0')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .split('\x1a')
+      .join('\\Z')
   }
 
   private isSerializedPHP(str: string): boolean {
