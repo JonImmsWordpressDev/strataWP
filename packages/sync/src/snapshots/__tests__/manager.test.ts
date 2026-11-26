@@ -37,6 +37,7 @@ describe('SnapshotManager', () => {
       expect(snapshot.environment).toBe('production')
       expect(snapshot.files.count).toBeGreaterThan(0)
     })
+
     it('keeps nested src directories and drops only the theme root src', async () => {
       const themePath = path.join(tempDir, 'theme')
       const files = [
