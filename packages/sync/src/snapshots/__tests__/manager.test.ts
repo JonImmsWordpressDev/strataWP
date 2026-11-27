@@ -1,7 +1,7 @@
 // packages/sync/src/snapshots/__tests__/manager.test.ts
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { SnapshotManager } from '../manager.js'
-import tar from 'tar'
+import * as tar from 'tar'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import * as os from 'os'
@@ -148,6 +148,38 @@ describe('SnapshotManager', () => {
 
     it('should throw error for non-existent snapshot', async () => {
       await expect(manager.getDatabaseDump('non-existent')).rejects.toThrow('Snapshot not found')
+    })
+  })
+
+  describe('extractTheme', () => {
+    it('should restore the archived theme files', async () => {
+      const themePath = path.join(tempDir, 'theme')
+      await fs.mkdir(path.join(themePath, 'parts'), { recursive: true })
+      await fs.writeFile(path.join(themePath, 'style.css'), '/* Theme */')
+      await fs.writeFile(path.join(themePath, 'parts', 'header.html'), '<header></header>')
+
+      const snapshot = await manager.createSnapshot({
+        environment: 'production',
+        themePath,
+        databaseDump: '',
+      })
+
+      const targetPath = path.join(tempDir, 'restored')
+      await fs.mkdir(targetPath, { recursive: true })
+      await manager.extractTheme(snapshot.id, targetPath)
+
+      expect(await fs.readFile(path.join(targetPath, 'theme', 'style.css'), 'utf8')).toBe(
+        '/* Theme */'
+      )
+      expect(
+        await fs.readFile(path.join(targetPath, 'theme', 'parts', 'header.html'), 'utf8')
+      ).toBe('<header></header>')
+    })
+
+    it('should throw error for non-existent snapshot', async () => {
+      await expect(manager.extractTheme('non-existent', tempDir)).rejects.toThrow(
+        'Snapshot not found'
+      )
     })
   })
 })
