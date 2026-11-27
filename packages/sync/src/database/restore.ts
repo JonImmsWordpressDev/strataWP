@@ -107,8 +107,8 @@ export class DatabaseRestorer {
             current += char
             inString = false
           }
-        } else if (char === '\\' && sql[i + 1] === stringChar) {
-          // Backslash escape (also valid in MySQL)
+        } else if (char === '\\' && i + 1 < sql.length) {
+          // Backslash escapes the next character, whatever it is (\', \\, \n...)
           current += char + sql[i + 1]
           i++ // Skip escaped character
         } else {
