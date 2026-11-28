@@ -30,10 +30,21 @@ const html = await res.text()
 
 // Rewrite absolute theme CSS hrefs to dist-relative paths so beasties resolves
 // them against `path` (the dist dir) instead of trying to fetch them remotely.
+// WordPress prints enqueued stylesheets with single-quoted attributes
+// (href='...'), so accept either quote.
+let themeSheets = 0
 const rewritten = html.replace(
-  /href="[^"]*\/dist\/(css\/[^"?]+)(\?[^"]*)?"/g,
-  'href="$1"'
+  /href=(["'])[^"']*\/dist\/(css\/[^"'?]+)(\?[^"']*)?\1/g,
+  (_, quote, file) => {
+    themeSheets++
+    return `href=${quote}${file}${quote}`
+  }
 )
+
+if (!themeSheets) {
+  console.error(`No theme stylesheet (dist/css/*.css) found in ${url}.`)
+  process.exit(1)
+}
 
 const beasties = new Beasties({
   path: distDir,
@@ -44,8 +55,15 @@ const beasties = new Beasties({
 
 const processed = await beasties.process(rewritten)
 
-const match = processed.match(/<style[^>]*>([\s\S]*?)<\/style>/)
-const critical = match ? match[1].trim() : ''
+// The page already carries WordPress's own inline <style> blocks; the critical
+// CSS is the one block beasties added, so take the blocks that were not in the
+// fetched page.
+const styleBlocks = (markup) =>
+  [...markup.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1].trim())
+const existing = new Set(styleBlocks(rewritten))
+const critical = styleBlocks(processed)
+  .filter((css) => css && !existing.has(css))
+  .join('\n')
 
 if (!critical) {
   console.error('No critical CSS extracted (no <style> in beasties output).')
