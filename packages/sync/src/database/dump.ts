@@ -16,6 +16,8 @@ export class DatabaseDumper {
       user: this.config.user,
       password: this.config.password,
       database: this.config.database,
+      // Return DATE/DATETIME/TIMESTAMP as the stored text, not JS Dates
+      dateStrings: true,
     })
   }
 

@@ -69,5 +69,32 @@ describe('DatabaseDumper', () => {
       expect(sql).toContain('CREATE TABLE')
       expect(sql).toContain('INSERT INTO')
     })
+
+    it('should ask MySQL for date strings so DATETIME values dump as stored', async () => {
+      const mysql = await import('mysql2/promise')
+      const mockConnection = {
+        query: vi.fn().mockImplementation((sql: string) => {
+          if (sql.startsWith('SHOW CREATE')) {
+            return Promise.resolve([[{ 'Create Table': 'CREATE TABLE `wp_posts` (ID INT)' }]])
+          }
+          // What mysql2 returns for DATETIME columns when dateStrings is on
+          return Promise.resolve([
+            [{ ID: 1, post_date: '2026-11-27 10:30:00', post_date_gmt: '0000-00-00 00:00:00' }],
+          ])
+        }),
+        end: vi.fn(),
+      }
+      vi.mocked(mysql.default.createConnection).mockResolvedValue(mockConnection as any)
+
+      const dumper = new DatabaseDumper(mockConfig)
+      const sql = await dumper.generateDumpSQL({ tables: ['wp_posts'] })
+
+      expect(mysql.default.createConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ dateStrings: true })
+      )
+      expect(sql).toContain(
+        "INSERT INTO `wp_posts` (`ID`, `post_date`, `post_date_gmt`) VALUES (1, '2026-11-27 10:30:00', '0000-00-00 00:00:00');"
+      )
+    })
   })
 })
