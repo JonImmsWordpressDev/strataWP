@@ -60,7 +60,7 @@
     "@stratawp/explorer": "workspace:^",
     "@stratawp/sync": "workspace:^",
     "@stratawp/theme-review": "workspace:^",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.6.1",
     "basic-ftp": "^6.2.6",
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
@@ -73,7 +73,6 @@
     "p-limit": "^5.0.0",
     "prompts": "^2.4.2",
     "semver": "^7.5.4",
-    "simple-git": "^3.22.0",
     "ssh2-sftp-client": "^10.0.3",
     "validate-npm-package-name": "^5.0.0"
   },
