@@ -229,6 +229,32 @@ describe('DatabaseRestorer', () => {
       expect(executedQueries.length).toBe(2)
       expect(executedQueries[0]).toContain("test\\'s value")
     })
+
+    it('should treat an escaped backslash before the closing quote as the end of the string', async () => {
+      const mysql = await import('mysql2/promise')
+      const executedQueries: string[] = []
+      const mockConnection = {
+        query: vi.fn().mockImplementation((sql) => {
+          executedQueries.push(sql)
+          return Promise.resolve([])
+        }),
+        end: vi.fn(),
+      }
+      vi.mocked(mysql.default.createConnection).mockResolvedValue(mockConnection as any)
+
+      const restorer = new DatabaseRestorer(mockConfig)
+      // SQL text: ('C:\\uploads\\','yes'); then a later literal containing a semicolon
+      const sql =
+        "INSERT INTO wp_options VALUES (1,'upload_path','C:\\\\uploads\\\\','yes');\n" +
+        "INSERT INTO wp_posts VALUES (2,'Hello; world');\n"
+
+      await restorer.restoreFromSQL(sql)
+
+      expect(executedQueries).toEqual([
+        "INSERT INTO wp_options VALUES (1,'upload_path','C:\\\\uploads\\\\','yes')",
+        "INSERT INTO wp_posts VALUES (2,'Hello; world')",
+      ])
+    })
   })
 
   describe('restoreFromFile', () => {
