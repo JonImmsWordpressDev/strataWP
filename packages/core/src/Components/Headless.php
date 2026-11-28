@@ -250,7 +250,7 @@ class Headless implements ComponentInterface {
 		 *
 		 * @param int $ttl Lifetime in seconds.
 		 */
-		$ttl = max( 1, (int) apply_filters( 'stratawp_headless_preview_ttl', 5 * MINUTE_IN_SECONDS ) );
+		$ttl = max( 1, (int) apply_filters( 'stratawp_headless_preview_ttl', 300 ) );
 
 		$token = $this->sign_token(
 			array(
