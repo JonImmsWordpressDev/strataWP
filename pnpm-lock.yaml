@@ -422,8 +422,8 @@ importers:
         specifier: ^5.3.0
         version: 5.6.2
       mysql2:
-        specifier: ^3.9.0
-        version: 3.16.1
+        specifier: ^3.23.1
+        version: 3.24.6(@types/node@20.19.25)
       node-ssh:
         specifier: ^13.2.0
         version: 13.2.1
@@ -437,8 +437,8 @@ importers:
         specifier: ^1.15.0
         version: 1.17.0
       tar:
-        specifier: ^6.2.0
-        version: 6.2.1
+        specifier: ^7.5.21
+        version: 7.5.24
     devDependencies:
       '@types/better-sqlite3':
         specifier: ^7.6.11
@@ -446,9 +446,6 @@ importers:
       '@types/ssh2':
         specifier: ^1.11.0
         version: 1.15.5
-      '@types/tar':
-        specifier: ^6.1.11
-        version: 6.1.13
       '@vitest/coverage-v8':
         specifier: ^1.0.4
         version: 1.6.1(vitest@1.6.1)
@@ -2501,7 +2498,7 @@ packages:
     dependencies:
       '@types/node': 20.19.25
       chardet: 2.1.1
-      iconv-lite: 0.7.0
+      iconv-lite: 0.7.2
     dev: true
 
   /@inquirer/figures@1.0.15:
@@ -2644,6 +2641,13 @@ packages:
       strip-ansi-cjs: /strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: /wrap-ansi@7.0.0
+
+  /@isaacs/fs-minipass@4.0.1:
+    resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      minipass: 7.1.2
+    dev: false
 
   /@istanbuljs/load-nyc-config@1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -4631,13 +4635,6 @@ packages:
   /@types/stack-utils@2.0.3:
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
     dev: false
-
-  /@types/tar@6.1.13:
-    resolution: {integrity: sha512-IznnlmU5f4WcGTh2ltRu/Ijpmk8wiWXfF0VA4s+HPjHZgvFggk1YaIkbo5krX/zUCzWF8N/l4+W/LNxnvAJ8nw==}
-    dependencies:
-      '@types/node': 20.19.25
-      minipass: 4.2.8
-    dev: true
 
   /@types/validate-npm-package-name@4.0.2:
     resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
@@ -6655,9 +6652,9 @@ packages:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
     dev: false
 
-  /chownr@2.0.0:
-    resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
-    engines: {node: '>=10'}
+  /chownr@3.0.0:
+    resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
+    engines: {node: '>=18'}
     dev: false
 
   /chrome-launcher@0.13.4:
@@ -7320,11 +7317,6 @@ packages:
 
   /delegate@3.2.0:
     resolution: {integrity: sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==}
-    dev: false
-
-  /denque@2.1.0:
-    resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
-    engines: {node: '>=0.10'}
     dev: false
 
   /depd@2.0.0:
@@ -8354,13 +8346,6 @@ packages:
       universalify: 0.1.2
     dev: true
 
-  /fs-minipass@2.1.0:
-    resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
-    engines: {node: '>= 8'}
-    dependencies:
-      minipass: 3.3.6
-    dev: false
-
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
@@ -8781,14 +8766,14 @@ packages:
     dependencies:
       safer-buffer: 2.1.2
 
-  /iconv-lite@0.7.0:
-    resolution: {integrity: sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==}
+  /iconv-lite@0.7.2:
+    resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
 
-  /iconv-lite@0.7.2:
-    resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
+  /iconv-lite@0.7.3:
+    resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
@@ -10162,8 +10147,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /lru.min@1.1.3:
-    resolution: {integrity: sha512-Lkk/vx6ak3rYkRR0Nhu4lFUT2VDnQSxBe8Hbl7f36358p6ow8Bnvr8lrLt98H8J1aGxfhbX4Fs5tYg2+FTwr5Q==}
+  /lru.min@1.1.5:
+    resolution: {integrity: sha512-5J9ysMYUpYIg9RF2vJpy9SinEmSviFSe0GyPpCQ4L5QSkLAgeLXlTAOu2ZwWUU5m+0SBl6gUU1R1ZQB3aKypfA==}
     engines: {bun: '>=1.0.0', deno: '>=1.30.0', node: '>=8.0.0'}
     dev: false
 
@@ -10369,33 +10354,15 @@ packages:
       minimist: 1.2.8
     dev: true
 
-  /minipass@3.3.6:
-    resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
-    engines: {node: '>=8'}
-    dependencies:
-      yallist: 4.0.0
-    dev: false
-
-  /minipass@4.2.8:
-    resolution: {integrity: sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ==}
-    engines: {node: '>=8'}
-    dev: true
-
-  /minipass@5.0.0:
-    resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
-    engines: {node: '>=8'}
-    dev: false
-
   /minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  /minizlib@2.1.2:
-    resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
-    engines: {node: '>= 8'}
+  /minizlib@3.1.0:
+    resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
+    engines: {node: '>= 18'}
     dependencies:
-      minipass: 3.3.6
-      yallist: 4.0.0
+      minipass: 7.1.2
     dev: false
 
   /mitt@3.0.1:
@@ -10412,12 +10379,6 @@ packages:
     dependencies:
       minimist: 1.2.8
     dev: true
-
-  /mkdirp@1.0.4:
-    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: false
 
   /mlly@1.8.0:
     resolution: {integrity: sha512-l8D9ODSRWLe2KHJSifWGwBqpTZXIXTeo8mlKjY+E2HAakaTeNpqAyBZ8GSqLzHgw4XmHmC8whvpjJNMbFZN7/g==}
@@ -10479,19 +10440,20 @@ packages:
     engines: {node: ^18.17.0 || >=20.5.0}
     dev: true
 
-  /mysql2@3.16.1:
-    resolution: {integrity: sha512-b75qsDB3ieYEzMsT1uRGsztM/sy6vWPY40uPZlVVl8eefAotFCoS7jaDB5DxDNtlW5kdVGd9jptSpkvujNxI2A==}
+  /mysql2@3.24.6(@types/node@20.19.25):
+    resolution: {integrity: sha512-enu73KhbAua2L3dIxjc6qg6ZJ7H3pt1BImZASWNWY5xSsmJ1ZuUPULTDGXgmJbI61vb+nJAG19IZclIq19UidQ==}
     engines: {node: '>= 8.0'}
+    peerDependencies:
+      '@types/node': '>= 8'
     dependencies:
+      '@types/node': 20.19.25
       aws-ssl-profiles: 1.1.2
-      denque: 2.1.0
       generate-function: 2.3.1
-      iconv-lite: 0.7.0
+      iconv-lite: 0.7.3
       long: 5.3.2
-      lru.min: 1.1.3
+      lru.min: 1.1.5
       named-placeholders: 1.1.6
-      seq-queue: 0.0.5
-      sqlstring: 2.3.3
+      sql-escaper: 1.9.1
     dev: false
 
   /mz@2.7.0:
@@ -10506,7 +10468,7 @@ packages:
     resolution: {integrity: sha512-Tz09sEL2EEuv5fFowm419c1+a/jSMiBjI9gHxVLrVdbUkkNUUfjsVYs9pVZu5oCon/kmRh9TfLEObFtkVxmY0w==}
     engines: {node: '>=8.0.0'}
     dependencies:
-      lru.min: 1.1.3
+      lru.min: 1.1.5
     dev: false
 
   /nan@2.24.0:
@@ -11429,7 +11391,7 @@ packages:
     dependencies:
       bytes: 3.1.2
       http-errors: 2.0.1
-      iconv-lite: 0.7.0
+      iconv-lite: 0.7.2
       unpipe: 1.0.0
     dev: false
 
@@ -11972,10 +11934,6 @@ packages:
       upper-case-first: 2.0.2
     dev: false
 
-  /seq-queue@0.0.5:
-    resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
-    dev: false
-
   /serve-static@1.16.3:
     resolution: {integrity: sha512-x0RTqQel6g5SY7Lg6ZreMmsOzncHFU7nhnRWkKgWuMTu5NN0DR5oruckMqRvacAN9d5w6ARnRBXl9xhDCgfMeA==}
     engines: {node: '>= 0.8.0'}
@@ -12319,9 +12277,9 @@ packages:
     resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
     dev: false
 
-  /sqlstring@2.3.3:
-    resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
-    engines: {node: '>= 0.6'}
+  /sql-escaper@1.9.1:
+    resolution: {integrity: sha512-4p522TVYaJXTbMlYgAwacjyg3EJyYe9KYWYlYJVwZG1YjtzxU5m5iSzsZoGI69Po7j3i/2tKlpZQi7uvhTL+WA==}
+    engines: {bun: '>=1.0.0', deno: '>=2.0.0', node: '>=12.0.0'}
     dev: false
 
   /ssh2-sftp-client@10.0.3:
@@ -12745,17 +12703,15 @@ packages:
       - react-native-b4a
     dev: true
 
-  /tar@6.2.1:
-    resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
-    engines: {node: '>=10'}
-    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
+  /tar@7.5.24:
+    resolution: {integrity: sha512-to/OxuCk5DeVONcjjODT7aeoRq5NIPPlfPc0tNML+wLlnf6u5BcJz97Uukv3pT3jzorkFhUevylkAiBr+ZmV2w==}
+    engines: {node: '>=18'}
     dependencies:
-      chownr: 2.0.0
-      fs-minipass: 2.1.0
-      minipass: 5.0.0
-      minizlib: 2.1.2
-      mkdirp: 1.0.4
-      yallist: 4.0.0
+      '@isaacs/fs-minipass': 4.0.1
+      chownr: 3.0.0
+      minipass: 7.1.2
+      minizlib: 3.1.0
+      yallist: 5.0.0
     dev: false
 
   /teex@1.0.1:
@@ -13750,8 +13706,9 @@ packages:
   /yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  /yallist@4.0.0:
-    resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+  /yallist@5.0.0:
+    resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
+    engines: {node: '>=18'}
     dev: false
 
   /yaml@1.10.2:

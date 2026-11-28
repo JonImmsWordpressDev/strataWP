@@ -4,7 +4,7 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 import * as zlib from 'zlib'
 import { promisify } from 'util'
-import tar from 'tar'
+import * as tar from 'tar'
 import type { SnapshotManifest } from '../types.js'
 
 const gzip = promisify(zlib.gzip)
