@@ -27,6 +27,8 @@ export interface WPPost {
   tags: number[]
   _links: WPLinks
   _embedded?: WPEmbedded
+  /** Present when the theme enables the StrataWP core `Headless` component. */
+  blocks?: WPBlock[]
 }
 
 export interface WPPage {
@@ -52,6 +54,8 @@ export interface WPPage {
   meta: Record<string, any>
   _links: WPLinks
   _embedded?: WPEmbedded
+  /** Present when the theme enables the StrataWP core `Headless` component. */
+  blocks?: WPBlock[]
 }
 
 export interface WPCategory {
@@ -213,4 +217,16 @@ export interface WPResponse<T> {
     'x-wp-totalpages': string
     link?: string
   }
+}
+
+/**
+ * A parsed block from the `blocks` REST field (StrataWP core `Headless`
+ * component). `attributes` has the registered defaults applied; `rendered`
+ * is the block's server HTML, a fallback for blocks the frontend does not map.
+ */
+export interface WPBlock<A = Record<string, unknown>> {
+  name: string
+  attributes: A
+  innerBlocks: WPBlock[]
+  rendered: string
 }

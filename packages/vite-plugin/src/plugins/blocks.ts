@@ -4,7 +4,7 @@ import { readFile, writeFile } from 'fs/promises'
 import { join, dirname, relative } from 'path'
 import pc from 'picocolors'
 import type { BlockOptions, BlockMetadata } from '../types'
-import { generateBlockAttributeTypes } from './block-types'
+import { generateBlockAttributeTypes, generateBlockTypesBundle } from './block-types'
 
 /**
  * Auto-discover and register WordPress blocks
@@ -15,6 +15,7 @@ export function strataWPBlocks(options: BlockOptions = {}): Plugin {
     autoRegister = true,
     namespace = 'stratawp',
     pattern = '**/block.json',
+    exportTypes = false,
   } = options
 
   let blocks: BlockMetadata[] = []
@@ -68,6 +69,15 @@ export function strataWPBlocks(options: BlockOptions = {}): Plugin {
     },
 
     async generateBundle() {
+      if (exportTypes && blocks.length > 0) {
+        const subdir = typeof exportTypes === 'string' ? exportTypes.replace(/^\/+|\/+$/g, '') : ''
+        this.emitFile({
+          type: 'asset',
+          fileName: subdir ? `${subdir}/block-attributes.d.ts` : 'block-attributes.d.ts',
+          source: generateBlockTypesBundle(blocks),
+        })
+      }
+
       if (!autoRegister || blocks.length === 0) return
 
       // Generate PHP registration file

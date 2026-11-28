@@ -108,6 +108,20 @@ Off by default. When enabled, the build reads `theme.json` and writes `tokens.js
 
 Only the theme's own presets are included, not WordPress's defaults. Font sizes use their `size` value; a fluid size's `min` / `max` are listed in `tokens.json` but WordPress's computed `clamp()` is not reproduced.
 
+#### Block Attribute Types for a Headless Frontend
+
+Off by default. `blocks.exportTypes` writes one `block-attributes.d.ts` to the build output with every block's attribute interface (the same types as each block's `block-attributes.ts`) and a `BlockAttributesMap` keyed by block name. Pair it with the core `Headless` component, which exposes parsed blocks over REST, and `createBlockGuard()` from `@stratawp/headless`.
+
+```typescript
+{
+  blocks: {
+    exportTypes: true,                      // dist/block-attributes.d.ts
+    // or
+    exportTypes: 'types',                   // dist/types/block-attributes.d.ts
+  }
+}
+```
+
 ## How It Works
 
 ### Block Auto-Discovery
