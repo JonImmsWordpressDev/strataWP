@@ -1,5 +1,11 @@
 # @stratawp/vite-plugin
 
+## 0.4.0
+
+### Minor Changes
+
+- New opt-in `tokens` option: at build, read `theme.json` and write `tokens.json` and `tokens.css` (palette, gradients, font families, font sizes, spacing sizes, content and wide widths) using WordPress's own `--wp--preset--*` variable names, so a headless frontend can use the theme's design tokens. Off by default. The `themeJsonToTokens` and `tokensToCss` helpers and the `DesignTokens` type are exported.
+
 ## 0.3.0
 
 ### Minor Changes

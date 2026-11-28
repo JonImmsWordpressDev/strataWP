@@ -1,5 +1,13 @@
 # create-stratawp
 
+## 2.4.2
+
+### Patch Changes
+
+- Updated dependencies [dd36d3d]
+- Updated dependencies [718a510]
+  - @stratawp/cli@2.4.2
+
 ## 2.4.1
 
 ### Patch Changes
