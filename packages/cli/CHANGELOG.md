@@ -1,5 +1,19 @@
 # @stratawp/cli
 
+## 2.4.2
+
+### Patch Changes
+
+- dd36d3d: Upgrade basic-ftp to 6.2.6 to pick up fixes for published security advisories (path traversal, CRLF command injection, and several listing-parser denial-of-service issues).
+- 718a510: Upgrade `adm-zip` to 0.6.1 (icons zip import) to clear published advisories, and drop the unused `simple-git` dependency.
+- Updated dependencies [14e6129]
+- Updated dependencies [207404a]
+- Updated dependencies [d1cdfdf]
+- Updated dependencies [40d4488]
+- Updated dependencies [3bb469c]
+- Updated dependencies [afef176]
+  - @stratawp/sync@0.1.2
+
 ## 2.4.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@stratawp/sync",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Environment sync, snapshots, and rollback for StrataWP",
   "author": "Jon Imms",
   "type": "module",
