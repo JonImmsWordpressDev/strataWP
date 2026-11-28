@@ -32,15 +32,24 @@ export interface RevalidateWebhookPayload {
 
 const encoder = new TextEncoder()
 
+// Node 18 only exposes Web Crypto as `require('node:crypto').webcrypto`; Node
+// 19+, edge runtimes and browsers have `globalThis.crypto`.
+async function subtle(): Promise<SubtleCrypto> {
+  if (globalThis.crypto?.subtle) return globalThis.crypto.subtle
+  const { webcrypto } = await import(/* webpackIgnore: true */ 'node:crypto')
+  return webcrypto.subtle as SubtleCrypto
+}
+
 async function hmac(secret: string, data: string): Promise<Uint8Array> {
-  const key = await globalThis.crypto.subtle.importKey(
+  const crypto = await subtle()
+  const key = await crypto.importKey(
     'raw',
     encoder.encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
   )
-  return new Uint8Array(await globalThis.crypto.subtle.sign('HMAC', key, encoder.encode(data)))
+  return new Uint8Array(await crypto.sign('HMAC', key, encoder.encode(data)))
 }
 
 function toBase64url(bytes: Uint8Array): string {
