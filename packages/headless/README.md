@@ -386,6 +386,37 @@ export default async function Page({ params }: { params: { slug: string } }) {
 }
 ```
 
+### Preview and On-Publish Revalidation (App Router)
+
+With the StrataWP core `Headless` component connected to your frontend (frontend URL and shared secret, see the core README), WordPress points the Preview button at your draft route and sends a signed webhook when content is published, updated, unpublished or trashed. Add the matching routes:
+
+```ts
+// app/api/draft/route.ts
+import { createDraftModeRoute } from '@stratawp/headless/next'
+
+// Verifies the signed token, enables draft mode, redirects to the post's own path.
+export const GET = createDraftModeRoute({ secret: process.env.STRATAWP_HEADLESS_SECRET! })
+```
+
+```ts
+// app/api/exit-draft/route.ts
+import { createExitDraftModeRoute } from '@stratawp/headless/next'
+
+export const GET = createExitDraftModeRoute()
+```
+
+```ts
+// app/api/revalidate/route.ts
+import { createRevalidateRoute } from '@stratawp/headless/next'
+
+// Default: revalidatePath(payload.path) plus tags `wp:<type>` and `wp:<type>:<id>`.
+export const POST = createRevalidateRoute({ secret: process.env.STRATAWP_HEADLESS_SECRET! })
+```
+
+In a page, check `await isDraftMode()` and fetch the draft by id with an authenticated client (for example `getPreviewPost(client, id)`). Pass `resolvePath` to `createDraftModeRoute()` if your routes don't mirror WordPress permalinks, and `onRevalidate` to `createRevalidateRoute()` to choose your own paths and tags. Webhooks older than `maxAge` seconds (default 300) are rejected.
+
+The signing helpers are exported from the main entry too: `verifyPreviewToken`, `verifyWebhookSignature`, `signPreviewToken`, `signWebhookBody`, `timingSafeEqual`.
+
 ### On-Demand Revalidation
 
 ```tsx
@@ -396,54 +427,33 @@ export async function POST(request: Request) {
   const { tag } = await request.json()
 
   // Revalidate by tag
-  revalidateTag(tag)
+  await revalidateTag(tag)
 
   // Or revalidate by path
-  revalidatePath('/blog')
+  await revalidatePath('/blog')
 
   return Response.json({ revalidated: true })
 }
 ```
 
-### Preview Mode
+`revalidateTag` and `revalidatePath` load `next/cache` with a dynamic `import()` and return a promise.
+
+### Preview Mode (Pages Router)
 
 ```tsx
-// app/api/preview/route.ts
-import { verifyPreviewSecret, getPreviewPost } from '@stratawp/headless'
+// pages/api/preview.ts
+import { verifyPreviewSecret } from '@stratawp/headless'
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const secret = searchParams.get('secret')
-  const id = searchParams.get('id')
+export default function handler(req, res) {
+  const { secret, slug } = req.query
 
-  if (!secret || !id) {
-    return Response.json({ message: 'Missing params' }, { status: 401 })
+  // Constant-time compare; an empty configured secret never matches.
+  if (!verifyPreviewSecret(String(secret ?? ''), process.env.PREVIEW_SECRET ?? '')) {
+    return res.status(401).json({ message: 'Invalid secret' })
   }
 
-  if (!verifyPreviewSecret(secret, process.env.PREVIEW_SECRET!)) {
-    return Response.json({ message: 'Invalid secret' }, { status: 401 })
-  }
-
-  const post = await getPreviewPost(client, Number(id))
-
-  if (!post) {
-    return Response.json({ message: 'Post not found' }, { status: 404 })
-  }
-
-  // Enable preview mode
-  const response = Response.redirect(new URL(`/blog/${post.slug}`, request.url))
-  response.cookies.set('__next_preview_data', JSON.stringify({ id, type: 'post' }))
-
-  return response
-}
-```
-
-```tsx
-// app/api/exit-preview/route.ts
-export async function POST() {
-  const response = Response.json({ success: true })
-  response.cookies.delete('__next_preview_data')
-  return response
+  res.setPreviewData({})
+  res.redirect(`/blog/${slug}`)
 }
 ```
 
