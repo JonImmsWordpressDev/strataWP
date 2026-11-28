@@ -36,6 +36,36 @@ export interface StrataWPPluginOptions {
    * Update notification options for dev server
    */
   updateNotification?: UpdateNotificationOptions
+
+  /**
+   * Write theme.json design tokens to tokens.json and tokens.css at build,
+   * for decoupled frontends
+   * @default false
+   */
+  tokens?: boolean | TokensOptions
+}
+
+/**
+ * Design Tokens Options
+ */
+export interface TokensOptions {
+  /**
+   * Enable token output (an options object enables it unless this is false)
+   * @default true
+   */
+  enabled?: boolean
+
+  /**
+   * Path to theme.json, relative to the Vite root
+   * @default 'theme.json'
+   */
+  themeJson?: string
+
+  /**
+   * Subdirectory of the build output to write tokens.json and tokens.css to
+   * @default '' (the build output root, e.g. dist/)
+   */
+  outDir?: string
 }
 
 /**

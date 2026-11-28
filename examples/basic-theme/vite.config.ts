@@ -19,6 +19,7 @@ export default defineConfig({
         enabled: true,
         wordpress: true,
       },
+      tokens: true,
     }),
   ],
 
