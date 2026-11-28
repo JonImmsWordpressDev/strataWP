@@ -195,8 +195,8 @@ importers:
         specifier: workspace:^
         version: link:../theme-review
       adm-zip:
-        specifier: ^0.5.16
-        version: 0.5.16
+        specifier: ^0.6.1
+        version: 0.6.1
       basic-ftp:
         specifier: ^6.2.6
         version: 6.2.6
@@ -233,9 +233,6 @@ importers:
       semver:
         specifier: ^7.5.4
         version: 7.7.3
-      simple-git:
-        specifier: ^3.22.0
-        version: 3.30.0
       ssh2-sftp-client:
         specifier: ^10.0.3
         version: 10.0.3
@@ -2990,9 +2987,11 @@ packages:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@kwsites/promise-deferred@1.1.1:
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
+    dev: true
 
   /@lhci/cli@0.14.0:
     resolution: {integrity: sha512-TxOH9pFBnmmN7Jmo2Aimxx5UhE8veqXpHfFJDMWsCVxkwh7mGxcAWchGl84mK139SZbbRmerqZ72c+h2nG9/QQ==}
@@ -5782,9 +5781,9 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  /adm-zip@0.5.16:
-    resolution: {integrity: sha512-TGw5yVi4saajsSEgz25grObGHEUaDrniwvA2qwSC060KfqGPdglhvPMA2lPIoxs3PQIItj2iag35fONcQqgUaQ==}
-    engines: {node: '>=12.0'}
+  /adm-zip@0.6.1:
+    resolution: {integrity: sha512-Xwrja8nx9e5o2N1my4DsKCeKpdrnACyr1wtbPxBDgGzKzKyE9kRtBFA8mWldI+RVlD7CBZNWY/wQ2+ydwOR6kQ==}
+    engines: {node: '>=14.0'}
     dev: false
 
   /agent-base@6.0.2:
@@ -12204,6 +12203,7 @@ packages:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /simple-html-tokenizer@0.5.11:
     resolution: {integrity: sha512-C2WEK/Z3HoSFbYq8tI7ni3eOo/NneSPRoPpcM7WdLjFOArFuyXEjAoCdOC3DgMfRyziZQ1hCNR4mrNdWEvD0og==}
