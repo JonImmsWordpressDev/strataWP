@@ -12,6 +12,19 @@ namespace {
             public function get_registered(string $name) { return self::$types[$name] ?? null; }
         }
     }
+    if (!class_exists('WP_Post')) {
+        // Plain property bag, like WordPress's final WP_Post.
+        final class WP_Post {
+            public int $ID = 0;
+            public string $post_type = 'post';
+            public string $post_status = 'publish';
+            public string $post_name = '';
+            public string $post_title = '';
+            public function __construct(array $props = []) {
+                foreach ($props as $key => $value) { $this->$key = $value; }
+            }
+        }
+    }
 }
 
 namespace StrataWP\Tests\Unit {
@@ -122,6 +135,135 @@ final class HeadlessTest extends TestCase {
         Functions\when('parse_blocks')->justReturn([self::block('core/paragraph')]);
         $out = (new Headless())->get_blocks_field(['id' => 7]);
         $this->assertSame('core/paragraph', $out[0]['name']);
+    }
+    private const SECRET = 'test-secret';
+
+    // Same vector as packages/headless/src/utils/__tests__/signing.test.ts, so
+    // both sides agree on the token format.
+    private const VECTOR_PAYLOAD = ['id' => 42, 'type' => 'post', 'path' => '/hello-world/', 'exp' => 2000000000];
+    private const VECTOR_TOKEN = 'eyJpZCI6NDIsInR5cGUiOiJwb3N0IiwicGF0aCI6Ii9oZWxsby13b3JsZC8iLCJleHAiOjIwMDAwMDAwMDB9.AyThuIdOtG2wF6uzsGd6H2uqSQa8fSIvEJ3Gxqw2gig';
+
+    private static function connected(): Headless {
+        return new Headless('https://front.example.com/', self::SECRET);
+    }
+
+    private function stubPermalinks(): void {
+        Functions\when('wp_json_encode')->alias(static fn($data) => json_encode($data, JSON_UNESCAPED_SLASHES));
+        Functions\when('sanitize_title')->alias(static fn(string $t): string => strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $t), '-')));
+        Functions\when('get_permalink')->alias(static fn(\WP_Post $p): string => 'http://wp.example.com/' . $p->post_name . '/');
+        Functions\when('wp_make_link_relative')->alias(static fn(string $url): string => (string) preg_replace('#^https?://[^/]+#', '', $url));
+        Functions\when('get_post_types')->justReturn(['post' => 'post', 'page' => 'page']);
+    }
+
+    public function test_not_connected_adds_no_preview_or_webhook_hooks(): void {
+        Actions\expectAdded('rest_api_init')->twice();
+        Filters\expectAdded('preview_post_link')->never();
+        Actions\expectAdded('transition_post_status')->never();
+        (new Headless('https://front.example.com', ''))->initialize();
+        (new Headless('', self::SECRET))->initialize();
+        $this->addToAssertionCount(1);
+    }
+
+    public function test_connected_adds_preview_and_webhook_hooks(): void {
+        Filters\expectAdded('preview_post_link')->once();
+        Actions\expectAdded('transition_post_status')->once();
+        self::connected()->initialize();
+        $this->addToAssertionCount(1);
+    }
+
+    public function test_token_matches_shared_vector(): void {
+        Functions\when('wp_json_encode')->alias(static fn($data) => json_encode($data, JSON_UNESCAPED_SLASHES));
+        $this->assertSame(self::VECTOR_TOKEN, self::connected()->sign_token(self::VECTOR_PAYLOAD));
+    }
+
+    public function test_token_round_trip_and_rejections(): void {
+        Functions\when('wp_json_encode')->alias(static fn($data) => json_encode($data, JSON_UNESCAPED_SLASHES));
+        $headless = self::connected();
+        $token = $headless->sign_token(['id' => 1, 'exp' => 1000]);
+
+        $this->assertSame(['id' => 1, 'exp' => 1000], $headless->verify_token($token, 999));
+        $this->assertNull($headless->verify_token($token, 1001), 'expired');
+        $this->assertNull((new Headless('https://front.example.com', 'other'))->verify_token($token, 999), 'wrong secret');
+        $this->assertNull($headless->verify_token($token . 'x', 999), 'tampered signature');
+        $this->assertNull($headless->verify_token('nodot', 999));
+    }
+
+    public function test_preview_link_points_at_frontend_draft_route(): void {
+        $this->stubPermalinks();
+        $post = new \WP_Post(['ID' => 9, 'post_type' => 'post', 'post_status' => 'draft', 'post_title' => 'My Draft']);
+
+        $link = self::connected()->filter_preview_link('http://wp.example.com/?p=9&preview=true', $post);
+
+        $this->assertStringStartsWith('https://front.example.com/api/draft?token=', $link);
+        parse_str((string) parse_url($link, PHP_URL_QUERY), $query);
+        $claims = self::connected()->verify_token($query['token']);
+        $this->assertSame(9, $claims['id']);
+        $this->assertSame('post', $claims['type']);
+        $this->assertSame('/my-draft/', $claims['path']);
+        $this->assertGreaterThan(time(), $claims['exp']);
+    }
+
+    public function test_preview_link_untouched_for_other_post_types(): void {
+        $this->stubPermalinks();
+        $post = new \WP_Post(['ID' => 3, 'post_type' => 'wp_template']);
+        $this->assertSame('orig', self::connected()->filter_preview_link('orig', $post));
+    }
+
+    public function test_preview_path_is_filterable(): void {
+        $this->stubPermalinks();
+        Filters\expectApplied('stratawp_headless_preview_path')->once()->andReturn('/preview');
+        $link = self::connected()->filter_preview_link('orig', new \WP_Post(['ID' => 1, 'post_name' => 'a']));
+        $this->assertStringStartsWith('https://front.example.com/preview?token=', $link);
+    }
+
+    public function test_transition_events(): void {
+        $this->assertSame('publish', Headless::transition_event('publish', 'draft'));
+        $this->assertSame('publish', Headless::transition_event('publish', 'future'));
+        $this->assertSame('update', Headless::transition_event('publish', 'publish'));
+        $this->assertSame('unpublish', Headless::transition_event('draft', 'publish'));
+        $this->assertSame('unpublish', Headless::transition_event('private', 'publish'));
+        $this->assertSame('trash', Headless::transition_event('trash', 'publish'));
+        $this->assertNull(Headless::transition_event('draft', 'draft'));
+        $this->assertNull(Headless::transition_event('trash', 'draft'));
+        $this->assertNull(Headless::transition_event('future', 'draft'));
+    }
+
+    public function test_trashed_post_webhook_carries_public_slug_and_signature(): void {
+        $this->stubPermalinks();
+        Functions\when('wp_is_post_revision')->justReturn(false);
+        Functions\when('wp_is_post_autosave')->justReturn(false);
+        $sent = null;
+        Functions\expect('wp_remote_post')->once()->andReturnUsing(static function ($url, $args) use (&$sent) {
+            $sent = [$url, $args];
+            return [];
+        });
+        $post = new \WP_Post(['ID' => 5, 'post_type' => 'page', 'post_status' => 'trash', 'post_name' => 'about__trashed']);
+
+        self::connected()->on_transition('trash', 'publish', $post);
+
+        [$url, $args] = $sent;
+        $this->assertSame('https://front.example.com/api/revalidate', $url);
+        $this->assertFalse($args['blocking']);
+        $body = json_decode($args['body'], true);
+        $this->assertSame('trash', $body['event']);
+        $this->assertSame(5, $body['id']);
+        $this->assertSame('page', $body['type']);
+        $this->assertSame('about', $body['slug']);
+        $this->assertSame('/about/', $body['path']);
+        $this->assertIsInt($body['timestamp']);
+        $this->assertSame('sha256=' . hash_hmac('sha256', $args['body'], self::SECRET), $args['headers']['X-StrataWP-Signature']);
+    }
+
+    public function test_draft_saves_and_revisions_send_nothing(): void {
+        $this->stubPermalinks();
+        Functions\when('wp_is_post_autosave')->justReturn(false);
+        Functions\when('wp_is_post_revision')->alias(static fn(\WP_Post $p) => 'revision' === $p->post_type ? 1 : false);
+        Functions\expect('wp_remote_post')->never();
+
+        self::connected()->on_transition('draft', 'draft', new \WP_Post(['ID' => 1, 'post_name' => 'a']));
+        self::connected()->on_transition('inherit', 'new', new \WP_Post(['ID' => 2, 'post_type' => 'revision']));
+        self::connected()->on_transition('publish', 'draft', new \WP_Post(['ID' => 3, 'post_type' => 'wp_navigation']));
+        $this->addToAssertionCount(1);
     }
 }
 

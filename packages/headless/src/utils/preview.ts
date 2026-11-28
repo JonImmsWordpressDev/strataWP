@@ -3,6 +3,7 @@
  */
 
 import type { WordPressClient } from '../client/wordpress-client.js'
+import { timingSafeEqual } from './signing.js'
 import type { WPPost, WPPage } from '../types/wordpress.js'
 
 export interface PreviewData {
@@ -87,8 +88,10 @@ export async function getPreviewPage(client: WordPressClient, id: number): Promi
 }
 
 /**
- * Verify preview secret
+ * Verify preview secret (constant-time compare; an empty configured secret
+ * never matches)
  */
 export function verifyPreviewSecret(providedSecret: string, configSecret: string): boolean {
-  return providedSecret === configSecret
+  if (!configSecret) return false
+  return timingSafeEqual(providedSecret, configSecret)
 }

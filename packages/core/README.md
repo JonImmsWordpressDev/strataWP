@@ -96,6 +96,18 @@ Not in the default list. Add `new \StrataWP\Components\Headless()` to expose eac
 - `stratawp_headless_block_attributes` (`$attributes, $block_name, $block`): drop attributes that should not be public.
 - `stratawp_headless_post_types` (`$types`): change which post types get the field.
 
+**Preview and revalidation.** Give it the frontend URL and a shared secret, as constructor arguments or as the `STRATAWP_HEADLESS_FRONTEND_URL` and `STRATAWP_HEADLESS_SECRET` constants in `wp-config.php`. Both are needed; without them nothing below is hooked.
+
+```php
+new \StrataWP\Components\Headless( 'https://www.example.com', STRATAWP_HEADLESS_SECRET );
+```
+
+- The editor's Preview button goes to `<frontend>/api/draft?token=...`. The token is `base64url(claims).base64url(HMAC-SHA256)` with the post's `id`, `type`, public `path` and an `exp` 5 minutes ahead. `createDraftModeRoute()` in `@stratawp/headless/next` verifies it.
+- Publishing, updating, unpublishing and trashing a post sends a non-blocking `POST <frontend>/api/revalidate` with `{ event, id, type, slug, path, timestamp }` and an `X-StrataWP-Signature: sha256=<hex HMAC of the body>` header. `createRevalidateRoute()` verifies it. Draft saves, revisions and autosaves send nothing.
+- `stratawp_headless_preview_path` / `stratawp_headless_revalidate_path`: change the frontend routes (defaults `/api/draft` and `/api/revalidate`).
+- `stratawp_headless_preview_ttl` (`$seconds`): token lifetime.
+- `stratawp_headless_webhook_payload` (`$payload, $post`): change the webhook body before it is signed.
+
 ### Performance Component
 
 Implements performance optimizations:
