@@ -184,11 +184,11 @@
         {
           "fontFace": [
             {
-              "fontDisplay": "swap",
+              "fontDisplay": "optional",
               "fontFamily": "Outfit",
               "fontStyle": "normal",
               "fontWeight": "100 900",
-              "src": ["https://fonts.gstatic.com/s/outfit/v11/QGYvz_MVcBeNP4NJuktqUYLknw.woff2"]
+              "src": ["file:./assets/fonts/outfit.woff2"]
             }
           ],
           "fontFamily": "Outfit, sans-serif",

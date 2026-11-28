@@ -64,6 +64,24 @@ function strata_basic_init(): void {
 add_action( 'after_setup_theme', 'strata_basic_init', 1 );
 
 /**
+ * Preload the self-hosted Outfit font.
+ *
+ * Outfit is the heading and body font (theme.json). Preloading starts the
+ * download with the HTML, so it is usually ready within font-display:
+ * optional's short block period. If it is not, the page keeps the fallback
+ * font instead of swapping late, which would re-wrap the hero heading and
+ * shift the layout (#84).
+ */
+function strata_basic_preload_font(): void {
+	printf(
+		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+		esc_url( get_theme_file_uri( 'assets/fonts/outfit.woff2' ) )
+	);
+}
+
+add_action( 'wp_head', 'strata_basic_preload_font', 1 );
+
+/**
  * Get theme instance
  *
  * @return Theme
