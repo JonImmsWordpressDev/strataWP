@@ -83,6 +83,17 @@ jobs:
         if: matrix.theme == 'basic-theme'
         run: node scripts/extract-critical.mjs http://localhost:8888/ examples/basic-theme/dist
 
+      # The first Chrome launch on a fresh runner does ~1s of cold-start work
+      # (Lighthouse lists it as an "Unattributable" long task), which landed in
+      # the first measured mobile run as Total Blocking Time. Load the page once,
+      # unmeasured, so every measured run starts warm.
+      - name: Warm up Chrome and the page
+        run: |
+          CHROME="${CHROME_PATH:-$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)}"
+          for i in 1 2; do
+            "$CHROME" --headless=new --disable-gpu --no-first-run --dump-dom http://localhost:8888/ > /dev/null || true
+          done
+
       - name: Lighthouse (mobile)
         env:
           STRATAWP_LH_PRESET: mobile
