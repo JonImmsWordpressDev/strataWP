@@ -79,6 +79,35 @@ export default defineConfig({
 }
 ```
 
+#### Design Token Options
+
+Off by default. When enabled, the build reads `theme.json` and writes `tokens.json` and `tokens.css` to the build output, so a decoupled (headless) frontend can use the theme's palette, gradients, font families, font sizes, spacing sizes and layout widths without copying them by hand.
+
+```typescript
+{
+  tokens: true,                             // dist/tokens.json + dist/tokens.css
+  // or
+  tokens: {
+    themeJson: 'theme.json',                // Path from the Vite root
+    outDir: 'tokens',                       // Subfolder of the build output
+  }
+}
+```
+
+`tokens.css` uses WordPress's own variable names, so block markup and frontend components resolve the same values:
+
+```css
+:root {
+  --wp--preset--color--primary: #0000ff;
+  --wp--preset--font-size--large: 24px;
+  --wp--preset--spacing--small: clamp(30px, 4vw, 40px);
+  --wp--style--global--content-size: 640px;
+  --wp--style--global--wide-size: 1200px;
+}
+```
+
+Only the theme's own presets are included, not WordPress's defaults. Font sizes use their `size` value; a fluid size's `min` / `max` are listed in `tokens.json` but WordPress's computed `clamp()` is not reproduced.
+
 ## How It Works
 
 ### Block Auto-Discovery

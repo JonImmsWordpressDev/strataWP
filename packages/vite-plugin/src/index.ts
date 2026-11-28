@@ -5,6 +5,7 @@ import { strataWPPhpHmr } from './plugins/php-hmr'
 import { strataWPAssets } from './plugins/assets'
 import { strataWPDesignSystem } from './plugins/design-system'
 import { strataWPPerformance } from './plugins/performance'
+import { strataWPTokens } from './plugins/tokens'
 import { checkForUpdatesAsync } from './utils/update-checker'
 import type { StrataWPPluginOptions } from './types'
 
@@ -42,6 +43,7 @@ export function strataWP(options: StrataWPPluginOptions = {}): Plugin[] {
       criticalCSS: false,
       images: true,
     },
+    tokens = false,
   } = options
 
   const plugins: Plugin[] = [
@@ -59,6 +61,10 @@ export function strataWP(options: StrataWPPluginOptions = {}): Plugin[] {
 
   // Add performance plugins
   plugins.push(...strataWPPerformance(performance))
+
+  if (tokens) {
+    plugins.push(strataWPTokens(tokens))
+  }
 
   return plugins
 }
@@ -152,7 +158,10 @@ export {
   strataWPAssets,
   strataWPDesignSystem,
   strataWPPerformance,
+  strataWPTokens,
 }
+export { themeJsonToTokens, tokensToCss } from './plugins/tokens'
+export type { DesignTokens } from './plugins/tokens'
 export { strataWPTailwindPreset } from './integrations/tailwind-preset'
 export { strataWPUnoPreset } from './integrations/unocss-preset'
 export { generateBlockAttributeTypes } from './plugins/block-types'
