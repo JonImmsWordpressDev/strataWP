@@ -164,7 +164,7 @@ export { themeJsonToTokens, tokensToCss } from './plugins/tokens'
 export type { DesignTokens } from './plugins/tokens'
 export { strataWPTailwindPreset } from './integrations/tailwind-preset'
 export { strataWPUnoPreset } from './integrations/unocss-preset'
-export { generateBlockAttributeTypes } from './plugins/block-types'
+export { generateBlockAttributeTypes, generateBlockTypesBundle } from './plugins/block-types'
 export type {
   BlockJsonInput,
   BlockAttributeSchema,

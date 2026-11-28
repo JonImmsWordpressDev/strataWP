@@ -10,6 +10,7 @@ export default defineConfig({
         dir: 'src/blocks',
         autoRegister: true,
         namespace: 'strata-basic',
+        exportTypes: true,
       },
       phpHmr: {
         enabled: true,

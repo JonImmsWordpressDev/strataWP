@@ -495,6 +495,27 @@ import { extractExcerpt } from '@stratawp/headless'
 const excerpt = extractExcerpt(post.excerpt.rendered, 160)
 ```
 
+## Block Data
+
+When the theme enables the StrataWP core `Headless` component, posts and pages carry a `blocks` field: each block's `name`, `attributes`, `innerBlocks` and server `rendered` HTML. With `blocks.exportTypes` in the theme's vite plugin config, the theme build also writes `block-attributes.d.ts`, which types those attributes.
+
+```typescript
+import { createBlockGuard, getBlocks, flattenBlocks } from '@stratawp/headless'
+import type { BlockAttributesMap } from './theme/block-attributes'
+
+const isBlock = createBlockGuard<BlockAttributesMap>()
+
+for (const block of getBlocks(post)) {
+  if (isBlock(block, 'strata-basic/hero')) {
+    renderHero(block.attributes) // typed as HeroAttributes
+  } else {
+    renderHtml(block.rendered)
+  }
+}
+
+const heroes = flattenBlocks(getBlocks(post)).filter((b) => isBlock(b, 'strata-basic/hero'))
+```
+
 ## Image Utilities
 
 ### Responsive Images

@@ -89,6 +89,13 @@ Manages Vite-built assets with proper enqueuing and dependencies.
 
 Auto-registers Gutenberg blocks from Vite plugin.
 
+### Headless Component (opt-in)
+
+Not in the default list. Add `new \StrataWP\Components\Headless()` to expose each post's parsed blocks as a read-only `blocks` REST field on posts, pages and REST-enabled custom post types: block name, attributes (with the registered defaults applied), inner blocks, and the block's rendered HTML as a fallback. The field is only added to items the REST request can already read, and is empty for password-protected posts until the password is given.
+
+- `stratawp_headless_block_attributes` (`$attributes, $block_name, $block`): drop attributes that should not be public.
+- `stratawp_headless_post_types` (`$types`): change which post types get the field.
+
 ### Performance Component
 
 Implements performance optimizations:

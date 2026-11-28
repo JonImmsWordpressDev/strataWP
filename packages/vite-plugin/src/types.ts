@@ -106,6 +106,15 @@ export interface BlockOptions {
    * @default '* /block.json'
    */
   pattern?: string
+
+  /**
+   * Write one `block-attributes.d.ts` to the build output with every block's
+   * attribute interface and a `BlockAttributesMap` keyed by block name, so a
+   * headless frontend can type the `blocks` REST field. Pass a string to
+   * choose a subdirectory of the output dir.
+   * @default false
+   */
+  exportTypes?: boolean | string
 }
 
 /**
